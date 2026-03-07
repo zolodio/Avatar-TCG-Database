@@ -1852,8 +1852,8 @@ function updateStats() {
   document.getElementById('progressPct').textContent = pct + '%';
   document.getElementById('progressFill').style.width = pct + '%';
 
-  var rarities = ['common', 'uncommon', 'rare', 'zenemental', 'promo'];
-  var rarityLabels = { common: 'C', uncommon: 'UC', rare: 'R', zenemental: 'ZEN', promo: 'PR' };
+  var rarities = ['common', 'uncommon', 'rare', 'zenemental', 'promo', 'other'];
+  var rarityLabels = { common: 'C', uncommon: 'UC', rare: 'R', zenemental: 'ZEN', promo: 'PR', other: 'Other' };
   var breakdown = document.getElementById('rarityBreakdown');
   var bhtml = '';
   rarities.forEach(function(r) {
