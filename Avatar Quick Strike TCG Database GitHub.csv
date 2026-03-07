@@ -248,3 +248,21 @@ FPR001,Air Cannon Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/f
 FPR002,Fire Blast Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr002.jpg,chamber,PROMO
 FPR003,Ice Attack Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr003.jpg,chamber,PROMO
 STRT001,Starter Set,https://github.com/zolodio/Avatar-TCG-Database/raw/main/1184.jpg,sealed,common
+BSTR001,Booster Pack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR001.jpg,sealed,uncommon
+BSTR002,Blister Pack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR002.jpg,sealed,uncommon
+BSTR003,Booster Box,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR003.jpg,sealed,rare
+RLBK001,Official Rulebook,https://github.com/zolodio/Avatar-TCG-Database/raw/main/RLBK001.jpg,other,common
+PLMT001,Paper PlayMat,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT001.jpg,other,common
+PLMT002,Fabric PlayMat,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT002.jpg,other,uncommon
+XAPR001,Appa's Wild Ride,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XAPR001.jpg,sealed,PROMO
+XAPR002,Sokka's Mettle,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XAPR002.jpg,sealed,PROMO
+XBK001,"Toph, earthbender",https://github.com/zolodio/Avatar-TCG-Database/raw/main/XABK001.jpg,sealed,PROMO
+XBK002,"Princess Azula, firebender",https://github.com/zolodio/Avatar-TCG-Database/raw/main/XABK002.jpg,sealed,PROMO
+XBK003,Racing with the Wind,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XABK003.jpg,sealed,PROMO
+XBK004,In The Breach,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XABK004.jpg,sealed,PROMO
+XBK005,Juggle,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XABK005.jpg,sealed,PROMO
+XBK006,Taming the Flame,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XABK006.jpg,sealed,PROMO
+XBK007,Water Whirl,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XABK007.jpg,sealed,PROMO
+XBK008,Boulder Roll,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XABK008.jpg,sealed,PROMO
+XDVD001,DVD - Book 1 Volume 1,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XDVD001.jpg,sealed,PROMO
+XDVD002,DVD - Book 1 Volume 2,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XDVD002.jpg,sealed,PROMO
