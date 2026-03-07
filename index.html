@@ -1391,11 +1391,20 @@ body {
 <div class="app-container">
 <header class="header">
 <div style="text-align: center;">
-<div class="image-container" style="position: relative; display: inline-block;"><img alt="Avatar Quick Strike" src="https://github.com/zolodio/Avatar-TCG-Database/blob/main/SMLOGO.png?raw=true" style="width: 33%; height: auto;"> 
-
+<div class="image-container" style="position: relative; display: inline-block;"><img alt="Avatar Quick Strike" src="https://github.com/zolodio/Avatar-TCG-Database/blob/main/SMLOGO.png?raw=true" style="width: 33%; height: auto; filter: outline(0 0 8px white);" ></p>
 <div class="image-container" style="position: relative; display: inline-block;"><img alt="Avatar Quick Strike" src="https://github.com/zolodio/Avatar-TCG-Database/blob/main/LGLOGO.png?raw=true" style="width: 33%; height: auto; filter: drop-shadow(0 0 8px white);" ></div>
 
 </div>
+</header>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4B61B0X3V0"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4B61B0X3V0');
+</script>
 <div class="stats-bar">
 <div class="stat-box">
 <div class="stat-value" id="statOwned">0</div>
@@ -1430,7 +1439,7 @@ body {
 <div class="search-row">
 <div class="search-box"><input class="search-input" id="searchInput" placeholder="Search cards..." type="text" ></div>
 
-<div class="view-toggle"><button class="view-btn active" data-view="grid" title="Grid view"></button><button class="view-btn" data-view="list" title="List view"></button></div>
+<div class="view-toggle"><button class="view-btn active" data-view="grid" title="Grid view"><i class="fas fa-th"></i></button><button class="view-btn" data-view="list" title="List view"><i class="fas fa-list"></i></button></div>
 </div>
 
 <div class="filter-row" id="filterRow"></div>
@@ -1555,7 +1564,7 @@ body {
 <div class="toast" id="toast"></div>
 <!-- SCROLL TO TOP -->
 
-<button class="scroll-top-btn" id="scrollTopBtn"></button>
+<button class="scroll-top-btn" id="scrollTopBtn"><i class="fas fa-chevron-up"></i></button>
 
 <script>
 var CSV_URL = "https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/refs/heads/main/Avatar%20Quick%20Strike%20TCG%20Database%20GitHub.csv";
