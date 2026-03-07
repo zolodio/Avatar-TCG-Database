@@ -1391,20 +1391,11 @@ body {
 <div class="app-container">
 <header class="header">
 <div style="text-align: center;">
-<div class="image-container" style="position: relative; display: inline-block;"><img alt="Avatar Quick Strike" src="https://github.com/zolodio/Avatar-TCG-Database/blob/main/SMLOGO.png?raw=true" style="width: 33%; height: auto; filter: outline(0 0 8px white);" ></p>
+<div class="image-container" style="position: relative; display: inline-block;"><img alt="Avatar Quick Strike" src="https://github.com/zolodio/Avatar-TCG-Database/blob/main/SMLOGO.png?raw=true" style="width: 33%; height: auto;"> 
+
 <div class="image-container" style="position: relative; display: inline-block;"><img alt="Avatar Quick Strike" src="https://github.com/zolodio/Avatar-TCG-Database/blob/main/LGLOGO.png?raw=true" style="width: 33%; height: auto; filter: drop-shadow(0 0 8px white);" ></div>
 
 </div>
-</header>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-4B61B0X3V0"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-4B61B0X3V0');
-</script>
 <div class="stats-bar">
 <div class="stat-box">
 <div class="stat-value" id="statOwned">0</div>
@@ -1852,8 +1843,8 @@ function updateStats() {
   document.getElementById('progressPct').textContent = pct + '%';
   document.getElementById('progressFill').style.width = pct + '%';
 
-  var rarities = ['common', 'uncommon', 'rare', 'zenemental', 'promo', 'other'];
-  var rarityLabels = { common: 'C', uncommon: 'UC', rare: 'R', zenemental: 'ZEN', promo: 'PR', other: 'Other' };
+  var rarities = ['common', 'uncommon', 'rare', 'zenemental', 'promo'];
+  var rarityLabels = { common: 'C', uncommon: 'UC', rare: 'R', zenemental: 'ZEN', promo: 'PR' };
   var breakdown = document.getElementById('rarityBreakdown');
   var bhtml = '';
   rarities.forEach(function(r) {
