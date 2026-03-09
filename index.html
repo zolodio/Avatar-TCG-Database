@@ -73,21 +73,15 @@ html:not(.dark) {
 
 body {
   font-family: 'Nunito Sans', sans-serif;
-  background: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
   overflow-x: hidden;
-}
-
-.bg-pattern {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse 600px 400px at 10% 20%, rgba(46,140,232,0.06) 0%, transparent 70%),
-    radial-gradient(ellipse 500px 350px at 90% 80%, rgba(232,83,46,0.06) 0%, transparent 70%),
-    radial-gradient(ellipse 400px 300px at 50% 50%, rgba(180,77,223,0.04) 0%, transparent 70%);
+  background-image: url('https://github.com/zolodio/Avatar-TCG-Database/blob/main/BKGRND.png?raw=true');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* This creates the parallax effect */
+  background-position: top center; /* Center the background image */
+  background-color: #000000;
 }
 
 .app-container {
@@ -2361,7 +2355,6 @@ document.getElementById('codeInputOk').addEventListener('click', function() {
     errorEl.textContent = 'Invalid save code. Check that you pasted the full code correctly.';
     return;
   }
-
   // Valid code — apply the collection
   collection = decoded;
   saveCollection();
@@ -2371,13 +2364,11 @@ document.getElementById('codeInputOk').addEventListener('click', function() {
   closeCodeInputDialog();
   showToast('Collection restored from save code!');
 });
-
 // Save code input: Cancel
 document.getElementById('codeInputCancel').addEventListener('click', closeCodeInputDialog);
 document.getElementById('codeInputOverlay').addEventListener('click', function(e) {
   if (e.target === this) { closeCodeInputDialog(); }
 });
-
 /* ---- KEYDOWN ESCAPE HANDLING ---- */
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
@@ -2394,13 +2385,8 @@ document.addEventListener('keydown', function(e) {
     }
   }
 });
-
 /* ---- LAUNCH ---- */
 init();
 </script>
 </body>
-
 </html>
-
-
-
