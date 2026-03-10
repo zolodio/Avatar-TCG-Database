@@ -76,12 +76,27 @@ body {
   color: var(--text-primary);
   min-height: 100vh;
   overflow-x: hidden;
-  background-image: url('https://github.com/zolodio/Avatar-TCG-Database/blob/main/BKGRND.jpg?raw=true');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-attachment: fixed; /* This creates the parallax effect */
-  background-position: top center; /* Center the background image */
   background-color: #000000;
+}
+
+/* Fixed background using a real <img> element instead of background-attachment:fixed,
+   which is broken/unsupported on most mobile browsers (Android Chrome, iOS Safari, etc.) */
+.bg-fixed-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bg-fixed-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: top center;
 }
 
 .app-container {
@@ -1380,13 +1395,15 @@ body {
 	</style>
 </head>
 <body>
-<div class="bg-pattern"></div>
+<div class="bg-fixed-image">
+  <img src="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/main/BKGRND.png" alt="" loading="eager">
+</div>
 
 <div class="app-container">
 <header class="header">
 <div style="text-align: center;">
-<div class="image-container" style="position: relative; display: inline-block;"><img alt="Avatar Quick Strike" src="https://github.com/zolodio/Avatar-TCG-Database/blob/main/SMLOGO.png?raw=true" style="width: 33%; height: auto; filter: outline(0 0 8px white);" ></div>
-<div class="image-container" style="position: relative; display: inline-block;"><img alt="Avatar Quick Strike" src="https://github.com/zolodio/Avatar-TCG-Database/blob/main/LGLOGO.png?raw=true" style="width: 33%; height: auto; filter: drop-shadow(0 0 8px white);" ></div>
+<div class="image-container" style="position: relative; display: inline-block;"><img alt="Avatar Quick Strike" src="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/main/SMLOGO.png" style="width: 33%; height: auto;" crossorigin="anonymous" ></div>
+<div class="image-container" style="position: relative; display: inline-block;"><img alt="Avatar Quick Strike" src="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/main/LGLOGO.png" style="width: 33%; height: auto; filter: drop-shadow(0 0 8px white);" crossorigin="anonymous" ></div>
 
 </div>
 </header>
@@ -2355,6 +2372,7 @@ document.getElementById('codeInputOk').addEventListener('click', function() {
     errorEl.textContent = 'Invalid save code. Check that you pasted the full code correctly.';
     return;
   }
+
   // Valid code — apply the collection
   collection = decoded;
   saveCollection();
@@ -2364,11 +2382,13 @@ document.getElementById('codeInputOk').addEventListener('click', function() {
   closeCodeInputDialog();
   showToast('Collection restored from save code!');
 });
+
 // Save code input: Cancel
 document.getElementById('codeInputCancel').addEventListener('click', closeCodeInputDialog);
 document.getElementById('codeInputOverlay').addEventListener('click', function(e) {
   if (e.target === this) { closeCodeInputDialog(); }
 });
+
 /* ---- KEYDOWN ESCAPE HANDLING ---- */
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
@@ -2385,9 +2405,9 @@ document.addEventListener('keydown', function(e) {
     }
   }
 });
+
 /* ---- LAUNCH ---- */
 init();
 </script>
 </body>
 </html>
-
