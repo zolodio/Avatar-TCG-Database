@@ -155,7 +155,8 @@ body {
   font-family: 'Cinzel', serif;
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--accent);
+  color: white;
+  filter: drop-shadow(0 0 8px var(--zen));
 }
 
 .stat-label {
@@ -193,7 +194,8 @@ body {
   font-family: 'Cinzel', serif;
   font-weight: 700;
   font-size: 0.95rem;
-  color: var(--accent);
+  color: white;
+  filter: drop-shadow(0 0 8px var(--zen));
 }
 
 .progress-track {
@@ -318,7 +320,7 @@ body {
 }
 
 .view-btn.active {
-  color: var(--accent);
+  color: var(--zen);
   background: rgba(74,125,255,0.1);
 }
 
@@ -351,9 +353,9 @@ body {
 
 .filter-pill:hover { border-color: var(--border-light); }
 .filter-pill.active {
-  background: var(--accent);
+  background: var(--zen);
   color: #fff;
-  border-color: var(--accent);
+  border-color: white;
 }
 
 .filter-pill.owned-filter.active {
@@ -429,7 +431,8 @@ body {
   grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
   gap: 12px;
   animation: fadeUp 0.4s ease;
-}
+
+ }
 
 .card-grid.list-view {
   grid-template-columns: 1fr;
@@ -450,17 +453,20 @@ body {
   cursor: pointer;
   transition: all 0.25s;
   position: relative;
+
 }
 
 .card-item:hover {
   border-color: var(--border-light);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
+  filter: drop-shadow(0 0 7px var(--zen))
 }
 
 .card-item.owned {
   border-color: rgba(61,184,108,0.3);
   background: linear-gradient(135deg, var(--bg-card) 80%, var(--owned-overlay));
+  filter: drop-shadow(0 0 7px var(--rarity-color, var(--text-secondary)));
 }
 
 .card-img-wrap {
@@ -902,7 +908,7 @@ body {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--zen);
   color: #fff;
   border: none;
   cursor: pointer;
@@ -916,7 +922,10 @@ body {
 }
 
 .scroll-top-btn.show { display: flex; }
-.scroll-top-btn:hover { transform: scale(1.08); }
+.scroll-top-btn:hover { transform: scale(1.08);
+filter: drop-shadow(0 0 6px var(--zen));
+    
+}
 
 /* CONFIRM DIALOG */
 .confirm-overlay {
@@ -1587,6 +1596,15 @@ var currentModalCard = null;
 var confirmCallback = null;
 var importMethod = "csv"; // 'csv' or 'code'
 
+/* ---- RARITY TO CSS COLOR MAP ---- */
+var rarityColorMap = {
+  common: 'var(--text-secondary)',
+  uncommon: 'var(--earth)',
+  rare: 'var(--water)',
+  zenemental: 'var(--zen)',
+  promo: 'var(--promo)'
+};
+
 /* ---- DARK MODE ---- */
 if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
   document.documentElement.classList.add('dark');
@@ -1953,8 +1971,9 @@ function renderCards() {
     var isOwned = qty > 0;
     var rarityClass = 'dot-' + c.rarity;
     var imgUrl = c.imageLink;
+    var rarityColor = rarityColorMap[c.rarity] || 'var(--text-secondary)';
 
-    html += '<div class="card-item' + (isOwned ? ' owned' : '') + '" data-number="' + c.number + '">';
+    html += '<div class="card-item' + (isOwned ? ' owned' : '') + '" data-number="' + c.number + '" style="--rarity-color:' + rarityColor + '">';
     html += '<span class="list-card-number">#' + c.number + '</span>';
     html += '<div class="card-img-wrap">';
     html += '<img src="' + imgUrl + '" alt="' + escapeHtml(c.name) + '" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">';
