@@ -244,32 +244,32 @@ ABK007,Water Whirl,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk00
 ABK008,Boulder Roll,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk008.jpg,strike,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
 APR001,Appa's Wild Ride,https://github.com/zolodio/Avatar-TCG-Database/raw/main/apr001.jpg,advantage,PROMO,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
 APR002,Sokka's Mettle,https://github.com/zolodio/Avatar-TCG-Database/raw/main/apr002.jpg,strike,PROMO,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-FPR001,Air Cannon Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr001.jpg,chamber,PROMO,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-FPR002,Fire Blast Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr002.jpg,chamber,PROMO,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-FPR003,Ice Attack Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr003.jpg,chamber,PROMO,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-XAPR001,Appa's Wild Ride in Plastic,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XAPR001.jpg,sealed,other,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-XAPR002,Sokka's Mettle in Plastic,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XAPR002.jpg,sealed,other,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-XBK001,Stack Attack Toph,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK001.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-XBK002,Lava Launch Azula,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK002.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-XBK003,Air Scooter Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK003.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-XBK004,Rip 'n Whirl Sokka,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK004.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-XBK005,Master Airbender,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK005.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-XBK006,Flame Tame Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK006.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-XBK007,Water Swirl Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK007.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-XBK008,Boulder Roll,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK008.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+FPR001,Air Cannon Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr001.jpg,chamber,PROMO,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr001b.jpg
+FPR002,Fire Blast Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr002.jpg,chamber,PROMO,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr002b.jpg
+FPR003,Ice Attack Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr003.jpg,chamber,PROMO,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr003b.jpg
+XAPR001,Appa's Wild Ride in Plastic,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XAPR001.jpg,sealed,other,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/APR00Xb.jpg
+XAPR002,Sokka's Mettle in Plastic,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XAPR002.jpg,sealed,other,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/APR00Xb.jpg
+XBK001,Stack Attack Toph,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK001.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg
+XBK002,Lava Launch Azula,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK002.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg
+XBK003,Air Scooter Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK003.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg
+XBK004,Rip 'n Whirl Sokka,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK004.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg
+XBK005,Master Airbender,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK005.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg
+XBK006,Flame Tame Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK006.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg
+XBK007,Water Swirl Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK007.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg
+XBK008,Boulder Roll,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK008.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg
 XDVD001,DVD - Book 1 Volume 1,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XDVD001.jpg,sealed,other,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
 XDVD002,DVD - Book 1 Volume 2,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XDVD002.jpg,sealed,other,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-K3474,Ice Attack Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/K3474.jpg,sealed,other,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-H9748,Air Cannon Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/H9748.jpg,sealed,other,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-X1234,Fire Blast Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/X1234.jpg,sealed,other,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-STRT001,Sealed Starter Set,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT001.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-BSTR001,Foil Booster Pack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR001.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-BSTR002,Blister Pack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR002.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-BSTR003,Booster Box,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR003.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+K3474,Ice Attack Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/K3474.jpg,sealed,other,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/K3474b.jpg
+H9748,Air Cannon Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/H9748.jpg,sealed,other,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/H9748b.jpg
+X1234,Fire Blast Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/X1234.jpg,sealed,other,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/X1234b.jpg
+STRT001,Sealed Starter Set,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT001.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT001b.jpg
+BSTR001,Foil Booster Pack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR001.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR001b.jpg
+BSTR002,Blister Pack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR002.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR002b.jpg
+BSTR003,Booster Box,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR003.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR003b.jpg
 RLBK001,Official Rulebook,https://github.com/zolodio/Avatar-TCG-Database/raw/main/RLBK001.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-PLMT001,Paper PlayMat,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT001.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-PLMT002,Fabric PlayMat,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT002.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-MTBX001,Empty Starter Box,https://github.com/zolodio/Avatar-TCG-Database/raw/main/MTBX001.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-PSTR001,Be The Avatar Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR001.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-PSTR002,Experience The Legend Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR002.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
-PSTR003,Master The Elements Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR003.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+PLMT001,Paper PlayMat,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT001.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT001b.jpg
+PLMT002,Fabric PlayMat,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT002.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT002b.jpg
+MTBX001,Empty Starter Box,https://github.com/zolodio/Avatar-TCG-Database/raw/main/MTBX001.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/MTBX001b.jpg
+PSTR001,Be The Avatar Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR001.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR001b.jpg
+PSTR002,Experience The Legend Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR002.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR002b.jpg
+PSTR003,Master The Elements Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR003.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR003b.jpg
