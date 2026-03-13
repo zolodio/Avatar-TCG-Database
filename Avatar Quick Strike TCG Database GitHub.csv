@@ -261,15 +261,15 @@ XDVD001,DVD - Book 1 Volume 1,https://github.com/zolodio/Avatar-TCG-Database/raw
 XDVD002,DVD - Book 1 Volume 2,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XDVD002.jpg,sealed,other,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XDVD002b.jpg,holographic,plastic film
 K3474,Ice Attack Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/K3474.jpg,sealed,other,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/K3474b.jpg,plastic film,plastic film
 H9748,Air Cannon Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/H9748.jpg,sealed,other,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/H9748b.jpg,plastic film,plastic film
-X1234,Fire Blast Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/X1234.jpg,sealed,other,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/X1234b.jpg,plastic film,plastic film
+X1234,Fire Blast Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/L1234.jpg,sealed,other,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/L1234.jpg,plastic film,plastic film
 STRT001,Sealed Starter Set,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT001.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT001b.jpg,plastic film,plastic film
 BSTR001,Foil Booster Pack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR001.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR001b.jpg,metal foil,metal foil
 BSTR002,Blister Pack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR002.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR002b.jpg,semi-gloss,cardboard
 BSTR003,Booster Box,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR003.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR003b.jpg,plastic film,plastic film
-RLBK001,Official Rulebook,https://github.com/zolodio/Avatar-TCG-Database/raw/main/RLBK001.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/RLBK001b.jpg,semi-gloss,semi-gloss
-PLMT001,Paper PlayMat,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT001.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT001b.jpg,semi-gloss,semi-gloss
-PLMT002,Fabric PlayMat,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT002.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT002b.jpg,fabric,rubber
-MTBX001,Empty Starter Box,https://github.com/zolodio/Avatar-TCG-Database/raw/main/MTBX001.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/MTBX001b.jpg,matte,glossy
-PSTR001,Be The Avatar Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR001.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR00Xb.jpg,semi-gloss,semi-gloss
-PSTR002,Experience The Legend Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR002.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR00Xb.jpg,semi-gloss,semi-gloss
-PSTR003,Master The Elements Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR003.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR00Xb.jpg,semi-gloss,semi-gloss
+RLBK001,Official Rulebook,https://github.com/zolodio/Avatar-TCG-Database/raw/main/RLBK001.jpg,other,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/RLBK001b.jpg,semi-gloss,semi-gloss
+PLMT001,Paper PlayMat,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT001.jpg,other,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT001b.jpg,semi-gloss,semi-gloss
+PLMT002,Fabric PlayMat,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT002.jpg,other,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT002b.jpg,fabric,rubber
+MTBX001,Empty Starter Box,https://github.com/zolodio/Avatar-TCG-Database/raw/main/MTBX001.jpg,other,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/MTBX001b.jpg,matte,glossy
+PSTR001,Be The Avatar Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR001.jpg,other,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR00Xb.jpg,semi-gloss,semi-gloss
+PSTR002,Experience The Legend Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR002.jpg,other,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR00Xb.jpg,semi-gloss,semi-gloss
+PSTR003,Master The Elements Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR003.jpg,other,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR00Xb.jpg,semi-gloss,semi-gloss
