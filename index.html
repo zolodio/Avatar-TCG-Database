@@ -2114,7 +2114,7 @@ function renderCards() {
     if (qty > 1) { html += '<span class="card-qty-badge">x' + qty + '</span>'; }
 
     // Flip button
-    html += '<button class="card-flip-btn" data-flip-target="' + c.number + '" title="Flip card"><i class="fas fa-rotate"></i></button>';
+    html += '<button class="card-flip-btn" data-flip-target="' + c.number + '" title="Flip View"><i class="fas fa-rotate"></i></button>';
 
     html += '</div>'; // .card-img-wrap
 
@@ -2184,7 +2184,7 @@ function openModal(cardNumber) {
   imgHtml += '</div>'; // .modal-flip-container
 
   // Flip button
-  imgHtml += '<button class="modal-flip-btn" id="modalFlipBtn"><i class="fas fa-rotate"></i> Flip Card</button>';
+  imgHtml += '<button class="modal-flip-btn" id="modalFlipBtn"><i class="fas fa-rotate"></i> Flip View</button>';
 
   imgSection.innerHTML = imgHtml;
 
@@ -2200,7 +2200,7 @@ function openModal(cardNumber) {
     } else {
       inner.classList.remove('flipped');
       btn.classList.remove('is-flipped');
-      btn.innerHTML = '<i class="fas fa-rotate"></i> Flip Card';
+      btn.innerHTML = '<i class="fas fa-rotate"></i> Flip View';
     }
   });
 
