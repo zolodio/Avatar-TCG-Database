@@ -1,275 +1,275 @@
-Number,Name,Image Link,Type,Rarity
-1,Blazing Axe Kick,https://github.com/zolodio/Avatar-TCG-Database/raw/main/1.jpg,strike,common
-2,Boiling Point,https://github.com/zolodio/Avatar-TCG-Database/raw/main/2.jpg,strike,common
-3,Burning Blade,https://github.com/zolodio/Avatar-TCG-Database/raw/main/3.jpg,strike,uncommon
-4,Burning Disc,https://github.com/zolodio/Avatar-TCG-Database/raw/main/4.jpg,strike,common
-5,Burning Lash,https://github.com/zolodio/Avatar-TCG-Database/raw/main/5.jpg,strike,uncommon
-6,Doublefoot Dropkick,https://github.com/zolodio/Avatar-TCG-Database/raw/main/6.jpg,strike,common
-7,Eye of Ozai,https://github.com/zolodio/Avatar-TCG-Database/raw/main/7.jpg,strike,common
-8,Fetch!,https://github.com/zolodio/Avatar-TCG-Database/raw/main/8.jpg,strike,common
-9,Flare,https://github.com/zolodio/Avatar-TCG-Database/raw/main/9.jpg,strike,common
-10,Flying Fire Fist,https://github.com/zolodio/Avatar-TCG-Database/raw/main/10.jpg,strike,rare
-11,Gout of Flame,https://github.com/zolodio/Avatar-TCG-Database/raw/main/11.jpg,strike,rare
-12,Jagged Ground,https://github.com/zolodio/Avatar-TCG-Database/raw/main/12.jpg,strike,rare
-13,Quicksand,https://github.com/zolodio/Avatar-TCG-Database/raw/main/13.jpg,strike,uncommon
-14,Rock the House,https://github.com/zolodio/Avatar-TCG-Database/raw/main/14.jpg,strike,rare
-15,Scorching Phoenix,https://github.com/zolodio/Avatar-TCG-Database/raw/main/15.jpg,strike,rare
-16,Searing Cage,https://github.com/zolodio/Avatar-TCG-Database/raw/main/16.jpg,strike,uncommon
-17,Stoke the Flames,https://github.com/zolodio/Avatar-TCG-Database/raw/main/17.jpg,strike,rare
-18,Tectonic Shift,https://github.com/zolodio/Avatar-TCG-Database/raw/main/18.jpg,strike,uncommon
-19,Titanic Fireball,https://github.com/zolodio/Avatar-TCG-Database/raw/main/19.jpg,strike,rare
-20,Wildfire Arc,https://github.com/zolodio/Avatar-TCG-Database/raw/main/20.jpg,strike,rare
-21,Blast Cushion,https://github.com/zolodio/Avatar-TCG-Database/raw/main/21.jpg,strike,uncommon
-22,Breath of the Dragon,https://github.com/zolodio/Avatar-TCG-Database/raw/main/22.jpg,strike,common
-23,Canyon Sprint,https://github.com/zolodio/Avatar-TCG-Database/raw/main/23.jpg,strike,uncommon
-24,Careening Koi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/24.jpg,strike,uncommon
-25,Frost Blade,https://github.com/zolodio/Avatar-TCG-Database/raw/main/25.jpg,strike,uncommon
-26,Frost Daggers,https://github.com/zolodio/Avatar-TCG-Database/raw/main/26.jpg,strike,common
-27,Frost Spear,https://github.com/zolodio/Avatar-TCG-Database/raw/main/27.jpg,strike,uncommon
-28,Gale Force,https://github.com/zolodio/Avatar-TCG-Database/raw/main/28.jpg,strike,rare
-29,Howling Cyclone,https://github.com/zolodio/Avatar-TCG-Database/raw/main/29.jpg,strike,rare
-30,Howling Squall,https://github.com/zolodio/Avatar-TCG-Database/raw/main/30.jpg,strike,rare
-31,Howling Wind,https://github.com/zolodio/Avatar-TCG-Database/raw/main/31.jpg,strike,common
-32,Nimbus Churn,https://github.com/zolodio/Avatar-TCG-Database/raw/main/32.jpg,strike,rare
-33,Rocky Road,https://github.com/zolodio/Avatar-TCG-Database/raw/main/33.jpg,strike,rare
-34,Spinning Tempest,https://github.com/zolodio/Avatar-TCG-Database/raw/main/34.jpg,strike,rare
-35,Swirling Flames,https://github.com/zolodio/Avatar-TCG-Database/raw/main/35.jpg,strike,common
-36,Teeth of the Dragon,https://github.com/zolodio/Avatar-TCG-Database/raw/main/36.jpg,strike,common
-37,Terra Break,https://github.com/zolodio/Avatar-TCG-Database/raw/main/37.jpg,strike,rare
-38,Tongue of the Dragon,https://github.com/zolodio/Avatar-TCG-Database/raw/main/38.jpg,strike,common
-39,Water Lasso,https://github.com/zolodio/Avatar-TCG-Database/raw/main/39.jpg,strike,rare
-40,Wind on the Waves,https://github.com/zolodio/Avatar-TCG-Database/raw/main/40.jpg,strike,common
-41,Bitter Butter,https://github.com/zolodio/Avatar-TCG-Database/raw/main/41.jpg,strike,common
-42,Blowback,https://github.com/zolodio/Avatar-TCG-Database/raw/main/42.jpg,strike,rare
-43,Creeping Crystal,https://github.com/zolodio/Avatar-TCG-Database/raw/main/43.jpg,strike,rare
-44,Dancing Mists,https://github.com/zolodio/Avatar-TCG-Database/raw/main/44.jpg,strike,common
-45,Double Crest,https://github.com/zolodio/Avatar-TCG-Database/raw/main/45.jpg,strike,common
-46,Hurricane Vault,https://github.com/zolodio/Avatar-TCG-Database/raw/main/46.jpg,strike,uncommon
-47,Just Desserts,https://github.com/zolodio/Avatar-TCG-Database/raw/main/47.jpg,strike,common
-48,Million Gallon Attack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/48.jpg,strike,rare
-49,Mischievous Downpour,https://github.com/zolodio/Avatar-TCG-Database/raw/main/49.jpg,strike,uncommon
-50,Sea Sphere,https://github.com/zolodio/Avatar-TCG-Database/raw/main/50.jpg,strike,rare
-51,Snowball Smash,https://github.com/zolodio/Avatar-TCG-Database/raw/main/51.jpg,strike,common
-52,Stifling Breeze,https://github.com/zolodio/Avatar-TCG-Database/raw/main/52.jpg,strike,uncommon
-53,Stifling Wind,https://github.com/zolodio/Avatar-TCG-Database/raw/main/53.jpg,strike,common
-54,Surf Spray,https://github.com/zolodio/Avatar-TCG-Database/raw/main/54.jpg,strike,rare
-55,Sweet Revenge,https://github.com/zolodio/Avatar-TCG-Database/raw/main/55.jpg,strike,uncommon
-56,Tandem Attack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/56.jpg,strike,rare
-57,Wall of Water,https://github.com/zolodio/Avatar-TCG-Database/raw/main/57.jpg,strike,rare
-58,Whirling Debris,https://github.com/zolodio/Avatar-TCG-Database/raw/main/58.jpg,strike,rare
-59,Windmill Barrier,https://github.com/zolodio/Avatar-TCG-Database/raw/main/59.jpg,strike,common
-60,Windmill Dome,https://github.com/zolodio/Avatar-TCG-Database/raw/main/60.jpg,strike,uncommon
-61,Bell Ringer,https://github.com/zolodio/Avatar-TCG-Database/raw/main/61.jpg,strike,uncommon
-62,Boomerang Toss,https://github.com/zolodio/Avatar-TCG-Database/raw/main/62.jpg,strike,uncommon
-63,Canyon Crawler Clash,https://github.com/zolodio/Avatar-TCG-Database/raw/main/63.jpg,strike,common
-64,Coal Rake,https://github.com/zolodio/Avatar-TCG-Database/raw/main/64.jpg,strike,uncommon
-65,Downdraft,https://github.com/zolodio/Avatar-TCG-Database/raw/main/65.jpg,strike,common
-66,Earthbound,https://github.com/zolodio/Avatar-TCG-Database/raw/main/66.jpg,strike,common
-67,Earthbridge,https://github.com/zolodio/Avatar-TCG-Database/raw/main/67.jpg,strike,uncommon
-68,Evade,https://github.com/zolodio/Avatar-TCG-Database/raw/main/68.jpg,strike,common
-69,Falling Leaf Ambush,https://github.com/zolodio/Avatar-TCG-Database/raw/main/69.jpg,strike,rare
-70,Knuckle Sandwich,https://github.com/zolodio/Avatar-TCG-Database/raw/main/70.jpg,strike,common
-71,Kyoshi Backhand,https://github.com/zolodio/Avatar-TCG-Database/raw/main/71.jpg,strike,uncommon
-72,Kyoshi Fan Parry,https://github.com/zolodio/Avatar-TCG-Database/raw/main/72.jpg,strike,common
-73,Kyoshi Fan Throw,https://github.com/zolodio/Avatar-TCG-Database/raw/main/73.jpg,strike,uncommon
-74,Kyoshi Pride,https://github.com/zolodio/Avatar-TCG-Database/raw/main/74.jpg,strike,common
-75,Pummel,https://github.com/zolodio/Avatar-TCG-Database/raw/main/75.jpg,strike,common
-76,Seize the Moment,https://github.com/zolodio/Avatar-TCG-Database/raw/main/76.jpg,strike,common
-77,Skewer,https://github.com/zolodio/Avatar-TCG-Database/raw/main/77.jpg,strike,common
-78,Snapped Off,https://github.com/zolodio/Avatar-TCG-Database/raw/main/78.jpg,strike,common
-79,Tremor Trail,https://github.com/zolodio/Avatar-TCG-Database/raw/main/79.jpg,strike,uncommon
-80,Will of the Warrior,https://github.com/zolodio/Avatar-TCG-Database/raw/main/80.jpg,strike,uncommon
-81,Churning Stomachs,https://github.com/zolodio/Avatar-TCG-Database/raw/main/81.jpg,advantage,uncommon
-82,Crystal Rampart,https://github.com/zolodio/Avatar-TCG-Database/raw/main/82.jpg,advantage,rare
-83,Dive for Cover,https://github.com/zolodio/Avatar-TCG-Database/raw/main/83.jpg,advantage,uncommon
-84,Flopsie Flop,https://github.com/zolodio/Avatar-TCG-Database/raw/main/84.jpg,advantage,rare
-85,Immobilize,https://github.com/zolodio/Avatar-TCG-Database/raw/main/85.jpg,advantage,rare
-86,Misdirection,https://github.com/zolodio/Avatar-TCG-Database/raw/main/86.jpg,advantage,common
-87,Riding the Crest,https://github.com/zolodio/Avatar-TCG-Database/raw/main/87.jpg,advantage,common
-88,Stand Firm,https://github.com/zolodio/Avatar-TCG-Database/raw/main/88.jpg,advantage,rare
-89,Take the High Ground,https://github.com/zolodio/Avatar-TCG-Database/raw/main/89.jpg,advantage,uncommon
-90,Ward Off,https://github.com/zolodio/Avatar-TCG-Database/raw/main/90.jpg,advantage,common
-91,Charisma,https://github.com/zolodio/Avatar-TCG-Database/raw/main/91.jpg,advantage,rare
-92,Contemplate,https://github.com/zolodio/Avatar-TCG-Database/raw/main/92.jpg,advantage,common
-93,Incinerate,https://github.com/zolodio/Avatar-TCG-Database/raw/main/93.jpg,advantage,common
-94,Meditate,https://github.com/zolodio/Avatar-TCG-Database/raw/main/94.jpg,advantage,rare
-95,Pai Sho Mastery,https://github.com/zolodio/Avatar-TCG-Database/raw/main/95.jpg,advantage,rare
-96,Run the Blockade,https://github.com/zolodio/Avatar-TCG-Database/raw/main/96.jpg,advantage,uncommon
-97,Sculpted Flame,https://github.com/zolodio/Avatar-TCG-Database/raw/main/97.jpg,advantage,uncommon
-98,Training Scroll,https://github.com/zolodio/Avatar-TCG-Database/raw/main/98.jpg,advantage,common
-99,Water Kata,https://github.com/zolodio/Avatar-TCG-Database/raw/main/99.jpg,advantage,uncommon
-100,Yip Yip!,https://github.com/zolodio/Avatar-TCG-Database/raw/main/100.jpg,advantage,rare
-101,Bad Breath,https://github.com/zolodio/Avatar-TCG-Database/raw/main/101.jpg,advantage,rare
-102,Channel the Winds,https://github.com/zolodio/Avatar-TCG-Database/raw/main/102.jpg,advantage,rare
-103,Dust Storm,https://github.com/zolodio/Avatar-TCG-Database/raw/main/103.jpg,advantage,common
-104,Expendable Troops,https://github.com/zolodio/Avatar-TCG-Database/raw/main/104.jpg,advantage,uncommon
-105,Fiery Temper,https://github.com/zolodio/Avatar-TCG-Database/raw/main/105.jpg,advantage,common
-106,Flying Staff Technique,https://github.com/zolodio/Avatar-TCG-Database/raw/main/106.jpg,advantage,uncommon
-107,Glorious Feast,https://github.com/zolodio/Avatar-TCG-Database/raw/main/107.jpg,advantage,rare
-108,Head Over Heels,https://github.com/zolodio/Avatar-TCG-Database/raw/main/108.jpg,advantage,uncommon
-109,Highway Robbery,https://github.com/zolodio/Avatar-TCG-Database/raw/main/109.jpg,advantage,common
-110,Volcanic Fountain,https://github.com/zolodio/Avatar-TCG-Database/raw/main/110.jpg,advantage,rare
-111,Bonzu Pippinpaddle-Oppsokopolis III,https://github.com/zolodio/Avatar-TCG-Database/raw/main/111.jpg,advantage,uncommon
-112,Caution to the Wind,https://github.com/zolodio/Avatar-TCG-Database/raw/main/112.jpg,advantage,common
-113,Closed-Hand Form,https://github.com/zolodio/Avatar-TCG-Database/raw/main/113.jpg,advantage,common
-114,Lifesaver,https://github.com/zolodio/Avatar-TCG-Database/raw/main/114.jpg,advantage,uncommon
-115,Open-Hand Form,https://github.com/zolodio/Avatar-TCG-Database/raw/main/115.jpg,advantage,common
-116,Roku's Guidance,https://github.com/zolodio/Avatar-TCG-Database/raw/main/116.jpg,advantage,common
-117,Sustenance,https://github.com/zolodio/Avatar-TCG-Database/raw/main/117.jpg,advantage,common
-118,Take Them Away,https://github.com/zolodio/Avatar-TCG-Database/raw/main/118.jpg,advantage,common
-119,"Aang, the last airbender",https://github.com/zolodio/Avatar-TCG-Database/raw/main/119.jpg,ally,uncommon
-120,"Appa, flying bison",https://github.com/zolodio/Avatar-TCG-Database/raw/main/120.jpg,ally,rare
-121,"Katara, waterbender in training",https://github.com/zolodio/Avatar-TCG-Database/raw/main/121.jpg,ally,rare
-122,"King Bumi, rudder of Omashu",https://github.com/zolodio/Avatar-TCG-Database/raw/main/122.jpg,ally,uncommon
-123,"Momo, hungry lemur",https://github.com/zolodio/Avatar-TCG-Database/raw/main/123.jpg,ally,common
-124,"Monk Gyatso, Aang's mentor",https://github.com/zolodio/Avatar-TCG-Database/raw/main/124.jpg,ally,common
-125,"Jet, ruthless rebel",https://github.com/zolodio/Avatar-TCG-Database/raw/main/125.jpg,ally,uncommon
-126,"Jojo, the kissing bandit",https://github.com/zolodio/Avatar-TCG-Database/raw/main/126.jpg,ally,rare
-127,"Malu, a reclusive orphan",https://github.com/zolodio/Avatar-TCG-Database/raw/main/127.jpg,ally,uncommon
-128,"Pirate Captain, shady trader",https://github.com/zolodio/Avatar-TCG-Database/raw/main/128.jpg,ally,common
-129,"Prince Zuko, exile",https://github.com/zolodio/Avatar-TCG-Database/raw/main/129.jpg,ally,common
-130,"Uncle Iroh, Zuko's mentor",https://github.com/zolodio/Avatar-TCG-Database/raw/main/130.jpg,ally,rare
-131,"Afiko, bringer of ill winds",https://github.com/zolodio/Avatar-TCG-Database/raw/main/131.jpg,ally,rare
-132,"Commander Zhao, ambitious leader",https://github.com/zolodio/Avatar-TCG-Database/raw/main/132.jpg,ally,uncommon
-133,"Fire Nation Elite, hardened troops",https://github.com/zolodio/Avatar-TCG-Database/raw/main/133.jpg,ally,uncommon
-134,"Kinto, cruel trickster",https://github.com/zolodio/Avatar-TCG-Database/raw/main/134.jpg,ally,rare
-135,"Prison Warden, breaker of spirits",https://github.com/zolodio/Avatar-TCG-Database/raw/main/135.jpg,ally,common
-136,"Zhao's Guard, loyal firebenders",https://github.com/zolodio/Avatar-TCG-Database/raw/main/136.jpg,ally,common
-137,"Cabbage Merchant, unfortunate bystander",https://github.com/zolodio/Avatar-TCG-Database/raw/main/137.jpg,ally,uncommon
-138,"Canyon Guide, pathfinder",https://github.com/zolodio/Avatar-TCG-Database/raw/main/138.jpg,ally,uncommon
-139,"Gan Jin Tribe, children of Jin Wei",https://github.com/zolodio/Avatar-TCG-Database/raw/main/139.jpg,ally,common
-140,"Herbalist, mad hermit",https://github.com/zolodio/Avatar-TCG-Database/raw/main/140.jpg,ally,uncommon
-141,"Zhang Tribe, children of Wei Jin",https://github.com/zolodio/Avatar-TCG-Database/raw/main/141.jpg,ally,common
-142,Air Scooter,https://github.com/zolodio/Avatar-TCG-Database/raw/main/142.jpg,strike,rare
-143,Chi Absorption,https://github.com/zolodio/Avatar-TCG-Database/raw/main/143.jpg,strike,uncommon
-144,Dust Funnels,https://github.com/zolodio/Avatar-TCG-Database/raw/main/144.jpg,strike,rare
-145,Graceful Leap,https://github.com/zolodio/Avatar-TCG-Database/raw/main/145.jpg,strike,uncommon
-146,Open-Palm Pushback,https://github.com/zolodio/Avatar-TCG-Database/raw/main/146.jpg,strike,rare
-147,Zoom!,https://github.com/zolodio/Avatar-TCG-Database/raw/main/147.jpg,strike,uncommon
-148,Boulder Smash,https://github.com/zolodio/Avatar-TCG-Database/raw/main/148.jpg,strike,rare
-149,Choking Sand,https://github.com/zolodio/Avatar-TCG-Database/raw/main/149.jpg,strike,uncommon
-150,Granite Block,https://github.com/zolodio/Avatar-TCG-Database/raw/main/150.jpg,strike,uncommon
-151,Ground Breaker,https://github.com/zolodio/Avatar-TCG-Database/raw/main/151.jpg,strike,rare
-152,Quarry Crush,https://github.com/zolodio/Avatar-TCG-Database/raw/main/152.jpg,strike,rare
-153,Seismic Spring,https://github.com/zolodio/Avatar-TCG-Database/raw/main/153.jpg,strike,uncommon
-154,Corona Punch,https://github.com/zolodio/Avatar-TCG-Database/raw/main/154.jpg,strike,rare
-155,Ember Shot,https://github.com/zolodio/Avatar-TCG-Database/raw/main/155.jpg,strike,rare
-156,Fire Sweep,https://github.com/zolodio/Avatar-TCG-Database/raw/main/156.jpg,strike,uncommon
-157,Kindle,https://github.com/zolodio/Avatar-TCG-Database/raw/main/157.jpg,strike,uncommon
-158,Twin Fire Daggers,https://github.com/zolodio/Avatar-TCG-Database/raw/main/158.jpg,strike,uncommon
-159,Warship Barrage,https://github.com/zolodio/Avatar-TCG-Database/raw/main/159.jpg,strike,rare
-160,Bubble Burst,https://github.com/zolodio/Avatar-TCG-Database/raw/main/160.jpg,strike,uncommon
-161,Clutches of the Deep,https://github.com/zolodio/Avatar-TCG-Database/raw/main/161.jpg,strike,rare
-162,Flash Flood,https://github.com/zolodio/Avatar-TCG-Database/raw/main/162.jpg,strike,rare
-163,Ice Blooms,https://github.com/zolodio/Avatar-TCG-Database/raw/main/163.jpg,strike,uncommon
-164,Single Water Whip,https://github.com/zolodio/Avatar-TCG-Database/raw/main/164.jpg,strike,uncommon
-165,Tidal Wave,https://github.com/zolodio/Avatar-TCG-Database/raw/main/165.jpg,strike,rare
-166,The Avatar Awakens,https://github.com/zolodio/Avatar-TCG-Database/raw/main/166.jpg,strike,Zenemental
-167,"Sokka, big brother",https://github.com/zolodio/Avatar-TCG-Database/raw/main/167.jpg,ally,Zenemental
-168,"Flopsie, Bumi's pet",https://github.com/zolodio/Avatar-TCG-Database/raw/main/168.jpg,ally,Zenemental
-169,The Kissing Bandit,https://github.com/zolodio/Avatar-TCG-Database/raw/main/169.jpg,advantage,Zenemental
-170,Strata Breaker,https://github.com/zolodio/Avatar-TCG-Database/raw/main/170.jpg,strike,Zenemental
-171,Tail of the Comet,https://github.com/zolodio/Avatar-TCG-Database/raw/main/171.jpg,strike,Zenemental
-172,Shocking Revelation,https://github.com/zolodio/Avatar-TCG-Database/raw/main/172.jpg,strike,Zenemental
-173,Hollow Soul Hurricane,https://github.com/zolodio/Avatar-TCG-Database/raw/main/173.jpg,strike,Zenemental
-174,Maw of the Inferno,https://github.com/zolodio/Avatar-TCG-Database/raw/main/174.jpg,strike,Zenemental
-175,Aquatic Tendrils,https://github.com/zolodio/Avatar-TCG-Database/raw/main/175.jpg,advantage,Zenemental
-176,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/176.jpg,chamber,common
-177,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/177.jpg,chamber,common
-178,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/178.jpg,chamber,uncommon
-179,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/179.jpg,chamber,common
-180,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/180.jpg,chamber,uncommon
-181,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/181.jpg,chamber,rare
-182,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/182.jpg,chamber,common
-183,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/183.jpg,chamber,common
-184,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/184.jpg,chamber,uncommon
-185,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/185.jpg,chamber,common
-186,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/186.jpg,chamber,uncommon
-187,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/187.jpg,chamber,rare
-188,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/188.jpg,chamber,common
-189,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/189.jpg,chamber,common
-190,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/190.jpg,chamber,uncommon
-191,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/191.jpg,chamber,common
-192,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/192.jpg,chamber,uncommon
-193,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/193.jpg,chamber,rare
-194,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/194.jpg,chamber,common
-195,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/195.jpg,chamber,common
-196,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/196.jpg,chamber,uncommon
-197,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/197.jpg,chamber,common
-198,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/198.jpg,chamber,uncommon
-199,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/199.jpg,chamber,rare
-200,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/200.jpg,chamber,common
-201,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/201.jpg,chamber,common
-202,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/202.jpg,chamber,uncommon
-203,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/203.jpg,chamber,common
-204,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/204.jpg,chamber,uncommon
-205,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/205.jpg,chamber,rare
-206,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/206.jpg,chamber,common
-207,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/207.jpg,chamber,common
-208,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/208.jpg,chamber,uncommon
-209,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/209.jpg,chamber,common
-210,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/210.jpg,chamber,uncommon
-211,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/211.jpg,chamber,rare
-212,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/212.jpg,chamber,common
-213,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/213.jpg,chamber,common
-214,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/214.jpg,chamber,uncommon
-215,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/215.jpg,chamber,common
-216,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/216.jpg,chamber,uncommon
-217,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/217.jpg,chamber,rare
-218,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/218.jpg,chamber,common
-219,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/219.jpg,chamber,common
-220,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/220.jpg,chamber,uncommon
-221,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/221.jpg,chamber,common
-222,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/222.jpg,chamber,uncommon
-223,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/223.jpg,chamber,rare
-224,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/224.jpg,chamber,common
-225,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/225.jpg,chamber,common
-226,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/226.jpg,chamber,uncommon
-227,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/227.jpg,chamber,common
-228,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/228.jpg,chamber,uncommon
-229,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/229.jpg,chamber,rare
-230,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/230.jpg,chamber,common
-231,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/231.jpg,chamber,common
-232,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/232.jpg,chamber,uncommon
-233,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/233.jpg,chamber,common
-234,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/234.jpg,chamber,uncommon
-235,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/235.jpg,chamber,rare
-ABK001,"Toph, earthbender",https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk001.jpg,ally,PROMO
-ABK002,"Princess Azula, firebender",https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk002.jpg,ally,PROMO
-ABK003,Racing with the Wind,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk003.jpg,advantage,PROMO
-ABK004,In The Breach,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk004.jpg,advantage,PROMO
-ABK005,Juggle,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk005.jpg,strike,PROMO
-ABK006,Taming the Flame,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk006.jpg,strike,PROMO
-ABK007,Water Whirl,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk007.jpg,strike,PROMO
-ABK008,Boulder Roll,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk008.jpg,strike,PROMO
-APR001,Appa's Wild Ride,https://github.com/zolodio/Avatar-TCG-Database/raw/main/apr001.jpg,advantage,PROMO
-APR002,Sokka's Mettle,https://github.com/zolodio/Avatar-TCG-Database/raw/main/apr002.jpg,strike,PROMO
-FPR001,Air Cannon Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr001.jpg,chamber,PROMO
-FPR002,Fire Blast Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr002.jpg,chamber,PROMO
-FPR003,Ice Attack Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr003.jpg,chamber,PROMO
-XAPR001,Appa's Wild Ride in Plastic,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XAPR001.jpg,sealed,other
-XAPR002,Sokka's Mettle in Plastic,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XAPR002.jpg,sealed,other
-XBK001,Stack Attack Toph,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK001.jpg,sealed,other
-XBK002,Lava Launch Azula,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK002.jpg,sealed,other
-XBK003,Air Scooter Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK003.jpg,sealed,other
-XBK004,Rip 'n Whirl Sokka,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK004.jpg,sealed,other
-XBK005,Master Airbender,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK005.jpg,sealed,other
-XBK006,Flame Tame Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK006.jpg,sealed,other
-XBK007,Water Swirl Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK007.jpg,sealed,other
-XBK008,Boulder Roll,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK008.jpg,sealed,other
-XDVD001,DVD - Book 1 Volume 1,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XDVD001.jpg,sealed,other
-XDVD002,DVD - Book 1 Volume 2,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XDVD002.jpg,sealed,other
-K3474,Ice Attack Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/K3474.jpg,sealed,other
-H9748,Air Cannon Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/H9748.jpg,sealed,other
-X1234,Fire Blast Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/X1234.jpg,sealed,other
-STRT001,Sealed Starter Set,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT001.jpg,sealed,other
-BSTR001,Foil Booster Pack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR001.jpg,sealed,other
-BSTR002,Blister Pack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR002.jpg,sealed,other
-BSTR003,Booster Box,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR003.jpg,sealed,other
-RLBK001,Official Rulebook,https://github.com/zolodio/Avatar-TCG-Database/raw/main/RLBK001.jpg,other,other
-PLMT001,Paper PlayMat,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT001.jpg,other,other
-PLMT002,Fabric PlayMat,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT002.jpg,other,other
-MTBX001,Empty Starter Box,https://github.com/zolodio/Avatar-TCG-Database/raw/main/MTBX001.jpg,other,other
-PSTR001,Be The Avatar Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR001.jpg,other,other
-PSTR002,Experience The Legend Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR002.jpg,other,other
-PSTR003,Master The Elements Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR003.jpg,other,other
+Number,Name,Image Link,Type,Rarity,Set,Back Image Link
+1,Blazing Axe Kick,https://github.com/zolodio/Avatar-TCG-Database/raw/main/1.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+2,Boiling Point,https://github.com/zolodio/Avatar-TCG-Database/raw/main/2.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+3,Burning Blade,https://github.com/zolodio/Avatar-TCG-Database/raw/main/3.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+4,Burning Disc,https://github.com/zolodio/Avatar-TCG-Database/raw/main/4.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+5,Burning Lash,https://github.com/zolodio/Avatar-TCG-Database/raw/main/5.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+6,Doublefoot Dropkick,https://github.com/zolodio/Avatar-TCG-Database/raw/main/6.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+7,Eye of Ozai,https://github.com/zolodio/Avatar-TCG-Database/raw/main/7.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+8,Fetch!,https://github.com/zolodio/Avatar-TCG-Database/raw/main/8.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+9,Flare,https://github.com/zolodio/Avatar-TCG-Database/raw/main/9.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+10,Flying Fire Fist,https://github.com/zolodio/Avatar-TCG-Database/raw/main/10.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+11,Gout of Flame,https://github.com/zolodio/Avatar-TCG-Database/raw/main/11.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+12,Jagged Ground,https://github.com/zolodio/Avatar-TCG-Database/raw/main/12.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+13,Quicksand,https://github.com/zolodio/Avatar-TCG-Database/raw/main/13.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+14,Rock the House,https://github.com/zolodio/Avatar-TCG-Database/raw/main/14.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+15,Scorching Phoenix,https://github.com/zolodio/Avatar-TCG-Database/raw/main/15.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+16,Searing Cage,https://github.com/zolodio/Avatar-TCG-Database/raw/main/16.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+17,Stoke the Flames,https://github.com/zolodio/Avatar-TCG-Database/raw/main/17.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+18,Tectonic Shift,https://github.com/zolodio/Avatar-TCG-Database/raw/main/18.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+19,Titanic Fireball,https://github.com/zolodio/Avatar-TCG-Database/raw/main/19.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+20,Wildfire Arc,https://github.com/zolodio/Avatar-TCG-Database/raw/main/20.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+21,Blast Cushion,https://github.com/zolodio/Avatar-TCG-Database/raw/main/21.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+22,Breath of the Dragon,https://github.com/zolodio/Avatar-TCG-Database/raw/main/22.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+23,Canyon Sprint,https://github.com/zolodio/Avatar-TCG-Database/raw/main/23.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+24,Careening Koi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/24.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+25,Frost Blade,https://github.com/zolodio/Avatar-TCG-Database/raw/main/25.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+26,Frost Daggers,https://github.com/zolodio/Avatar-TCG-Database/raw/main/26.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+27,Frost Spear,https://github.com/zolodio/Avatar-TCG-Database/raw/main/27.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+28,Gale Force,https://github.com/zolodio/Avatar-TCG-Database/raw/main/28.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+29,Howling Cyclone,https://github.com/zolodio/Avatar-TCG-Database/raw/main/29.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+30,Howling Squall,https://github.com/zolodio/Avatar-TCG-Database/raw/main/30.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+31,Howling Wind,https://github.com/zolodio/Avatar-TCG-Database/raw/main/31.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+32,Nimbus Churn,https://github.com/zolodio/Avatar-TCG-Database/raw/main/32.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+33,Rocky Road,https://github.com/zolodio/Avatar-TCG-Database/raw/main/33.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+34,Spinning Tempest,https://github.com/zolodio/Avatar-TCG-Database/raw/main/34.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+35,Swirling Flames,https://github.com/zolodio/Avatar-TCG-Database/raw/main/35.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+36,Teeth of the Dragon,https://github.com/zolodio/Avatar-TCG-Database/raw/main/36.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+37,Terra Break,https://github.com/zolodio/Avatar-TCG-Database/raw/main/37.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+38,Tongue of the Dragon,https://github.com/zolodio/Avatar-TCG-Database/raw/main/38.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+39,Water Lasso,https://github.com/zolodio/Avatar-TCG-Database/raw/main/39.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+40,Wind on the Waves,https://github.com/zolodio/Avatar-TCG-Database/raw/main/40.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+41,Bitter Butter,https://github.com/zolodio/Avatar-TCG-Database/raw/main/41.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+42,Blowback,https://github.com/zolodio/Avatar-TCG-Database/raw/main/42.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+43,Creeping Crystal,https://github.com/zolodio/Avatar-TCG-Database/raw/main/43.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+44,Dancing Mists,https://github.com/zolodio/Avatar-TCG-Database/raw/main/44.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+45,Double Crest,https://github.com/zolodio/Avatar-TCG-Database/raw/main/45.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+46,Hurricane Vault,https://github.com/zolodio/Avatar-TCG-Database/raw/main/46.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+47,Just Desserts,https://github.com/zolodio/Avatar-TCG-Database/raw/main/47.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+48,Million Gallon Attack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/48.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+49,Mischievous Downpour,https://github.com/zolodio/Avatar-TCG-Database/raw/main/49.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+50,Sea Sphere,https://github.com/zolodio/Avatar-TCG-Database/raw/main/50.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+51,Snowball Smash,https://github.com/zolodio/Avatar-TCG-Database/raw/main/51.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+52,Stifling Breeze,https://github.com/zolodio/Avatar-TCG-Database/raw/main/52.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+53,Stifling Wind,https://github.com/zolodio/Avatar-TCG-Database/raw/main/53.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+54,Surf Spray,https://github.com/zolodio/Avatar-TCG-Database/raw/main/54.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+55,Sweet Revenge,https://github.com/zolodio/Avatar-TCG-Database/raw/main/55.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+56,Tandem Attack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/56.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+57,Wall of Water,https://github.com/zolodio/Avatar-TCG-Database/raw/main/57.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+58,Whirling Debris,https://github.com/zolodio/Avatar-TCG-Database/raw/main/58.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+59,Windmill Barrier,https://github.com/zolodio/Avatar-TCG-Database/raw/main/59.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+60,Windmill Dome,https://github.com/zolodio/Avatar-TCG-Database/raw/main/60.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+61,Bell Ringer,https://github.com/zolodio/Avatar-TCG-Database/raw/main/61.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+62,Boomerang Toss,https://github.com/zolodio/Avatar-TCG-Database/raw/main/62.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+63,Canyon Crawler Clash,https://github.com/zolodio/Avatar-TCG-Database/raw/main/63.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+64,Coal Rake,https://github.com/zolodio/Avatar-TCG-Database/raw/main/64.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+65,Downdraft,https://github.com/zolodio/Avatar-TCG-Database/raw/main/65.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+66,Earthbound,https://github.com/zolodio/Avatar-TCG-Database/raw/main/66.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+67,Earthbridge,https://github.com/zolodio/Avatar-TCG-Database/raw/main/67.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+68,Evade,https://github.com/zolodio/Avatar-TCG-Database/raw/main/68.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+69,Falling Leaf Ambush,https://github.com/zolodio/Avatar-TCG-Database/raw/main/69.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+70,Knuckle Sandwich,https://github.com/zolodio/Avatar-TCG-Database/raw/main/70.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+71,Kyoshi Backhand,https://github.com/zolodio/Avatar-TCG-Database/raw/main/71.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+72,Kyoshi Fan Parry,https://github.com/zolodio/Avatar-TCG-Database/raw/main/72.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+73,Kyoshi Fan Throw,https://github.com/zolodio/Avatar-TCG-Database/raw/main/73.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+74,Kyoshi Pride,https://github.com/zolodio/Avatar-TCG-Database/raw/main/74.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+75,Pummel,https://github.com/zolodio/Avatar-TCG-Database/raw/main/75.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+76,Seize the Moment,https://github.com/zolodio/Avatar-TCG-Database/raw/main/76.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+77,Skewer,https://github.com/zolodio/Avatar-TCG-Database/raw/main/77.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+78,Snapped Off,https://github.com/zolodio/Avatar-TCG-Database/raw/main/78.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+79,Tremor Trail,https://github.com/zolodio/Avatar-TCG-Database/raw/main/79.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+80,Will of the Warrior,https://github.com/zolodio/Avatar-TCG-Database/raw/main/80.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+81,Churning Stomachs,https://github.com/zolodio/Avatar-TCG-Database/raw/main/81.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+82,Crystal Rampart,https://github.com/zolodio/Avatar-TCG-Database/raw/main/82.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+83,Dive for Cover,https://github.com/zolodio/Avatar-TCG-Database/raw/main/83.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+84,Flopsie Flop,https://github.com/zolodio/Avatar-TCG-Database/raw/main/84.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+85,Immobilize,https://github.com/zolodio/Avatar-TCG-Database/raw/main/85.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+86,Misdirection,https://github.com/zolodio/Avatar-TCG-Database/raw/main/86.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+87,Riding the Crest,https://github.com/zolodio/Avatar-TCG-Database/raw/main/87.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+88,Stand Firm,https://github.com/zolodio/Avatar-TCG-Database/raw/main/88.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+89,Take the High Ground,https://github.com/zolodio/Avatar-TCG-Database/raw/main/89.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+90,Ward Off,https://github.com/zolodio/Avatar-TCG-Database/raw/main/90.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+91,Charisma,https://github.com/zolodio/Avatar-TCG-Database/raw/main/91.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+92,Contemplate,https://github.com/zolodio/Avatar-TCG-Database/raw/main/92.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+93,Incinerate,https://github.com/zolodio/Avatar-TCG-Database/raw/main/93.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+94,Meditate,https://github.com/zolodio/Avatar-TCG-Database/raw/main/94.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+95,Pai Sho Mastery,https://github.com/zolodio/Avatar-TCG-Database/raw/main/95.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+96,Run the Blockade,https://github.com/zolodio/Avatar-TCG-Database/raw/main/96.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+97,Sculpted Flame,https://github.com/zolodio/Avatar-TCG-Database/raw/main/97.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+98,Training Scroll,https://github.com/zolodio/Avatar-TCG-Database/raw/main/98.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+99,Water Kata,https://github.com/zolodio/Avatar-TCG-Database/raw/main/99.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+100,Yip Yip!,https://github.com/zolodio/Avatar-TCG-Database/raw/main/100.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+101,Bad Breath,https://github.com/zolodio/Avatar-TCG-Database/raw/main/101.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+102,Channel the Winds,https://github.com/zolodio/Avatar-TCG-Database/raw/main/102.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+103,Dust Storm,https://github.com/zolodio/Avatar-TCG-Database/raw/main/103.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+104,Expendable Troops,https://github.com/zolodio/Avatar-TCG-Database/raw/main/104.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+105,Fiery Temper,https://github.com/zolodio/Avatar-TCG-Database/raw/main/105.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+106,Flying Staff Technique,https://github.com/zolodio/Avatar-TCG-Database/raw/main/106.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+107,Glorious Feast,https://github.com/zolodio/Avatar-TCG-Database/raw/main/107.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+108,Head Over Heels,https://github.com/zolodio/Avatar-TCG-Database/raw/main/108.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+109,Highway Robbery,https://github.com/zolodio/Avatar-TCG-Database/raw/main/109.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+110,Volcanic Fountain,https://github.com/zolodio/Avatar-TCG-Database/raw/main/110.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+111,Bonzu Pippinpaddle-Oppsokopolis III,https://github.com/zolodio/Avatar-TCG-Database/raw/main/111.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+112,Caution to the Wind,https://github.com/zolodio/Avatar-TCG-Database/raw/main/112.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+113,Closed-Hand Form,https://github.com/zolodio/Avatar-TCG-Database/raw/main/113.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+114,Lifesaver,https://github.com/zolodio/Avatar-TCG-Database/raw/main/114.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+115,Open-Hand Form,https://github.com/zolodio/Avatar-TCG-Database/raw/main/115.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+116,Roku's Guidance,https://github.com/zolodio/Avatar-TCG-Database/raw/main/116.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+117,Sustenance,https://github.com/zolodio/Avatar-TCG-Database/raw/main/117.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+118,Take Them Away,https://github.com/zolodio/Avatar-TCG-Database/raw/main/118.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+119,"Aang, the last airbender",https://github.com/zolodio/Avatar-TCG-Database/raw/main/119.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+120,"Appa, flying bison",https://github.com/zolodio/Avatar-TCG-Database/raw/main/120.jpg,ally,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+121,"Katara, waterbender in training",https://github.com/zolodio/Avatar-TCG-Database/raw/main/121.jpg,ally,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+122,"King Bumi, rudder of Omashu",https://github.com/zolodio/Avatar-TCG-Database/raw/main/122.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+123,"Momo, hungry lemur",https://github.com/zolodio/Avatar-TCG-Database/raw/main/123.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+124,"Monk Gyatso, Aang's mentor",https://github.com/zolodio/Avatar-TCG-Database/raw/main/124.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+125,"Jet, ruthless rebel",https://github.com/zolodio/Avatar-TCG-Database/raw/main/125.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+126,"Jojo, the kissing bandit",https://github.com/zolodio/Avatar-TCG-Database/raw/main/126.jpg,ally,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+127,"Malu, a reclusive orphan",https://github.com/zolodio/Avatar-TCG-Database/raw/main/127.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+128,"Pirate Captain, shady trader",https://github.com/zolodio/Avatar-TCG-Database/raw/main/128.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+129,"Prince Zuko, exile",https://github.com/zolodio/Avatar-TCG-Database/raw/main/129.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+130,"Uncle Iroh, Zuko's mentor",https://github.com/zolodio/Avatar-TCG-Database/raw/main/130.jpg,ally,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+131,"Afiko, bringer of ill winds",https://github.com/zolodio/Avatar-TCG-Database/raw/main/131.jpg,ally,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+132,"Commander Zhao, ambitious leader",https://github.com/zolodio/Avatar-TCG-Database/raw/main/132.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+133,"Fire Nation Elite, hardened troops",https://github.com/zolodio/Avatar-TCG-Database/raw/main/133.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+134,"Kinto, cruel trickster",https://github.com/zolodio/Avatar-TCG-Database/raw/main/134.jpg,ally,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+135,"Prison Warden, breaker of spirits",https://github.com/zolodio/Avatar-TCG-Database/raw/main/135.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+136,"Zhao's Guard, loyal firebenders",https://github.com/zolodio/Avatar-TCG-Database/raw/main/136.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+137,"Cabbage Merchant, unfortunate bystander",https://github.com/zolodio/Avatar-TCG-Database/raw/main/137.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+138,"Canyon Guide, pathfinder",https://github.com/zolodio/Avatar-TCG-Database/raw/main/138.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+139,"Gan Jin Tribe, children of Jin Wei",https://github.com/zolodio/Avatar-TCG-Database/raw/main/139.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+140,"Herbalist, mad hermit",https://github.com/zolodio/Avatar-TCG-Database/raw/main/140.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+141,"Zhang Tribe, children of Wei Jin",https://github.com/zolodio/Avatar-TCG-Database/raw/main/141.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+142,Air Scooter,https://github.com/zolodio/Avatar-TCG-Database/raw/main/142.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+143,Chi Absorption,https://github.com/zolodio/Avatar-TCG-Database/raw/main/143.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+144,Dust Funnels,https://github.com/zolodio/Avatar-TCG-Database/raw/main/144.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+145,Graceful Leap,https://github.com/zolodio/Avatar-TCG-Database/raw/main/145.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+146,Open-Palm Pushback,https://github.com/zolodio/Avatar-TCG-Database/raw/main/146.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+147,Zoom!,https://github.com/zolodio/Avatar-TCG-Database/raw/main/147.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+148,Boulder Smash,https://github.com/zolodio/Avatar-TCG-Database/raw/main/148.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+149,Choking Sand,https://github.com/zolodio/Avatar-TCG-Database/raw/main/149.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+150,Granite Block,https://github.com/zolodio/Avatar-TCG-Database/raw/main/150.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+151,Ground Breaker,https://github.com/zolodio/Avatar-TCG-Database/raw/main/151.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+152,Quarry Crush,https://github.com/zolodio/Avatar-TCG-Database/raw/main/152.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+153,Seismic Spring,https://github.com/zolodio/Avatar-TCG-Database/raw/main/153.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+154,Corona Punch,https://github.com/zolodio/Avatar-TCG-Database/raw/main/154.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+155,Ember Shot,https://github.com/zolodio/Avatar-TCG-Database/raw/main/155.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+156,Fire Sweep,https://github.com/zolodio/Avatar-TCG-Database/raw/main/156.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+157,Kindle,https://github.com/zolodio/Avatar-TCG-Database/raw/main/157.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+158,Twin Fire Daggers,https://github.com/zolodio/Avatar-TCG-Database/raw/main/158.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+159,Warship Barrage,https://github.com/zolodio/Avatar-TCG-Database/raw/main/159.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+160,Bubble Burst,https://github.com/zolodio/Avatar-TCG-Database/raw/main/160.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+161,Clutches of the Deep,https://github.com/zolodio/Avatar-TCG-Database/raw/main/161.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+162,Flash Flood,https://github.com/zolodio/Avatar-TCG-Database/raw/main/162.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+163,Ice Blooms,https://github.com/zolodio/Avatar-TCG-Database/raw/main/163.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+164,Single Water Whip,https://github.com/zolodio/Avatar-TCG-Database/raw/main/164.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+165,Tidal Wave,https://github.com/zolodio/Avatar-TCG-Database/raw/main/165.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+166,The Avatar Awakens,https://github.com/zolodio/Avatar-TCG-Database/raw/main/166.jpg,strike,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+167,"Sokka, big brother",https://github.com/zolodio/Avatar-TCG-Database/raw/main/167.jpg,ally,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+168,"Flopsie, Bumi's pet",https://github.com/zolodio/Avatar-TCG-Database/raw/main/168.jpg,ally,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+169,The Kissing Bandit,https://github.com/zolodio/Avatar-TCG-Database/raw/main/169.jpg,advantage,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+170,Strata Breaker,https://github.com/zolodio/Avatar-TCG-Database/raw/main/170.jpg,strike,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+171,Tail of the Comet,https://github.com/zolodio/Avatar-TCG-Database/raw/main/171.jpg,strike,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+172,Shocking Revelation,https://github.com/zolodio/Avatar-TCG-Database/raw/main/172.jpg,strike,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+173,Hollow Soul Hurricane,https://github.com/zolodio/Avatar-TCG-Database/raw/main/173.jpg,strike,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+174,Maw of the Inferno,https://github.com/zolodio/Avatar-TCG-Database/raw/main/174.jpg,strike,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+175,Aquatic Tendrils,https://github.com/zolodio/Avatar-TCG-Database/raw/main/175.jpg,advantage,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+176,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/176.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/176b.jpg
+177,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/177.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/177b.jpg
+178,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/178.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/178b.jpg
+179,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/179.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/179b.jpg
+180,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/180.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/180b.jpg
+181,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/181.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/181b.jpg
+182,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/182.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/182b.jpg
+183,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/183.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/183b.jpg
+184,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/184.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/184b.jpg
+185,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/185.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/185b.jpg
+186,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/186.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/186b.jpg
+187,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/187.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/187b.jpg
+188,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/188.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/188b.jpg
+189,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/189.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/189b.jpg
+190,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/190.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/190b.jpg
+191,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/191.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/191b.jpg
+192,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/192.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/192b.jpg
+193,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/193.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/193b.jpg
+194,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/194.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/194b.jpg
+195,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/195.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/195b.jpg
+196,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/196.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/196b.jpg
+197,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/197.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/197b.jpg
+198,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/198.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/198b.jpg
+199,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/199.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/199b.jpg
+200,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/200.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/200b.jpg
+201,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/201.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/201b.jpg
+202,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/202.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/202b.jpg
+203,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/203.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/203b.jpg
+204,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/204.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/204b.jpg
+205,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/205.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/205b.jpg
+206,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/206.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/206b.jpg
+207,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/207.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/207b.jpg
+208,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/208.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/208b.jpg
+209,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/209.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/209b.jpg
+210,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/210.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/210b.jpg
+211,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/211.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/211b.jpg
+212,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/212.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/212b.jpg
+213,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/213.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/213b.jpg
+214,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/214.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/214b.jpg
+215,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/215.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/215b.jpg
+216,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/216.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/216b.jpg
+217,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/217.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/217b.jpg
+218,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/218.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/218b.jpg
+219,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/219.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/219b.jpg
+220,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/220.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/220b.jpg
+221,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/221.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/221b.jpg
+222,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/222.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/222b.jpg
+223,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/223.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/223b.jpg
+224,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/224.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/224b.jpg
+225,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/225.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/225b.jpg
+226,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/226.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/226b.jpg
+227,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/227.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/227b.jpg
+228,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/228.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/228b.jpg
+229,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/229.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/229b.jpg
+230,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/230.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/230b.jpg
+231,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/231.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/231b.jpg
+232,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/232.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/232b.jpg
+233,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/233.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/233b.jpg
+234,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/234.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/234b.jpg
+235,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/235.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/235b.jpg
+ABK001,"Toph, earthbender",https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk001.jpg,ally,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+ABK002,"Princess Azula, firebender",https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk002.jpg,ally,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+ABK003,Racing with the Wind,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk003.jpg,advantage,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+ABK004,In The Breach,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk004.jpg,advantage,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+ABK005,Juggle,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk005.jpg,strike,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+ABK006,Taming the Flame,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk006.jpg,strike,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+ABK007,Water Whirl,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk007.jpg,strike,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+ABK008,Boulder Roll,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk008.jpg,strike,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+APR001,Appa's Wild Ride,https://github.com/zolodio/Avatar-TCG-Database/raw/main/apr001.jpg,advantage,PROMO,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+APR002,Sokka's Mettle,https://github.com/zolodio/Avatar-TCG-Database/raw/main/apr002.jpg,strike,PROMO,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+FPR001,Air Cannon Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr001.jpg,chamber,PROMO,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+FPR002,Fire Blast Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr002.jpg,chamber,PROMO,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+FPR003,Ice Attack Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr003.jpg,chamber,PROMO,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+XAPR001,Appa's Wild Ride in Plastic,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XAPR001.jpg,sealed,other,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+XAPR002,Sokka's Mettle in Plastic,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XAPR002.jpg,sealed,other,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+XBK001,Stack Attack Toph,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK001.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+XBK002,Lava Launch Azula,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK002.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+XBK003,Air Scooter Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK003.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+XBK004,Rip 'n Whirl Sokka,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK004.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+XBK005,Master Airbender,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK005.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+XBK006,Flame Tame Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK006.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+XBK007,Water Swirl Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK007.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+XBK008,Boulder Roll,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK008.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+XDVD001,DVD - Book 1 Volume 1,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XDVD001.jpg,sealed,other,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+XDVD002,DVD - Book 1 Volume 2,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XDVD002.jpg,sealed,other,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+K3474,Ice Attack Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/K3474.jpg,sealed,other,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+H9748,Air Cannon Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/H9748.jpg,sealed,other,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+X1234,Fire Blast Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/X1234.jpg,sealed,other,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+STRT001,Sealed Starter Set,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT001.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+BSTR001,Foil Booster Pack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR001.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+BSTR002,Blister Pack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR002.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+BSTR003,Booster Box,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR003.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+RLBK001,Official Rulebook,https://github.com/zolodio/Avatar-TCG-Database/raw/main/RLBK001.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+PLMT001,Paper PlayMat,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT001.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+PLMT002,Fabric PlayMat,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT002.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+MTBX001,Empty Starter Box,https://github.com/zolodio/Avatar-TCG-Database/raw/main/MTBX001.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+PSTR001,Be The Avatar Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR001.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+PSTR002,Experience The Legend Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR002.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
+PSTR003,Master The Elements Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR003.jpg,other,other,,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg
