@@ -79,8 +79,6 @@ body {
   background-color: #000000;
 }
 
-/* Fixed background using a real <img> element instead of background-attachment:fixed,
-   which is broken/unsupported on most mobile browsers (Android Chrome, iOS Safari, etc.) */
 .bg-fixed-image {
   position: fixed;
   top: 0;
@@ -431,8 +429,7 @@ body {
   grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
   gap: 12px;
   animation: fadeUp 0.4s ease;
-
- }
+}
 
 .card-grid.list-view {
   grid-template-columns: 1fr;
@@ -453,7 +450,6 @@ body {
   cursor: pointer;
   transition: all 0.25s;
   position: relative;
-
 }
 
 .card-item:hover {
@@ -481,11 +477,11 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s;
 }
 
-.card-item:hover .card-img-wrap img {
+.card-item:hover .card-flip-front > img {
   transform: scale(1.05);
+  transition: transform 0.3s;
 }
 
 .card-img-placeholder {
@@ -521,6 +517,7 @@ body {
   padding: 2px 7px;
   border-radius: 99px;
   backdrop-filter: blur(4px);
+  z-index: 4;
 }
 
 .card-owned-badge {
@@ -537,6 +534,7 @@ body {
   color: #fff;
   font-size: 0.65rem;
   box-shadow: 0 2px 6px rgba(61,184,108,0.4);
+  z-index: 4;
 }
 
 .card-qty-badge {
@@ -550,6 +548,166 @@ body {
   padding: 2px 8px;
   border-radius: 99px;
   backdrop-filter: blur(4px);
+  z-index: 4;
+}
+
+/* 3D CARD FLIP */
+.card-flip-container {
+  width: 100%;
+  height: 100%;
+  perspective: 900px;
+}
+
+.card-flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.card-flip-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-flip-front,
+.card-flip-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.card-flip-front img,
+.card-flip-back img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-flip-back {
+  transform: rotateY(180deg);
+  background: var(--bg-primary);
+}
+
+.card-flip-btn {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.72);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.15);
+  cursor: pointer;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  backdrop-filter: blur(4px);
+  transition: all 0.25s;
+}
+
+.card-flip-btn:hover {
+  background: var(--zen);
+  border-color: var(--zen-glow);
+  transform: scale(1.12);
+  box-shadow: 0 0 12px rgba(180,77,223,0.5);
+}
+
+.card-flip-btn.is-flipped {
+  background: var(--zen);
+  border-color: var(--zen-glow);
+  box-shadow: 0 0 8px rgba(180,77,223,0.4);
+}
+
+/* LIST VIEW: hide flip button */
+.list-view .card-flip-btn { display: none; }
+
+/* MODAL FLIP */
+.modal-flip-container {
+  perspective: 1200px;
+  display: inline-block;
+  width: 100%;
+  max-width: 100%;
+}
+
+.modal-flip-inner {
+  position: relative;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  width: 100%;
+}
+
+.modal-flip-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+.modal-flip-front,
+.modal-flip-back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  width: 100%;
+}
+
+.modal-flip-front img,
+.modal-flip-back img {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+}
+
+.modal-flip-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotateY(180deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-flip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 12px;
+  padding: 9px 18px;
+  border-radius: 99px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s;
+  letter-spacing: 0.03em;
+}
+
+.modal-flip-btn i {
+  font-size: 0.82rem;
+  transition: transform 0.35s;
+}
+
+.modal-flip-btn:hover {
+  border-color: var(--zen);
+  color: var(--zen);
+  background: rgba(180,77,223,0.08);
+}
+
+.modal-flip-btn:hover i {
+  transform: rotateY(180deg);
+}
+
+.modal-flip-btn.is-flipped {
+  border-color: var(--zen);
+  color: var(--zen);
+  background: rgba(180,77,223,0.1);
 }
 
 .card-info {
@@ -924,7 +1082,6 @@ body {
 .scroll-top-btn.show { display: flex; }
 .scroll-top-btn:hover { transform: scale(1.08);
 filter: drop-shadow(0 0 6px var(--zen));
-    
 }
 
 /* CONFIRM DIALOG */
@@ -1033,7 +1190,6 @@ filter: drop-shadow(0 0 6px var(--zen));
 
 .export-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-/* ADD IMPORT BUTTON */
 .import-btn {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -1049,7 +1205,6 @@ filter: drop-shadow(0 0 6px var(--zen));
 }
 .import-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-/* HIDDEN DOWNLOAD LINK */
 #downloadLink {
   position: fixed;
   top: -9999px;
@@ -1413,32 +1568,25 @@ filter: drop-shadow(0 0 6px var(--zen));
 <div style="text-align: center;">
 <div class="image-container" style="position: relative; display: inline-block;"><img alt="Avatar Quick Strike" src="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/main/SMLOGO.png" style="width: 33%; height: auto;" crossorigin="anonymous" ></div>
 <div class="image-container" style="position: relative; display: inline-block;"><img alt="Avatar Quick Strike" src="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/main/LGLOGO.png" style="width: 33%; height: auto; filter: drop-shadow(0 0 8px white);" crossorigin="anonymous" ></div>
-
 </div>
 </header>
 <div class="stats-bar">
 <div class="stat-box">
 <div class="stat-value" id="statOwned">0</div>
-
 <div class="stat-label">/ 248 Owned</div>
 </div>
-
 <div class="stat-box">
 <div class="stat-value" id="statMissing">0</div>
-
 <div class="stat-label">Missing</div>
 </div>
-
 <div class="stat-box">
 <div class="stat-value" id="statTotal">0</div>
-
 <div class="stat-label">Total Cards</div>
 </div>
 </div>
 
 <div class="progress-bar-container">
 <div class="progress-header"><span class="progress-title">Collection Progress</span> <span class="progress-pct" id="progressPct">0%</span></div>
-
 <div class="progress-track">
 <div class="progress-fill" id="progressFill"></div>
 </div>
@@ -1449,10 +1597,8 @@ filter: drop-shadow(0 0 6px var(--zen));
 <div class="controls-section">
 <div class="search-row">
 <div class="search-box"><input class="search-input" id="searchInput" placeholder="Search cards..." type="text" ></div>
-
 <div class="view-toggle"><button class="view-btn active" data-view="grid" title="Grid view"><i class="fas fa-th"></i></button><button class="view-btn" data-view="list" title="List view"><i class="fas fa-list"></i></button></div>
 </div>
-
 <div class="filter-row" id="filterRow"></div>
 </div>
 
@@ -1477,36 +1623,29 @@ filter: drop-shadow(0 0 6px var(--zen));
 <div class="empty-state" id="emptyState" style="display:none;">
 <p>No cards match your search</p>
 </div>
-<!-- PERSISTENT SAVE CODE FOOTER -->
 
 <div class="save-code-footer" id="saveCodeFooter">
 <div class="save-code-header"><span class="save-code-label">Current Save Code:</span></div>
-
 <div id="saveCodeDisplay"></div>
-
 <div class="save-code-hint">Select the code above to copy it manually</div>
 </div>
 </div>
-<!-- Persistent download anchor in the DOM -->
 
 <a download="avatar_qs_collection.csv" href="#" id="downloadLink">Download</a>
-<!-- CONFIRM DIALOG -->
 
+<!-- CONFIRM DIALOG -->
 <div class="confirm-overlay" id="confirmOverlay">
 <div class="confirm-box">
 <p id="confirmMsg">Are you sure?</p>
-
 <div class="confirm-actions"><button class="confirm-btn confirm-cancel" id="confirmCancel">Cancel</button><button class="confirm-btn confirm-ok" id="confirmOk">Remove</button></div>
 </div>
 </div>
-<!-- IMPORT METHOD SELECTION DIALOG -->
 
+<!-- IMPORT METHOD SELECTION DIALOG -->
 <div class="import-method-overlay" id="importMethodOverlay">
 <div class="import-method-box">
 <div class="import-method-title">Import Collection</div>
-
 <div class="import-method-sub">Choose how to restore your data</div>
-
 <div class="import-method-btns">
 <button class="method-btn" id="importMethodCSV">
 <div class="method-btn-icon csv-icon"><i class="fas fa-file-csv"></i></div>
@@ -1519,64 +1658,54 @@ filter: drop-shadow(0 0 6px var(--zen));
 </div>
 <button class="method-cancel-btn" id="importMethodCancel">Cancel</button></div>
 </div>
-<!-- IMPORT CONFIRM DIALOG (warning step) -->
 
+<!-- IMPORT CONFIRM DIALOG -->
 <div class="confirm-overlay" id="importConfirmOverlay">
 <div class="confirm-box">
 <p id="importConfirmMsg">This will replace your current collection data. Continue?</p>
-
 <div class="confirm-actions"><button class="confirm-btn confirm-cancel" id="importCancel">Cancel</button><button class="confirm-btn confirm-ok" id="importOk">Continue</button></div>
 <input accept=".csv" id="importFile" style="display:none" type="file" ></div>
 </div>
-<!-- SAVE CODE INPUT DIALOG -->
 
+<!-- SAVE CODE INPUT DIALOG -->
 <div class="code-input-overlay" id="codeInputOverlay">
 <div class="code-input-box">
 <div class="code-input-header">
 <h3>Enter Save Code</h3>
 </div>
-
 <div class="code-input-hint">Paste the backup save code that was copied to your clipboard during export.</div>
 <textarea class="code-textarea" id="codeTextarea" placeholder="Paste save code here..."></textarea>
-
 <div class="code-input-error" id="codeInputError"></div>
-
 <div class="code-input-actions"><button class="confirm-btn confirm-cancel" id="codeInputCancel">Cancel</button><button class="confirm-btn confirm-ok" id="codeInputOk">Decode &amp; Import</button></div>
 </div>
 </div>
-<!-- CARD DETAIL MODAL -->
 
+<!-- CARD DETAIL MODAL -->
 <div class="modal-overlay" id="modalOverlay">
 <div class="modal-card" id="modalCard">
 <div class="modal-header">
 <div></div>
 <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button></div>
 
-
 <div class="modal-img-section" id="modalImgSection"></div>
 
 <div class="modal-body">
 <div class="modal-card-name" id="modalName"></div>
-
 <div class="modal-card-number" id="modalNumber"></div>
-
 <div class="modal-tags" id="modalTags"></div>
-
 <div class="modal-divider"></div>
-
 <div class="modal-collection-section">
 <h4>Collection</h4>
-
 <div class="modal-qty-controls"><span class="qty-label">Quantity owned</span><button class="qty-btn" id="qtyMinus">&minus;</button> <span class="qty-display" id="qtyDisplay">0</span><button class="qty-btn" id="qtyPlus">+</button></div>
 <button class="modal-toggle-btn add" id="modalToggle">Add to Collection</button></div>
 </div>
 </div>
 </div>
+
 <!-- TOAST -->
-
 <div class="toast" id="toast"></div>
-<!-- SCROLL TO TOP -->
 
+<!-- SCROLL TO TOP -->
 <button class="scroll-top-btn" id="scrollTopBtn"><i class="fas fa-chevron-up"></i></button>
 
 <script>
@@ -1584,17 +1713,18 @@ var CSV_URL = "https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/ref
 
 /* ---- STATE ---- */
 var allCards = [];
-var collection = {}; // { cardNumber: qty }
+var collection = {};
 var activeTypeFilter = "all";
 var activeRarityFilter = "all";
-var activeOwnershipFilter = "all"; // all | owned | missing
+var activeOwnershipFilter = "all";
 var searchQuery = "";
 var sortBy = "number";
-var sortDirection = "asc"; // NEW: ascending or descending
+var sortDirection = "asc";
 var viewMode = "grid";
 var currentModalCard = null;
 var confirmCallback = null;
-var importMethod = "csv"; // 'csv' or 'code'
+var importMethod = "csv";
+var modalFlipped = false;
 
 /* ---- RARITY TO CSS COLOR MAP ---- */
 var rarityColorMap = {
@@ -1682,16 +1812,12 @@ async function loadCollection() {
 function encodeCollectionToCode() {
   var owned = allCards.filter(function(c) { return (collection[c.number] || 0) > 0; });
   if (owned.length === 0) { return null; }
-
-  // Build compact representation: cardNumber:qty pairs joined by semicolons
   var pairs = [];
   owned.forEach(function(c) {
     pairs.push(c.number + ':' + collection[c.number]);
   });
   var raw = pairs.join(';');
-
   try {
-    // Prefix AQS1 = Avatar Quick Strike version 1 format
     return 'AQS1' + btoa(raw);
   } catch (e) {
     return null;
@@ -1701,14 +1827,11 @@ function encodeCollectionToCode() {
 function decodeCollectionFromCode(code) {
   try {
     code = code.trim();
-
-    // Check for version prefix
     if (code.substring(0, 4) !== 'AQS1') { return null; }
     var b64 = code.substring(4);
     var raw = atob(b64);
     var pairs = raw.split(';');
     var newCol = {};
-
     for (var i = 0; i < pairs.length; i++) {
       var parts = pairs[i].split(':');
       if (parts.length === 2) {
@@ -1719,7 +1842,6 @@ function decodeCollectionFromCode(code) {
         }
       }
     }
-
     if (Object.keys(newCol).length === 0) { return null; }
     return newCol;
   } catch (e) {
@@ -1727,7 +1849,7 @@ function decodeCollectionFromCode(code) {
   }
 }
 
-/* ---- PARSE CSV ---- */
+/* ---- PARSE CSV (now captures Set and Back Image Link) ---- */
 function parseCSV(text) {
   var lines = text.trim().split('\n');
   var cards = [];
@@ -1753,29 +1875,27 @@ function parseCSV(text) {
         name: parts[1],
         imageLink: parts[2],
         type: parts[3].toLowerCase(),
-        rarity: parts[4].toLowerCase()
+        rarity: parts[4].toLowerCase(),
+        set: parts.length >= 6 ? parts[5] : '',
+        backImageLink: parts.length >= 7 ? parts[6] : ''
       });
     }
   }
   return cards;
 }
 
-/* ---- NEW: CORE CARD CHECK (for /248 Owned stat) ---- */
+/* ---- CORE CARD CHECK ---- */
 function isCoreCard(cardNumber) {
   var num = cardNumber.trim();
-  // Check ABK001-ABK008
   if (/^ABK00[1-8]$/i.test(num)) return true;
-  // Check APR001-APR002
   if (/^APR00[1-2]$/i.test(num)) return true;
-  // Check FPR001-FPR003
   if (/^FPR00[1-3]$/i.test(num)) return true;
-  // Check numeric 1-235 (may or may not be zero-padded)
   var parsed = parseInt(num, 10);
   if (!isNaN(parsed) && parsed >= 1 && parsed <= 235 && /^\d+$/.test(num)) return true;
   return false;
 }
 
-/* ---- NEW: BONUS TOTAL CARDS from sealed products ---- */
+/* ---- BONUS TOTAL CARDS ---- */
 function getBonusTotalCards() {
   var bonus = 0;
   bonus += (collection['STRT001'] || 0) * 61;
@@ -1792,7 +1912,7 @@ function getBonusTotalCards() {
   return bonus;
 }
 
-/* ---- NEW: UPDATE SORT DIRECTION BUTTON ---- */
+/* ---- UPDATE SORT DIRECTION BUTTON ---- */
 function updateSortDirBtn() {
   var btn = document.getElementById('sortDirBtn');
   if (sortDirection === 'asc') {
@@ -1808,7 +1928,6 @@ function updateSortDirBtn() {
 function updateSaveCodeDisplay() {
   var displayEl = document.getElementById('saveCodeDisplay');
   var code = encodeCollectionToCode();
-
   if (code) {
     displayEl.className = 'save-code-value';
     displayEl.textContent = code;
@@ -1821,7 +1940,6 @@ function updateSaveCodeDisplay() {
 /* ---- FETCH & INIT ---- */
 async function init() {
   collection = await loadCollection();
-
   try {
     var resp = await fetch(CSV_URL);
     var text = await resp.text();
@@ -1830,7 +1948,6 @@ async function init() {
     allCards = [];
     console.log("Failed to load CSV: " + String(e));
   }
-
   buildFilters();
   updateStats();
   renderCards();
@@ -1855,15 +1972,13 @@ function buildFilters() {
   filterRow.innerHTML = html;
 }
 
-/* ---- STATS (MODIFIED) ---- */
+/* ---- STATS ---- */
 function updateStats() {
-  // Only count core 248 cards for Owned and Missing
   var coreCards = allCards.filter(function(c) { return isCoreCard(c.number); });
   var coreOwned = coreCards.filter(function(c) { return (collection[c.number] || 0) > 0; }).length;
   var coreMissing = 248 - coreOwned;
   var pct = Math.round((coreOwned / 248) * 100);
 
-  // Total Cards = sum of all individual card quantities + bonus from sealed products
   var totalCollected = 0;
   allCards.forEach(function(c) { totalCollected += (collection[c.number] || 0); });
   totalCollected += getBonusTotalCards();
@@ -1891,10 +2006,9 @@ function updateStats() {
   breakdown.innerHTML = bhtml;
 }
 
-/* ---- FILTER / SORT (MODIFIED for sort direction) ---- */
+/* ---- FILTER / SORT ---- */
 function getFilteredCards() {
   var cards = allCards.slice();
-
   if (searchQuery) {
     var q = searchQuery.toLowerCase();
     cards = cards.filter(function(c) {
@@ -1904,24 +2018,19 @@ function getFilteredCards() {
         c.rarity.indexOf(q) !== -1;
     });
   }
-
   if (activeTypeFilter !== 'all') {
     cards = cards.filter(function(c) { return c.type === activeTypeFilter; });
   }
-
   if (activeRarityFilter !== 'all') {
     cards = cards.filter(function(c) { return c.rarity === activeRarityFilter; });
   }
-
   if (activeOwnershipFilter === 'owned') {
     cards = cards.filter(function(c) { return (collection[c.number] || 0) > 0; });
   } else if (activeOwnershipFilter === 'missing') {
     cards = cards.filter(function(c) { return (collection[c.number] || 0) === 0; });
   }
-
   var dir = sortDirection === 'asc' ? 1 : -1;
   var rarityOrder = { common: 0, uncommon: 1, rare: 2, zenemental: 3, promo: 4 };
-
   if (sortBy === 'name') {
     cards.sort(function(a, b) { return dir * a.name.localeCompare(b.name); });
   } else if (sortBy === 'rarity') {
@@ -1935,7 +2044,6 @@ function getFilteredCards() {
       return dir * (qtyA - qtyB);
     });
   } else {
-    // number sort (default)
     cards.sort(function(a, b) {
       var numA = parseInt(a.number, 10);
       var numB = parseInt(b.number, 10);
@@ -1945,11 +2053,10 @@ function getFilteredCards() {
       return dir * a.number.localeCompare(b.number);
     });
   }
-
   return cards;
 }
 
-/* ---- RENDER CARDS ---- */
+/* ---- RENDER CARDS (with flip containers) ---- */
 function renderCards() {
   var cards = getFilteredCards();
   var grid = document.getElementById('cardGrid');
@@ -1971,17 +2078,46 @@ function renderCards() {
     var isOwned = qty > 0;
     var rarityClass = 'dot-' + c.rarity;
     var imgUrl = c.imageLink;
+    var backImgUrl = c.backImageLink || '';
     var rarityColor = rarityColorMap[c.rarity] || 'var(--text-secondary)';
 
     html += '<div class="card-item' + (isOwned ? ' owned' : '') + '" data-number="' + c.number + '" style="--rarity-color:' + rarityColor + '">';
     html += '<span class="list-card-number">#' + c.number + '</span>';
     html += '<div class="card-img-wrap">';
+
+    // 3D flip container
+    html += '<div class="card-flip-container">';
+    html += '<div class="card-flip-inner" data-flip-id="' + c.number + '">';
+
+    // Front face
+    html += '<div class="card-flip-front">';
     html += '<img src="' + imgUrl + '" alt="' + escapeHtml(c.name) + '" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">';
     html += '<div class="card-img-placeholder" style="display:none"><i class="fas fa-hat-wizard"></i><span>#' + c.number + '</span></div>';
+    html += '</div>';
+
+    // Back face
+    html += '<div class="card-flip-back">';
+    if (backImgUrl) {
+      html += '<img src="' + backImgUrl + '" alt="' + escapeHtml(c.name) + ' (back)" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">';
+      html += '<div class="card-img-placeholder" style="display:none"><i class="fas fa-hat-wizard"></i><span>Back unavailable</span></div>';
+    } else {
+      html += '<div class="card-img-placeholder"><i class="fas fa-hat-wizard"></i><span>No back image</span></div>';
+    }
+    html += '</div>';
+
+    html += '</div>'; // .card-flip-inner
+    html += '</div>'; // .card-flip-container
+
+    // Badges (overlay on top of flip container)
     html += '<span class="card-number-badge">#' + c.number + '</span>';
     if (isOwned) { html += '<span class="card-owned-badge"><i class="fas fa-check"></i></span>'; }
     if (qty > 1) { html += '<span class="card-qty-badge">x' + qty + '</span>'; }
-    html += '</div>';
+
+    // Flip button
+    html += '<button class="card-flip-btn" data-flip-target="' + c.number + '" title="Flip card"><i class="fas fa-rotate"></i></button>';
+
+    html += '</div>'; // .card-img-wrap
+
     html += '<div class="card-info">';
     html += '<div class="card-name" title="' + escapeHtml(c.name) + '">' + escapeHtml(c.name) + '</div>';
     html += '<div class="card-meta">';
@@ -2004,11 +2140,12 @@ function escapeHtml(str) {
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-/* ---- MODAL ---- */
+/* ---- MODAL (with flip support) ---- */
 function openModal(cardNumber) {
   var card = allCards.find(function(c) { return c.number === cardNumber; });
   if (!card) { return; }
   currentModalCard = card;
+  modalFlipped = false;
 
   var qty = collection[card.number] || 0;
   var isOwned = qty > 0;
@@ -2021,9 +2158,51 @@ function openModal(cardNumber) {
     '<span class="modal-tag tag-' + card.type + '">' + card.type + '</span>' +
     '<span class="modal-tag" style="background:var(--' + card.rarity + '-bg);"><span class="card-rarity-dot dot-' + card.rarity + '" style="display:inline-block;margin-right:5px;vertical-align:middle"></span>' + card.rarity + '</span>';
 
+  var backImgUrl = card.backImageLink || '';
+
   var imgSection = document.getElementById('modalImgSection');
-  imgSection.innerHTML = '<img src="' + card.imageLink + '" alt="' + escapeHtml(card.name) + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
-    '<div class="modal-img-placeholder-lg" style="display:none"><i class="fas fa-hat-wizard"></i><span>Image unavailable</span></div>';
+  var imgHtml = '<div class="modal-flip-container">';
+  imgHtml += '<div class="modal-flip-inner" id="modalFlipInner">';
+
+  // Front
+  imgHtml += '<div class="modal-flip-front">';
+  imgHtml += '<img src="' + card.imageLink + '" alt="' + escapeHtml(card.name) + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">';
+  imgHtml += '<div class="modal-img-placeholder-lg" style="display:none"><i class="fas fa-hat-wizard"></i><span>Image unavailable</span></div>';
+  imgHtml += '</div>';
+
+  // Back
+  imgHtml += '<div class="modal-flip-back">';
+  if (backImgUrl) {
+    imgHtml += '<img src="' + backImgUrl + '" alt="' + escapeHtml(card.name) + ' (back)" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">';
+    imgHtml += '<div class="modal-img-placeholder-lg" style="display:none"><i class="fas fa-hat-wizard"></i><span>Back image unavailable</span></div>';
+  } else {
+    imgHtml += '<div class="modal-img-placeholder-lg"><i class="fas fa-hat-wizard"></i><span>No back image</span></div>';
+  }
+  imgHtml += '</div>';
+
+  imgHtml += '</div>'; // .modal-flip-inner
+  imgHtml += '</div>'; // .modal-flip-container
+
+  // Flip button
+  imgHtml += '<button class="modal-flip-btn" id="modalFlipBtn"><i class="fas fa-rotate"></i> Flip Card</button>';
+
+  imgSection.innerHTML = imgHtml;
+
+  // Wire up modal flip button
+  document.getElementById('modalFlipBtn').addEventListener('click', function() {
+    modalFlipped = !modalFlipped;
+    var inner = document.getElementById('modalFlipInner');
+    var btn = document.getElementById('modalFlipBtn');
+    if (modalFlipped) {
+      inner.classList.add('flipped');
+      btn.classList.add('is-flipped');
+      btn.innerHTML = '<i class="fas fa-rotate"></i> Show Front';
+    } else {
+      inner.classList.remove('flipped');
+      btn.classList.remove('is-flipped');
+      btn.innerHTML = '<i class="fas fa-rotate"></i> Flip Card';
+    }
+  });
 
   document.getElementById('qtyDisplay').textContent = qty;
   updateModalButton(isOwned);
@@ -2036,6 +2215,7 @@ function closeModal() {
   document.getElementById('modalOverlay').classList.remove('active');
   document.body.style.overflow = '';
   currentModalCard = null;
+  modalFlipped = false;
 }
 
 function updateModalButton(isOwned) {
@@ -2109,28 +2289,19 @@ function exportCollection() {
     showToast('No cards in your collection to export');
     return;
   }
-
-  // Generate CSV
   var csv = 'Number,Name,Type,Rarity,Quantity\n';
   owned.forEach(function(c) {
     csv += c.number + ',"' + c.name + '",' + c.type + ',' + c.rarity + ',' + (collection[c.number] || 0) + '\n';
   });
-
   var blob = new Blob([csv], { type: 'text/csv' });
   var url = URL.createObjectURL(blob);
-
-  // Use the persistent in-DOM anchor for the download
   var link = document.getElementById('downloadLink');
   link.href = url;
   link.download = 'avatar_qs_collection.csv';
   link.click();
-
-  // Revoke after a delay to ensure the download initiates
   setTimeout(function() {
     URL.revokeObjectURL(url);
   }, 5000);
-
-  // Also encode the same data as a save code and copy to clipboard
   var saveCode = encodeCollectionToCode();
   if (saveCode && navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(saveCode).then(function() {
@@ -2188,17 +2359,15 @@ function processCSVImport(text) {
   showToast('Collection imported from CSV!');
 }
 
-/* ---- EVENTS (MODIFIED for sort direction) ---- */
+/* ---- EVENTS ---- */
 function setupEvents() {
   document.getElementById('searchInput').addEventListener('input', function() {
     searchQuery = this.value;
     renderCards();
   });
 
-  // MODIFIED: sort select now resets direction to a sensible default per sort type
   document.getElementById('sortSelect').addEventListener('change', function() {
     sortBy = this.value;
-    // Default direction: descending for rarity & quantity, ascending for others
     if (sortBy === 'rarity' || sortBy === 'quantity') {
       sortDirection = 'desc';
     } else {
@@ -2208,7 +2377,6 @@ function setupEvents() {
     renderCards();
   });
 
-  // NEW: sort direction toggle button
   document.getElementById('sortDirBtn').addEventListener('click', function() {
     sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
     updateSortDirBtn();
@@ -2228,7 +2396,6 @@ function setupEvents() {
   document.getElementById('filterRow').addEventListener('click', function(e) {
     var pill = e.target.closest('.filter-pill');
     if (!pill) { return; }
-
     if (pill.dataset.filterType !== undefined) {
       activeTypeFilter = pill.dataset.filterType;
       this.querySelectorAll('[data-filter-type]').forEach(function(p) { p.classList.remove('active'); });
@@ -2259,7 +2426,21 @@ function setupEvents() {
     renderCards();
   });
 
+  // Card grid click: handle flip buttons and card opens
   document.getElementById('cardGrid').addEventListener('click', function(e) {
+    // Check if the flip button was clicked
+    var flipBtn = e.target.closest('.card-flip-btn');
+    if (flipBtn) {
+      e.stopPropagation();
+      var targetNumber = flipBtn.getAttribute('data-flip-target');
+      var flipInner = flipBtn.closest('.card-img-wrap').querySelector('.card-flip-inner[data-flip-id="' + targetNumber + '"]');
+      if (flipInner) {
+        flipInner.classList.toggle('flipped');
+        flipBtn.classList.toggle('is-flipped');
+      }
+      return;
+    }
+    // Otherwise open the modal
     var item = e.target.closest('.card-item');
     if (item) { openModal(item.dataset.number); }
   });
@@ -2316,33 +2497,27 @@ function setupEvents() {
 }
 
 /* ---- IMPORT FLOW ---- */
-
-// Step 1: Click import button -> show method selection
 document.getElementById('importBtn').addEventListener('click', function() {
   document.getElementById('importMethodOverlay').classList.add('active');
 });
 
-// Step 2a: Choose CSV -> proceed to warning
 document.getElementById('importMethodCSV').addEventListener('click', function() {
   importMethod = 'csv';
   closeImportMethodDialog();
   document.getElementById('importConfirmOverlay').classList.add('active');
 });
 
-// Step 2b: Choose Save Code -> proceed to warning
 document.getElementById('importMethodCode').addEventListener('click', function() {
   importMethod = 'code';
   closeImportMethodDialog();
   document.getElementById('importConfirmOverlay').classList.add('active');
 });
 
-// Method dialog cancel
 document.getElementById('importMethodCancel').addEventListener('click', closeImportMethodDialog);
 document.getElementById('importMethodOverlay').addEventListener('click', function(e) {
   if (e.target === this) { closeImportMethodDialog(); }
 });
 
-// Step 3: Warning confirmed -> branch based on method
 document.getElementById('importOk').addEventListener('click', function() {
   document.getElementById('importConfirmOverlay').classList.remove('active');
   if (importMethod === 'csv') {
@@ -2351,19 +2526,16 @@ document.getElementById('importOk').addEventListener('click', function() {
     document.getElementById('codeInputOverlay').classList.add('active');
     document.getElementById('codeTextarea').value = '';
     document.getElementById('codeInputError').textContent = '';
-    // Focus the textarea after a brief delay for the animation
     setTimeout(function() {
       document.getElementById('codeTextarea').focus();
     }, 100);
   }
 });
 
-// Warning canceled
 document.getElementById('importCancel').addEventListener('click', function() {
   document.getElementById('importConfirmOverlay').classList.remove('active');
 });
 
-// CSV file selected
 document.getElementById('importFile').addEventListener('change', function(e) {
   var file = e.target.files[0];
   if (!file) { return; }
@@ -2372,27 +2544,21 @@ document.getElementById('importFile').addEventListener('change', function(e) {
     processCSVImport(reader.result);
   };
   reader.readAsText(file);
-  // Reset input so the same file can be imported again
   this.value = '';
 });
 
-// Save code input: Decode & Import
 document.getElementById('codeInputOk').addEventListener('click', function() {
   var code = document.getElementById('codeTextarea').value.trim();
   var errorEl = document.getElementById('codeInputError');
-
   if (!code) {
     errorEl.textContent = 'Please enter a save code.';
     return;
   }
-
   var decoded = decodeCollectionFromCode(code);
   if (!decoded) {
     errorEl.textContent = 'Invalid save code. Check that you pasted the full code correctly.';
     return;
   }
-
-  // Valid code — apply the collection
   collection = decoded;
   saveCollection();
   updateStats();
@@ -2402,7 +2568,6 @@ document.getElementById('codeInputOk').addEventListener('click', function() {
   showToast('Collection restored from save code!');
 });
 
-// Save code input: Cancel
 document.getElementById('codeInputCancel').addEventListener('click', closeCodeInputDialog);
 document.getElementById('codeInputOverlay').addEventListener('click', function(e) {
   if (e.target === this) { closeCodeInputDialog(); }
