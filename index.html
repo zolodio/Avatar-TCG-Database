@@ -366,6 +366,11 @@ body {
   border-color: var(--danger);
 }
 
+.filter-pill.shared-filter.active {
+  background: var(--water);
+  border-color: var(--water);
+}
+
 .filter-divider {
   flex-shrink: 0;
   width: 1px;
@@ -549,6 +554,27 @@ body {
   border-radius: 99px;
   backdrop-filter: blur(4px);
   z-index: 4;
+}
+
+.card-compare-badge {
+  position: absolute;
+  bottom: 6px;
+  left: 38px;
+  background: rgba(0,0,0,0.75);
+  color: var(--water);
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 99px;
+  backdrop-filter: blur(4px);
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.card-compare-badge i {
+  font-size: 0.55rem;
 }
 
 /* 3D CARD FLIP */
@@ -783,7 +809,8 @@ body {
 
 .list-view .card-number-badge,
 .list-view .card-owned-badge,
-.list-view .card-qty-badge {
+.list-view .card-qty-badge,
+.list-view .card-compare-badge {
   display: none;
 }
 
@@ -825,6 +852,15 @@ body {
 }
 
 .list-qty.show { display: block; }
+
+.list-compare-qty {
+  font-size: 0.72rem;
+  color: var(--water);
+  font-weight: 700;
+  display: none;
+}
+
+.list-compare-qty.show { display: block; }
 
 .list-card-arrow {
   color: var(--text-muted);
@@ -1041,6 +1077,28 @@ body {
   background: rgba(224,72,72,0.2);
 }
 
+.modal-compare-info {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: rgba(46,140,232,0.08);
+  border: 1px solid rgba(46,140,232,0.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-compare-info i {
+  color: var(--water);
+  font-size: 0.9rem;
+}
+
+.modal-compare-info span {
+  font-size: 0.82rem;
+  color: var(--water);
+  font-weight: 600;
+}
+
 /* EMPTY STATE */
 .empty-state {
   text-align: center;
@@ -1165,10 +1223,11 @@ filter: drop-shadow(0 0 6px var(--zen));
 .tag-ally { background: rgba(46,140,232,0.1); color: var(--water); border-color: rgba(46,140,232,0.2); }
 .tag-chamber { background: rgba(240,201,70,0.1); color: var(--air); border-color: rgba(240,201,70,0.2); }
 
-/* EXPORT BTN */
+/* EXPORT ROW */
 .export-row {
   display: flex;
-  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-bottom: 10px;
 }
 
@@ -1195,7 +1254,6 @@ filter: drop-shadow(0 0 6px var(--zen));
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 7px 14px;
-  margin-left: 8px;
   color: var(--text-secondary);
   font-size: 0.72rem;
   font-family: 'Nunito Sans', sans-serif;
@@ -1204,6 +1262,48 @@ filter: drop-shadow(0 0 6px var(--zen));
   transition: all 0.2s;
 }
 .import-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.compare-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 14px;
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.compare-btn:hover { border-color: var(--water); color: var(--water); }
+
+.compare-btn.has-compare {
+  border-color: rgba(46,140,232,0.4);
+  color: var(--water);
+  background: rgba(46,140,232,0.08);
+}
+
+.clear-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 14px;
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.clear-btn:hover { border-color: var(--danger); color: var(--danger); }
 
 #downloadLink {
   position: fixed;
@@ -1305,6 +1405,16 @@ filter: drop-shadow(0 0 6px var(--zen));
   background: var(--bg-card-hover);
 }
 
+.method-btn.danger-method:hover {
+  border-color: var(--danger);
+}
+
+.method-btn.disabled-method {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .method-btn-icon {
   width: 40px;
   height: 40px;
@@ -1324,6 +1434,16 @@ filter: drop-shadow(0 0 6px var(--zen));
 .method-btn-icon.code-icon {
   background: rgba(180,77,223,0.12);
   color: var(--zen);
+}
+
+.method-btn-icon.clear-own-icon {
+  background: rgba(224,72,72,0.12);
+  color: var(--danger);
+}
+
+.method-btn-icon.clear-compare-icon {
+  background: rgba(46,140,232,0.12);
+  color: var(--water);
 }
 
 .method-btn-text {
@@ -1357,6 +1477,32 @@ filter: drop-shadow(0 0 6px var(--zen));
 }
 
 .method-cancel-btn:hover { border-color: var(--border-light); }
+
+/* CLEAR DIALOG WARNING */
+.clear-warning {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  background: rgba(224,72,72,0.08);
+  border: 1px solid rgba(224,72,72,0.2);
+  border-radius: 8px;
+  text-align: left;
+}
+
+.clear-warning i {
+  color: var(--danger);
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.clear-warning span {
+  font-size: 0.75rem;
+  color: var(--danger);
+  font-weight: 600;
+  line-height: 1.4;
+}
 
 /* SAVE CODE INPUT DIALOG */
 .code-input-overlay {
@@ -1433,6 +1579,14 @@ filter: drop-shadow(0 0 6px var(--zen));
   font-family: 'VT323', 'Courier New', monospace;
 }
 
+.code-textarea.compare-mode {
+  color: var(--water);
+}
+
+.code-textarea.compare-mode:focus {
+  border-color: var(--water);
+}
+
 .code-input-error {
   font-size: 0.75rem;
   color: var(--danger);
@@ -1453,6 +1607,11 @@ filter: drop-shadow(0 0 6px var(--zen));
 
 .code-input-actions .confirm-ok:hover {
   opacity: 0.9;
+}
+
+.code-input-actions .confirm-ok.compare-ok {
+  background: var(--water);
+  border-color: var(--water);
 }
 
 /* PERSISTENT SAVE CODE FOOTER */
@@ -1550,6 +1709,7 @@ filter: drop-shadow(0 0 6px var(--zen));
   .rarity-breakdown { grid-template-columns: repeat(5, 1fr); gap: 4px; }
   .rarity-chip { padding: 6px 2px; }
   .save-code-value { font-size: 12px; }
+  .export-row { gap: 6px; }
 }
 
 @media (min-width: 768px) {
@@ -1602,7 +1762,12 @@ filter: drop-shadow(0 0 6px var(--zen));
 <div class="filter-row" id="filterRow"></div>
 </div>
 
-<div class="export-row"><button class="export-btn" id="exportBtn">Export Collection</button><button class="import-btn" id="importBtn">Import Collection</button></div>
+<div class="export-row">
+  <button class="export-btn" id="exportBtn"><i class="fas fa-file-export"></i> Export</button>
+  <button class="import-btn" id="importBtn"><i class="fas fa-file-import"></i> Import</button>
+  <button class="compare-btn" id="compareBtn"><i class="fas fa-people-arrows"></i> Compare</button>
+  <button class="clear-btn" id="clearBtn"><i class="fas fa-trash-alt"></i> Clear</button>
+</div>
 
 <div class="sort-row">
   <span class="results-count" id="resultsCount">0 cards</span>
@@ -1667,7 +1832,7 @@ filter: drop-shadow(0 0 6px var(--zen));
 <input accept=".csv" id="importFile" style="display:none" type="file" ></div>
 </div>
 
-<!-- SAVE CODE INPUT DIALOG -->
+<!-- SAVE CODE INPUT DIALOG (for import) -->
 <div class="code-input-overlay" id="codeInputOverlay">
 <div class="code-input-box">
 <div class="code-input-header">
@@ -1677,6 +1842,55 @@ filter: drop-shadow(0 0 6px var(--zen));
 <textarea class="code-textarea" id="codeTextarea" placeholder="Paste save code here..."></textarea>
 <div class="code-input-error" id="codeInputError"></div>
 <div class="code-input-actions"><button class="confirm-btn confirm-cancel" id="codeInputCancel">Cancel</button><button class="confirm-btn confirm-ok" id="codeInputOk">Decode &amp; Import</button></div>
+</div>
+</div>
+
+<!-- COMPARE CODE INPUT DIALOG -->
+<div class="code-input-overlay" id="compareInputOverlay">
+<div class="code-input-box">
+<div class="code-input-header">
+<i class="fas fa-people-arrows" style="color: var(--water);"></i>
+<h3>Compare Collections</h3>
+</div>
+<div class="code-input-hint">Paste your friend's save code below to compare their collection against yours. Cards they own will show a blue quantity badge.</div>
+<textarea class="code-textarea compare-mode" id="compareTextarea" placeholder="Paste friend's save code here..."></textarea>
+<div class="code-input-error" id="compareInputError"></div>
+<div class="code-input-actions"><button class="confirm-btn confirm-cancel" id="compareInputCancel">Cancel</button><button class="confirm-btn confirm-ok compare-ok" id="compareInputOk">Compare</button></div>
+</div>
+</div>
+
+<!-- CLEAR COLLECTION DIALOG -->
+<div class="import-method-overlay" id="clearMethodOverlay">
+<div class="import-method-box">
+<div class="import-method-title">Clear Collection</div>
+<div class="import-method-sub">Choose which data to clear</div>
+<div class="clear-warning"><i class="fas fa-exclamation-triangle"></i><span>This action cannot be undone. Make sure you have exported or saved your code before clearing.</span></div>
+<div class="import-method-btns">
+<button class="method-btn danger-method" id="clearOwnBtn">
+<div class="method-btn-icon clear-own-icon"><i class="fas fa-user-slash"></i></div>
+<div class="method-btn-text"><span class="method-btn-label">Clear My Collection</span><span class="method-btn-desc">Remove all cards from your collection</span></div>
+</button>
+<button class="method-btn danger-method" id="clearCompareBtn">
+<div class="method-btn-icon clear-compare-icon"><i class="fas fa-user-xmark"></i></div>
+<div class="method-btn-text"><span class="method-btn-label">Clear Compared Collection</span><span class="method-btn-desc">Remove the friend's comparison data</span></div>
+</button>
+</div>
+<button class="method-cancel-btn" id="clearMethodCancel">Cancel</button></div>
+</div>
+
+<!-- CLEAR OWN CONFIRM DIALOG -->
+<div class="confirm-overlay" id="clearOwnConfirmOverlay">
+<div class="confirm-box">
+<p>Are you sure you want to clear your entire collection? All owned cards and quantities will be lost.</p>
+<div class="confirm-actions"><button class="confirm-btn confirm-cancel" id="clearOwnCancel">Cancel</button><button class="confirm-btn confirm-ok" id="clearOwnOk">Clear My Collection</button></div>
+</div>
+</div>
+
+<!-- CLEAR COMPARE CONFIRM DIALOG -->
+<div class="confirm-overlay" id="clearCompareConfirmOverlay">
+<div class="confirm-box">
+<p>Remove the compared collection data? This will hide all comparison badges and the shared filter.</p>
+<div class="confirm-actions"><button class="confirm-btn confirm-cancel" id="clearCompareCancel">Cancel</button><button class="confirm-btn confirm-ok" id="clearCompareOk" style="background: var(--water); border-color: var(--water);">Clear Comparison</button></div>
 </div>
 </div>
 
@@ -1693,6 +1907,7 @@ filter: drop-shadow(0 0 6px var(--zen));
 <div class="modal-card-name" id="modalName"></div>
 <div class="modal-card-number" id="modalNumber"></div>
 <div class="modal-tags" id="modalTags"></div>
+<div id="modalCompareInfo"></div>
 <div class="modal-divider"></div>
 <div class="modal-collection-section">
 <h4>Collection</h4>
@@ -1714,6 +1929,7 @@ var CSV_URL = "https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/ref
 /* ---- STATE ---- */
 var allCards = [];
 var collection = {};
+var compareCollection = {};
 var activeTypeFilter = "all";
 var activeRarityFilter = "all";
 var activeOwnershipFilter = "all";
@@ -1912,6 +2128,33 @@ function getBonusTotalCards() {
   return bonus;
 }
 
+/* ---- HELPER: has compare data ---- */
+function hasCompareData() {
+  return Object.keys(compareCollection).length > 0;
+}
+
+/* ---- UPDATE COMPARE BUTTON STATE ---- */
+function updateCompareBtn() {
+  var btn = document.getElementById('compareBtn');
+  if (hasCompareData()) {
+    btn.classList.add('has-compare');
+    btn.innerHTML = '<i class="fas fa-people-arrows"></i> Comparing';
+  } else {
+    btn.classList.remove('has-compare');
+    btn.innerHTML = '<i class="fas fa-people-arrows"></i> Compare';
+  }
+}
+
+/* ---- UPDATE CLEAR COMPARE BUTTON STATE ---- */
+function updateClearCompareBtn() {
+  var btn = document.getElementById('clearCompareBtn');
+  if (hasCompareData()) {
+    btn.classList.remove('disabled-method');
+  } else {
+    btn.classList.add('disabled-method');
+  }
+}
+
 /* ---- UPDATE SORT DIRECTION BUTTON ---- */
 function updateSortDirBtn() {
   var btn = document.getElementById('sortDirBtn');
@@ -1952,6 +2195,7 @@ async function init() {
   updateStats();
   renderCards();
   updateSaveCodeDisplay();
+  updateCompareBtn();
   setupEvents();
 }
 
@@ -1962,13 +2206,16 @@ function buildFilters() {
     if (types.indexOf(c.type) === -1) { types.push(c.type); }
   });
   var filterRow = document.getElementById('filterRow');
-  var html = '<button class="filter-pill active" data-filter-type="all">All Cards</button>';
+  var html = '<button class="filter-pill' + (activeTypeFilter === 'all' ? ' active' : '') + '" data-filter-type="all">All Cards</button>';
   types.forEach(function(t) {
-    html += '<button class="filter-pill" data-filter-type="' + t + '">' + t + '</button>';
+    html += '<button class="filter-pill' + (activeTypeFilter === t ? ' active' : '') + '" data-filter-type="' + t + '">' + t + '</button>';
   });
   html += '<span class="filter-divider"></span>';
-  html += '<button class="filter-pill owned-filter" data-ownership="owned"><i class="fas fa-check" style="margin-right:4px;font-size:0.65rem"></i>Owned</button>';
-  html += '<button class="filter-pill missing-filter" data-ownership="missing"><i class="fas fa-times" style="margin-right:4px;font-size:0.65rem"></i>Missing</button>';
+  html += '<button class="filter-pill owned-filter' + (activeOwnershipFilter === 'owned' ? ' active' : '') + '" data-ownership="owned"><i class="fas fa-check" style="margin-right:4px;font-size:0.65rem"></i>Owned</button>';
+  html += '<button class="filter-pill missing-filter' + (activeOwnershipFilter === 'missing' ? ' active' : '') + '" data-ownership="missing"><i class="fas fa-times" style="margin-right:4px;font-size:0.65rem"></i>Missing</button>';
+  if (hasCompareData()) {
+    html += '<button class="filter-pill shared-filter' + (activeOwnershipFilter === 'shared' ? ' active' : '') + '" data-ownership="shared"><i class="fas fa-people-arrows" style="margin-right:4px;font-size:0.65rem"></i>Shared</button>';
+  }
   filterRow.innerHTML = html;
 }
 
@@ -2028,6 +2275,10 @@ function getFilteredCards() {
     cards = cards.filter(function(c) { return (collection[c.number] || 0) > 0; });
   } else if (activeOwnershipFilter === 'missing') {
     cards = cards.filter(function(c) { return (collection[c.number] || 0) === 0; });
+  } else if (activeOwnershipFilter === 'shared') {
+    cards = cards.filter(function(c) {
+      return (collection[c.number] || 0) > 0 && (compareCollection[c.number] || 0) > 0;
+    });
   }
   var dir = sortDirection === 'asc' ? 1 : -1;
   var rarityOrder = { common: 0, uncommon: 1, rare: 2, zenemental: 3, promo: 4 };
@@ -2056,11 +2307,12 @@ function getFilteredCards() {
   return cards;
 }
 
-/* ---- RENDER CARDS (with flip containers) ---- */
+/* ---- RENDER CARDS (with flip containers and compare badges) ---- */
 function renderCards() {
   var cards = getFilteredCards();
   var grid = document.getElementById('cardGrid');
   var empty = document.getElementById('emptyState');
+  var showCompare = hasCompareData();
 
   document.getElementById('resultsCount').textContent = cards.length + ' card' + (cards.length !== 1 ? 's' : '');
 
@@ -2075,6 +2327,7 @@ function renderCards() {
   var html = '';
   cards.forEach(function(c) {
     var qty = collection[c.number] || 0;
+    var compareQty = compareCollection[c.number] || 0;
     var isOwned = qty > 0;
     var rarityClass = 'dot-' + c.rarity;
     var imgUrl = c.imageLink;
@@ -2113,6 +2366,11 @@ function renderCards() {
     if (isOwned) { html += '<span class="card-owned-badge"><i class="fas fa-check"></i></span>'; }
     if (qty > 1) { html += '<span class="card-qty-badge">x' + qty + '</span>'; }
 
+    // Compare badge (bottom-left, offset from flip button)
+    if (showCompare && compareQty > 0) {
+      html += '<span class="card-compare-badge"><i class="fas fa-user-group"></i> x' + compareQty + '</span>';
+    }
+
     // Flip button
     html += '<button class="card-flip-btn" data-flip-target="' + c.number + '" title="Flip View"><i class="fas fa-rotate"></i></button>';
 
@@ -2126,6 +2384,9 @@ function renderCards() {
     html += '<span class="card-rarity-label rarity-' + c.rarity + '">' + c.rarity + '</span>';
     html += '</div></div>';
     html += '<div class="list-card-right">';
+    if (showCompare && compareQty > 0) {
+      html += '<span class="list-compare-qty show"><i class="fas fa-user-group" style="font-size:0.6rem;margin-right:2px"></i>x' + compareQty + '</span>';
+    }
     html += '<span class="list-owned-icon' + (isOwned ? ' show' : '') + '"><i class="fas fa-check-circle"></i></span>';
     if (qty > 1) { html += '<span class="list-qty show">x' + qty + '</span>'; }
     html += '<span class="list-card-arrow"><i class="fas fa-chevron-right"></i></span>';
@@ -2140,7 +2401,7 @@ function escapeHtml(str) {
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-/* ---- MODAL (with flip support) ---- */
+/* ---- MODAL (with flip support and compare info) ---- */
 function openModal(cardNumber) {
   var card = allCards.find(function(c) { return c.number === cardNumber; });
   if (!card) { return; }
@@ -2148,6 +2409,7 @@ function openModal(cardNumber) {
   modalFlipped = false;
 
   var qty = collection[card.number] || 0;
+  var compareQty = compareCollection[card.number] || 0;
   var isOwned = qty > 0;
 
   document.getElementById('modalName').textContent = card.name;
@@ -2157,6 +2419,16 @@ function openModal(cardNumber) {
   tagsEl.innerHTML =
     '<span class="modal-tag tag-' + card.type + '">' + card.type + '</span>' +
     '<span class="modal-tag" style="background:var(--' + card.rarity + '-bg);"><span class="card-rarity-dot dot-' + card.rarity + '" style="display:inline-block;margin-right:5px;vertical-align:middle"></span>' + card.rarity + '</span>';
+
+  // Compare info in modal
+  var compareInfoEl = document.getElementById('modalCompareInfo');
+  if (hasCompareData() && compareQty > 0) {
+    compareInfoEl.innerHTML = '<div class="modal-compare-info"><i class="fas fa-user-group"></i><span>Friend owns ' + compareQty + ' cop' + (compareQty === 1 ? 'y' : 'ies') + '</span></div>';
+  } else if (hasCompareData()) {
+    compareInfoEl.innerHTML = '<div class="modal-compare-info" style="background:rgba(224,72,72,0.06);border-color:rgba(224,72,72,0.15);"><i class="fas fa-user-xmark" style="color:var(--danger);"></i><span style="color:var(--text-muted);">Friend doesn\'t have this card</span></div>';
+  } else {
+    compareInfoEl.innerHTML = '';
+  }
 
   var backImgUrl = card.backImageLink || '';
 
@@ -2359,6 +2631,47 @@ function processCSVImport(text) {
   showToast('Collection imported from CSV!');
 }
 
+/* ---- COMPARE DIALOG HELPERS ---- */
+function openCompareDialog() {
+  document.getElementById('compareInputOverlay').classList.add('active');
+  document.getElementById('compareTextarea').value = '';
+  document.getElementById('compareInputError').textContent = '';
+  setTimeout(function() {
+    document.getElementById('compareTextarea').focus();
+  }, 100);
+}
+
+function closeCompareDialog() {
+  document.getElementById('compareInputOverlay').classList.remove('active');
+  document.getElementById('compareTextarea').value = '';
+  document.getElementById('compareInputError').textContent = '';
+}
+
+function applyCompareCollection(decoded) {
+  compareCollection = decoded;
+  // If current filter is "shared" and compare data is cleared, reset
+  if (activeOwnershipFilter === 'shared' && !hasCompareData()) {
+    activeOwnershipFilter = 'all';
+  }
+  buildFilters();
+  renderCards();
+  updateCompareBtn();
+  // Update modal if open
+  if (currentModalCard) {
+    openModal(currentModalCard.number);
+  }
+}
+
+/* ---- CLEAR DIALOG HELPERS ---- */
+function openClearDialog() {
+  updateClearCompareBtn();
+  document.getElementById('clearMethodOverlay').classList.add('active');
+}
+
+function closeClearDialog() {
+  document.getElementById('clearMethodOverlay').classList.remove('active');
+}
+
 /* ---- EVENTS ---- */
 function setupEvents() {
   document.getElementById('searchInput').addEventListener('input', function() {
@@ -2487,6 +2800,88 @@ function setupEvents() {
 
   document.getElementById('exportBtn').addEventListener('click', exportCollection);
 
+  // Compare button
+  document.getElementById('compareBtn').addEventListener('click', function() {
+    openCompareDialog();
+  });
+
+  // Compare dialog events
+  document.getElementById('compareInputOk').addEventListener('click', function() {
+    var code = document.getElementById('compareTextarea').value.trim();
+    var errorEl = document.getElementById('compareInputError');
+    if (!code) {
+      errorEl.textContent = 'Please enter a save code.';
+      return;
+    }
+    var decoded = decodeCollectionFromCode(code);
+    if (!decoded) {
+      errorEl.textContent = 'Invalid save code. Check that you pasted the full code correctly.';
+      return;
+    }
+    applyCompareCollection(decoded);
+    closeCompareDialog();
+    var count = Object.keys(decoded).length;
+    showToast('Comparing against ' + count + ' card' + (count !== 1 ? 's' : '') + '!');
+  });
+
+  document.getElementById('compareInputCancel').addEventListener('click', closeCompareDialog);
+  document.getElementById('compareInputOverlay').addEventListener('click', function(e) {
+    if (e.target === this) { closeCompareDialog(); }
+  });
+
+  // Clear button
+  document.getElementById('clearBtn').addEventListener('click', function() {
+    openClearDialog();
+  });
+
+  // Clear dialog events
+  document.getElementById('clearOwnBtn').addEventListener('click', function() {
+    closeClearDialog();
+    document.getElementById('clearOwnConfirmOverlay').classList.add('active');
+  });
+
+  document.getElementById('clearCompareBtn').addEventListener('click', function() {
+    if (!hasCompareData()) { return; }
+    closeClearDialog();
+    document.getElementById('clearCompareConfirmOverlay').classList.add('active');
+  });
+
+  document.getElementById('clearMethodCancel').addEventListener('click', closeClearDialog);
+  document.getElementById('clearMethodOverlay').addEventListener('click', function(e) {
+    if (e.target === this) { closeClearDialog(); }
+  });
+
+  // Clear own collection confirm
+  document.getElementById('clearOwnOk').addEventListener('click', function() {
+    collection = {};
+    saveCollection();
+    updateStats();
+    buildFilters();
+    renderCards();
+    updateSaveCodeDisplay();
+    document.getElementById('clearOwnConfirmOverlay').classList.remove('active');
+    showToast('Collection cleared');
+  });
+  document.getElementById('clearOwnCancel').addEventListener('click', function() {
+    document.getElementById('clearOwnConfirmOverlay').classList.remove('active');
+  });
+  document.getElementById('clearOwnConfirmOverlay').addEventListener('click', function(e) {
+    if (e.target === this) { this.classList.remove('active'); }
+  });
+
+  // Clear compare collection confirm
+  document.getElementById('clearCompareOk').addEventListener('click', function() {
+    applyCompareCollection({});
+    document.getElementById('clearCompareConfirmOverlay').classList.remove('active');
+    showToast('Comparison data cleared');
+  });
+  document.getElementById('clearCompareCancel').addEventListener('click', function() {
+    document.getElementById('clearCompareConfirmOverlay').classList.remove('active');
+  });
+  document.getElementById('clearCompareConfirmOverlay').addEventListener('click', function(e) {
+    if (e.target === this) { this.classList.remove('active'); }
+  });
+
   var scrollBtn = document.getElementById('scrollTopBtn');
   window.addEventListener('scroll', function() {
     scrollBtn.classList.toggle('show', window.scrollY > 400);
@@ -2576,7 +2971,15 @@ document.getElementById('codeInputOverlay').addEventListener('click', function(e
 /* ---- KEYDOWN ESCAPE HANDLING ---- */
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
-    if (document.getElementById('codeInputOverlay').classList.contains('active')) {
+    if (document.getElementById('compareInputOverlay').classList.contains('active')) {
+      closeCompareDialog();
+    } else if (document.getElementById('clearMethodOverlay').classList.contains('active')) {
+      closeClearDialog();
+    } else if (document.getElementById('clearOwnConfirmOverlay').classList.contains('active')) {
+      document.getElementById('clearOwnConfirmOverlay').classList.remove('active');
+    } else if (document.getElementById('clearCompareConfirmOverlay').classList.contains('active')) {
+      document.getElementById('clearCompareConfirmOverlay').classList.remove('active');
+    } else if (document.getElementById('codeInputOverlay').classList.contains('active')) {
       closeCodeInputDialog();
     } else if (document.getElementById('importMethodOverlay').classList.contains('active')) {
       closeImportMethodDialog();
