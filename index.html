@@ -293,7 +293,7 @@ body {
 
 .ruffle-btn:hover {
   transform: scale(1.1);
-  filter: drop-shadow(0 0 8px var(--accent));
+  filter: drop-shadow(0 0 8px var(--zen));
 }
 
 /* Ruffle popup modal */
@@ -3017,7 +3017,7 @@ function renderCards() {
     // Badges (overlay on top of flip container)
     html += '<span class="card-number-badge">#' + c.number + '</span>';
     if (isOwned) { html += '<span class="card-owned-badge"><i class="fas fa-check"></i></span>'; }
-    if (qty > 1) { html += '<span class="card-qty-badge">x' + qty + '</span>'; }
+    if (qty > 0) { html += '<span class="card-qty-badge">x' + qty + '</span>'; }
 
     // Compare badge (bottom-left, offset from flip button)
     if (showCompare && compareQty > 0) {
