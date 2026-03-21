@@ -1778,9 +1778,26 @@ filter: drop-shadow(0 0 6px var(--zen));
 /* EXPORT ROW */
 .export-row {
   display: flex;
-  flex-wrap: wrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  flex-wrap: nowrap;
   gap: 8px;
   margin-bottom: 10px;
+  padding: 8px 0;
+
+  /* smooth scrolling on mobile */
+  -webkit-overflow-scrolling: touch;
+
+  /* optional: hide scrollbar */
+  scrollbar-width: none;
+}
+
+.export-row::-webkit-scrollbar {
+  display: none;
+}
+.export-row button {
+  flex: 0 0 auto;   /* critical */
 }
 
 .export-btn {
