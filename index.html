@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
 	<title>Avatar TCG</title>
 	<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&amp;family=Nunito+Sans:wght@300;400;600;700&amp;family=VT323&amp;display=swap" rel="stylesheet" >
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" >
@@ -41,32 +44,6 @@
   --shadow-md: 0 4px 16px rgba(0,0,0,0.3);
   --radius: 10px;
   --radius-lg: 16px;
-}
-
-html.dark {
-  /* dark is default, no changes needed */
-}
-
-html:not(.dark) {
-  --bg-primary: #f0eff5;
-  --bg-secondary: #e4e3ec;
-  --bg-card: #ffffff;
-  --bg-card-hover: #f7f6fb;
-  --bg-surface: #eeedf5;
-  --text-primary: #1a1a2e;
-  --text-secondary: #5a5a78;
-  --text-muted: #8a8a9e;
-  --border: #d4d3de;
-  --border-light: #c8c7d5;
-  --shadow-lg: 0 8px 32px rgba(0,0,0,0.1);
-  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
-  --common-bg: rgba(138,142,168,0.08);
-  --uncommon-bg: rgba(92,184,92,0.08);
-  --rare-bg: rgba(74,125,255,0.08);
-  --zen-bg: rgba(180,77,223,0.08);
-  --promo-bg: rgba(232,182,50,0.08);
-  --owned-overlay: rgba(61,184,108,0.08);
-  --bg-card: #ffffff;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -2287,6 +2264,8 @@ filter: drop-shadow(0 0 6px var(--zen));
   .header-title { font-size: 1.9rem; }
 }
 	</style>
+</head>
+<body>
 <div class="bg-fixed-image">
   <img src="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/main/BKGRND.png" alt="" loading="eager">
 </div>
