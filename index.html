@@ -179,6 +179,9 @@ body {
   margin-bottom: 16px;
   border-bottom: 1px solid var(--border);
   padding-bottom: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
 
 .tab-btn-nested {
@@ -2209,21 +2212,6 @@ filter: drop-shadow(0 0 6px var(--zen));
   }
   .tip-box strong { color: var(--text-primary); }
 
-  /* Fullscreen */
-  .player-shell.fullscreen {
-    position: fixed;
-    inset: 0;
-    max-width: none;
-    border-radius: 0;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-  }
-  .player-shell.fullscreen .player-area {
-    flex: 1;
-    aspect-ratio: unset;
-  }
-
   /* Animations */
   @keyframes fadeSlideDown {
     from { opacity: 0; transform: translateY(-16px); }
@@ -2374,9 +2362,6 @@ filter: drop-shadow(0 0 6px var(--zen));
         <button class="toolbar-btn" id="btnReload" title="Reload">
           <i class="fas fa-redo-alt"></i>
         </button>
-        <button class="toolbar-btn" id="btnFullscreen" title="Fullscreen">
-          <i class="fas fa-expand"></i>
-        </button>
       </div>
 
     <div class="player-area" id="playerArea">
@@ -2406,7 +2391,7 @@ filter: drop-shadow(0 0 6px var(--zen));
 <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
 <script>
 (function() {
-  const SWF_URL = "https://pfst.cf2.poecdn.net/base/application/f13eb4798f8289333074e546d614eaabf7a1857331d879cc5f4ade1414894b83";
+  const SWF_URL = "https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/main/Avatar_demo.swf";
 
   const playerArea = document.getElementById("playerArea");
   const loadingOverlay = document.getElementById("loadingOverlay");
