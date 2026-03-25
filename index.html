@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="dark">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Avatar TCG</title>
 	<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&amp;family=Nunito+Sans:wght@300;400;600;700&amp;family=VT323&amp;display=swap" rel="stylesheet" >
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" >
@@ -44,6 +41,32 @@
   --shadow-md: 0 4px 16px rgba(0,0,0,0.3);
   --radius: 10px;
   --radius-lg: 16px;
+}
+
+html.dark {
+  /* dark is default, no changes needed */
+}
+
+html:not(.dark) {
+  --bg-primary: #f0eff5;
+  --bg-secondary: #e4e3ec;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f7f6fb;
+  --bg-surface: #eeedf5;
+  --text-primary: #1a1a2e;
+  --text-secondary: #5a5a78;
+  --text-muted: #8a8a9e;
+  --border: #d4d3de;
+  --border-light: #c8c7d5;
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.1);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  --common-bg: rgba(138,142,168,0.08);
+  --uncommon-bg: rgba(92,184,92,0.08);
+  --rare-bg: rgba(74,125,255,0.08);
+  --zen-bg: rgba(180,77,223,0.08);
+  --promo-bg: rgba(232,182,50,0.08);
+  --owned-overlay: rgba(61,184,108,0.08);
+  --bg-card: #ffffff;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -109,558 +132,6 @@ body {
   text-transform: uppercase;
   font-weight: 600;
 }
-
-/* HOW-TO BUTTON & POPUP */
-.how-to-btn {
-  position: fixed;
-  bottom: 90px;
-  right: 20px;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--zen);
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-  box-shadow: 0 4px 16px rgba(180,77,223,0.4);
-  transition: all 0.2s;
-}
-
-.how-to-btn:hover {
-  transform: scale(1.1);
-  filter: drop-shadow(0 0 8px var(--zen));
-}
-
-.how-to-popup {
-  position: fixed;
-  bottom: 160px;
-  right: 20px;
-  width: 320px;
-  max-height: 70vh;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  z-index: 49;
-  display: none;
-  flex-direction: column;
-  overflow: hidden;
-  animation: slideUp 0.3s ease;
-}
-
-.how-to-popup.active {
-  display: flex;
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.how-to-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
-
-.how-to-title {
-  font-family: 'Cinzel', serif;
-  font-weight: 700;
-  font-size: 1rem;
-  color: var(--text-primary);
-}
-
-.how-to-close {
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  font-size: 1.3rem;
-  cursor: pointer;
-  padding: 0;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.2s;
-}
-
-.how-to-close:hover {
-  color: var(--text-primary);
-}
-
-.how-to-content {
-  padding: 16px;
-  overflow-y: auto;
-  font-size: 0.85rem;
-  line-height: 1.6;
-  color: var(--text-secondary);
-}
-
-.how-to-content h3 {
-  font-size: 0.9rem;
-  color: var(--text-primary);
-  margin-top: 12px;
-  margin-bottom: 8px;
-  font-weight: 700;
-}
-
-.how-to-content h3:first-child {
-  margin-top: 0;
-}
-
-.how-to-content p {
-  margin-bottom: 10px;
-}
-
-.how-to-content ul {
-  margin-left: 18px;
-  margin-bottom: 10px;
-}
-
-.how-to-content li {
-  margin-bottom: 6px;
-}
-
-/* HOW-TO POPUP - RESPONSIVE */
-@media (max-width: 480px) {
-  .how-to-popup {
-    bottom: 90px;
-    right: 10px;
-    left: 10px;
-    width: auto;
-    max-width: calc(100vw - 20px);
-  }
-}
-
-/* RUFFLE PLAYER - HIDDEN BY DEFAULT */
-.ruffle-btn {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-
-  /* REMOVE fixed size */
-  /* width: 35px; */
-  /* height: 35px; */
-
-  padding: 6px 12px;
-  border-radius: 20px;
-
-  background: var(--zen);
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  z-index: 50;
-
-  display: inline-flex; /* better for text + icon */
-  align-items: center;
-  justify-content: center;
-  gap: 6px; /* space between icon + text */
-
-  white-space: nowrap;
-  font-size: 14px;
-
-  box-shadow: 0 4px 16px rgba(74,125,255,0.4);
-  transition: all 0.2s;
-}
-
-.how-to-inline {
-  color: white;
-  font-size: 14px;        /* match pill size */
-  font-weight: 600;       /* match active pill */
-  margin: 0;
-  padding: 0;
-  display: inline;        /* critical */
-}
-
-.ruffle-btn:hover {
-  transform: scale(1.1);
-  filter: drop-shadow(0 0 8px var(--zen));
-}
-
-/* Ruffle popup modal */
-.ruffle-popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 90vw;
-  height: 90vh;
-  max-width: 1000px;
-  max-height: 700px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  z-index: 999;
-  display: none;
-  flex-direction: column;
-  overflow: hidden;
-  animation: popupSlideIn 0.3s ease;
-}
-
-.ruffle-popup.active {
-  display: flex;
-}
-
-@keyframes popupSlideIn {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
-.ruffle-popup-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-  background: var(--bg-card);
-}
-
-.ruffle-popup-title {
-  font-family: 'Cinzel', serif;
-  font-weight: 700;
-  font-size: 1rem;
-  color: var(--text-primary);
-}
-
-.ruffle-popup-close {
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  font-size: 1.3rem;
-  cursor: pointer;
-  padding: 0;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.2s;
-}
-
-.ruffle-popup-close:hover {
-  color: var(--text-primary);
-}
-
-.ruffle-popup-content {
-  flex: 1;
-  overflow: hidden;
-  background: #000;
-}
-
-.ruffle-popup-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 998;
-  display: none;
-  backdrop-filter: blur(2px);
-}
-
-.ruffle-popup-overlay.active {
-  display: block;
-}
-
-  .app-wrapper {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    padding: 20px 16px;
-  }
-
-    /* Player Container */
-  .player-shell {
-    width: 100%;
-    max-width: 800px;
-    background: var(--gradient-2);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    box-shadow: var(--shadow-card), var(--shadow-glow);
-    overflow: hidden;
-    animation: fadeScaleIn 0.7s ease-out 0.15s both;
-    display: none;
-  }
-
-  .player-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 16px;
-    background: var(--bg-secondary);
-    border-bottom: 1px solid var(--border-color);
-  }
-
-    .toolbar-actions {
-    display: flex;
-    gap: 6px;
-  }
-
-  .toolbar-btn {
-    background: transparent;
-    border: 1px solid var(--border-color);
-    color: var(--text-secondary);
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    font-size: 13px;
-  }
-  .toolbar-btn:hover {
-    background: var(--accent);
-    color: #fff;
-    border-color: var(--accent);
-    transform: scale(1.05);
-  }
-
-  /* Player Area */
-  .player-area {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    background: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
-
-  .player-area ruffle-player,
-  .player-area ruffle-embed {
-    width: 100%;
-    height: 100%;
-  }
-
-  /* Loading State */
-  .loading-overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0,0,0,0.85);
-    z-index: 10;
-    gap: 16px;
-    transition: opacity 0.4s ease;
-  }
-  .loading-overlay.hidden {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .loader-ring {
-    width: 48px;
-    height: 48px;
-    border: 3px solid rgba(255,107,61,0.15);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-
-  .loading-text {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 10px;
-    color: var(--accent);
-    animation: blink 1.2s ease-in-out infinite;
-  }
-
-  .loading-sub {
-    font-size: 11px;
-    color: var(--text-secondary);
-  }
-
-  /* Error State */
-  .error-state {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 32px;
-    text-align: center;
-  }
-  .error-state.visible { display: flex; }
-
-  .error-state i {
-    font-size: 36px;
-    color: #ff5f57;
-  }
-  .error-state h3 {
-    font-size: 15px;
-    color: var(--text-primary);
-  }
-  .error-state p {
-    font-size: 12px;
-    color: var(--text-secondary);
-    max-width: 320px;
-    line-height: 1.6;
-  }
-
-  .retry-btn {
-    margin-top: 8px;
-    padding: 10px 24px;
-    background: var(--gradient-1);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .retry-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px var(--accent-glow);
-  }
-
-  /* Status Bar */
-  .player-status {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 16px;
-    background: var(--bg-secondary);
-    border-top: 1px solid var(--border-color);
-    font-size: 11px;
-    color: var(--text-secondary);
-  }
-
-  .status-indicator {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .status-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #6b6880;
-    transition: background 0.3s;
-  }
-  .status-dot.active { background: #28ca42; box-shadow: 0 0 8px rgba(40,202,66,0.4); }
-  .status-dot.error { background: #ff5f57; box-shadow: 0 0 8px rgba(255,95,87,0.4); }
-  .status-dot.loading { background: var(--accent); animation: pulse 1s ease-in-out infinite; }
-
-  /* Info strip below player */
-  .info-strip {
-    max-width: 800px;
-    width: 100%;
-    margin-top: 16px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    animation: fadeSlideUp 0.6s ease-out 0.3s both;
-  }
-
-  .info-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 11px;
-    color: var(--text-secondary);
-  }
-  .info-chip i { color: var(--accent); font-size: 10px; }
-
-  /* Tip box */
-  .tip-box {
-    max-width: 800px;
-    width: 100%;
-    margin-top: 12px;
-    padding: 12px 16px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-left: 3px solid var(--accent);
-    border-radius: 8px;
-    font-size: 12px;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    animation: fadeSlideUp 0.6s ease-out 0.45s both;
-  }
-  .tip-box strong { color: var(--text-primary); }
-
-  /* Fullscreen */
-  .player-shell.fullscreen {
-    position: fixed;
-    inset: 0;
-    max-width: none;
-    border-radius: 0;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-  }
-  .player-shell.fullscreen .player-area {
-    flex: 1;
-    aspect-ratio: unset;
-  }
-
-  /* Animations */
-  @keyframes fadeSlideDown {
-    from { opacity: 0; transform: translateY(-16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes fadeScaleIn {
-    from { opacity: 0; transform: scale(0.97); }
-    to { opacity: 1; transform: scale(1); }
-  }
-  @keyframes fadeSlideUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  /* Responsive */
-  @media (max-width: 480px) {
-    .app-wrapper { padding: 12px 10px; }
-    .header { margin-bottom: 14px; }
-    .toolbar-title span { display: none; }
-    .info-strip { gap: 6px; }
-    .info-chip { font-size: 10px; padding: 5px 9px; }
-  }
 
 /* STATS BAR */
 .stats-bar {
@@ -1755,26 +1226,9 @@ filter: drop-shadow(0 0 6px var(--zen));
 /* EXPORT ROW */
 .export-row {
   display: flex;
-  overflow-x: auto;
-  overflow-y: hidden;
-  white-space: nowrap;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 10px;
-  padding: 8px 0;
-
-  /* smooth scrolling on mobile */
-  -webkit-overflow-scrolling: touch;
-
-  /* optional: hide scrollbar */
-  scrollbar-width: none;
-}
-
-.export-row::-webkit-scrollbar {
-  display: none;
-}
-.export-row button {
-  flex: 0 0 auto;   /* critical */
 }
 
 .export-btn {
@@ -2256,7 +1710,6 @@ filter: drop-shadow(0 0 6px var(--zen));
   .rarity-chip { padding: 6px 2px; }
   .save-code-value { font-size: 12px; }
   .export-row { gap: 6px; }
-  .ruffle-popup { width: 95vw; height: 85vh; }
 }
 
 @media (min-width: 768px) {
@@ -2270,24 +1723,6 @@ filter: drop-shadow(0 0 6px var(--zen));
   <img src="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/main/BKGRND.png" alt="" loading="eager">
 </div>
 
-<!-- Ruffle Player Button -->
-<button class="ruffle-btn" id="ruffleBtn" title="Open Flash Player">
-  <i class="fas fa-gamepad"></i>   
-  <span class="how-to-inline">How To</span>
-</button>
-
-<!-- Ruffle Player Popup -->
-<div class="ruffle-popup-overlay" id="ruffleOverlay"></div>
-<div class="ruffle-popup" id="rufflePopup">
-  <div class="ruffle-popup-header">
-    <div class="ruffle-popup-title">Flash Player</div>
-    <button class="ruffle-popup-close" id="ruffleClose">
-      <i class="fas fa-times"></i>
-    </button>
-  </div>
-  <div class="ruffle-popup-content" id="ruffleContent"></div>
-</div>
-
 <div class="app-container">
 <header class="header">
 <div style="text-align: center;">
@@ -2295,7 +1730,6 @@ filter: drop-shadow(0 0 6px var(--zen));
 <div class="image-container" style="position: relative; display: inline-block;"><img alt="Avatar Quick Strike" src="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/main/LGLOGO.png" style="width: 33%; height: auto; filter: drop-shadow(0 0 8px white);" crossorigin="anonymous" ></div>
 </div>
 </header>
-
 <div class="stats-bar">
 <div class="stat-box">
 <div class="stat-value" id="statOwned">0</div>
@@ -2360,45 +1794,6 @@ filter: drop-shadow(0 0 6px var(--zen));
 <div id="saveCodeDisplay"></div>
 <div class="save-code-hint">Select the code above to copy it manually</div>
 </div>
-</div>
-
-<!-- HOW-TO BUTTON & POPUP -->
-<button class="how-to-btn" id="howToBtn" title="How to use">
-  <i class="fas fa-question"></i>
-</button>
-
-<div class="how-to-popup" id="howToPopup">
-  <div class="how-to-header">
-    <div class="how-to-title">How to Use</div>
-    <button class="how-to-close" id="howToClose">
-      <i class="fas fa-times"></i>
-    </button>
-  </div>
-  <div class="how-to-content">
-    <h3>Getting Started</h3>
-    <p>Track your Avatar Quick Strike TCG collection by marking cards you own.</p>
-
-    <h3>Adding Cards</h3>
-    <p>Click any card to open the detail view. Use the quantity controls to set how many copies you own, then add to your collection.</p>
-
-    <h3>Search & Filter</h3>
-    <p>Use the search box to find cards by name or number. Filter by card type, rarity, and ownership status.</p>
-
-    <h3>Sorting</h3>
-    <p>Choose how to sort your cards (number, name, rarity, type, or quantity). Click the arrow button to reverse the sort order.</p>
-
-    <h3>Collection Progress</h3>
-    <p>The stats bar shows how many of the 248 core cards you own. Your total card count includes bonus cards from special products.</p>
-
-    <h3>Export & Import</h3>
-    <p>Export your collection as CSV or save code. Import a previously exported save code or CSV file to restore your collection.</p>
-
-    <h3>Compare Collections</h3>
-    <p>Paste a friend's save code to compare. Cards they own will be highlighted with a blue badge showing their quantity.</p>
-
-    <h3>Save Codes</h3>
-    <p>Your save code is automatically generated and displayed at the bottom. Select it to copy and save offline.</p>
-  </div>
 </div>
 
 <a download="avatar_qs_collection.csv" href="#" id="downloadLink">Download</a>
@@ -2528,71 +1923,8 @@ filter: drop-shadow(0 0 6px var(--zen));
 <!-- SCROLL TO TOP -->
 <button class="scroll-top-btn" id="scrollTopBtn"><i class="fas fa-chevron-up"></i></button>
 
-<script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
 <script>
 var CSV_URL = "https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/refs/heads/main/Avatar%20Quick%20Strike%20TCG%20Database%20GitHub.csv";
-var SWF_URL = "https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/main/Avatar_demo.swf";
-
-/* ---- RUFFLE PLAYER POPUP ---- */
-var rufflePlayerInstance = null;
-var ruffleInitialized = false;
-
-function openRufflePopup() {
-  document.getElementById('ruffleOverlay').classList.add('active');
-  document.getElementById('rufflePopup').classList.add('active');
-
-  if (!ruffleInitialized) {
-    initializeRufflePlayer();
-  }
-}
-
-function closeRufflePopup() {
-  document.getElementById('ruffleOverlay').classList.remove('active');
-  document.getElementById('rufflePopup').classList.remove('active');
-}
-
-function initializeRufflePlayer() {
-  ruffleInitialized = true;
-  var content = document.getElementById('ruffleContent');
-  var loadingEl = document.createElement('div');
-  loadingEl.style.cssText = 'display:flex; align-items:center; justify-content:center; width:100%; height:100%; flex-direction:column; gap:16px; background:#000;';
-  loadingEl.id = 'ruffleLoading';
-  loadingEl.innerHTML = '<div style="width:48px; height:48px; border:3px solid rgba(74,125,255,0.15); border-top-color:#4a7dff; border-radius:50%; animation:spin 0.8s linear infinite;"></div><div style="font-family:monospace; color:#4a7dff; font-size:12px;">Loading...</div>';
-  content.appendChild(loadingEl);
-
-  function waitForRuffle(attempts) {
-    if (attempts <= 0) {
-      loadingEl.innerHTML = '<div style="color:#ff5f57; text-align:center;">Failed to load Ruffle emulator</div>';
-      return;
-    }
-    if (typeof window.RufflePlayer !== "undefined") {
-      try {
-        var ruffle = window.RufflePlayer.newest();
-        var player = ruffle.createPlayer();
-        player.style.width = "100%";
-        player.style.height = "100%";
-        content.innerHTML = '';
-        content.appendChild(player);
-        player.load(SWF_URL).catch(function() {
-          content.innerHTML = '<div style="color:#ff5f57; padding:20px; text-align:center;">Failed to load Flash content</div>';
-        });
-        rufflePlayerInstance = player;
-      } catch (e) {
-        loadingEl.innerHTML = '<div style="color:#ff5f57; text-align:center;">Error initializing Ruffle</div>';
-      }
-    } else {
-      setTimeout(function() { waitForRuffle(attempts - 1); }, 300);
-    }
-  }
-  waitForRuffle(30);
-}
-
-/* Event listeners for Ruffle popup */
-document.getElementById('ruffleBtn').addEventListener('click', openRufflePopup);
-document.getElementById('ruffleClose').addEventListener('click', closeRufflePopup);
-document.getElementById('ruffleOverlay').addEventListener('click', function(e) {
-  if (e.target === this) { closeRufflePopup(); }
-});
 
 /* ---- STATE ---- */
 var allCards = [];
@@ -3032,7 +2364,7 @@ function renderCards() {
     // Badges (overlay on top of flip container)
     html += '<span class="card-number-badge">#' + c.number + '</span>';
     if (isOwned) { html += '<span class="card-owned-badge"><i class="fas fa-check"></i></span>'; }
-    if (qty > 0) { html += '<span class="card-qty-badge">x' + qty + '</span>'; }
+    if (qty > 1) { html += '<span class="card-qty-badge">x' + qty + '</span>'; }
 
     // Compare badge (bottom-left, offset from flip button)
     if (showCompare && compareQty > 0) {
@@ -3340,15 +2672,6 @@ function closeClearDialog() {
   document.getElementById('clearMethodOverlay').classList.remove('active');
 }
 
-/* ---- HOW-TO POPUP ---- */
-function openHowToPopup() {
-  document.getElementById('howToPopup').classList.add('active');
-}
-
-function closeHowToPopup() {
-  document.getElementById('howToPopup').classList.remove('active');
-}
-
 /* ---- EVENTS ---- */
 function setupEvents() {
   document.getElementById('searchInput').addEventListener('input', function() {
@@ -3559,13 +2882,6 @@ function setupEvents() {
     if (e.target === this) { this.classList.remove('active'); }
   });
 
-  // How-to popup
-  document.getElementById('howToBtn').addEventListener('click', openHowToPopup);
-  document.getElementById('howToClose').addEventListener('click', closeHowToPopup);
-  document.getElementById('howToPopup').addEventListener('click', function(e) {
-    if (e.target === this) { closeHowToPopup(); }
-  });
-
   var scrollBtn = document.getElementById('scrollTopBtn');
   window.addEventListener('scroll', function() {
     scrollBtn.classList.toggle('show', window.scrollY > 400);
@@ -3655,11 +2971,7 @@ document.getElementById('codeInputOverlay').addEventListener('click', function(e
 /* ---- KEYDOWN ESCAPE HANDLING ---- */
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
-    if (document.getElementById('rufflePopup').classList.contains('active')) {
-      closeRufflePopup();
-    } else if (document.getElementById('howToPopup').classList.contains('active')) {
-      closeHowToPopup();
-    } else if (document.getElementById('compareInputOverlay').classList.contains('active')) {
+    if (document.getElementById('compareInputOverlay').classList.contains('active')) {
       closeCompareDialog();
     } else if (document.getElementById('clearMethodOverlay').classList.contains('active')) {
       closeClearDialog();
