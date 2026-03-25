@@ -110,105 +110,6 @@ body {
   font-weight: 600;
 }
 
-/* TAB NAVIGATION */
-.tab-nav {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 20px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  background: var(--bg-card);
-  border-radius: var(--radius-lg);
-  padding: 8px;
-  border: 1px solid var(--border);
-}
-
-.tab-nav::-webkit-scrollbar { display: none; }
-
-.tab-btn {
-  flex-shrink: 0;
-  background: transparent;
-  border: 1px solid transparent;
-  color: var(--text-secondary);
-  padding: 10px 18px;
-  border-radius: 8px;
-  font-family: 'Nunito Sans', sans-serif;
-  font-weight: 600;
-  font-size: 0.88rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-transform: capitalize;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  white-space: nowrap;
-}
-
-.tab-btn:hover {
-  color: var(--text-primary);
-  border-color: var(--border-light);
-}
-
-.tab-btn.active {
-  background: var(--zen);
-  color: #fff;
-  border-color: var(--zen);
-  box-shadow: 0 4px 12px rgba(180,77,223,0.3);
-}
-
-/* TAB CONTENT */
-.tab-content {
-  display: none;
-  animation: fadeIn 0.25s ease;
-}
-
-.tab-content.active {
-  display: block;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* NESTED TABS (for sub-sections) */
-.tab-nav-nested {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 16px;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 0;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-
-.tab-btn-nested {
-  background: transparent;
-  border: none;
-  color: var(--text-secondary);
-  padding: 10px 12px;
-  font-family: 'Nunito Sans', sans-serif;
-  font-weight: 600;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-transform: capitalize;
-  border-bottom: 2px solid transparent;
-  white-space: nowrap;
-}
-
-.tab-btn-nested:hover {
-  color: var(--text-primary);
-  border-bottom-color: var(--border-light);
-}
-
-.tab-btn-nested.active {
-  color: var(--zen);
-  border-bottom-color: var(--zen);
-}
-
 /* HOW-TO BUTTON & POPUP */
 .how-to-btn {
   position: fixed;
@@ -347,6 +248,51 @@ body {
 }
 
 /* RUFFLE PLAYER - HIDDEN BY DEFAULT */
+.ruffle-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+
+  /* REMOVE fixed size */
+  /* width: 35px; */
+  /* height: 35px; */
+
+  padding: 6px 12px;
+  border-radius: 20px;
+
+  background: var(--zen);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  z-index: 50;
+
+  display: inline-flex; /* better for text + icon */
+  align-items: center;
+  justify-content: center;
+  gap: 6px; /* space between icon + text */
+
+  white-space: nowrap;
+  font-size: 14px;
+
+  box-shadow: 0 4px 16px rgba(74,125,255,0.4);
+  transition: all 0.2s;
+}
+
+.how-to-inline {
+  color: white;
+  font-size: 14px;        /* match pill size */
+  font-weight: 600;       /* match active pill */
+  margin: 0;
+  padding: 0;
+  display: inline;        /* critical */
+}
+
+.ruffle-btn:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 8px var(--zen));
+}
+
+/* Ruffle popup modal */
 .ruffle-popup {
   position: fixed;
   top: 50%;
@@ -382,6 +328,48 @@ body {
   }
 }
 
+.ruffle-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  background: var(--bg-card);
+}
+
+.ruffle-popup-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.ruffle-popup-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.ruffle-popup-close:hover {
+  color: var(--text-primary);
+}
+
+.ruffle-popup-content {
+  flex: 1;
+  overflow: hidden;
+  background: #000;
+}
+
 .ruffle-popup-overlay {
   position: fixed;
   inset: 0;
@@ -394,6 +382,285 @@ body {
 .ruffle-popup-overlay.active {
   display: block;
 }
+
+  .app-wrapper {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px 16px;
+  }
+
+    /* Player Container */
+  .player-shell {
+    width: 100%;
+    max-width: 800px;
+    background: var(--gradient-2);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: var(--shadow-card), var(--shadow-glow);
+    overflow: hidden;
+    animation: fadeScaleIn 0.7s ease-out 0.15s both;
+    display: none;
+  }
+
+  .player-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+  }
+
+    .toolbar-actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .toolbar-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-size: 13px;
+  }
+  .toolbar-btn:hover {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+    transform: scale(1.05);
+  }
+
+  /* Player Area */
+  .player-area {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .player-area ruffle-player,
+  .player-area ruffle-embed {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Loading State */
+  .loading-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.85);
+    z-index: 10;
+    gap: 16px;
+    transition: opacity 0.4s ease;
+  }
+  .loading-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .loader-ring {
+    width: 48px;
+    height: 48px;
+    border: 3px solid rgba(255,107,61,0.15);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  .loading-text {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    animation: blink 1.2s ease-in-out infinite;
+  }
+
+  .loading-sub {
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+
+  /* Error State */
+  .error-state {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 32px;
+    text-align: center;
+  }
+  .error-state.visible { display: flex; }
+
+  .error-state i {
+    font-size: 36px;
+    color: #ff5f57;
+  }
+  .error-state h3 {
+    font-size: 15px;
+    color: var(--text-primary);
+  }
+  .error-state p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    max-width: 320px;
+    line-height: 1.6;
+  }
+
+  .retry-btn {
+    margin-top: 8px;
+    padding: 10px 24px;
+    background: var(--gradient-1);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .retry-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px var(--accent-glow);
+  }
+
+  /* Status Bar */
+  .player-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+
+  .status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #6b6880;
+    transition: background 0.3s;
+  }
+  .status-dot.active { background: #28ca42; box-shadow: 0 0 8px rgba(40,202,66,0.4); }
+  .status-dot.error { background: #ff5f57; box-shadow: 0 0 8px rgba(255,95,87,0.4); }
+  .status-dot.loading { background: var(--accent); animation: pulse 1s ease-in-out infinite; }
+
+  /* Info strip below player */
+  .info-strip {
+    max-width: 800px;
+    width: 100%;
+    margin-top: 16px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    animation: fadeSlideUp 0.6s ease-out 0.3s both;
+  }
+
+  .info-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+  .info-chip i { color: var(--accent); font-size: 10px; }
+
+  /* Tip box */
+  .tip-box {
+    max-width: 800px;
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    animation: fadeSlideUp 0.6s ease-out 0.45s both;
+  }
+  .tip-box strong { color: var(--text-primary); }
+
+  /* Fullscreen */
+  .player-shell.fullscreen {
+    position: fixed;
+    inset: 0;
+    max-width: none;
+    border-radius: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+  }
+  .player-shell.fullscreen .player-area {
+    flex: 1;
+    aspect-ratio: unset;
+  }
+
+  /* Animations */
+  @keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeScaleIn {
+    from { opacity: 0; transform: scale(0.97); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .app-wrapper { padding: 12px 10px; }
+    .header { margin-bottom: 14px; }
+    .toolbar-title span { display: none; }
+    .info-strip { gap: 6px; }
+    .info-chip { font-size: 10px; padding: 5px 9px; }
+  }
 
 /* STATS BAR */
 .stats-bar {
@@ -1495,7 +1762,11 @@ filter: drop-shadow(0 0 6px var(--zen));
   gap: 8px;
   margin-bottom: 10px;
   padding: 8px 0;
+
+  /* smooth scrolling on mobile */
   -webkit-overflow-scrolling: touch;
+
+  /* optional: hide scrollbar */
   scrollbar-width: none;
 }
 
@@ -1503,7 +1774,7 @@ filter: drop-shadow(0 0 6px var(--zen));
   display: none;
 }
 .export-row button {
-  flex: 0 0 auto;
+  flex: 0 0 auto;   /* critical */
 }
 
 .export-btn {
@@ -1985,272 +2256,36 @@ filter: drop-shadow(0 0 6px var(--zen));
   .rarity-chip { padding: 6px 2px; }
   .save-code-value { font-size: 12px; }
   .export-row { gap: 6px; }
-  .tab-nav { gap: 4px; padding: 6px; }
-  .tab-btn { padding: 8px 12px; font-size: 0.78rem; }
+  .ruffle-popup { width: 95vw; height: 85vh; }
 }
 
 @media (min-width: 768px) {
   .card-grid { grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); }
   .header-title { font-size: 1.9rem; }
 }
-    /* Player Container */
-  .player-shell {
-    width: 100%;
-    max-width: 800px;
-    background: var(--gradient-2);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    box-shadow: var(--shadow-card), var(--shadow-glow);
-    overflow: hidden;
-    animation: fadeScaleIn 0.7s ease-out 0.15s both;
-  }
-
-  .player-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 16px;
-    background: var(--bg-secondary);
-    border-bottom: 1px solid var(--border-color);
-  }
-
-    .toolbar-actions {
-    display: flex;
-    gap: 6px;
-  }
-
-  .toolbar-btn {
-    background: transparent;
-    border: 1px solid var(--border-color);
-    color: var(--text-secondary);
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    font-size: 13px;
-  }
-  .toolbar-btn:hover {
-    background: var(--accent);
-    color: #fff;
-    border-color: var(--accent);
-    transform: scale(1.05);
-  }
-
-  /* Player Area */
-  .player-area {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    background: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
-
-  .player-area ruffle-player,
-  .player-area ruffle-embed {
-    width: 100%;
-    height: 100%;
-  }
-
-  /* Loading State */
-  .loading-overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0,0,0,0.85);
-    z-index: 10;
-    gap: 16px;
-    transition: opacity 0.4s ease;
-  }
-  .loading-overlay.hidden {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .loader-ring {
-    width: 48px;
-    height: 48px;
-    border: 3px solid rgba(255,107,61,0.15);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-
-  .loading-text {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 10px;
-    color: var(--accent);
-    animation: blink 1.2s ease-in-out infinite;
-  }
-
-  .loading-sub {
-    font-size: 11px;
-    color: var(--text-secondary);
-  }
-
-  /* Error State */
-  .error-state {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 32px;
-    text-align: center;
-  }
-  .error-state.visible { display: flex; }
-
-  .error-state i {
-    font-size: 36px;
-    color: #ff5f57;
-  }
-  .error-state h3 {
-    font-size: 15px;
-    color: var(--text-primary);
-  }
-  .error-state p {
-    font-size: 12px;
-    color: var(--text-secondary);
-    max-width: 320px;
-    line-height: 1.6;
-  }
-
-  .retry-btn {
-    margin-top: 8px;
-    padding: 10px 24px;
-    background: var(--gradient-1);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .retry-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px var(--accent-glow);
-  }
-
-  /* Status Bar */
-  .player-status {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 16px;
-    background: var(--bg-secondary);
-    border-top: 1px solid var(--border-color);
-    font-size: 11px;
-    color: var(--text-secondary);
-  }
-
-  .status-indicator {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .status-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #6b6880;
-    transition: background 0.3s;
-  }
-  .status-dot.active { background: #28ca42; box-shadow: 0 0 8px rgba(40,202,66,0.4); }
-  .status-dot.error { background: #ff5f57; box-shadow: 0 0 8px rgba(255,95,87,0.4); }
-  .status-dot.loading { background: var(--accent); animation: pulse 1s ease-in-out infinite; }
-
-  /* Info strip below player */
-  .info-strip {
-    max-width: 800px;
-    width: 100%;
-    margin-top: 16px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    animation: fadeSlideUp 0.6s ease-out 0.3s both;
-  }
-
-  .info-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 11px;
-    color: var(--text-secondary);
-  }
-  .info-chip i { color: var(--accent); font-size: 10px; }
-
-  /* Tip box */
-  .tip-box {
-    max-width: 800px;
-    width: 100%;
-    margin-top: 12px;
-    padding: 12px 16px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-left: 3px solid var(--accent);
-    border-radius: 8px;
-    font-size: 12px;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    animation: fadeSlideUp 0.6s ease-out 0.45s both;
-  }
-  .tip-box strong { color: var(--text-primary); }
-
-  /* Animations */
-  @keyframes fadeSlideDown {
-    from { opacity: 0; transform: translateY(-16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes fadeScaleIn {
-    from { opacity: 0; transform: scale(0.97); }
-    to { opacity: 1; transform: scale(1); }
-  }
-  @keyframes fadeSlideUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  /* Responsive */
-  @media (max-width: 480px) {
-    .app-wrapper { padding: 12px 10px; }
-    .header { margin-bottom: 14px; }
-    .toolbar-title span { display: none; }
-    .info-strip { gap: 6px; }
-    .info-chip { font-size: 10px; padding: 5px 9px; }
-  }
-
 	</style>
 </head>
 <body>
 <div class="bg-fixed-image">
   <img src="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/main/BKGRND.png" alt="" loading="eager">
+</div>
+
+<!-- Ruffle Player Button -->
+<button class="ruffle-btn" id="ruffleBtn" title="Open Flash Player">
+  <i class="fas fa-gamepad"></i>   
+  <span class="how-to-inline">How To</span>
+</button>
+
+<!-- Ruffle Player Popup -->
+<div class="ruffle-popup-overlay" id="ruffleOverlay"></div>
+<div class="ruffle-popup" id="rufflePopup">
+  <div class="ruffle-popup-header">
+    <div class="ruffle-popup-title">Flash Player</div>
+    <button class="ruffle-popup-close" id="ruffleClose">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="ruffle-popup-content" id="ruffleContent"></div>
 </div>
 
 <div class="app-container">
@@ -2261,403 +2296,70 @@ filter: drop-shadow(0 0 6px var(--zen));
 </div>
 </header>
 
-<!-- TAB NAVIGATION -->
-<div class="tab-nav">
-  <button class="tab-btn active" data-tab="home">
-    <i class="fas fa-home"></i> Home
-  </button>
-  <button class="tab-btn" data-tab="howtoplay">
-    <i class="fas fa-book"></i> How to Play
-  </button>
-  <button class="tab-btn" data-tab="wayback">
-    <i class="fas fa-globe"></i> Wayback Websites
-  </button>
-  <button class="tab-btn" data-tab="portfolio">
-    <i class="fas fa-chart-line"></i> Portfolio
-  </button>
-  <button class="tab-btn" data-tab="profile">
-    <i class="fas fa-user"></i> Profile
-  </button>
+<div class="stats-bar">
+<div class="stat-box">
+<div class="stat-value" id="statOwned">0</div>
+<div class="stat-label">/ 248 Owned</div>
+</div>
+<div class="stat-box">
+<div class="stat-value" id="statMissing">0</div>
+<div class="stat-label">Missing</div>
+</div>
+<div class="stat-box">
+<div class="stat-value" id="statTotal">0</div>
+<div class="stat-label">Total Cards</div>
+</div>
 </div>
 
-<!-- HOME TAB -->
-<div class="tab-content active" id="tab-home">
-  <div class="stats-bar">
-    <div class="stat-box">
-      <div class="stat-value" id="statOwned">0</div>
-      <div class="stat-label">/ 248 Owned</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-value" id="statMissing">0</div>
-      <div class="stat-label">Missing</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-value" id="statTotal">0</div>
-      <div class="stat-label">Total Cards</div>
-    </div>
-  </div>
+<div class="progress-bar-container">
+<div class="progress-header"><span class="progress-title">Collection Progress</span> <span class="progress-pct" id="progressPct">0%</span></div>
+<div class="progress-track">
+<div class="progress-fill" id="progressFill"></div>
+</div>
+</div>
 
-  <div class="progress-bar-container">
-    <div class="progress-header"><span class="progress-title">Collection Progress</span> <span class="progress-pct" id="progressPct">0%</span></div>
-    <div class="progress-track">
-      <div class="progress-fill" id="progressFill"></div>
-    </div>
-  </div>
+<div class="rarity-breakdown" id="rarityBreakdown"></div>
 
-  <div class="rarity-breakdown" id="rarityBreakdown"></div>
+<div class="controls-section">
+<div class="search-row">
+<div class="search-box"><input class="search-input" id="searchInput" placeholder="Search cards..." type="text" ></div>
+<div class="view-toggle"><button class="view-btn active" data-view="grid" title="Grid view"><i class="fas fa-th"></i></button><button class="view-btn" data-view="list" title="List view"><i class="fas fa-list"></i></button></div>
+</div>
+<div class="filter-row" id="filterRow"></div>
+</div>
 
-  <div class="controls-section">
-    <div class="search-row">
-      <div class="search-box"><input class="search-input" id="searchInput" placeholder="Search cards..." type="text" ></div>
-      <div class="view-toggle"><button class="view-btn active" data-view="grid" title="Grid view"><i class="fas fa-th"></i></button><button class="view-btn" data-view="list" title="List view"><i class="fas fa-list"></i></button></div>
-    </div>
-    <div class="filter-row" id="filterRow"></div>
-  </div>
+<div class="export-row">
+  <button class="export-btn" id="exportBtn"><i class="fas fa-file-export"></i> Export</button>
+  <button class="import-btn" id="importBtn"><i class="fas fa-file-import"></i> Import</button>
+  <button class="compare-btn" id="compareBtn"><i class="fas fa-people-arrows"></i> Compare</button>
+  <button class="clear-btn" id="clearBtn"><i class="fas fa-trash-alt"></i> Clear</button>
+</div>
 
-  <div class="export-row">
-    <button class="export-btn" id="exportBtn"><i class="fas fa-file-export"></i> Export</button>
-    <button class="import-btn" id="importBtn"><i class="fas fa-file-import"></i> Import</button>
-    <button class="compare-btn" id="compareBtn"><i class="fas fa-people-arrows"></i> Compare</button>
-    <button class="clear-btn" id="clearBtn"><i class="fas fa-trash-alt"></i> Clear</button>
-  </div>
-
-  <div class="sort-row">
-    <span class="results-count" id="resultsCount">0 cards</span>
-    <div class="sort-controls">
-      <select class="sort-select" id="sortSelect">
-        <option value="number">Sort: Number</option>
-        <option value="name">Sort: Name</option>
-        <option value="rarity">Sort: Rarity</option>
-        <option value="type">Sort: Type</option>
-        <option value="quantity">Sort: Quantity</option>
-      </select>
-      <button class="sort-dir-btn" id="sortDirBtn" title="Ascending — click to reverse"><i class="fas fa-arrow-up-short-wide"></i></button>
-    </div>
-  </div>
-
-  <div class="card-grid" id="cardGrid"></div>
-
-  <div class="empty-state" id="emptyState" style="display:none;">
-    <p>No cards match your search</p>
+<div class="sort-row">
+  <span class="results-count" id="resultsCount">0 cards</span>
+  <div class="sort-controls">
+    <select class="sort-select" id="sortSelect">
+      <option value="number">Sort: Number</option>
+      <option value="name">Sort: Name</option>
+      <option value="rarity">Sort: Rarity</option>
+      <option value="type">Sort: Type</option>
+      <option value="quantity">Sort: Quantity</option>
+    </select>
+    <button class="sort-dir-btn" id="sortDirBtn" title="Ascending — click to reverse"><i class="fas fa-arrow-up-short-wide"></i></button>
   </div>
 </div>
 
-<!-- HOW TO PLAY TAB -->
-<div class="tab-content" id="tab-howtoplay">
-  <div class="tab-nav-nested">
-    <button class="tab-btn-nested active" data-nested-tab="how-to-video">Interactive Demo & Videos</button>
-    <button class="tab-btn-nested" data-nested-tab="rulebook">Rulebook</button>
-    <button class="tab-btn-nested" data-nested-tab="avatar-wiki">Avatar Wiki</button>
-  </div>
+<div class="card-grid" id="cardGrid"></div>
 
- <div id="nested-how-to-video" class="nested-tab-content active">
-  <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
-    <i class="fas fa-video" style="font-size: 3rem; color: var(--zen); margin-bottom: 16px;"></i>
-    <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">How to Play Videos</h3>
-    <p style="color: var(--text-secondary); margin-bottom: 16px;">Learn the basics of Avatar Quick Strike TCG</p>
-
-      <div class="player-shell" id="playerShell">
-        </div>
-      <div class="toolbar-actions">
-        <button class="toolbar-btn" id="btnReload" title="Reload">
-          <i class="fas fa-redo-alt"></i>
-        </button>
-      </div>
-
-    <div class="player-area" id="playerArea">
-      <div class="loading-overlay" id="loadingOverlay">
-        <div class="loader-ring"></div>
-        <div class="loading-text">Loading Flash...</div>
-        <div class="loading-sub">Initializing Ruffle emulator</div>
-      </div>
-      <div class="error-state" id="errorState">
-        <i class="fas fa-exclamation-triangle"></i>
-        <h3>Playback Error</h3>
-        <p id="errorMessage">Something went wrong while loading the Flash content.</p>
-        <button class="retry-btn" id="btnRetry">
-          <i class="fas fa-redo-alt"></i> Try Again
-        </button>
-      </div>
-    </div>
-
-    <div class="player-status">
-      <div class="status-indicator">
-        <div class="status-dot loading" id="statusDot"></div>
-        <span id="statusText">Initializing...</span>
-      </div>
-      <span id="engineInfo">Ruffle Flash Emulator</span>
-    </div>
-
-<script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
-<script>
-(function() {
-  const SWF_URL = "https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/main/Avatar_demo.swf";
-
-  const playerArea = document.getElementById("playerArea");
-  const loadingOverlay = document.getElementById("loadingOverlay");
-  const errorState = document.getElementById("errorState");
-  const errorMessage = document.getElementById("errorMessage");
-  const statusDot = document.getElementById("statusDot");
-  const statusText = document.getElementById("statusText");
-  const btnReload = document.getElementById("btnReload");
-  const btnFullscreen = document.getElementById("btnFullscreen");
-  const btnRetry = document.getElementById("btnRetry");
-  const playerShell = document.getElementById("playerShell");
-
-  // Dark mode detection
-  if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-    document.documentElement.classList.add("dark");
-  }
-  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function(event) {
-    if (event.matches) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  });
-
-  function setStatus(state, text) {
-    statusDot.className = "status-dot " + state;
-    statusText.textContent = text;
-  }
-
-  function showError(msg) {
-    loadingOverlay.classList.add("hidden");
-    errorState.classList.add("visible");
-    errorMessage.textContent = msg;
-    setStatus("error", "Error");
-  }
-
-  function hideError() {
-    errorState.classList.remove("visible");
-  }
-
-  let currentPlayer = null;
-
-  function loadSWF() {
-    hideError();
-    loadingOverlay.classList.remove("hidden");
-    setStatus("loading", "Loading...");
-
-    // Remove existing player if any
-    if (currentPlayer) {
-      try { currentPlayer.remove(); } catch(e) { /* ignore */ }
-      currentPlayer = null;
-    }
-
-    try {
-      var ruffle = window.RufflePlayer.newest();
-      var player = ruffle.createPlayer();
-      player.style.width = "100%";
-      player.style.height = "100%";
-      playerArea.appendChild(player);
-      currentPlayer = player;
-
-      player.load(SWF_URL).then(function() {
-        loadingOverlay.classList.add("hidden");
-        setStatus("active", "Playing");
-      }).catch(function(err) {
-        showError("Failed to load the SWF file: " + (err.message || err));
-      });
-    } catch(err) {
-      showError("Ruffle emulator failed to initialize. " + (err.message || "Please try reloading."));
-    }
-  }
-
-  // Wait for Ruffle to be ready
-  function waitForRuffle(attempts) {
-    if (attempts <= 0) {
-      showError("Ruffle emulator could not be loaded. Please check your connection and try again.");
-      return;
-    }
-    if (typeof window.RufflePlayer !== "undefined") {
-      setStatus("loading", "Ruffle ready, loading SWF...");
-      loadSWF();
-    } else {
-      setTimeout(function() { waitForRuffle(attempts - 1); }, 300);
-    }
-  }
-
-  waitForRuffle(30);
-
-  // Reload
-  btnReload.addEventListener("click", function() {
-    loadSWF();
-  });
-
-  btnRetry.addEventListener("click", function() {
-    loadSWF();
-  });
-
-  // Fullscreen toggle
-  var isFullscreen = false;
-  btnFullscreen.addEventListener("click", function() {
-    isFullscreen = !isFullscreen;
-    if (isFullscreen) {
-      playerShell.classList.add("fullscreen");
-      btnFullscreen.innerHTML = '<i class="fas fa-compress"></i>';
-    } else {
-      playerShell.classList.remove("fullscreen");
-      btnFullscreen.innerHTML = '<i class="fas fa-expand"></i>';
-    }
-  });
-
-  // Escape key to exit fullscreen
-  document.addEventListener("keydown", function(e) {
-    if (e.key === "Escape" && isFullscreen) {
-      isFullscreen = false;
-      playerShell.classList.remove("fullscreen");
-      btnFullscreen.innerHTML = '<i class="fas fa-expand"></i>';
-    }
-  });
-})();
-</script>
-    <!-- Embedded YouTube Video -->
-    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;">
-      <iframe 
-        src="https://www.youtube.com/embed/TNPI9iAmMZI" 
-        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 12px; border: none;"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen>
-      </iframe>
-    </div>
-
-    <!-- Optional fallback link -->
-    <p style="color: var(--text-secondary); margin-top: 16px;">
-      Can't see the video? <a href="https://www.youtube.com/watch?v=TNPI9iAmMZI" target="_blank" style="color: var(--zen);">Watch on YouTube</a>
-    </p>
-  </div>
+<div class="empty-state" id="emptyState" style="display:none;">
+<p>No cards match your search</p>
 </div>
 
-  <div id="nested-rulebook" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
-      <i class="fas fa-book" style="font-size: 3rem; color: var(--accent); margin-bottom: 16px;"></i>
-      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Official Rulebook</h3>
-      <p style="color: var(--text-secondary); margin-bottom: 16px;">Complete rulebook in PDF format</p>
-      <a href="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/ee860bbdec2054309b89bfc4055ab57b9fbb8f5e/avatar_rulebook.pdf" target="_blank" style="display: inline-block; padding: 10px 20px; background: var(--accent); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600;">Download PDF</a>
-    </div>
-  </div>
-
-  <div id="nested-avatar-wiki" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
-      <i class="fas fa-globe" style="font-size: 3rem; color: var(--water); margin-bottom: 16px;"></i>
-      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Avatar Wiki</h3>
-      <p style="color: var(--text-secondary); margin-bottom: 16px;">Learn about the QuickStrike Avatar TCG</p>
-      <a href="https://avatar.fandom.com/wiki/Avatar:_The_Last_Airbender_Trading_Card_Game" target="_blank" style="display: inline-block; padding: 10px 20px; background: var(--water); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600;">Visit Wiki</a>
-    </div>
-  </div>
+<div class="save-code-footer" id="saveCodeFooter">
+<div class="save-code-header"><span class="save-code-label">Current Save Code:</span></div>
+<div id="saveCodeDisplay"></div>
+<div class="save-code-hint">Select the code above to copy it manually</div>
 </div>
-
-<!-- WAYBACK WEBSITES TAB -->
-<div class="tab-content" id="tab-wayback">
-  <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px;">
-    <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 16px;">Archived Websites</h3>
-    <p style="color: var(--text-secondary); margin-bottom: 16px;">Visit historical snapshots of Avatar TCG resources</p>
-    <div style="display: flex; flex-direction: column; gap: 10px;">
-      <a href="https://web.archive.org/web/20080815224144/http://entertainment.upperdeck.com/avatar/en/interface.aspx" target="_blank" style="display: block; padding: 12px; background: var(--bg-card-hover); border: 1px solid var(--border-light); border-radius: 8px; color: var(--accent); text-decoration: none; font-weight: 600; transition: all 0.2s;">
-        <i class="fas fa-link"></i> UDE.com/Avatar
-      </a>
-      <a href="https://web.archive.org/web/20120110012143/https://www.musogato.com/avatar/tcg/cards.php" target="_blank" style="display: block; padding: 12px; background: var(--bg-card-hover); border: 1px solid var(--border-light); border-radius: 8px; color: var(--accent); text-decoration: none; font-weight: 600; transition: all 0.2s;">
-        <i class="fas fa-link"></i> Musogato.com/avatar
-      <a href="https://www.laststicker.ru/cards/upper_deck_avatar_the_last_airbender_tcg/" target="_blank" style="display: block; padding: 12px; background: var(--bg-card-hover); border: 1px solid var(--border-light); border-radius: 8px; color: var(--accent); text-decoration: none; font-weight: 600; transition: all 0.2s;">
-        <i class="fas fa-link"></i> Laststicker.ru
-      </a>
-    </div>
-  </div>
-</div>
-
-<!-- PORTFOLIO TAB -->
-<div class="tab-content" id="tab-portfolio">
-  <div class="tab-nav-nested">
-    <button class="tab-btn-nested active" data-nested-tab="graph">Graph</button>
-    <button class="tab-btn-nested" data-nested-tab="card-values">Card Values</button>
-  </div>
-
-  <div id="nested-graph" class="nested-tab-content active">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
-      <i class="fas fa-chart-line" style="font-size: 3rem; color: var(--earth); margin-bottom: 16px;"></i>
-      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Portfolio Graph</h3>
-      <p style="color: var(--text-secondary);">Visualize your collection value over time</p>
-      <p style="color: var(--text-secondary);">Coming Soon...</p>
-    </div>
-  </div>
-
-  <div id="nested-card-values" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
-      <i class="fas fa-coins" style="font-size: 3rem; color: var(--promo); margin-bottom: 16px;"></i>
-      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Card Values</h3>
-      <p style="color: var(--text-secondary);">View current market values for cards</p>
-      <p style="color: var(--text-secondary);">Coming Soon...</p>
-    </div>
-  </div>
-</div>
-
-<!-- PROFILE TAB -->
-<div class="tab-content" id="tab-profile">
-  <div class="tab-nav-nested">
-    <button class="tab-btn-nested active" data-nested-tab="save-code">Save Code</button>
-    <button class="tab-btn-nested" data-nested-tab="friends">Friends</button>
-    <button class="tab-btn-nested" data-nested-tab="chat">Chat</button>
-    <button class="tab-btn-nested" data-nested-tab="trades">Trades</button>
-  </div>
-
-  <div id="nested-save-code" class="nested-tab-content active">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px;">
-      <div class="save-code-header">
-        <span class="save-code-label">Current Save Code:</span>
-      </div>
-      <div id="saveCodeDisplay"></div>
-      <div class="save-code-hint">Select the code above to copy it manually</div>
-    </div>
-  </div>
-
-  <div id="nested-friends" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
-      <i class="fas fa-user-friends" style="font-size: 2rem; color: var(--accent); margin-bottom: 12px;"></i>
-      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Friends List</h3>
-      <p style="color: var(--text-secondary); font-size: 0.9rem;">Coming soon...</p>
-    </div>
-  </div>
-
-  <div id="nested-chat" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
-      <i class="fas fa-comments" style="font-size: 2rem; color: var(--water); margin-bottom: 12px;"></i>
-      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Chat</h3>
-      <p style="color: var(--text-secondary); font-size: 0.9rem;">Coming soon...</p>
-    </div>
-  </div>
-
-  <div id="nested-trades" class="nested-tab-content" style="display:none;">
-    <div class="tab-nav-nested" style="border-bottom: 1px solid var(--border); margin-bottom: 16px;">
-      <button class="tab-btn-nested active" data-trade-subtab="proposed">Proposed</button>
-      <button class="tab-btn-nested" data-trade-subtab="pending">Pending</button>
-    </div>
-    <div id="trade-proposed" class="trade-subtab-content active">
-      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
-        <i class="fas fa-handshake" style="font-size: 2rem; color: var(--earth); margin-bottom: 12px;"></i>
-        <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Proposed Trades</h3>
-        <p style="color: var(--text-secondary); font-size: 0.9rem;">No proposed trades yet</p>
-              <p style="color: var(--text-secondary);">Coming Soon...</p>
-      </div>
-    </div>
-    <div id="trade-pending" class="trade-subtab-content" style="display:none;">
-      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
-        <i class="fas fa-hourglass-half" style="font-size: 2rem; color: var(--air); margin-bottom: 12px;"></i>
-        <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Pending Trades</h3>
-        <p style="color: var(--text-secondary); font-size: 0.9rem;">No pending trades</p>
-              <p style="color: var(--text-secondary);">Coming Soon...</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Save Code Footer (only visible in Home tab) -->
-<div class="save-code-footer" id="saveCodeFooter" style="display:none;">
-  <div class="save-code-header"><span class="save-code-label">Current Save Code:</span></div>
-  <div id="saveCodeDisplayFooter"></div>
-  <div class="save-code-hint">Select the code above to copy it manually</div>
-</div>
-
 </div>
 
 <!-- HOW-TO BUTTON & POPUP -->
@@ -2831,96 +2533,32 @@ filter: drop-shadow(0 0 6px var(--zen));
 var CSV_URL = "https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/refs/heads/main/Avatar%20Quick%20Strike%20TCG%20Database%20GitHub.csv";
 var SWF_URL = "https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/main/Avatar_demo.swf";
 
-/* ---- TAB SYSTEM ---- */
-function initTabs() {
-  // Main tabs
-  document.querySelectorAll('.tab-btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      var tabName = this.getAttribute('data-tab');
-      switchTab(tabName);
-    });
-  });
-
-  // Nested tabs (How to Play)
-  document.querySelectorAll('.tab-btn-nested[data-nested-tab]').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      var nestedName = this.getAttribute('data-nested-tab');
-      var parent = this.closest('.tab-content');
-      if (!parent) return;
-      
-      parent.querySelectorAll('.tab-btn-nested[data-nested-tab]').forEach(function(b) { b.classList.remove('active'); });
-      this.classList.add('active');
-      
-      parent.querySelectorAll('.nested-tab-content').forEach(function(c) { c.style.display = 'none'; });
-      var content = parent.querySelector('#nested-' + nestedName);
-      if (content) content.style.display = 'block';
-      
-      // Initialize Ruffle if this is the video tab
-      if (nestedName === 'how-to-video' && !ruffleInitialized) {
-        initializeRufflePlayer();
-      }
-    });
-  });
-
-  // Trade subtabs
-  document.querySelectorAll('.tab-btn-nested[data-trade-subtab]').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      var subtabName = this.getAttribute('data-trade-subtab');
-      var parent = this.closest('.tab-content');
-      if (!parent) return;
-      
-      parent.querySelectorAll('.tab-btn-nested[data-trade-subtab]').forEach(function(b) { b.classList.remove('active'); });
-      this.classList.add('active');
-      
-      parent.querySelectorAll('.trade-subtab-content').forEach(function(c) { c.style.display = 'none'; });
-      var content = parent.querySelector('#trade-' + subtabName);
-      if (content) content.style.display = 'block';
-    });
-  });
-}
-
-function switchTab(tabName) {
-  // Hide all tabs
-  document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
-  
-  // Deactivate all buttons
-  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
-  
-  // Show active tab
-  var tab = document.getElementById('tab-' + tabName);
-  if (tab) {
-    tab.classList.add('active');
-  }
-  
-  // Activate button
-  var btn = document.querySelector('.tab-btn[data-tab="' + tabName + '"]');
-  if (btn) {
-    btn.classList.add('active');
-  }
-
-  // Show/hide save code footer
-  var footer = document.getElementById('saveCodeFooter');
-  if (tabName === 'home') {
-    footer.style.display = 'block';
-  } else {
-    footer.style.display = 'none';
-  }
-}
-
-/* ---- RUFFLE PLAYER ---- */
+/* ---- RUFFLE PLAYER POPUP ---- */
 var rufflePlayerInstance = null;
 var ruffleInitialized = false;
 
+function openRufflePopup() {
+  document.getElementById('ruffleOverlay').classList.add('active');
+  document.getElementById('rufflePopup').classList.add('active');
+
+  if (!ruffleInitialized) {
+    initializeRufflePlayer();
+  }
+}
+
+function closeRufflePopup() {
+  document.getElementById('ruffleOverlay').classList.remove('active');
+  document.getElementById('rufflePopup').classList.remove('active');
+}
+
 function initializeRufflePlayer() {
-  if (ruffleInitialized) { return; }
   ruffleInitialized = true;
-  
-  var container = document.getElementById('ruffleContainer');
+  var content = document.getElementById('ruffleContent');
   var loadingEl = document.createElement('div');
   loadingEl.style.cssText = 'display:flex; align-items:center; justify-content:center; width:100%; height:100%; flex-direction:column; gap:16px; background:#000;';
   loadingEl.id = 'ruffleLoading';
   loadingEl.innerHTML = '<div style="width:48px; height:48px; border:3px solid rgba(74,125,255,0.15); border-top-color:#4a7dff; border-radius:50%; animation:spin 0.8s linear infinite;"></div><div style="font-family:monospace; color:#4a7dff; font-size:12px;">Loading...</div>';
-  container.appendChild(loadingEl);
+  content.appendChild(loadingEl);
 
   function waitForRuffle(attempts) {
     if (attempts <= 0) {
@@ -2933,11 +2571,10 @@ function initializeRufflePlayer() {
         var player = ruffle.createPlayer();
         player.style.width = "100%";
         player.style.height = "100%";
-        player.style.minHeight = "400px";
-        container.innerHTML = '';
-        container.appendChild(player);
+        content.innerHTML = '';
+        content.appendChild(player);
         player.load(SWF_URL).catch(function() {
-          container.innerHTML = '<div style="color:#ff5f57; padding:20px; text-align:center;">Failed to load Flash content</div>';
+          content.innerHTML = '<div style="color:#ff5f57; padding:20px; text-align:center;">Failed to load Flash content</div>';
         });
         rufflePlayerInstance = player;
       } catch (e) {
@@ -2949,6 +2586,13 @@ function initializeRufflePlayer() {
   }
   waitForRuffle(30);
 }
+
+/* Event listeners for Ruffle popup */
+document.getElementById('ruffleBtn').addEventListener('click', openRufflePopup);
+document.getElementById('ruffleClose').addEventListener('click', closeRufflePopup);
+document.getElementById('ruffleOverlay').addEventListener('click', function(e) {
+  if (e.target === this) { closeRufflePopup(); }
+});
 
 /* ---- STATE ---- */
 var allCards = [];
@@ -3193,30 +2837,14 @@ function updateSortDirBtn() {
 
 /* ---- UPDATE PERSISTENT SAVE CODE DISPLAY ---- */
 function updateSaveCodeDisplay() {
-  var code = encodeCollectionToCode();
-  
-  // Update in Profile tab
   var displayEl = document.getElementById('saveCodeDisplay');
-  if (displayEl) {
-    if (code) {
-      displayEl.className = 'save-code-value';
-      displayEl.textContent = code;
-    } else {
-      displayEl.className = 'save-code-empty';
-      displayEl.textContent = 'Add cards to your collection to generate a save code';
-    }
-  }
-
-  // Update footer (if visible)
-  var displayFooterEl = document.getElementById('saveCodeDisplayFooter');
-  if (displayFooterEl) {
-    if (code) {
-      displayFooterEl.className = 'save-code-value';
-      displayFooterEl.textContent = code;
-    } else {
-      displayFooterEl.className = 'save-code-empty';
-      displayFooterEl.textContent = 'Add cards to your collection to generate a save code';
-    }
+  var code = encodeCollectionToCode();
+  if (code) {
+    displayEl.className = 'save-code-value';
+    displayEl.textContent = code;
+  } else {
+    displayEl.className = 'save-code-empty';
+    displayEl.textContent = 'Add cards to your collection to generate a save code';
   }
 }
 
@@ -3236,7 +2864,6 @@ async function init() {
   renderCards();
   updateSaveCodeDisplay();
   updateCompareBtn();
-  initTabs();
   setupEvents();
 }
 
@@ -4028,7 +3655,9 @@ document.getElementById('codeInputOverlay').addEventListener('click', function(e
 /* ---- KEYDOWN ESCAPE HANDLING ---- */
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
-    if (document.getElementById('howToPopup').classList.contains('active')) {
+    if (document.getElementById('rufflePopup').classList.contains('active')) {
+      closeRufflePopup();
+    } else if (document.getElementById('howToPopup').classList.contains('active')) {
       closeHowToPopup();
     } else if (document.getElementById('compareInputOverlay').classList.contains('active')) {
       closeCompareDialog();
