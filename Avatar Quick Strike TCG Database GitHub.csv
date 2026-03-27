@@ -1,479 +1,287 @@
-Number,Name,Image Link,Type,Rarity,Set,Back Image Link,Traits,Intercept,Force,Green Energy,Yellow Energy,Red Energy,Rules Text,Quote Text,Obtained Via,Description,Surface Finish Front,Surface Finish Back
-1,Blazing Axe Kick,https://github.com/zolodio/Avatar-TCG-Database/raw/main/1.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,bull,6,3,2,1,,"When you counterattack against a strike that has
-3 Force or less, Blazing Axe Kick gets +3 Force.","Show me weakness, and your reward shall be pain.""","STRT001, STRT007, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-2,Boiling Point,https://github.com/zolodio/Avatar-TCG-Database/raw/main/2.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,bull,8,3,2,,1,"When you counterattack against a strike that has
-3 Force or less, Boiling Point gets +3 Force.",,"STRT001, STRT007, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-3,Burning Blade,https://github.com/zolodio/Avatar-TCG-Database/raw/main/3.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,bull,5,3,2,1,,"When you counterattack, your opponent
-uncharges one of his or her zones.",,"STRT001, STRT007, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-4,Burning Disc,https://github.com/zolodio/Avatar-TCG-Database/raw/main/4.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,bull,5,6,1,1,1,"When you counterattack, your opponent
-uncharges one of his or her zones.",,"STRT001, STRT007, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-5,Burning Lash,https://github.com/zolodio/Avatar-TCG-Database/raw/main/5.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,bull,7,4,1,2,,"-4 Intercept >>> When you counterattack, your
-opponent uncharges one of his or her zones.",,"STRT001, STRT007, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-6,Doublefoot Dropkick,https://github.com/zolodio/Avatar-TCG-Database/raw/main/6.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,bull,5,1,,1,,Yellow >>> +4 Force. Use only once.,,"STRT001, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-7,Eye of Ozai,https://github.com/zolodio/Avatar-TCG-Database/raw/main/7.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,bull,4,6,,2,,"Eliminate one of your allies >>> +1 Intercept. Use
-only once.",,"STRT001, STRT007, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-8,Fetch!,https://github.com/zolodio/Avatar-TCG-Database/raw/main/8.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,bull,5,4,3,,,"When you counterattack, you may eliminate a
-green energy.",,"STRT001, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-9,Flare,https://github.com/zolodio/Avatar-TCG-Database/raw/main/9.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,bull,4,3,,1,,"When you counterattack, you may eliminate a
-green energy.",,"STRT001, STRT007, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-10,Flying Fire Fist,https://github.com/zolodio/Avatar-TCG-Database/raw/main/10.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,bull,5,7,1,2,1,"When you counterattack, you may eliminate up to
-two green energy.",,"STRT001, STRT007, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-11,Gout of Flame,https://github.com/zolodio/Avatar-TCG-Database/raw/main/11.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,bull,5,3,1,1,,"When you counterattack against a strike that has
-3 Force or less, Gout of Flame gets +3 Force.",,"STRT001, STRT007, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-12,Jagged Ground,https://github.com/zolodio/Avatar-TCG-Database/raw/main/12.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,bull,2,2,1,,,"Red >>> Choose one: Jagged Ground gets +2
-Intercept; or Jagged Ground gets +2 Force.",,"STRT001, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-13,Quicksand,https://github.com/zolodio/Avatar-TCG-Database/raw/main/13.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,bull,3,4,1,,,"Reflip: Green <p> Whenever your opponent
-focuses, he or she eliminates one of his or her
-green energy.",,"STRT001, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-14,Rock the House,https://github.com/zolodio/Avatar-TCG-Database/raw/main/14.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,bull,6,3,1,,1,"Whenever your opponent focuses, he or she
-eliminates one of his or her green energy.",,"STRT001, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-15,Scorching Phoenix,https://github.com/zolodio/Avatar-TCG-Database/raw/main/15.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,bull,6,6,1,1,1,"-4 Intercept >>> When you counterattack,
-eliminate all of your opponent's green energy.",,"STRT001, STRT007, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-16,Searing Cage,https://github.com/zolodio/Avatar-TCG-Database/raw/main/16.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,bull,6,2,1,,1,"When you counterattack, your opponent
-eliminates one of his or her allies.",,"STRT001, STRT007, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-17,Stoke the Flames,https://github.com/zolodio/Avatar-TCG-Database/raw/main/17.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,bull,8,4,1,1,1,"Eliminate one of your allies >>> When you
-counterattack, eliminate up to two green energy.",,"STRT001, STRT007, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-18,Tectonic Shift,https://github.com/zolodio/Avatar-TCG-Database/raw/main/18.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,bull,3,6,2,,,"When you counterattack, you may eliminate up to
-two green energy.",,"STRT001, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-19,Titanic Fireball,https://github.com/zolodio/Avatar-TCG-Database/raw/main/19.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,bull,5,5,2,1,,"Eliminate one of your allies >>> When you
-counterattack, your opponent eliminates one of
-his or her allies. Use only once.",,"STRT001, STRT007, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-20,Wildfire Arc,https://github.com/zolodio/Avatar-TCG-Database/raw/main/20.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,bull,7,6,2,1,1,"-4 Intercept >>> When you counterattack, your
-opponent eliminates one of his or her allies. Use
-only once.",,"STRT001, STRT007, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-21,Blast Cushion,https://github.com/zolodio/Avatar-TCG-Database/raw/main/21.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fox,8,1,2,,1,"-1 Intercept >>> When you counterattack, move
-one of your green energy to your yellow zone.",,"STRT001, STRT002, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-22,Breath of the Dragon,https://github.com/zolodio/Avatar-TCG-Database/raw/main/22.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fox,4,6,,2,,"When you counterattack, look at the top two
-cards of your deck. Put one on the top of your
-deck and the other into your discard pile.",,"STRT001, STRT002, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-23,Canyon Sprint,https://github.com/zolodio/Avatar-TCG-Database/raw/main/23.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fox,5,5,,2,,"While your opponent is defending, his or her
-zones cannot be charged.",,"STRT001, STRT002, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-24,Careening Koi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/24.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fox,5,4,3,,,"When you counterattack, you may move one of
-your yellow energy to your red zone.",,"STRT001, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-25,Frost Blade,https://github.com/zolodio/Avatar-TCG-Database/raw/main/25.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fox,3,4,,1,,"Reflip: Green <p> Your opponent's strikes cost
-an additional yellow energy to play.",,"STRT001, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-26,Frost Daggers,https://github.com/zolodio/Avatar-TCG-Database/raw/main/26.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fox,6,1,,1,1,"Your opponent's strikes cost an additional yellow
-energy to play.",,"STRT001, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-27,Frost Spear,https://github.com/zolodio/Avatar-TCG-Database/raw/main/27.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fox,4,5,1,,1,"Your opponent's strikes cost an additional yellow
-energy to play.",,"STRT001, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-28,Gale Force,https://github.com/zolodio/Avatar-TCG-Database/raw/main/28.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fox,3,6,2,,,"When you counterattack, you may move an ally
-to the top of its owner's deck.",,"STRT001, STRT002, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-29,Howling Cyclone,https://github.com/zolodio/Avatar-TCG-Database/raw/main/29.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fox,8,7,3,,1,"Whenever your opponent focuses, Howling
-Cyclone gets -2 Force.",,"STRT001, STRT002, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-30,Howling Squall,https://github.com/zolodio/Avatar-TCG-Database/raw/main/30.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fox,5,7,2,,1,"Whenever your opponent focuses, Howling
-Squall gets -1 Force.",,"STRT001, STRT002, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-31,Howling Wind,https://github.com/zolodio/Avatar-TCG-Database/raw/main/31.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fox,5,5,,,1,"Whenever your opponent focuses, Howling Wind
-gets -1 Force.",,"STRT001, STRT002, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-32,Nimbus Churn,https://github.com/zolodio/Avatar-TCG-Database/raw/main/32.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fox,7,5,1,1,1,"-4 Intercept >>> When you counterattack, move
-an ally to the top of its owner's deck.",,"STRT001, STRT002, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-33,Rocky Road,https://github.com/zolodio/Avatar-TCG-Database/raw/main/33.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fox,6,5,2,2,,"When you counterattack, you may move an ally
-to the top of its owner's deck.",,"STRT001, STRT002, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-34,Spinning Tempest,https://github.com/zolodio/Avatar-TCG-Database/raw/main/34.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fox,7,3,1,,1,"-3 Intercept >>> When you counterattack, move
-one of your yellow energy to your red zone.",,"STRT001, STRT002, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-35,Swirling Flames,https://github.com/zolodio/Avatar-TCG-Database/raw/main/35.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fox,5,6,2,,1,Red >>> +2 Intercept. Use only once.,,"STRT001, STRT008, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-36,Teeth of the Dragon,https://github.com/zolodio/Avatar-TCG-Database/raw/main/36.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fox,5,1,2,,,"When you counterattack, look at the top two
-cards of your deck. Put one on the top of your
-deck and the other into your discard pile.",,"STRT001, STRT008, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-37,Terra Break,https://github.com/zolodio/Avatar-TCG-Database/raw/main/37.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fox,6,6,1,1,1,"-2 Intercept >>> While your opponent is
-defending, his or her zones cannot be charged.",,"STRT001, STRT002, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-38,Tongue of the Dragon,https://github.com/zolodio/Avatar-TCG-Database/raw/main/38.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fox,7,4,1,2,,"When you counterattack, look at the top two
-cards of your deck. Put one on the top of your
-deck and the other into your discard pile.",,"STRT001, STRT008, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-39,Water Lasso,https://github.com/zolodio/Avatar-TCG-Database/raw/main/39.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fox,6,4,2,1,,Your opponent cannot play signature moves.,,"STRT001, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-40,Wind on the Waves,https://github.com/zolodio/Avatar-TCG-Database/raw/main/40.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fox,4,4,2,,,"When you counterattack, you may move one of
-your green energy to your yellow zone.",,"STRT001, STRT002, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-41,Bitter Butter,https://github.com/zolodio/Avatar-TCG-Database/raw/main/41.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,lion,4,3,,1,,"When you counterattack from a charged zone,
-add a green energy.",,"STRT001, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-42,Blowback,https://github.com/zolodio/Avatar-TCG-Database/raw/main/42.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,lion,5,5,1,2,,"Your opponent skips defending in his or her
-green zone.",,"STRT001, STRT006, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-43,Creeping Crystal,https://github.com/zolodio/Avatar-TCG-Database/raw/main/43.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,lion,6,6,1,1,1,"-4 Intercept >>> When you counterattack, your
-opponent moves one of his or her allies to one of
-your empty ally spaces.",,"STRT001, STRT006, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-44,Dancing Mists,https://github.com/zolodio/Avatar-TCG-Database/raw/main/44.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,lion,4,6,1,2,,"While this zone is charged, Dancing Mists has +2
-Intercept.",,"STRT001, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-45,Double Crest,https://github.com/zolodio/Avatar-TCG-Database/raw/main/45.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,lion,6,3,2,1,,"For each ally you have, Double Crest has +1
-Force.",,"STRT001, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-46,Hurricane Vault,https://github.com/zolodio/Avatar-TCG-Database/raw/main/46.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,lion,3,5,2,,,"Your opponent skips defending in his or her
-green zone.",,"STRT001, STRT006, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-47,Just Desserts,https://github.com/zolodio/Avatar-TCG-Database/raw/main/47.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,lion,7,1,,2,,"When you counterattack from a charged zone,
-add a green energy.",,"STRT001, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-48,Million Gallon Attack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/48.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,lion,6,6,1,1,1,"-2 Intercept >>> When you counterattack,
-charge this zone. Use only once.",,"STRT001, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-49,Mischievous Downpour,https://github.com/zolodio/Avatar-TCG-Database/raw/main/49.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,lion,3,4,1,,,"Reflip: Green <p> When you counterattack,
-charge this zone.",,"STRT001, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-50,Sea Sphere,https://github.com/zolodio/Avatar-TCG-Database/raw/main/50.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,lion,5,5,,2,,"When you counterattack, charge this zone.",,"STRT001, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-51,Snowball Smash,https://github.com/zolodio/Avatar-TCG-Database/raw/main/51.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,lion,8,5,,2,1,"When you counterattack, charge this zone.",,"STRT001, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-52,Stifling Breeze,https://github.com/zolodio/Avatar-TCG-Database/raw/main/52.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,lion,6,4,3,,,"While your opponent is defending, your allies
-cannot be moved or eliminated.",,"STRT001, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-53,Stifling Wind,https://github.com/zolodio/Avatar-TCG-Database/raw/main/53.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,lion,5,6,,1,1,"While your opponent is defending, your allies
-cannot be moved or eliminated.",,"STRT001, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-54,Surf Spray,https://github.com/zolodio/Avatar-TCG-Database/raw/main/54.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,lion,5,2,,2,,"When you counterattack, add a green energy for
-each charged zone you have.",,"STRT001, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-55,Sweet Revenge,https://github.com/zolodio/Avatar-TCG-Database/raw/main/55.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,lion,5,3,3,,,"-1 Intercept >>> When you counterattack, add a
-green energy.",,"STRT001, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-56,Tandem Attack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/56.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,lion,5,4,2,1,,"While you have an ally in this zone, Tandem
-Attack has +2 Force.",,"STRT001, STRT006, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-57,Wall of Water,https://github.com/zolodio/Avatar-TCG-Database/raw/main/57.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,lion,8,1,,3,,"-2 Intercept >>> When you counterattack from a
-charged zone, add a yellow energy.",,"STRT001, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-58,Whirling Debris,https://github.com/zolodio/Avatar-TCG-Database/raw/main/58.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,lion,4,4,,,1,"Two Red >>> +3 Intercept and +3 Force. Use
-only once.",,"STRT001, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-59,Windmill Barrier,https://github.com/zolodio/Avatar-TCG-Database/raw/main/59.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,lion,6,5,,2,,"While your opponent is defending, your zones
-cannot be uncharged.",,"STRT001, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-60,Windmill Dome,https://github.com/zolodio/Avatar-TCG-Database/raw/main/60.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,lion,7,4,1,,1,"While your opponent is defending, your zones
-cannot be uncharged.",,"STRT001, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-61,Bell Ringer,https://github.com/zolodio/Avatar-TCG-Database/raw/main/61.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,4,5,1,2,,"When you counterattack, your opponent
-eliminates one of his or her allies.",,"STRT001, STRT002, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-62,Boomerang Toss,https://github.com/zolodio/Avatar-TCG-Database/raw/main/62.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,5,1,1,1,,Red >>> +5 Force. Use only once.,,"STRT001, STRT002, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-63,Canyon Crawler Clash,https://github.com/zolodio/Avatar-TCG-Database/raw/main/63.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,6,6,1,1,1,,,"STRT001, STRT004, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-64,Coal Rake,https://github.com/zolodio/Avatar-TCG-Database/raw/main/64.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,5,1,1,,1,"When you counterattack, your opponent
-uncharges one of his or her zones.",,"STRT001, STRT004, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-65,Downdraft,https://github.com/zolodio/Avatar-TCG-Database/raw/main/65.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,4,3,1,,,,,"STRT001, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-66,Earthbound,https://github.com/zolodio/Avatar-TCG-Database/raw/main/66.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,6,5,1,,1,,,"STRT001, STRT004, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-67,Earthbridge,https://github.com/zolodio/Avatar-TCG-Database/raw/main/67.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,5,4,2,1,,"When you counterattack, you may move one of
-your opponent's allies to one of that player's
-empty ally spaces.",,"STRT001, STRT004, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-68,Evade,https://github.com/zolodio/Avatar-TCG-Database/raw/main/68.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,3,1,1,,,Red >>> +4 Intercept. Use only once.,,"STRT001, STRT002, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-69,Falling Leaf Ambush,https://github.com/zolodio/Avatar-TCG-Database/raw/main/69.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,6,4,1,2,,"Red, Green >>> +2 Intercept and +2 Force. Use
-only once.",,,,semi-gloss,semi-gloss
-70,Knuckle Sandwich,https://github.com/zolodio/Avatar-TCG-Database/raw/main/70.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,6,4,2,1,,,,"STRT001, STRT002, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-71,Kyoshi Backhand,https://github.com/zolodio/Avatar-TCG-Database/raw/main/71.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,4,4,,,1,"When you counterattack, your opponent
-eliminates one of his or her energy.",,"STRT001, STRT004, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-72,Kyoshi Fan Parry,https://github.com/zolodio/Avatar-TCG-Database/raw/main/72.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,7,2,2,,1,"Reflip: Green (You may pay a green energy to
-discard this card and flip a new one in this zone.)",,"STRT001, STRT004, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-73,Kyoshi Fan Throw,https://github.com/zolodio/Avatar-TCG-Database/raw/main/73.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,5,4,3,,,"When you counterattack, you may move one of
-your green energy to your yellow zone.",,"STRT001, STRT004, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-74,Kyoshi Pride,https://github.com/zolodio/Avatar-TCG-Database/raw/main/74.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,5,5,,2,,"Reflip: Green (You may pay a green energy to
-discard this card and flip a new one in this zone.)",,"STRT001, STRT002, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-75,Pummel,https://github.com/zolodio/Avatar-TCG-Database/raw/main/75.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,4,4,2,,,Green >>> +1 Intercept. Use only once.,,"STRT001, STRT002, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-76,Seize the Moment,https://github.com/zolodio/Avatar-TCG-Database/raw/main/76.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,2,6,1,,,"Reflip: Green (You may pay a green energy to
-discard this card and flip a new one in this zone.)",,"STRT001, STRT002, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-77,Skewer,https://github.com/zolodio/Avatar-TCG-Database/raw/main/77.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,3,6,,1,,,,"STRT001, STRT002, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-78,Snapped Off,https://github.com/zolodio/Avatar-TCG-Database/raw/main/78.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,8,4,1,1,1,,,,,semi-gloss,semi-gloss
-79,Tremor Trail,https://github.com/zolodio/Avatar-TCG-Database/raw/main/79.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,5,6,1,2,,,,"STRT001, STRT004, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-80,Will of the Warrior,https://github.com/zolodio/Avatar-TCG-Database/raw/main/80.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,4,7,3,,1,,,"STRT001, STRT002, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-81,Churning Stomachs,https://github.com/zolodio/Avatar-TCG-Database/raw/main/81.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,body,,,2,,,"Your opponent's strikes cost an additional yellow
-energy to play.",,"STRT001, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-82,Crystal Rampart,https://github.com/zolodio/Avatar-TCG-Database/raw/main/82.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,body,,,,,1,Your strikes have +2 Intercept.,,"STRT001, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-83,Dive for Cover,https://github.com/zolodio/Avatar-TCG-Database/raw/main/83.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,body,,,1,,,"Your strikes have +1 Intercept while in one of
-your charged zones.",,"STRT001, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-84,Flopsie Flop,https://github.com/zolodio/Avatar-TCG-Database/raw/main/84.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,body,,,1,1,,Your opponent cannot focus or pitch.,,"STRT001, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-85,Immobilize,https://github.com/zolodio/Avatar-TCG-Database/raw/main/85.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,body,,,1,,,"While your opponent is defending, his or her
-zones cannot be charged.",,"STRT001, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-86,Misdirection,https://github.com/zolodio/Avatar-TCG-Database/raw/main/86.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,body,,,2,,,"Your opponent skips defending in his or her
-green zone.",,"STRT001, STRT006, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-87,Riding the Crest,https://github.com/zolodio/Avatar-TCG-Database/raw/main/87.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,body,,,1,,,"While your opponent is defending in his or her
-green zone, your strikes have +2 Force.",,"STRT001, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-88,Stand Firm,https://github.com/zolodio/Avatar-TCG-Database/raw/main/88.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,body,,,2,,,"Your strikes have +1 Intercept and +1 Force
-while in one of your charged zones.",,"STRT001, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-89,Take the High Ground,https://github.com/zolodio/Avatar-TCG-Database/raw/main/89.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,body,,,1,,,"Your strikes have +1 Force while in one of your
-charged zones.",,"STRT001, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-90,Ward Off,https://github.com/zolodio/Avatar-TCG-Database/raw/main/90.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,body,,,1,,,"While your opponent is defending, your zones
-cannot be uncharged, and your allies cannot be
-moved or eliminated.",,"STRT001, STRT006, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-91,Charisma,https://github.com/zolodio/Avatar-TCG-Database/raw/main/91.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,mind,,,3,,,"Immediate—Your opponent moves one of his or
-her allies to one of your empty ally spaces.",,"STRT001, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-92,Contemplate,https://github.com/zolodio/Avatar-TCG-Database/raw/main/92.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,mind,,,1,,,"Immediate—Look at the top two cards of your
-deck. Put them back in any order.",,"STRT001, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-93,Incinerate,https://github.com/zolodio/Avatar-TCG-Database/raw/main/93.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,mind,,,1,,,"Immediate—Your opponent turns the top card of
-his or her deck face up. You may have your
-opponent put that card into his or her discard
-pile.",,"STRT001, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-94,Meditate,https://github.com/zolodio/Avatar-TCG-Database/raw/main/94.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,mind,,,2,,,"Immediate—Look at the top three cards of your
-deck. Put them back in any order.",,"STRT001, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-95,Pai Sho Mastery,https://github.com/zolodio/Avatar-TCG-Database/raw/main/95.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,mind,,,1,,,"While Pai Sho Mastery is in your advantage area,
-your cards have ""Reflip: Eliminate Pai Sho
-Mastery.""",,"STRT001, STRT008, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-96,Run the Blockade,https://github.com/zolodio/Avatar-TCG-Database/raw/main/96.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,mind,,,1,,,"Immediate—You may move any player's ally to
-one of that player's empty ally spaces.",,"STRT001, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-97,Sculpted Flame,https://github.com/zolodio/Avatar-TCG-Database/raw/main/97.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,mind,,,1,,,"As you play Sculpted Flame, choose one: Your
-strikes have +1 Intercept and -1 Force; or your
-strikes have -1 Intercept and +1 Force.",,"STRT001, STRT008, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-98,Training Scroll,https://github.com/zolodio/Avatar-TCG-Database/raw/main/98.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,mind,,,1,,,"Whenever you flip a card, turn the top card of
-your deck face up.",,"STRT001, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-99,Water Kata,https://github.com/zolodio/Avatar-TCG-Database/raw/main/99.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,mind,,,,1,,"When you counterattack, you may uncharge one
-of your zones. If you do, charge one of your
-zones.",,"STRT001, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-100,Yip Yip!,https://github.com/zolodio/Avatar-TCG-Database/raw/main/100.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,mind,,,1,1,,"Immediate—You are now defending up one zone.
-(Charge the zone in which you played this
-advantage.)",,"STRT001, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-101,Bad Breath,https://github.com/zolodio/Avatar-TCG-Database/raw/main/101.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,spirit,,,,1,,"Immediate—If this zone is already charged, you
-may uncharge any zone.",,"STRT001, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-102,Channel the Winds,https://github.com/zolodio/Avatar-TCG-Database/raw/main/102.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,spirit,,,3,,,"Immediate—You may charge any zone. (You
-also charge this zone as normal.)",,"STRT001, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-103,Dust Storm,https://github.com/zolodio/Avatar-TCG-Database/raw/main/103.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,spirit,,,2,,,"When you counterattack, add a yellow energy.",,"STRT001, STRT002, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-104,Expendable Troops,https://github.com/zolodio/Avatar-TCG-Database/raw/main/104.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,spirit,,,1,,,"Immediate—You may eliminate one of your allies.
-If you do, eliminate one of your opponent's allies.",,"STRT001, STRT007, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-105,Fiery Temper,https://github.com/zolodio/Avatar-TCG-Database/raw/main/105.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,spirit,,,1,1,,"Reflip: Green <p> Immediate—You may
-eliminate an ally.",,"STRT001, STRT007, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-106,Flying Staff Technique,https://github.com/zolodio/Avatar-TCG-Database/raw/main/106.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,spirit,,,2,,,"Immediate—If this zone is already charged, you
-may charge any zone.",,"STRT001, STRT002, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-107,Glorious Feast,https://github.com/zolodio/Avatar-TCG-Database/raw/main/107.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,spirit,,,3,,,Immediate—Add a red energy.,,"STRT001, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-108,Head Over Heels,https://github.com/zolodio/Avatar-TCG-Database/raw/main/108.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,spirit,,,1,1,,"Reflip: Green <p> Immediate—You may
-uncharge any zone.",,"STRT001, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-109,Highway Robbery,https://github.com/zolodio/Avatar-TCG-Database/raw/main/109.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,spirit,,,1,,,"When your opponent counterattacks from his or
-her green zone, you add two green energy.",,"STRT001, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-110,Volcanic Fountain,https://github.com/zolodio/Avatar-TCG-Database/raw/main/110.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,spirit,,,1,,,"Immediate—You may eliminate an energy in this
-zone. If you do, eliminate one of your opponent's
-energy of the same color.",,"STRT001, STRT007, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-111,Bonzu Pippinpaddle-Oppsokopolis III,https://github.com/zolodio/Avatar-TCG-Database/raw/main/111.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,,,,,1,"Immediate—Your opponent uncharges one of his
-or her zones.",,"STRT001, STRT002, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-112,Caution to the Wind,https://github.com/zolodio/Avatar-TCG-Database/raw/main/112.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,,,1,,,Your strikes have -1 Intercept and +1 Force.,,"STRT001, STRT002, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-113,Closed-Hand Form,https://github.com/zolodio/Avatar-TCG-Database/raw/main/113.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,,,,1,,Your strikes have +1 Force.,,"STRT001, STRT007, STRT008, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-114,Lifesaver,https://github.com/zolodio/Avatar-TCG-Database/raw/main/114.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,,,1,,,Your strikes have +1 Intercept in your red zone.,,"STRT001, STRT002, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-115,Open-Hand Form,https://github.com/zolodio/Avatar-TCG-Database/raw/main/115.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,,,,1,,Your strikes have +1 Intercept.,,"STRT001, STRT002, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-116,Roku's Guidance,https://github.com/zolodio/Avatar-TCG-Database/raw/main/116.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,,,1,,,"Immediate—Look at the top card of your deck.
-You may put it into your discard pile.",,"STRT001, STRT002, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-117,Sustenance,https://github.com/zolodio/Avatar-TCG-Database/raw/main/117.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,,,2,1,,Immediate—Add a red energy.,,"STRT001, STRT002, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-118,Take Them Away,https://github.com/zolodio/Avatar-TCG-Database/raw/main/118.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,,,,,1,"Immediate—Your opponent eliminates one of his
-or her allies.",,"STRT001, STRT009, STRT010, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-119,"Aang, the last airbender",https://github.com/zolodio/Avatar-TCG-Database/raw/main/119.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,light,,,,,1,"In Aang's zone, your strikes have +1 Intercept.",,"STRT001, STRT002, STRT003, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-120,"Appa, flying bison",https://github.com/zolodio/Avatar-TCG-Database/raw/main/120.jpg,ally,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,light,,,1,1,,"Whenever you flip a card in Appa's zone, you
-may swap Appa with an ally in one of your other
-zones.",,"STRT001, STRT002, STRT003, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-121,"Katara, waterbender in training",https://github.com/zolodio/Avatar-TCG-Database/raw/main/121.jpg,ally,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,light,,,1,,,"Yellow >>> When you counterattack from
-Katara's zone, charge this zone. Use only once
-per turn.",,"STRT001, STRT002, STRT003, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-122,"King Bumi, rudder of Omashu",https://github.com/zolodio/Avatar-TCG-Database/raw/main/122.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,light,,,2,,,"In King Bumi's zone, your strikes have
-""Whenever your opponent focuses, this strike
-gets +1 Force while it's in King Bumi's zone.""",,"STRT001, STRT002, STRT003, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-123,"Momo, hungry lemur",https://github.com/zolodio/Avatar-TCG-Database/raw/main/123.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,light,,,1,,,"When you counterattack from Momo's zone,
-each player adds a green energy.",,"STRT001, STRT002, STRT003, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-124,"Monk Gyatso, Aang's mentor",https://github.com/zolodio/Avatar-TCG-Database/raw/main/124.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,light,,,1,,,"Whenever you flip a card in Monk Gyatso's zone,
-turn the top card of your deck face up.",,"STRT001, STRT002, STRT003, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-125,"Jet, ruthless rebel",https://github.com/zolodio/Avatar-TCG-Database/raw/main/125.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,shadow,,,1,,,"When you counterattack from Jet's zone, each
-player eliminates one of his or her allies.",,"STRT001, STRT005, STRT006, STRT007, STRT008, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-126,"Jojo, the kissing bandit",https://github.com/zolodio/Avatar-TCG-Database/raw/main/126.jpg,ally,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,shadow,,,,2,,"Reflip: Green <p> When you counterattack from
-Jojo's zone, eliminate one of your opponent's
-green energy, and you add a green energy.",,"STRT001, STRT005, STRT006, STRT007, STRT008, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-127,"Malu, a reclusive orphan",https://github.com/zolodio/Avatar-TCG-Database/raw/main/127.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,shadow,,,1,,,"Two Green >>> In Malu's zone, your strikes have
-""Your opponent skips defending in his or her
-green zone.""",,"STRT001, STRT005, STRT006, STRT007, STRT008, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-128,"Pirate Captain, shady trader",https://github.com/zolodio/Avatar-TCG-Database/raw/main/128.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,shadow,,,1,,,"When you counterattack from Pirate Captain's
-zone, look at the top card of your deck. You may
-put it into your discard pile.",,"STRT001, STRT005, STRT006, STRT007, STRT008, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-129,"Prince Zuko, exile",https://github.com/zolodio/Avatar-TCG-Database/raw/main/129.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,shadow,,,1,,,"Eliminate an energy in Prince Zuko's zone >>>
-When you counterattack from Prince Zuko's
-zone, eliminate an energy of the same color. Use
-only once per turn.",,"STRT001, STRT005, STRT006, STRT007, STRT008, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-130,"Uncle Iroh, Zuko's mentor",https://github.com/zolodio/Avatar-TCG-Database/raw/main/130.jpg,ally,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,shadow,,,,,1,"Whenever you would flip a card in Uncle Iroh's
-zone, you may first look at the top two cards of
-your deck. If you do, put them back in any order.",,"STRT001, STRT005, STRT006, STRT007, STRT008, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-131,"Afiko, bringer of ill winds",https://github.com/zolodio/Avatar-TCG-Database/raw/main/131.jpg,ally,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,dark,,,1,1,,"When you counterattack from Afiko's zone, you
-may eliminate one of your allies. If you do, your
-opponent charges one of your zones.",,"STRT001, STRT009, STRT010, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-132,"Commander Zhao, ambitious leader",https://github.com/zolodio/Avatar-TCG-Database/raw/main/132.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,dark,,,1,1,,"Your strikes in Commander Zhao's zone have +1
-Force.",,"STRT001, STRT009, STRT010, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-133,"Fire Nation Elite, hardened troops",https://github.com/zolodio/Avatar-TCG-Database/raw/main/133.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,dark,,,,1,,"When you counterattack from Fire Nation Elite's
-zone, your opponent turns the top card of his or
-her deck face up. You may have your opponent
-put that card into his or her discard pile.",,"STRT001, STRT009, STRT010, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-134,"Kinto, cruel trickster",https://github.com/zolodio/Avatar-TCG-Database/raw/main/134.jpg,ally,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,dark,,,,1,,"When you counterattack from Kinto's zone, you
-may eliminate one of your allies. If you do, your
-opponent uncharges one of his or her zones.",,"STRT001, STRT009, STRT010, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-135,"Prison Warden, breaker of spirits",https://github.com/zolodio/Avatar-TCG-Database/raw/main/135.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,dark,,,1,,,"Red >>> When you counterattack from Prison
-Warden's zone, your opponent eliminates one of
-his or her allies. Use only once per turn.",,"STRT001, STRT009, STRT010, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-136,"Zhao's Guard, loyal firebenders",https://github.com/zolodio/Avatar-TCG-Database/raw/main/136.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,dark,,,1,,,"Green >>> When you counterattack from Zhao's
-Guard's zone, eliminate Zhao's Guard and up to
-two green energy. Use only once per turn.",,"STRT001, STRT009, STRT010, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-137,"Cabbage Merchant, unfortunate bystander",https://github.com/zolodio/Avatar-TCG-Database/raw/main/137.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,,,1,,,"When you counterattack from Cabbage
-Merchant's zone, you may eliminate Cabbage
-Merchant. If you do, add a green energy.",,"STRT001, STRT002, STRT003, STRT004, STRT005, STRT006, STRT007, STRT008, STRT009, STRT010, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-138,"Canyon Guide, pathfinder",https://github.com/zolodio/Avatar-TCG-Database/raw/main/138.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,,,,1,,"Whenever you flip a card in Canyon Guide's
-zone, your opponent turns the top card of his or
-her deck face up.",,"STRT001, STRT002, STRT003, STRT004, STRT005, STRT006, STRT007, STRT008, STRT009, STRT010, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-139,"Gan Jin Tribe, children of Jin Wei",https://github.com/zolodio/Avatar-TCG-Database/raw/main/139.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,,,2,,,"Green >>> In Gan Jin Tribe's zone, your strikes
-have +1 Intercept. Use only once per turn.",,"STRT001, STRT002, STRT003, STRT004, STRT005, STRT006, STRT007, STRT008, STRT009, STRT010, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-140,"Herbalist, mad hermit",https://github.com/zolodio/Avatar-TCG-Database/raw/main/140.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,,,,1,,"In Herbalist's zone, your strikes have ""Reflip:
-Green.""",,"STRT001, STRT002, STRT003, STRT004, STRT005, STRT006, STRT007, STRT008, STRT009, STRT010, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-141,"Zhang Tribe, children of Wei Jin",https://github.com/zolodio/Avatar-TCG-Database/raw/main/141.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,,,2,,,"Green >>> In Zhang Tribe's zone, your strikes
-have +1 Force. Use only once per turn.",,"STRT001, STRT002, STRT003, STRT004, STRT005, STRT006, STRT007, STRT008, STRT009, STRT010, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-142,Air Scooter,https://github.com/zolodio/Avatar-TCG-Database/raw/main/142.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,air,5,5,2,1,,"When you flip Air Scooter in a zone without an
-ally, you may move one of your allies to this zone.",,"STRT001, STRT002, STRT006, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-143,Chi Absorption,https://github.com/zolodio/Avatar-TCG-Database/raw/main/143.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,air,8,1,,1,1,"Move Chi Absorption down one zone >>> Add a
-yellow energy. (Use only while defending in your
-green or yellow zone.)",,"STRT001, STRT002, STRT006, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-144,Dust Funnels,https://github.com/zolodio/Avatar-TCG-Database/raw/main/144.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,air,6,5,3,1,,"Move Dust Funnels down one zone >>> Add two
-green energy. (Use only while defending in your
-green or yellow zone.)",,"STRT001, STRT002, STRT006, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-145,Graceful Leap,https://github.com/zolodio/Avatar-TCG-Database/raw/main/145.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,air,4,2,,1,,"Two Green >>> Move Graceful Leap up one
-zone. (Use only while defending in your yellow or
-red zone.)",,"STRT001, STRT002, STRT006, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-146,Open-Palm Pushback,https://github.com/zolodio/Avatar-TCG-Database/raw/main/146.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,air,5,6,,1,1,"Move Open-Palm Pushback to your red zone >>>
-Your opponent skips defending in his or her
-green zone. (Use only while defending in your
-green or yellow zone.)",,"STRT001, STRT002, STRT006, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-147,Zoom!,https://github.com/zolodio/Avatar-TCG-Database/raw/main/147.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,air,4,6,1,,1,"Two Green >>> Move Zoom! up one zone. (Use
-only while defending in your yellow or red zone.)",,"STRT001, STRT002, STRT006, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-148,Boulder Smash,https://github.com/zolodio/Avatar-TCG-Database/raw/main/148.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,earth,5,5,2,1,,"Whenever your opponent focuses, Boulder
-Smash gets +1 Force.",,"STRT001, STRT004, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-149,Choking Sand,https://github.com/zolodio/Avatar-TCG-Database/raw/main/149.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,earth,4,6,1,2,,"When your opponent counterattacks from a zone,
-eliminate an ally in that zone.",,"STRT001, STRT004, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-150,Granite Block,https://github.com/zolodio/Avatar-TCG-Database/raw/main/150.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,earth,7,5,1,1,1,"When your opponent counterattacks from a zone,
-uncharge that zone.",,"STRT001, STRT004, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-151,Ground Breaker,https://github.com/zolodio/Avatar-TCG-Database/raw/main/151.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,earth,6,2,1,1,1,"When your opponent counterattacks from a zone,
-uncharge that zone, eliminate an ally in that zone,
-and eliminate an energy in that zone.",,"STRT001, STRT004, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-152,Quarry Crush,https://github.com/zolodio/Avatar-TCG-Database/raw/main/152.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,earth,3,5,,1,,"Reflip: Green <p> Whenever your opponent
-focuses, Quarry Crush gets +1 Force.",,"STRT001, STRT004, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-153,Seismic Spring,https://github.com/zolodio/Avatar-TCG-Database/raw/main/153.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,earth,4,4,,,1,"When your opponent counterattacks from a zone,
-eliminate an energy in that zone.",,"STRT001, STRT004, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-154,Corona Punch,https://github.com/zolodio/Avatar-TCG-Database/raw/main/154.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fire,5,6,,2,1,"When you counterattack, you may eliminate a
-yellow energy. <p> Pitch >>> Eliminate a yellow
-energy.",,"STRT001, STRT007, STRT008, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-155,Ember Shot,https://github.com/zolodio/Avatar-TCG-Database/raw/main/155.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fire,4,6,1,,1,"When you counterattack, charge this zone. <p>
-Pitch >>> Charge this zone.",,"STRT001, STRT007, STRT008, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-156,Fire Sweep,https://github.com/zolodio/Avatar-TCG-Database/raw/main/156.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fire,3,3,1,,,Pitch >>> Eliminate up to two green energy.,,"STRT001, STRT007, STRT008, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-157,Kindle,https://github.com/zolodio/Avatar-TCG-Database/raw/main/157.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fire,6,4,3,,,Pitch >>> Charge this zone.,,"STRT001, STRT007, STRT008, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-158,Twin Fire Daggers,https://github.com/zolodio/Avatar-TCG-Database/raw/main/158.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fire,7,2,,2,,"Green, Pitch >>> Your opponent eliminates one
-of his or her allies.",,"STRT001, STRT007, STRT008, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-159,Warship Barrage,https://github.com/zolodio/Avatar-TCG-Database/raw/main/159.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fire,4,4,3,,,"When you counterattack, your opponent
-eliminates one of his or her allies. <p> Green,
-Pitch >>> Your opponent eliminates one of his or
-her allies.",,"STRT001, STRT007, STRT008, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-160,Bubble Burst,https://github.com/zolodio/Avatar-TCG-Database/raw/main/160.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,water,4,4,,,1,-1 Intercept >>> +1 Force.,,"STRT001, STRT003, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-161,Clutches of the Deep,https://github.com/zolodio/Avatar-TCG-Database/raw/main/161.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,water,9,0,2,,1,-1 Intercept >>> +1 Force.,,"STRT001, STRT003, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-162,Flash Flood,https://github.com/zolodio/Avatar-TCG-Database/raw/main/162.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,water,5,4,2,,1,"When you counterattack from a charged zone,
-you may charge any zone.",,"STRT001, STRT003, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-163,Ice Blooms,https://github.com/zolodio/Avatar-TCG-Database/raw/main/163.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,water,6,4,2,1,,"Red >>> When you counterattack, charge any
-zone. Use only once.",,"STRT001, STRT003, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-164,Single Water Whip,https://github.com/zolodio/Avatar-TCG-Database/raw/main/164.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,water,5,5,2,1,,"Uncharge this zone >>> When you
-counterattack, charge any zone.",,"STRT001, STRT003, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-165,Tidal Wave,https://github.com/zolodio/Avatar-TCG-Database/raw/main/165.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,water,6,7,1,2,1,"-3 Intercept >>> When you counterattack,
-charge any zone. Use only once.",,"STRT001, STRT003, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,semi-gloss,semi-gloss
-166,The Avatar Awakens,https://github.com/zolodio/Avatar-TCG-Database/raw/main/166.jpg,strike,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,8,8,,,3,Exclusive—Aang,,"BSTR001, BSTR002, BSTR003, BSTR004",,metal foil,semi-gloss
-167,"Sokka, big brother",https://github.com/zolodio/Avatar-TCG-Database/raw/main/167.jpg,ally,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,,,1,,,"Exclusive—Katara <p> Uncharge Sokka's zone
->>> If you have a strike in Sokka's zone, choose
-one: That strike gets +1 Intercept; or that strike
-gets +1 Force. Use only once per turn.",,"BSTR001, BSTR002, BSTR003, BSTR004",,metal foil,semi-gloss
-168,"Flopsie, Bumi's pet",https://github.com/zolodio/Avatar-TCG-Database/raw/main/168.jpg,ally,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,,,1,,1,"Exclusive—King Bumi <p> In Flopsie's zone,
-your strikes have -1 Intercept and +2 Force.",,"BSTR001, BSTR002, BSTR003, BSTR004",,metal foil,semi-gloss
-169,The Kissing Bandit,https://github.com/zolodio/Avatar-TCG-Database/raw/main/169.jpg,advantage,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,,,1,1,,"Exclusive—Jojo <p> When you counterattack
-from a zone, add an energy to that zone and
-eliminate one of your opponent's energy of the
-same color.",,"BSTR001, BSTR002, BSTR003, BSTR004",,metal foil,semi-gloss
-170,Strata Breaker,https://github.com/zolodio/Avatar-TCG-Database/raw/main/170.jpg,strike,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,3,3,1,,,"Exclusive—Malu <p> Your opponent skips
-defending in his or her green and yellow zones.",,"BSTR001, BSTR002, BSTR003, BSTR004",,metal foil,semi-gloss
-171,Tail of the Comet,https://github.com/zolodio/Avatar-TCG-Database/raw/main/171.jpg,strike,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,5,5,1,1,1,"Exclusive—Prince Zuko <p> When you
-counterattack, you may eliminate an energy.",,"BSTR001, BSTR002, BSTR003, BSTR004",,metal foil,semi-gloss
-172,Shocking Revelation,https://github.com/zolodio/Avatar-TCG-Database/raw/main/172.jpg,strike,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,5,4,1,1,,"Exclusive—Uncle Iroh <p> Pitch >>> Look at the
-top three cards of your deck. Put one on the top
-of your deck and the rest into your discard pile.",,"BSTR001, BSTR002, BSTR003, BSTR004",,metal foil,semi-gloss
-173,Hollow Soul Hurricane,https://github.com/zolodio/Avatar-TCG-Database/raw/main/173.jpg,strike,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,4,4,3,,,"Exclusive—Afiko <p> Turn your Chamber Card
-from the back to the front >>> +3 Intercept and
-+3 Force.",,"BSTR001, BSTR002, BSTR003, BSTR004",,metal foil,semi-gloss
-174,Maw of the Inferno,https://github.com/zolodio/Avatar-TCG-Database/raw/main/174.jpg,strike,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,6,5,1,1,1,"Exclusive—Commander Zhao <p> When you
-counterattack, you may eliminate an ally.",,"BSTR001, BSTR002, BSTR003, BSTR004",,metal foil,semi-gloss
-175,Aquatic Tendrils,https://github.com/zolodio/Avatar-TCG-Database/raw/main/175.jpg,advantage,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,,,,,1,"Exclusive—Kinto <p> Your opponent's strikes
-cost an additional red energy to play.",,"BSTR001, BSTR002, BSTR003, BSTR004",,metal foil,semi-gloss
-176,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME176a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME176b.jpg,"fox, spirit, light, air",,,,,,,,"STRT001, STRT002, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-177,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME177a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME177b.jpg,"fox, spirit, light, air",,,,,,,,"STRT001, STRT002, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-178,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME178a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME178b.jpg,"fox, spirit, light, air",,,,,,,,"STRT001, STRT002, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-179,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME179a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME179b.jpg,"fox, spirit, light, air",,,,,,,,"STRT001, STRT002, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-180,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME180a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME180b.jpg,"fox, spirit, light, air",,,,,,,,"STRT001, STRT002, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-181,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME181a.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME181b.jpg,"fox, spirit, light, air",,,,,,,,"STRT001, STRT002, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-182,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME182a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME182b.jpg,"lion, mind, light, water",,,,,,,,"STRT001, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-183,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME183a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME183b.jpg,"lion, mind, light, water",,,,,,,,"STRT001, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-184,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME184a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME184b.jpg,"lion, mind, light, water",,,,,,,,"STRT001, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-185,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME185a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME185b.jpg,"lion, mind, light, water",,,,,,,,"STRT001, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-186,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME186a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME186b.jpg,"lion, mind, light, water",,,,,,,,"STRT001, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-187,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME187a.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME187b.jpg,"lion, mind, light, water",,,,,,,,"STRT001, STRT003, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-188,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME188a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME188b.jpg,"bull, body, light, earth",,,,,,,,"STRT001, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-189,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME189a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME189b.jpg,"bull, body, light, earth",,,,,,,,"STRT001, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-190,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME190a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME190b.jpg,"bull, body, light, earth",,,,,,,,"STRT001, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-191,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME191a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME191b.jpg,"bull, body, light, earth",,,,,,,,"STRT001, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-192,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME192a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME192b.jpg,"bull, body, light, earth",,,,,,,,"STRT001, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-193,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME193a.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME193b.jpg,"bull, body, light, earth",,,,,,,,"STRT001, STRT004, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-194,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME194a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME194b.jpg,"fox, spirit, shadow, earth",,,,,,,,"STRT001, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-195,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME195a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME195b.jpg,"fox, spirit, shadow, earth",,,,,,,,"STRT001, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-196,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME196a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME196b.jpg,"fox, spirit, shadow, earth",,,,,,,,"STRT001, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-197,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME197a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME197b.jpg,"fox, spirit, shadow, earth",,,,,,,,"STRT001, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-198,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME198a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME198b.jpg,"fox, spirit, shadow, earth",,,,,,,,"STRT001, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-199,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME199a.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME199b.jpg,"fox, spirit, shadow, earth",,,,,,,,"STRT001, STRT005, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-200,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME200a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME200b.jpg,"lion, body, shadow, air",,,,,,,,"STRT001, STRT006, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-201,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME201a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME201b.jpg,"lion, body, shadow, air",,,,,,,,"STRT001, STRT006, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-202,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME202a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME202b.jpg,"lion, body, shadow, air",,,,,,,,"STRT001, STRT006, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-203,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME203a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME203b.jpg,"lion, body, shadow, air",,,,,,,,"STRT001, STRT006, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-204,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME204a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME204b.jpg,"lion, body, shadow, air",,,,,,,,"STRT001, STRT006, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-205,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME205a.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME205b.jpg,"lion, body, shadow, air",,,,,,,,"STRT001, STRT006, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-206,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME206a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME206b.jpg,"bull, spirit, shadow, fire",,,,,,,,"STRT001, STRT007, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-207,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME207a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME207b.jpg,"bull, spirit, shadow, fire",,,,,,,,"STRT001, STRT007, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-208,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME208a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME208b.jpg,"bull, spirit, shadow, fire",,,,,,,,"STRT001, STRT007, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-209,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME209a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME209b.jpg,"bull, spirit, shadow, fire",,,,,,,,"STRT001, STRT007, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-210,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME210a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME210b.jpg,"bull, spirit, shadow, fire",,,,,,,,"STRT001, STRT007, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-211,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME211a.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME211b.jpg,"bull, spirit, shadow, fire",,,,,,,,"STRT001, STRT007, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-212,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME212a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME212b.jpg,"fox, mind, shadow, fire",,,,,,,,"STRT001, STRT008, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-213,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME213a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME213b.jpg,"fox, mind, shadow, fire",,,,,,,,"STRT001, STRT008, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-214,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME214a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME214b.jpg,"fox, mind, shadow, fire",,,,,,,,"STRT001, STRT008, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-215,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME215a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME215b.jpg,"fox, mind, shadow, fire",,,,,,,,"STRT001, STRT008, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-216,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME216a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME216b.jpg,"fox, mind, shadow, fire",,,,,,,,"STRT001, STRT008, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-217,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME217a.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME217b.jpg,"fox, mind, shadow, fire",,,,,,,,"STRT001, STRT008, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-218,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME218a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME218b.jpg,"lion, spirit, dark, air",,,,,,,,"STRT001, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-219,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME219a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME219b.jpg,"lion, spirit, dark, air",,,,,,,,"STRT001, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-220,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME220a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME220b.jpg,"lion, spirit, dark, air",,,,,,,,"STRT001, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-221,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME221a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME221b.jpg,"lion, spirit, dark, air",,,,,,,,"STRT001, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-222,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME222a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME222b.jpg,"lion, spirit, dark, air",,,,,,,,"STRT001, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-223,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME223a.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME223b.jpg,"lion, spirit, dark, air",,,,,,,,"STRT001, STRT009, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-224,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME224a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME224b.jpg,"bull, mind, dark, fire",,,,,,,,"STRT001, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-225,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME225a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME225b.jpg,"bull, mind, dark, fire",,,,,,,,"STRT001, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-226,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME226a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME226b.jpg,"bull, mind, dark, fire",,,,,,,,"STRT001, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-227,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME227a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME227b.jpg,"bull, mind, dark, fire",,,,,,,,"STRT001, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-228,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME228a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME228b.jpg,"bull, mind, dark, fire",,,,,,,,"STRT001, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-229,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME229a.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME229b.jpg,"bull, mind, dark, fire",,,,,,,,"STRT001, STRT010, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-230,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME230a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME230b.jpg,"fox, body, dark, water",,,,,,,,"STRT001, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-231,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME231a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME231b.jpg,"fox, body, dark, water",,,,,,,,"STRT001, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-232,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME232a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME232b.jpg,"fox, body, dark, water",,,,,,,,"STRT001, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-233,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME233a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME233b.jpg,"fox, body, dark, water",,,,,,,,"STRT001, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-234,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME234a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME234b.jpg,"fox, body, dark, water",,,,,,,,"STRT001, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-235,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME235a.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME235b.jpg,"fox, body, dark, water",,,,,,,,"STRT001, STRT011, BSTR001, BSTR002, BSTR003, BSTR004",,glossy,glossy
-ABK001,"Toph, earthbender",https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk001.jpg,ally,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,light,,,,,,,,XBK001,,semi-gloss,semi-gloss
-ABK002,"Princess Azula, firebender",https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk002.jpg,ally,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,dark,,,,,,,,XBK002,,semi-gloss,semi-gloss
-ABK003,Racing with the Wind,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk003.jpg,advantage,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,spirit,,,,,,,,XBK003,,semi-gloss,semi-gloss
-ABK004,In The Breach,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk004.jpg,advantage,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,body,,,,,,,,XBK004,,semi-gloss,semi-gloss
-ABK005,Juggle,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk005.jpg,strike,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,air,5,6,,,,,,XBK005,,semi-gloss,semi-gloss
-ABK006,Taming the Flame,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk006.jpg,strike,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,fire,6,5,,,,,,XBK006,,semi-gloss,semi-gloss
-ABK007,Water Whirl,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk007.jpg,strike,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,water,7,1,,,,,,XBK007,,semi-gloss,semi-gloss
-ABK008,Boulder Roll,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk008.jpg,strike,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,earth,5,5,,,,,,XBK008,,semi-gloss,semi-gloss
-APR001,Appa's Wild Ride,https://github.com/zolodio/Avatar-TCG-Database/raw/main/apr001.jpg,advantage,PROMO,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,,,,,,,,"XAPR001, XDVD001",,semi-gloss,semi-gloss
-APR002,Sokka's Mettle,https://github.com/zolodio/Avatar-TCG-Database/raw/main/apr002.jpg,strike,PROMO,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,,5,5,,,,,,"XAPR002, XDVD002",,semi-gloss,semi-gloss
-FPR001,Air Cannon Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr001a.jpg,chamber,PROMO,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr001b.jpg,"fox, spirit, light, air",,,,,,,,H9748,,glossy,glossy
-FPR002,Fire Blast Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr002a.jpg,chamber,PROMO,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr002b.jpg,"bull, spirit, shadow, fire",,,,,,,,L1234,,glossy,glossy
-FPR003,Ice Attack Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr003a.jpg,chamber,PROMO,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr003b.jpg,"fox, spirit, light, water",,,,,,,,K3474,,glossy,glossy
-XAPR001,Appa's Wild Ride in Plastic,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XAPR001.jpg,sealed,other,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/APR00Xb.jpg,,,,,,,,,XDVD001,,holographic,semi-gloss
-XAPR002,Sokka's Mettle in Plastic,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XAPR002.jpg,sealed,other,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/APR00Xb.jpg,,,,,,,,,XDVD002,,holographic,semi-gloss
-XBK001,Stack Attack Toph,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK001.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg,,,,,,,,,,,plastic film,plastic film
-XBK002,Lava Launch Azula,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK002.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg,,,,,,,,,,,plastic film,plastic film
-XBK003,Air Scooter Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK003.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg,,,,,,,,,,,plastic film,plastic film
-XBK004,Rip 'n Whirl Sokka,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK004.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg,,,,,,,,,,,plastic film,plastic film
-XBK005,Master Airbender,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK005.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg,,,,,,,,,,,plastic film,plastic film
-XBK006,Flame Tame Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK006.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg,,,,,,,,,,,plastic film,plastic film
-XBK007,Water Swirl Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK007.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg,,,,,,,,,,,plastic film,plastic film
-XBK008,Boulder Roll,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK008.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg,,,,,,,,,,,plastic film,plastic film
-XDVD001,DVD - Book 1 Volume 1,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XDVD001.jpg,sealed,other,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XDVD001b.jpg,,,,,,,,,,,holographic,plastic film
-XDVD002,DVD - Book 1 Volume 2,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XDVD002.jpg,sealed,other,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XDVD002b.jpg,,,,,,,,,,,holographic,plastic film
-K3474,Ice Attack Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/K3474.jpg,sealed,other,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/K3474b.jpg,,,,,,,,,,,plastic film,plastic film
-H9748,Air Cannon Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/H9748.jpg,sealed,other,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/H9748b.jpg,,,,,,,,,,,plastic film,plastic film
-L1234,Fire Blast Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/L1234.jpg,sealed,other,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/L1234.jpg,,,,,,,,,,,plastic film,plastic film
-STRT001,Sealed Starter Set,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT001.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT001b.jpg,,,,,,,,,,,plastic film,plastic film
-STRT002,Sealed Starter Deck in Acrylic - Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT002.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT00Xb.jpg,,,,,,,,,"STRT001, MTBX002",,glossy,glossy
-STRT003,Sealed Starter Deck in Acrylic - Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT003.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT00Xb.jpg,,,,,,,,,"STRT001, MTBX002",,glossy,glossy
-STRT004,Sealed Starter Deck in Acrylic - King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT004.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT00Xb.jpg,,,,,,,,,"STRT001, MTBX002",,glossy,glossy
-STRT005,Sealed Starter Deck in Acrylic - Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT005.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT00Xb.jpg,,,,,,,,,"STRT001, MTBX002",,glossy,glossy
-STRT006,Sealed Starter Deck in Acrylic - Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT006.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT00Xb.jpg,,,,,,,,,"STRT001, MTBX002",,glossy,glossy
-STRT007,Sealed Starter Deck in Acrylic - Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT007.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT00Xb.jpg,,,,,,,,,"STRT001, MTBX002",,glossy,glossy
-STRT008,Sealed Starter Deck in Acrylic - Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT008.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT00Xb.jpg,,,,,,,,,"STRT001, MTBX002",,glossy,glossy
-STRT009,Sealed Starter Deck in Acrylic - Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT009.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT00Xb.jpg,,,,,,,,,"STRT001, MTBX002",,glossy,glossy
-STRT010,Sealed Starter Deck in Acrylic - Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT010.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT00Xb.jpg,,,,,,,,,"STRT001, MTBX002",,glossy,glossy
-STRT011,Sealed Starter Deck in Acrylic - Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT011.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT00Xb.jpg,,,,,,,,,"STRT001, MTBX002",,glossy,glossy
-BSTR001,Foil Booster Pack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR001.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR001b.jpg,,,,,,,,,"BSTR002, BSTR003, BSTR004",,metal foil,metal foil
-BSTR002,Blister Pack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR002.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR002b.jpg,,,,,,,,,,,semi-gloss,cardboard
-BSTR003,Double Blister Pack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR003.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR003b.jpg,,,,,,,,,,,semi-gloss,cardboard
-BSTR004,Booster Box,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR004.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR004b.jpg,,,,,,,,,,,plastic film,plastic film
-RLBK001,Official Rulebook,https://github.com/zolodio/Avatar-TCG-Database/raw/main/RLBK001.jpg,other,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/RLBK001b.jpg,,,,,,,,,STRT001,"The Avatar: The Last Airbender Master of Elements Official Rulebook is the compilation of all the TCG's guidelines and regulations.[10] The rulebook includes directions for how to play the game, limitations for formal play, detailed descriptions of card types, and many other gameplay necessities. Named for the initial TCG starter pack release, this rulebook was included in every Master of Elements Starter Pack as the definitive set of Avatar TCG rules and principles for all modes of play. Due to the discontinuation of the card series, it remains the only source for such information.",semi-gloss,semi-gloss
-PLMT001,Paper PlayMat,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT001.jpg,other,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT001b.jpg,,,,,,,,,STRT001,,semi-gloss,semi-gloss
-PLMT002,Fabric PlayMat,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT002.jpg,other,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT002b.jpg,,,,,,,,,,,fabric,rubber
-MTBX001,Empty Starter Box,https://github.com/zolodio/Avatar-TCG-Database/raw/main/MTBX001.jpg,other,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/MTBX001b.jpg,,,,,,,,,STRT001,,matte,glossy
-MTBX002,Empty Acrylic Starter Deck Box,https://github.com/zolodio/Avatar-TCG-Database/raw/main/MTBX002.jpg,other,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/MTBX002b.jpg,,,,,,,,,,,glossy,glossy
-PSTR001,Be The Avatar Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR001.jpg,other,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR00Xb.jpg,,,,,,,,,,,semi-gloss,semi-gloss
-PSTR002,Experience The Legend Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR002.jpg,other,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR00Xb.jpg,,,,,,,,,,,semi-gloss,semi-gloss
-PSTR003,Master The Elements Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR003.jpg,other,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR00Xb.jpg,,,,,,,,,,,semi-gloss,semi-gloss
+Number,Name,Image Link,Type,Rarity,Set,Back Image Link,Surface Finish Front,Surface Finish Back,Traits,Intercept,Force
+1,Blazing Axe Kick,https://github.com/zolodio/Avatar-TCG-Database/raw/main/1.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,bull,6,3
+2,Boiling Point,https://github.com/zolodio/Avatar-TCG-Database/raw/main/2.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,bull,8,3
+3,Burning Blade,https://github.com/zolodio/Avatar-TCG-Database/raw/main/3.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,bull,5,3
+4,Burning Disc,https://github.com/zolodio/Avatar-TCG-Database/raw/main/4.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,bull,5,6
+5,Burning Lash,https://github.com/zolodio/Avatar-TCG-Database/raw/main/5.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,bull,7,4
+6,Doublefoot Dropkick,https://github.com/zolodio/Avatar-TCG-Database/raw/main/6.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,bull,5,1
+7,Eye of Ozai,https://github.com/zolodio/Avatar-TCG-Database/raw/main/7.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,bull,4,6
+8,Fetch!,https://github.com/zolodio/Avatar-TCG-Database/raw/main/8.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,bull,5,4
+9,Flare,https://github.com/zolodio/Avatar-TCG-Database/raw/main/9.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,bull,4,3
+10,Flying Fire Fist,https://github.com/zolodio/Avatar-TCG-Database/raw/main/10.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,bull,5,7
+11,Gout of Flame,https://github.com/zolodio/Avatar-TCG-Database/raw/main/11.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,bull,5,3
+12,Jagged Ground,https://github.com/zolodio/Avatar-TCG-Database/raw/main/12.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,bull,2,2
+13,Quicksand,https://github.com/zolodio/Avatar-TCG-Database/raw/main/13.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,bull,3,4
+14,Rock the House,https://github.com/zolodio/Avatar-TCG-Database/raw/main/14.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,bull,6,3
+15,Scorching Phoenix,https://github.com/zolodio/Avatar-TCG-Database/raw/main/15.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,bull,6,6
+16,Searing Cage,https://github.com/zolodio/Avatar-TCG-Database/raw/main/16.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,bull,6,2
+17,Stoke the Flames,https://github.com/zolodio/Avatar-TCG-Database/raw/main/17.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,bull,8,4
+18,Tectonic Shift,https://github.com/zolodio/Avatar-TCG-Database/raw/main/18.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,bull,3,6
+19,Titanic Fireball,https://github.com/zolodio/Avatar-TCG-Database/raw/main/19.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,bull,5,5
+20,Wildfire Arc,https://github.com/zolodio/Avatar-TCG-Database/raw/main/20.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,bull,7,6
+21,Blast Cushion,https://github.com/zolodio/Avatar-TCG-Database/raw/main/21.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fox,8,1
+22,Breath of the Dragon,https://github.com/zolodio/Avatar-TCG-Database/raw/main/22.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fox,4,6
+23,Canyon Sprint,https://github.com/zolodio/Avatar-TCG-Database/raw/main/23.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fox,5,5
+24,Careening Koi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/24.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fox,5,4
+25,Frost Blade,https://github.com/zolodio/Avatar-TCG-Database/raw/main/25.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fox,3,4
+26,Frost Daggers,https://github.com/zolodio/Avatar-TCG-Database/raw/main/26.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fox,6,1
+27,Frost Spear,https://github.com/zolodio/Avatar-TCG-Database/raw/main/27.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fox,4,5
+28,Gale Force,https://github.com/zolodio/Avatar-TCG-Database/raw/main/28.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fox,3,6
+29,Howling Cyclone,https://github.com/zolodio/Avatar-TCG-Database/raw/main/29.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fox,8,7
+30,Howling Squall,https://github.com/zolodio/Avatar-TCG-Database/raw/main/30.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fox,5,7
+31,Howling Wind,https://github.com/zolodio/Avatar-TCG-Database/raw/main/31.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fox,5,5
+32,Nimbus Churn,https://github.com/zolodio/Avatar-TCG-Database/raw/main/32.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fox,7,5
+33,Rocky Road,https://github.com/zolodio/Avatar-TCG-Database/raw/main/33.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fox,6,5
+34,Spinning Tempest,https://github.com/zolodio/Avatar-TCG-Database/raw/main/34.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fox,7,3
+35,Swirling Flames,https://github.com/zolodio/Avatar-TCG-Database/raw/main/35.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fox,5,6
+36,Teeth of the Dragon,https://github.com/zolodio/Avatar-TCG-Database/raw/main/36.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fox,5,1
+37,Terra Break,https://github.com/zolodio/Avatar-TCG-Database/raw/main/37.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fox,6,6
+38,Tongue of the Dragon,https://github.com/zolodio/Avatar-TCG-Database/raw/main/38.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fox,7,4
+39,Water Lasso,https://github.com/zolodio/Avatar-TCG-Database/raw/main/39.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fox,6,4
+40,Wind on the Waves,https://github.com/zolodio/Avatar-TCG-Database/raw/main/40.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fox,4,4
+41,Bitter Butter,https://github.com/zolodio/Avatar-TCG-Database/raw/main/41.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,lion,4,3
+42,Blowback,https://github.com/zolodio/Avatar-TCG-Database/raw/main/42.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,lion,5,5
+43,Creeping Crystal,https://github.com/zolodio/Avatar-TCG-Database/raw/main/43.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,lion,6,6
+44,Dancing Mists,https://github.com/zolodio/Avatar-TCG-Database/raw/main/44.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,lion,4,6
+45,Double Crest,https://github.com/zolodio/Avatar-TCG-Database/raw/main/45.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,lion,6,3
+46,Hurricane Vault,https://github.com/zolodio/Avatar-TCG-Database/raw/main/46.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,lion,3,5
+47,Just Desserts,https://github.com/zolodio/Avatar-TCG-Database/raw/main/47.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,lion,7,1
+48,Million Gallon Attack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/48.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,lion,6,6
+49,Mischievous Downpour,https://github.com/zolodio/Avatar-TCG-Database/raw/main/49.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,lion,3,4
+50,Sea Sphere,https://github.com/zolodio/Avatar-TCG-Database/raw/main/50.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,lion,5,5
+51,Snowball Smash,https://github.com/zolodio/Avatar-TCG-Database/raw/main/51.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,lion,8,5
+52,Stifling Breeze,https://github.com/zolodio/Avatar-TCG-Database/raw/main/52.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,lion,6,4
+53,Stifling Wind,https://github.com/zolodio/Avatar-TCG-Database/raw/main/53.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,lion,5,6
+54,Surf Spray,https://github.com/zolodio/Avatar-TCG-Database/raw/main/54.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,lion,5,2
+55,Sweet Revenge,https://github.com/zolodio/Avatar-TCG-Database/raw/main/55.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,lion,5,3
+56,Tandem Attack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/56.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,lion,5,4
+57,Wall of Water,https://github.com/zolodio/Avatar-TCG-Database/raw/main/57.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,lion,8,1
+58,Whirling Debris,https://github.com/zolodio/Avatar-TCG-Database/raw/main/58.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,lion,4,4
+59,Windmill Barrier,https://github.com/zolodio/Avatar-TCG-Database/raw/main/59.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,lion,6,5
+60,Windmill Dome,https://github.com/zolodio/Avatar-TCG-Database/raw/main/60.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,lion,7,4
+61,Bell Ringer,https://github.com/zolodio/Avatar-TCG-Database/raw/main/61.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,4,5
+62,Boomerang Toss,https://github.com/zolodio/Avatar-TCG-Database/raw/main/62.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,5,1
+63,Canyon Crawler Clash,https://github.com/zolodio/Avatar-TCG-Database/raw/main/63.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,6,6
+64,Coal Rake,https://github.com/zolodio/Avatar-TCG-Database/raw/main/64.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,5,1
+65,Downdraft,https://github.com/zolodio/Avatar-TCG-Database/raw/main/65.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,4,3
+66,Earthbound,https://github.com/zolodio/Avatar-TCG-Database/raw/main/66.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,6,5
+67,Earthbridge,https://github.com/zolodio/Avatar-TCG-Database/raw/main/67.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,5,4
+68,Evade,https://github.com/zolodio/Avatar-TCG-Database/raw/main/68.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,3,1
+69,Falling Leaf Ambush,https://github.com/zolodio/Avatar-TCG-Database/raw/main/69.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,6,4
+70,Knuckle Sandwich,https://github.com/zolodio/Avatar-TCG-Database/raw/main/70.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,6,4
+71,Kyoshi Backhand,https://github.com/zolodio/Avatar-TCG-Database/raw/main/71.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,4,4
+72,Kyoshi Fan Parry,https://github.com/zolodio/Avatar-TCG-Database/raw/main/72.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,7,2
+73,Kyoshi Fan Throw,https://github.com/zolodio/Avatar-TCG-Database/raw/main/73.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,5,4
+74,Kyoshi Pride,https://github.com/zolodio/Avatar-TCG-Database/raw/main/74.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,5,5
+75,Pummel,https://github.com/zolodio/Avatar-TCG-Database/raw/main/75.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,4,4
+76,Seize the Moment,https://github.com/zolodio/Avatar-TCG-Database/raw/main/76.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,2,6
+77,Skewer,https://github.com/zolodio/Avatar-TCG-Database/raw/main/77.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,3,6
+78,Snapped Off,https://github.com/zolodio/Avatar-TCG-Database/raw/main/78.jpg,strike,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,8,4
+79,Tremor Trail,https://github.com/zolodio/Avatar-TCG-Database/raw/main/79.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,5,6
+80,Will of the Warrior,https://github.com/zolodio/Avatar-TCG-Database/raw/main/80.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,4,7
+81,Churning Stomachs,https://github.com/zolodio/Avatar-TCG-Database/raw/main/81.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,body,,
+82,Crystal Rampart,https://github.com/zolodio/Avatar-TCG-Database/raw/main/82.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,body,,
+83,Dive for Cover,https://github.com/zolodio/Avatar-TCG-Database/raw/main/83.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,body,,
+84,Flopsie Flop,https://github.com/zolodio/Avatar-TCG-Database/raw/main/84.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,body,,
+85,Immobilize,https://github.com/zolodio/Avatar-TCG-Database/raw/main/85.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,body,,
+86,Misdirection,https://github.com/zolodio/Avatar-TCG-Database/raw/main/86.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,body,,
+87,Riding the Crest,https://github.com/zolodio/Avatar-TCG-Database/raw/main/87.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,body,,
+88,Stand Firm,https://github.com/zolodio/Avatar-TCG-Database/raw/main/88.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,body,,
+89,Take the High Ground,https://github.com/zolodio/Avatar-TCG-Database/raw/main/89.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,body,,
+90,Ward Off,https://github.com/zolodio/Avatar-TCG-Database/raw/main/90.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,body,,
+91,Charisma,https://github.com/zolodio/Avatar-TCG-Database/raw/main/91.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,mind,,
+92,Contemplate,https://github.com/zolodio/Avatar-TCG-Database/raw/main/92.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,mind,,
+93,Incinerate,https://github.com/zolodio/Avatar-TCG-Database/raw/main/93.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,mind,,
+94,Meditate,https://github.com/zolodio/Avatar-TCG-Database/raw/main/94.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,mind,,
+95,Pai Sho Mastery,https://github.com/zolodio/Avatar-TCG-Database/raw/main/95.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,mind,,
+96,Run the Blockade,https://github.com/zolodio/Avatar-TCG-Database/raw/main/96.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,mind,,
+97,Sculpted Flame,https://github.com/zolodio/Avatar-TCG-Database/raw/main/97.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,mind,,
+98,Training Scroll,https://github.com/zolodio/Avatar-TCG-Database/raw/main/98.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,mind,,
+99,Water Kata,https://github.com/zolodio/Avatar-TCG-Database/raw/main/99.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,mind,,
+100,Yip Yip!,https://github.com/zolodio/Avatar-TCG-Database/raw/main/100.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,mind,,
+101,Bad Breath,https://github.com/zolodio/Avatar-TCG-Database/raw/main/101.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,spirit,,
+102,Channel the Winds,https://github.com/zolodio/Avatar-TCG-Database/raw/main/102.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,spirit,,
+103,Dust Storm,https://github.com/zolodio/Avatar-TCG-Database/raw/main/103.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,spirit,,
+104,Expendable Troops,https://github.com/zolodio/Avatar-TCG-Database/raw/main/104.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,spirit,,
+105,Fiery Temper,https://github.com/zolodio/Avatar-TCG-Database/raw/main/105.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,spirit,,
+106,Flying Staff Technique,https://github.com/zolodio/Avatar-TCG-Database/raw/main/106.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,spirit,,
+107,Glorious Feast,https://github.com/zolodio/Avatar-TCG-Database/raw/main/107.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,spirit,,
+108,Head Over Heels,https://github.com/zolodio/Avatar-TCG-Database/raw/main/108.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,spirit,,
+109,Highway Robbery,https://github.com/zolodio/Avatar-TCG-Database/raw/main/109.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,spirit,,
+110,Volcanic Fountain,https://github.com/zolodio/Avatar-TCG-Database/raw/main/110.jpg,advantage,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,spirit,,
+111,Bonzu Pippinpaddle-Oppsokopolis III,https://github.com/zolodio/Avatar-TCG-Database/raw/main/111.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,,
+112,Caution to the Wind,https://github.com/zolodio/Avatar-TCG-Database/raw/main/112.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,,
+113,Closed-Hand Form,https://github.com/zolodio/Avatar-TCG-Database/raw/main/113.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,,
+114,Lifesaver,https://github.com/zolodio/Avatar-TCG-Database/raw/main/114.jpg,advantage,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,,
+115,Open-Hand Form,https://github.com/zolodio/Avatar-TCG-Database/raw/main/115.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,,
+116,Roku's Guidance,https://github.com/zolodio/Avatar-TCG-Database/raw/main/116.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,,
+117,Sustenance,https://github.com/zolodio/Avatar-TCG-Database/raw/main/117.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,,
+118,Take Them Away,https://github.com/zolodio/Avatar-TCG-Database/raw/main/118.jpg,advantage,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,,
+119,"Aang, the last airbender",https://github.com/zolodio/Avatar-TCG-Database/raw/main/119.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,light,,
+120,"Appa, flying bison",https://github.com/zolodio/Avatar-TCG-Database/raw/main/120.jpg,ally,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,light,,
+121,"Katara, waterbender in training",https://github.com/zolodio/Avatar-TCG-Database/raw/main/121.jpg,ally,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,light,,
+122,"King Bumi, rudder of Omashu",https://github.com/zolodio/Avatar-TCG-Database/raw/main/122.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,light,,
+123,"Momo, hungry lemur",https://github.com/zolodio/Avatar-TCG-Database/raw/main/123.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,light,,
+124,"Monk Gyatso, Aang's mentor",https://github.com/zolodio/Avatar-TCG-Database/raw/main/124.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,light,,
+125,"Jet, ruthless rebel",https://github.com/zolodio/Avatar-TCG-Database/raw/main/125.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,shadow,,
+126,"Jojo, the kissing bandit",https://github.com/zolodio/Avatar-TCG-Database/raw/main/126.jpg,ally,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,shadow,,
+127,"Malu, a reclusive orphan",https://github.com/zolodio/Avatar-TCG-Database/raw/main/127.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,shadow,,
+128,"Pirate Captain, shady trader",https://github.com/zolodio/Avatar-TCG-Database/raw/main/128.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,shadow,,
+129,"Prince Zuko, exile",https://github.com/zolodio/Avatar-TCG-Database/raw/main/129.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,shadow,,
+130,"Uncle Iroh, Zuko's mentor",https://github.com/zolodio/Avatar-TCG-Database/raw/main/130.jpg,ally,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,shadow,,
+131,"Afiko, bringer of ill winds",https://github.com/zolodio/Avatar-TCG-Database/raw/main/131.jpg,ally,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,dark,,
+132,"Commander Zhao, ambitious leader",https://github.com/zolodio/Avatar-TCG-Database/raw/main/132.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,dark,,
+133,"Fire Nation Elite, hardened troops",https://github.com/zolodio/Avatar-TCG-Database/raw/main/133.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,dark,,
+134,"Kinto, cruel trickster",https://github.com/zolodio/Avatar-TCG-Database/raw/main/134.jpg,ally,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,dark,,
+135,"Prison Warden, breaker of spirits",https://github.com/zolodio/Avatar-TCG-Database/raw/main/135.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,dark,,
+136,"Zhao's Guard, loyal firebenders",https://github.com/zolodio/Avatar-TCG-Database/raw/main/136.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,dark,,
+137,"Cabbage Merchant, unfortunate bystander",https://github.com/zolodio/Avatar-TCG-Database/raw/main/137.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,,
+138,"Canyon Guide, pathfinder",https://github.com/zolodio/Avatar-TCG-Database/raw/main/138.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,,
+139,"Gan Jin Tribe, children of Jin Wei",https://github.com/zolodio/Avatar-TCG-Database/raw/main/139.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,,
+140,"Herbalist, mad hermit",https://github.com/zolodio/Avatar-TCG-Database/raw/main/140.jpg,ally,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,,
+141,"Zhang Tribe, children of Wei Jin",https://github.com/zolodio/Avatar-TCG-Database/raw/main/141.jpg,ally,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,,
+142,Air Scooter,https://github.com/zolodio/Avatar-TCG-Database/raw/main/142.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,air,5,5
+143,Chi Absorption,https://github.com/zolodio/Avatar-TCG-Database/raw/main/143.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,air,8,1
+144,Dust Funnels,https://github.com/zolodio/Avatar-TCG-Database/raw/main/144.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,air,6,5
+145,Graceful Leap,https://github.com/zolodio/Avatar-TCG-Database/raw/main/145.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,air,4,2
+146,Open-Palm Pushback,https://github.com/zolodio/Avatar-TCG-Database/raw/main/146.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,air,5,6
+147,Zoom!,https://github.com/zolodio/Avatar-TCG-Database/raw/main/147.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,air,4,6
+148,Boulder Smash,https://github.com/zolodio/Avatar-TCG-Database/raw/main/148.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,earth,5,5
+149,Choking Sand,https://github.com/zolodio/Avatar-TCG-Database/raw/main/149.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,earth,4,6
+150,Granite Block,https://github.com/zolodio/Avatar-TCG-Database/raw/main/150.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,earth,7,5
+151,Ground Breaker,https://github.com/zolodio/Avatar-TCG-Database/raw/main/151.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,earth,6,2
+152,Quarry Crush,https://github.com/zolodio/Avatar-TCG-Database/raw/main/152.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,earth,3,5
+153,Seismic Spring,https://github.com/zolodio/Avatar-TCG-Database/raw/main/153.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,earth,4,4
+154,Corona Punch,https://github.com/zolodio/Avatar-TCG-Database/raw/main/154.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fire,5,6
+155,Ember Shot,https://github.com/zolodio/Avatar-TCG-Database/raw/main/155.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fire,4,6
+156,Fire Sweep,https://github.com/zolodio/Avatar-TCG-Database/raw/main/156.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fire,3,3
+157,Kindle,https://github.com/zolodio/Avatar-TCG-Database/raw/main/157.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fire,6,4
+158,Twin Fire Daggers,https://github.com/zolodio/Avatar-TCG-Database/raw/main/158.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fire,7,2
+159,Warship Barrage,https://github.com/zolodio/Avatar-TCG-Database/raw/main/159.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fire,4,4
+160,Bubble Burst,https://github.com/zolodio/Avatar-TCG-Database/raw/main/160.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,water,4,4
+161,Clutches of the Deep,https://github.com/zolodio/Avatar-TCG-Database/raw/main/161.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,water,9,0
+162,Flash Flood,https://github.com/zolodio/Avatar-TCG-Database/raw/main/162.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,water,5,4
+163,Ice Blooms,https://github.com/zolodio/Avatar-TCG-Database/raw/main/163.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,water,6,4
+164,Single Water Whip,https://github.com/zolodio/Avatar-TCG-Database/raw/main/164.jpg,strike,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,water,5,5
+165,Tidal Wave,https://github.com/zolodio/Avatar-TCG-Database/raw/main/165.jpg,strike,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,water,6,7
+166,The Avatar Awakens,https://github.com/zolodio/Avatar-TCG-Database/raw/main/166.jpg,strike,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,metal foil,semi-gloss,,8,8
+167,"Sokka, big brother",https://github.com/zolodio/Avatar-TCG-Database/raw/main/167.jpg,ally,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,metal foil,semi-gloss,,,
+168,"Flopsie, Bumi's pet",https://github.com/zolodio/Avatar-TCG-Database/raw/main/168.jpg,ally,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,metal foil,semi-gloss,,,
+169,The Kissing Bandit,https://github.com/zolodio/Avatar-TCG-Database/raw/main/169.jpg,advantage,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,metal foil,semi-gloss,,,
+170,Strata Breaker,https://github.com/zolodio/Avatar-TCG-Database/raw/main/170.jpg,strike,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,metal foil,semi-gloss,,3,3
+171,Tail of the Comet,https://github.com/zolodio/Avatar-TCG-Database/raw/main/171.jpg,strike,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,metal foil,semi-gloss,,5,5
+172,Shocking Revelation,https://github.com/zolodio/Avatar-TCG-Database/raw/main/172.jpg,strike,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,metal foil,semi-gloss,,5,4
+173,Hollow Soul Hurricane,https://github.com/zolodio/Avatar-TCG-Database/raw/main/173.jpg,strike,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,metal foil,semi-gloss,,4,4
+174,Maw of the Inferno,https://github.com/zolodio/Avatar-TCG-Database/raw/main/174.jpg,strike,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,metal foil,semi-gloss,,6,5
+175,Aquatic Tendrils,https://github.com/zolodio/Avatar-TCG-Database/raw/main/175.jpg,advantage,Zenemental,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,metal foil,semi-gloss,,,
+176,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME176a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME176b.jpg,glossy,glossy,"fox, spirit, light, air",,
+177,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME177a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME177b.jpg,glossy,glossy,"fox, spirit, light, air",,
+178,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME178a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME178b.jpg,glossy,glossy,"fox, spirit, light, air",,
+179,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME179a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME179b.jpg,glossy,glossy,"fox, spirit, light, air",,
+180,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME180a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME180b.jpg,glossy,glossy,"fox, spirit, light, air",,
+181,Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME181a.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME181b.jpg,glossy,glossy,"fox, spirit, light, air",,
+182,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME182a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME182b.jpg,glossy,glossy,"lion, mind, light, water",,
+183,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME183a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME183b.jpg,glossy,glossy,"lion, mind, light, water",,
+184,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME184a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME184b.jpg,glossy,glossy,"lion, mind, light, water",,
+185,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME185a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME185b.jpg,glossy,glossy,"lion, mind, light, water",,
+186,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME186a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME186b.jpg,glossy,glossy,"lion, mind, light, water",,
+187,Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME187a.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME187b.jpg,glossy,glossy,"lion, mind, light, water",,
+188,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME188a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME188b.jpg,glossy,glossy,"bull, body, light, earth",,
+189,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME189a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME189b.jpg,glossy,glossy,"bull, body, light, earth",,
+190,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME190a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME190b.jpg,glossy,glossy,"bull, body, light, earth",,
+191,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME191a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME191b.jpg,glossy,glossy,"bull, body, light, earth",,
+192,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME192a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME192b.jpg,glossy,glossy,"bull, body, light, earth",,
+193,King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME193a.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME193b.jpg,glossy,glossy,"bull, body, light, earth",,
+194,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME194a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME194b.jpg,glossy,glossy,"fox, spirit, shadow, earth",,
+195,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME195a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME195b.jpg,glossy,glossy,"fox, spirit, shadow, earth",,
+196,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME196a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME196b.jpg,glossy,glossy,"fox, spirit, shadow, earth",,
+197,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME197a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME197b.jpg,glossy,glossy,"fox, spirit, shadow, earth",,
+198,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME198a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME198b.jpg,glossy,glossy,"fox, spirit, shadow, earth",,
+199,Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME199a.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME199b.jpg,glossy,glossy,"fox, spirit, shadow, earth",,
+200,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME200a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME200b.jpg,glossy,glossy,"lion, body, shadow, air",,
+201,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME201a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME201b.jpg,glossy,glossy,"lion, body, shadow, air",,
+202,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME202a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME202b.jpg,glossy,glossy,"lion, body, shadow, air",,
+203,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME203a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME203b.jpg,glossy,glossy,"lion, body, shadow, air",,
+204,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME204a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME204b.jpg,glossy,glossy,"lion, body, shadow, air",,
+205,Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME205a.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME205b.jpg,glossy,glossy,"lion, body, shadow, air",,
+206,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME206a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME206b.jpg,glossy,glossy,"bull, spirit, shadow, fire",,
+207,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME207a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME207b.jpg,glossy,glossy,"bull, spirit, shadow, fire",,
+208,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME208a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME208b.jpg,glossy,glossy,"bull, spirit, shadow, fire",,
+209,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME209a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME209b.jpg,glossy,glossy,"bull, spirit, shadow, fire",,
+210,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME210a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME210b.jpg,glossy,glossy,"bull, spirit, shadow, fire",,
+211,Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME211a.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME211b.jpg,glossy,glossy,"bull, spirit, shadow, fire",,
+212,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME212a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME212b.jpg,glossy,glossy,"fox, mind, shadow, fire",,
+213,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME213a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME213b.jpg,glossy,glossy,"fox, mind, shadow, fire",,
+214,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME214a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME214b.jpg,glossy,glossy,"fox, mind, shadow, fire",,
+215,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME215a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME215b.jpg,glossy,glossy,"fox, mind, shadow, fire",,
+216,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME216a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME216b.jpg,glossy,glossy,"fox, mind, shadow, fire",,
+217,Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME217a.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME217b.jpg,glossy,glossy,"fox, mind, shadow, fire",,
+218,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME218a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME218b.jpg,glossy,glossy,"lion, spirit, dark, air",,
+219,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME219a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME219b.jpg,glossy,glossy,"lion, spirit, dark, air",,
+220,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME220a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME220b.jpg,glossy,glossy,"lion, spirit, dark, air",,
+221,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME221a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME221b.jpg,glossy,glossy,"lion, spirit, dark, air",,
+222,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME222a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME222b.jpg,glossy,glossy,"lion, spirit, dark, air",,
+223,Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME223a.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME223b.jpg,glossy,glossy,"lion, spirit, dark, air",,
+224,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME224a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME224b.jpg,glossy,glossy,"bull, mind, dark, fire",,
+225,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME225a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME225b.jpg,glossy,glossy,"bull, mind, dark, fire",,
+226,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME226a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME226b.jpg,glossy,glossy,"bull, mind, dark, fire",,
+227,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME227a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME227b.jpg,glossy,glossy,"bull, mind, dark, fire",,
+228,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME228a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME228b.jpg,glossy,glossy,"bull, mind, dark, fire",,
+229,Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME229a.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME229b.jpg,glossy,glossy,"bull, mind, dark, fire",,
+230,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME230a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME230b.jpg,glossy,glossy,"fox, body, dark, water",,
+231,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME231a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME231b.jpg,glossy,glossy,"fox, body, dark, water",,
+232,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME232a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME232b.jpg,glossy,glossy,"fox, body, dark, water",,
+233,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME233a.jpg,chamber,common,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME233b.jpg,glossy,glossy,"fox, body, dark, water",,
+234,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME234a.jpg,chamber,uncommon,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME234b.jpg,glossy,glossy,"fox, body, dark, water",,
+235,Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME235a.jpg,chamber,rare,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/AME235b.jpg,glossy,glossy,"fox, body, dark, water",,
+ABK001,"Toph, earthbender",https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk001.jpg,ally,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,light,,
+ABK002,"Princess Azula, firebender",https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk002.jpg,ally,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,dark,,
+ABK003,Racing with the Wind,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk003.jpg,advantage,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,spirit,,
+ABK004,In The Breach,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk004.jpg,advantage,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,body,,
+ABK005,Juggle,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk005.jpg,strike,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,air,5,6
+ABK006,Taming the Flame,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk006.jpg,strike,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,fire,6,5
+ABK007,Water Whirl,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk007.jpg,strike,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,water,7,1
+ABK008,Boulder Roll,https://github.com/zolodio/Avatar-TCG-Database/raw/main/abk008.jpg,strike,PROMO,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,earth,5,5
+APR001,Appa's Wild Ride,https://github.com/zolodio/Avatar-TCG-Database/raw/main/apr001.jpg,advantage,PROMO,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,,
+APR002,Sokka's Mettle,https://github.com/zolodio/Avatar-TCG-Database/raw/main/apr002.jpg,strike,PROMO,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/cardback.jpg,semi-gloss,semi-gloss,,5,5
+FPR001,Air Cannon Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr001a.jpg,chamber,PROMO,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr001b.jpg,glossy,glossy,"fox, spirit, light, air",,
+FPR002,Fire Blast Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr002a.jpg,chamber,PROMO,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr002b.jpg,glossy,glossy,"bull, spirit, shadow, fire",,
+FPR003,Ice Attack Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr003a.jpg,chamber,PROMO,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/fpr003b.jpg,glossy,glossy,"fox, spirit, light, water",,
+XAPR001,Appa's Wild Ride in Plastic,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XAPR001.jpg,sealed,other,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/APR00Xb.jpg,holographic,semi-gloss,,,
+XAPR002,Sokka's Mettle in Plastic,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XAPR002.jpg,sealed,other,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/APR00Xb.jpg,holographic,semi-gloss,,,
+XBK001,Stack Attack Toph,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK001.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg,plastic film,plastic film,,,
+XBK002,Lava Launch Azula,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK002.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg,plastic film,plastic film,,,
+XBK003,Air Scooter Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK003.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg,plastic film,plastic film,,,
+XBK004,Rip 'n Whirl Sokka,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK004.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg,plastic film,plastic film,,,
+XBK005,Master Airbender,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK005.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg,plastic film,plastic film,,,
+XBK006,Flame Tame Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK006.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg,plastic film,plastic film,,,
+XBK007,Water Swirl Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK007.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg,plastic film,plastic film,,,
+XBK008,Boulder Roll,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XBK008.jpg,sealed,other,ABK,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BKTOYBACK.jpg,plastic film,plastic film,,,
+XDVD001,DVD - Book 1 Volume 1,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XDVD001.jpg,sealed,other,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XDVD001b.jpg,holographic,plastic film,,,
+XDVD002,DVD - Book 1 Volume 2,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XDVD002.jpg,sealed,other,APR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/XDVD002b.jpg,holographic,plastic film,,,
+K3474,Ice Attack Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/K3474.jpg,sealed,other,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/K3474b.jpg,plastic film,plastic film,,,
+H9748,Air Cannon Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/H9748.jpg,sealed,other,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/H9748b.jpg,plastic film,plastic film,,,
+L1234,Fire Blast Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/L1234.jpg,sealed,other,FPR,https://github.com/zolodio/Avatar-TCG-Database/raw/main/L1234.jpg,plastic film,plastic film,,,
+STRT001,Sealed Starter Set,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT001.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT001b.jpg,plastic film,plastic film,,,
+STRT002,Sealed Starter Deck in Acrylic - Aang,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT002.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT00Xb.jpg,glossy,glossy,,,
+STRT003,Sealed Starter Deck in Acrylic - Katara,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT003.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT00Xb.jpg,glossy,glossy,,,
+STRT004,Sealed Starter Deck in Acrylic - King Bumi,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT004.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT00Xb.jpg,glossy,glossy,,,
+STRT005,Sealed Starter Deck in Acrylic - Jojo,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT005.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT00Xb.jpg,glossy,glossy,,,
+STRT006,Sealed Starter Deck in Acrylic - Malu,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT006.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT00Xb.jpg,glossy,glossy,,,
+STRT007,Sealed Starter Deck in Acrylic - Prince Zuko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT007.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT00Xb.jpg,glossy,glossy,,,
+STRT008,Sealed Starter Deck in Acrylic - Uncle Iroh,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT008.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT00Xb.jpg,glossy,glossy,,,
+STRT009,Sealed Starter Deck in Acrylic - Afiko,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT009.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT00Xb.jpg,glossy,glossy,,,
+STRT010,Sealed Starter Deck in Acrylic - Commander Zhao,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT010.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT00Xb.jpg,glossy,glossy,,,
+STRT011,Sealed Starter Deck in Acrylic - Kinto,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT011.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/STRT00Xb.jpg,glossy,glossy,,,
+BSTR001,Foil Booster Pack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR001.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR001b.jpg,metal foil,metal foil,,,
+BSTR002,Blister Pack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR002.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR002b.jpg,semi-gloss,cardboard,,,
+BSTR003,Double Blister Pack,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR003.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR003b.jpg,semi-gloss,cardboard,,,
+BSTR004,Booster Box,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR004.jpg,sealed,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/BSTR004b.jpg,plastic film,plastic film,,,
+RLBK001,Official Rulebook,https://github.com/zolodio/Avatar-TCG-Database/raw/main/RLBK001.jpg,other,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/RLBK001b.jpg,semi-gloss,semi-gloss,,,
+PLMT001,Paper PlayMat,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT001.jpg,other,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT001b.jpg,semi-gloss,semi-gloss,,,
+PLMT002,Fabric PlayMat,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT002.jpg,other,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PLMT002b.jpg,fabric,rubber,,,
+MTBX001,Empty Starter Box,https://github.com/zolodio/Avatar-TCG-Database/raw/main/MTBX001.jpg,other,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/MTBX001b.jpg,matte,glossy,,,
+MTBX002,Empty Acrylic Starter Deck Box,https://github.com/zolodio/Avatar-TCG-Database/raw/main/MTBX002.jpg,other,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/MTBX002b.jpg,glossy,glossy,,,
+PSTR001,Be The Avatar Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR001.jpg,other,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR00Xb.jpg,semi-gloss,semi-gloss,,,
+PSTR002,Experience The Legend Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR002.jpg,other,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR00Xb.jpg,semi-gloss,semi-gloss,,,
+PSTR003,Master The Elements Poster,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR003.jpg,other,other,AME,https://github.com/zolodio/Avatar-TCG-Database/raw/main/PSTR00Xb.jpg,semi-gloss,semi-gloss,,,
