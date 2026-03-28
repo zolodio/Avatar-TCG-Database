@@ -2832,7 +2832,7 @@ filter: drop-shadow(0 0 6px var(--zen));
 
 <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
 <script>
-var CSV_URL = "https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/refs/heads/main/Avatar%20Quick%20Strike%20TCG%20Database%20GitHub.csv";
+var CSV_URL = "https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/main/Extended%20Database.csv";
 var SWF_URL = "https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/main/Avatar_demo.swf";
 
 /* ---- TAB SYSTEM ---- */
@@ -3093,18 +3093,32 @@ function decodeCollectionFromCode(code) {
   }
 }
 
-/* ---- PARSE CSV (now captures Set and Back Image Link) ---- */
+
+/* ---- PARSE CSV (header-based; robust; validates expected columns) ---- */
 function parseCSV(text) {
-  var lines = text.trim().split('\n');
-  var cards = [];
-  for (var i = 1; i < lines.length; i++) {
+  if (!text) return [];
+
+  // Split into lines that contain actual data (keep internal newlines out; CSV should not have newlines in fields)
+  var lines = text.replace(/\r/g, '').split('\n').filter(function(l){ return l.trim().length > 0; });
+  if (lines.length < 2) return [];
+
+  // Parse a single CSV line into fields (supports quotes)
+  function parseLine(line) {
     var parts = [];
     var current = '';
     var inQuotes = false;
-    for (var j = 0; j < lines[i].length; j++) {
-      var ch = lines[i][j];
+
+    for (var j = 0; j < line.length; j++) {
+      var ch = line[j];
+
       if (ch === '"') {
-        inQuotes = !inQuotes;
+        // Handle escaped quotes: ""
+        if (inQuotes && line[j + 1] === '"') {
+          current += '"';
+          j++;
+        } else {
+          inQuotes = !inQuotes;
+        }
       } else if (ch === ',' && !inQuotes) {
         parts.push(current.trim());
         current = '';
@@ -3113,18 +3127,99 @@ function parseCSV(text) {
       }
     }
     parts.push(current.trim());
-    if (parts.length >= 5) {
-      cards.push({
-        number: parts[0],
-        name: parts[1],
-        imageLink: parts[2],
-        type: parts[3].toLowerCase(),
-        rarity: parts[4].toLowerCase(),
-        set: parts.length >= 6 ? parts[5] : '',
-        backImageLink: parts.length >= 7 ? parts[6] : ''
-      });
+    return parts;
+  }
+
+  function unquote(v) {
+    if (v === undefined || v === null) return '';
+    v = String(v).trim();
+    // Remove wrapping quotes only
+    if (v.length >= 2 && v[0] === '"' && v[v.length - 1] === '"') {
+      return v.slice(1, -1);
+    }
+    return v;
+  }
+
+  var headerParts = parseLine(lines[0]).map(unquote);
+  var idx = {};
+  headerParts.forEach(function(h, i) {
+    idx[h] = i;
+  });
+
+  // Required headers in YOUR card CSV
+  var required = ['Number', 'Name', 'Image Link', 'Type', 'Rarity', 'Set', 'Back Image Link'];
+  for (var r = 0; r < required.length; r++) {
+    if (idx[required[r]] === undefined) {
+      // If headers don't match what we expect, fail safe
+      console.warn('CSV missing required header:', required[r]);
+      return [];
     }
   }
+
+  function get(parts, colName) {
+    var i = idx[colName];
+    if (i === undefined) return '';
+    return unquote(parts[i] !== undefined ? parts[i] : '');
+  }
+
+  // Validate card number format we actually use in the app
+  // Your app already considers core cards + special promo numbers.
+  function looksLikeCardNumber(s) {
+    if (!s) return false;
+    s = String(s).trim().toUpperCase();
+
+    // Core cards you already accept
+    if (/^ABK00[1-8]$/.test(s)) return true;
+    if (/^APR00[1-2]$/.test(s)) return true;
+    if (/^FPR00[1-3]$/.test(s)) return true;
+
+    // Main set numeric 1..235 with all digits
+    if (/^\d+$/.test(s)) {
+      var n = parseInt(s, 10);
+      return n >= 1 && n <= 235;
+    }
+
+    // Special ones you mention in code
+    // (Says your DB uses codes like STRT001, BSTR002, etc.)
+    if (/^(STRT|BSTR|RLBK|PLMT|PSTR|MTBX)\d{3}$/.test(s)) return true;
+
+    return false;
+  }
+
+  var cards = [];
+  for (var i = 1; i < lines.length; i++) {
+    var parts = parseLine(lines[i]);
+
+    // If line is too short, skip
+    if (!parts || parts.length < 5) continue;
+
+    var number = get(parts, 'Number').trim();
+    var name = get(parts, 'Name').trim();
+    var typeRaw = get(parts, 'Type').trim().toLowerCase();
+    var rarityRaw = get(parts, 'Rarity').trim().toLowerCase();
+    var imageLink = get(parts, 'Image Link').trim();
+    var backImageLink = get(parts, 'Back Image Link').trim();
+
+    // Critical: skip header-like / description-like rows that get parsed as cards
+    // This is what prevents "3 Force or Less" from becoming a card/type pill.
+    if (!looksLikeCardNumber(number)) continue;
+    if (!name) continue;
+
+    // Type/rarity must be one of the expected values (your UI relies on these)
+    // If Type/Rarity are blank because of mis-parsing, skip the row.
+    if (!typeRaw || !rarityRaw) continue;
+
+    cards.push({
+      number: number,
+      name: name,
+      imageLink: imageLink,
+      type: typeRaw,
+      rarity: rarityRaw,
+      set: get(parts, 'Set'),
+      backImageLink: backImageLink
+    });
+  }
+
   return cards;
 }
 
