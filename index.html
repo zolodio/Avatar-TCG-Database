@@ -1158,10 +1158,11 @@ body {
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  max-width: 420px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
+  max-width: 480px;
+  width: 95%;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
   box-shadow: var(--shadow-lg);
   animation: modalSlideUp 0.3s ease;
 }
@@ -1175,7 +1176,9 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 18px 18px 0;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
 }
 
 .modal-close {
@@ -1193,6 +1196,8 @@ body {
 .modal-img-section {
   padding: 16px;
   text-align: center;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border);
 }
 
 .modal-img-section img {
@@ -1227,20 +1232,43 @@ body {
 }
 
 .modal-body {
-  padding: 0 18px 18px;
+  padding: 16px 18px 18px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: var(--border);
 }
 
 .modal-card-name {
   font-family: 'Cinzel', serif;
   font-weight: 700;
-  font-size: 1.2rem;
-  margin-bottom: 4px;
+  font-size: 1.15rem;
+  margin-bottom: 6px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 .modal-card-number {
   color: var(--text-muted);
   font-size: 0.8rem;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .modal-tags {
@@ -1251,13 +1279,52 @@ body {
 }
 
 .modal-tag {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  padding: 5px 12px;
+  padding: 6px 12px;
   border-radius: 99px;
   border: 1px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+/* Trait badge container */
+.modal-trait-badges {
+  position: absolute;
+  bottom: 10px;
+  left: 90px;
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  z-index: 10;
+}
+
+.modal-trait-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  background: var(--promo);
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  transition: all 0.2s;
+}
+
+.modal-trait-badge:hover {
+  background: var(--promo-glow);
+  border-color: var(--promo-glow);
+  transform: scale(1.1);
+}
+
+.modal-trait-badge img {
+  width: 29px;
+  height: 29px;
+  object-fit: contain;
 }
 
 .modal-divider {
@@ -1279,12 +1346,6 @@ body {
   align-items: center;
   gap: 10px;
   margin-bottom: 14px;
-}
-
-.qty-label {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  flex: 1;
 }
 
 .qty-btn {
@@ -2811,14 +2872,24 @@ filter: drop-shadow(0 0 6px var(--zen));
 <div class="modal-img-section" id="modalImgSection"></div>
 
 <div class="modal-body">
+    <div class="modal-collection-section">
+<div class="modal-qty-controls"><button class="qty-btn" id="qtyMinus">&minus;</button> <span class="qty-display" id="qtyDisplay">0</span><button class="qty-btn" id="qtyPlus">+</button></div>
+
 <div class="modal-card-name" id="modalName"></div>
 <div class="modal-card-number" id="modalNumber"></div>
 <div class="modal-tags" id="modalTags"></div>
 <div id="modalCompareInfo"></div>
+
+<div id="modalRulesSection" style="margin-top: 14px;"></div>
 <div class="modal-divider"></div>
-<div class="modal-collection-section">
-<h4>Collection</h4>
-<div class="modal-qty-controls"><span class="qty-label">Quantity owned</span><button class="qty-btn" id="qtyMinus">&minus;</button> <span class="qty-display" id="qtyDisplay">0</span><button class="qty-btn" id="qtyPlus">+</button></div>
+<div id="modalFlavorSection" style="margin-top: 14px;"></div>
+<div class="modal-divider"></div>
+<div id="modalExtraStats" style="margin-top: 10px;"></div>
+<div class="modal-divider"></div>
+
+  <div id="modalObtainedSection" style="margin-top: 14px;"></div>
+<div class="modal-divider"></div>
+
 <button class="modal-toggle-btn add" id="modalToggle">Add to Collection</button></div>
 </div>
 </div>
@@ -2834,6 +2905,23 @@ filter: drop-shadow(0 0 6px var(--zen));
 <script>
 var CSV_URL = "https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/main/Extended%20Database.csv";
 var SWF_URL = "https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/main/Avatar_demo.swf";
+
+// Trait icon mapping
+var traitIconMap = {
+  'bull': 'https://github.com/zolodio/Avatar-TCG-Database/raw/main/bull.png',
+  'fox': 'https://github.com/zolodio/Avatar-TCG-Database/raw/main/fox.png',
+  'lion': 'https://github.com/zolodio/Avatar-TCG-Database/raw/main/lion.png',
+  'mind': 'https://github.com/zolodio/Avatar-TCG-Database/raw/main/mind.png',
+  'body': 'https://github.com/zolodio/Avatar-TCG-Database/raw/main/body.png',
+  'spirit': 'https://github.com/zolodio/Avatar-TCG-Database/raw/main/spirit.png',
+  'light': 'https://github.com/zolodio/Avatar-TCG-Database/raw/main/light.png',
+  'shadow': 'https://github.com/zolodio/Avatar-TCG-Database/raw/main/shadow.png',
+  'dark': 'https://github.com/zolodio/Avatar-TCG-Database/raw/main/dark.png',
+  'water': 'https://github.com/zolodio/Avatar-TCG-Database/raw/main/water.png',
+  'earth': 'https://github.com/zolodio/Avatar-TCG-Database/raw/main/earth.png',
+  'fire': 'https://github.com/zolodio/Avatar-TCG-Database/raw/main/fire.png',
+  'air': 'https://github.com/zolodio/Avatar-TCG-Database/raw/main/air.png'
+};
 
 /* ---- TAB SYSTEM ---- */
 function initTabs() {
@@ -3209,14 +3297,27 @@ function parseCSV(text) {
     // If Type/Rarity are blank because of mis-parsing, skip the row.
     if (!typeRaw || !rarityRaw) continue;
 
-    cards.push({
+cards.push({
       number: number,
       name: name,
       imageLink: imageLink,
       type: typeRaw,
       rarity: rarityRaw,
+
       set: get(parts, 'Set'),
-      backImageLink: backImageLink
+      backImageLink: backImageLink,
+
+      traits: get(parts, 'Traits'),
+      intercept: get(parts, 'Intercept'),
+      force: get(parts, 'Force'),
+      greenEnergy: get(parts, 'Green Energy'),
+      yellowEnergy: get(parts, 'Yellow Energy'),
+      redEnergy: get(parts, 'Red Energy'),
+      rulesText: get(parts, 'Rules Text'),
+      flavorText: get(parts, 'Flavor Text'),
+      obtainedVia: get(parts, 'Obtained Via'),
+
+      // Description intentionally ignored per request
     });
   }
 
@@ -3541,7 +3642,7 @@ function escapeHtml(str) {
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-/* ---- MODAL (with flip support and compare info) ---- */
+/* ---- MODAL (with flip support, compare info, and trait badges) ---- */
 function openModal(cardNumber) {
   var card = allCards.find(function(c) { return c.number === cardNumber; });
   if (!card) { return; }
@@ -3558,7 +3659,8 @@ function openModal(cardNumber) {
   var tagsEl = document.getElementById('modalTags');
   tagsEl.innerHTML =
     '<span class="modal-tag tag-' + card.type + '">' + card.type + '</span>' +
-    '<span class="modal-tag" style="background:var(--' + card.rarity + '-bg);"><span class="card-rarity-dot dot-' + card.rarity + '" style="display:inline-block;margin-right:5px;vertical-align:middle"></span>' + card.rarity + '</span>';
+    '<span class="modal-tag" style="background:var(--' + card.rarity + '-bg);"><span class="card-rarity-dot dot-' + card.rarity + '" style="display:inline-block;margin-right:5px;vertical-align:middle"></span>' + card.rarity + '</span>' +
+    (card.set ? '<span class="modal-tag" style="background:rgba(180,77,223,0.08); border-color:rgba(180,77,223,0.2);">' + escapeHtml(card.set) + '</span>' : '');
 
   // Compare info in modal
   var compareInfoEl = document.getElementById('modalCompareInfo');
@@ -3569,7 +3671,114 @@ function openModal(cardNumber) {
   } else {
     compareInfoEl.innerHTML = '';
   }
+// ---- Extra stats / fields from CSV (Description intentionally ignored) ----
+  var extraStatsEl = document.getElementById('modalExtraStats');
 
+  function cleanText(s) {
+    return (s === undefined || s === null) ? '' : String(s).trim();
+  }
+
+  function addFieldBlock(label, value, opts) {
+    opts = opts || {};
+    value = cleanText(value);
+    if (!value) return '';
+
+    var safeLabel = escapeHtml(label);
+    var safeValue = escapeHtml(value);
+
+    // Optional: allow line breaks in CSV fields (Rules Text / Flavor Text etc.)
+    // If you know these can contain \n, this will preserve them.
+    if (opts.preserveNewlines) {
+      safeValue = safeValue.replace(/\n/g, '<br>');
+    }
+
+ return (
+  '<div style="' + (opts.row ? 'display:flex;gap:10px;justify-content:space-between;align-items:flex-start;' : '') + '">' +
+    '<div style="flex:0 0 auto; color: var(--text-muted); font-weight:700; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.08em;">' +
+      safeLabel +
+    '</div>' +
+    '<div style="flex:1 1 auto; min-width: 0; color: var(--text-primary); font-weight:600; font-size:0.85rem; line-height:1.5;">' +
+      safeValue +
+    '</div>' +
+  '</div>' +
+  (opts.hr ? '<div style="height:1px;background:var(--border);margin:10px 0;"></div>' : '')
+);   
+}
+
+  var intercept = card.intercept;
+  var force = card.force;
+
+  // Energy values (may be empty strings)
+  var gE = card.greenEnergy;
+  var yE = card.yellowEnergy;
+  var rE = card.redEnergy;
+
+  var energyHtml = '';
+  if (cleanText(gE) || cleanText(yE) || cleanText(rE)) {
+    energyHtml =
+      '<div style="margin-top:10px;text-align: center;">' +
+        '<div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); font-weight:700; margin-bottom:8px;">Energy Cost</div>' +
+        '<div style="display:flex; gap:10px; flex-wrap:wrap;">' +
+          addFieldBlock('Green', gE, { row: true }) +
+          addFieldBlock('Yellow', yE, { row: true }) +
+          addFieldBlock('Red', rE, { row: true }) +
+        '</div>' +
+      '</div>';
+  }
+
+ extraStatsEl.innerHTML = `
+  <div style="
+    font-size:0.72rem; 
+    text-transform:uppercase; 
+    letter-spacing:0.1em; 
+    color:var(--text-muted); 
+    font-weight:700; 
+    margin-bottom:10px;text-align: center;">
+    Card Details
+  </div>
+  <div style="display: inline-flex; gap: 15px; align-items: flex-start;">
+    ${intercept ? addFieldBlock('Intercept', intercept,{ row: true }) : ''}
+    ${force ? addFieldBlock('Force', force,{ row: true }) : ''}
+  </div>
+  <div class="modal-divider"></div>
+  ${energyHtml}
+`;   
+
+ // Rules Text
+  var rulesSectionEl = document.getElementById('modalRulesSection');
+  if (cleanText(card.rulesText)) {
+    rulesSectionEl.innerHTML =
+      '<div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); font-weight:700; margin-bottom:10px;text-align: center;">Rules Text</div>' +
+      '<div style="color: var(--text-secondary); font-size:0.88rem; line-height:1.6; white-space:normal; word-wrap:break-word; overflow-wrap:break-word; word-break:break-word;">' +
+        escapeHtml(card.rulesText).replace(/\n/g, '<br>') +
+      '</div>';
+  } else {
+    rulesSectionEl.innerHTML = '';
+  }
+
+  // Flavor Text
+  var flavorSectionEl = document.getElementById('modalFlavorSection');
+  if (cleanText(card.flavorText)) {
+    flavorSectionEl.innerHTML =
+      '<div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); font-weight:700; margin-bottom:10px;text-align: center;">Flavor Text</div>' +
+      '<div style="color: var(--text-secondary); font-size:0.88rem; line-height:1.6; white-space:normal; word-wrap:break-word; overflow-wrap:break-word; word-break:break-word;">' +
+        escapeHtml(card.flavorText).replace(/\n/g, '<br>') +
+      '</div>';
+  } else {
+    flavorSectionEl.innerHTML = '';
+  }
+
+  // Obtained Via
+  var obtainedSectionEl = document.getElementById('modalObtainedSection');
+  if (cleanText(card.obtainedVia)) {
+    obtainedSectionEl.innerHTML =
+      '<div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); font-weight:700; margin-bottom:10px;text-align: center;">Obtained Via</div>' +
+      '<div style="color: var(--text-secondary); font-size:0.88rem; line-height:1.6;">' +
+        escapeHtml(card.obtainedVia).replace(/\n/g, '<br>') +
+      '</div>';
+  } else {
+    obtainedSectionEl.innerHTML = '';
+  }
   var backImgUrl = card.backImageLink || '';
 
   var imgSection = document.getElementById('modalImgSection');
@@ -3593,6 +3802,23 @@ function openModal(cardNumber) {
   imgHtml += '</div>';
 
   imgHtml += '</div>'; // .modal-flip-inner
+
+  // Trait badges container (lower left)
+  if (card.traits && card.traits.trim()) {
+    var traitList = card.traits.split(/[,;\s]+/).map(function(t) { return t.trim().toLowerCase(); }).filter(function(t) { return t.length > 0; });
+    if (traitList.length > 0) {
+      imgHtml += '<div class="modal-trait-badges">';
+      traitList.forEach(function(trait) {
+        if (traitIconMap[trait]) {
+          imgHtml += '<div class="modal-trait-badge" title="' + escapeHtml(trait) + '">';
+          imgHtml += '<img src="' + traitIconMap[trait] + '" alt="' + escapeHtml(trait) + '" loading="lazy">';
+          imgHtml += '</div>';
+        }
+      });
+      imgHtml += '</div>';
+    }
+  }
+
   imgHtml += '</div>'; // .modal-flip-container
 
   // Flip button
