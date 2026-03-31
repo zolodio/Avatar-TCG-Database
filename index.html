@@ -3270,7 +3270,7 @@ function parseCSV(text) {
 
     // Special ones you mention in code
     // (Says your DB uses codes like STRT001, BSTR002, etc.)
-    if (/^(STRT|BSTR|RLBK|PLMT|PSTR|MTB|XBK|XAPR|XDVD)\d{3}$/.test(s)) return true;
+    if (/^(STRT|BSTR|RLBK|PLMT|PSTR|MTB|XBK|XAPR|XDVD|K3|H9|L1)\d{3}$/.test(s)) return true;
 
     return false;
   }
