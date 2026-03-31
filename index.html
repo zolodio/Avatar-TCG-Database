@@ -1294,8 +1294,9 @@ body {
 /* Trait badge container */
 .modal-trait-badges {
   position: absolute;
-  bottom: 10px;
-  left: 90px;
+  bottom: 1%;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
@@ -1322,8 +1323,8 @@ body {
 }
 
 .modal-trait-badge img {
-  width: 29px;
-  height: 29px;
+  width: 101%;
+  height: 101%;
   object-fit: contain;
 }
 
@@ -3269,7 +3270,7 @@ function parseCSV(text) {
 
     // Special ones you mention in code
     // (Says your DB uses codes like STRT001, BSTR002, etc.)
-    if (/^(STRT|BSTR|RLBK|PLMT|PSTR|MTBX)\d{3}$/.test(s)) return true;
+    if (/^(STRT|BSTR|RLBK|PLMT|PSTR|MTB|XBK|XAPR|XDVD)\d{3}$/.test(s)) return true;
 
     return false;
   }
@@ -3339,8 +3340,19 @@ function isCoreCard(cardNumber) {
 function getBonusTotalCards() {
   var bonus = 0;
   bonus += (collection['STRT001'] || 0) * 61;
+  bonus += (collection['STRT002'] || 0) * 30;
+  bonus += (collection['STRT003'] || 0) * 30;
+  bonus += (collection['STRT004'] || 0) * 30;
+  bonus += (collection['STRT005'] || 0) * 30;
+  bonus += (collection['STRT006'] || 0) * 30;
+  bonus += (collection['STRT007'] || 0) * 30;
+  bonus += (collection['STRT008'] || 0) * 30;
+  bonus += (collection['STRT009'] || 0) * 30;
+  bonus += (collection['STRT010'] || 0) * 30;
+  bonus += (collection['STRT011'] || 0) * 30;
   bonus += (collection['BSTR001'] || 0) * 9;
   bonus += (collection['BSTR002'] || 0) * 9;
+  bonus += (collection['BSTR002'] || 0) * 19;
   bonus += (collection['BSTR003'] || 0) * 239;
   bonus += (collection['RLBK001'] || 0) * -1;
   bonus += (collection['PLMT001'] || 0) * -1;
@@ -3349,6 +3361,8 @@ function getBonusTotalCards() {
   bonus += (collection['PSTR002'] || 0) * -1;
   bonus += (collection['PSTR003'] || 0) * -1;
   bonus += (collection['MTBX001'] || 0) * -1;
+  bonus += (collection['MTBX002'] || 0) * -1;
+  
   return bonus;
 }
 
