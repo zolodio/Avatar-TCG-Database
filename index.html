@@ -2417,6 +2417,7 @@ filter: drop-shadow(0 0 6px var(--zen));
         <option value="quantity">Sort: Quantity</option>
         <option value="intercept">Sort: Intercept</option>
         <option value="force">Sort: Force</option>
+        <option value="energy">Sort: Energy Cost</option>
       </select>
       <button class="sort-dir-btn" id="sortDirBtn" title="Ascending — click to reverse"><i class="fas fa-arrow-up-short-wide"></i></button>
     </div>
@@ -3585,6 +3586,18 @@ function getFilteredCards() {
     var fB = parseFloat(b.force) || 0;
     return dir * (fA - fB);
   });
+} else if (sortBy === 'energy') {
+  cards.sort(function(a, b) {
+    var rA = parseFloat(a.redEnergy) || 0;
+    var rB = parseFloat(b.redEnergy) || 0;
+    if (rA !== rB) return dir * (rA - rB);
+    var yA = parseFloat(a.yellowEnergy) || 0;
+    var yB = parseFloat(b.yellowEnergy) || 0;
+    if (yA !== yB) return dir * (yA - yB);
+    var gA = parseFloat(a.greenEnergy) || 0;
+    var gB = parseFloat(b.greenEnergy) || 0;
+    return dir * (gA - gB);
+  });
   } else {
     cards.sort(function(a, b) {
       var numA = parseInt(a.number, 10);
@@ -4106,7 +4119,7 @@ function setupEvents() {
 
   document.getElementById('sortSelect').addEventListener('change', function() {
     sortBy = this.value;
-if (sortBy === 'rarity' || sortBy === 'quantity' || sortBy === 'intercept' || sortBy === 'force') {
+if (sortBy === 'rarity' || sortBy === 'quantity' || sortBy === 'intercept' || sortBy === 'force' || sortBy === 'energy') {
   sortDirection = 'desc';
 } else {
   sortDirection = 'asc';
