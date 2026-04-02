@@ -2657,9 +2657,21 @@ filter: drop-shadow(0 0 6px var(--zen));
 <!-- PORTFOLIO TAB -->
 <div class="tab-content" id="tab-portfolio">
   <div class="tab-nav-nested">
+    <button class="tab-btn-nested active" data-nested-tab="save-code">Save Code</button>
     <button class="tab-btn-nested active" data-nested-tab="graph">Graph</button>
     <button class="tab-btn-nested" data-nested-tab="card-values">Card Values</button>
   </div>
+
+  <div id="nested-save-code" class="nested-tab-content active">
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px;">
+      <div class="save-code-header">
+        <span class="save-code-label">Current Save Code:</span>
+      </div>
+      <div id="saveCodeDisplay"></div>
+      <div class="save-code-hint">Select the code above to copy it manually</div>
+    </div>
+  </div>
+
 
   <div id="nested-graph" class="nested-tab-content active">
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
@@ -2683,21 +2695,11 @@ filter: drop-shadow(0 0 6px var(--zen));
 <!-- PROFILE TAB -->
 <div class="tab-content" id="tab-profile">
   <div class="tab-nav-nested">
-    <button class="tab-btn-nested active" data-nested-tab="save-code">Save Code</button>
     <button class="tab-btn-nested" data-nested-tab="friends">Friends</button>
     <button class="tab-btn-nested" data-nested-tab="chat">Chat</button>
     <button class="tab-btn-nested" data-nested-tab="trades">Trades</button>
   </div>
 
-  <div id="nested-save-code" class="nested-tab-content active">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px;">
-      <div class="save-code-header">
-        <span class="save-code-label">Current Save Code:</span>
-      </div>
-      <div id="saveCodeDisplay"></div>
-      <div class="save-code-hint">Select the code above to copy it manually</div>
-    </div>
-  </div>
 
   <div id="nested-friends" class="nested-tab-content" style="display:none;">
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
