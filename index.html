@@ -2360,7 +2360,7 @@ filter: drop-shadow(0 0 6px var(--zen));
   style="width:100%; display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:10px 14px; cursor:pointer; font-family:'Nunito Sans',sans-serif; font-weight:700; font-size:0.8rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.08em;">
     <span><i class="fas fa-chart-bar" style="margin-right:8px; color:var(--zen);"></i>Collection Stats</span> 
 <span style="display:flex; align-items:center; gap:6px;">
-<span id="statsToggleLabel" style="font-size:0.65rem; color:var(--text-muted); font-weight:400; text-transform:none; letter-spacing:0;">collapse</span>
+<span id="statsToggleLabel" style="font-size:0.65rem; color:var(--text-muted); font-weight:400; text-transform:none; letter-spacing:0;">Collapse</span>
   <i id="statsToggleIcon" class="fas fa-chevron-down" style="font-size:0.75rem; transition:transform 0.25s;"></i>
 </span>
   </button>
@@ -2658,7 +2658,7 @@ filter: drop-shadow(0 0 6px var(--zen));
 <div class="tab-content" id="tab-portfolio">
   <div class="tab-nav-nested">
     <button class="tab-btn-nested active" data-nested-tab="save-code">Save Code</button>
-    <button class="tab-btn-nested active" data-nested-tab="graph">Graph</button>
+    <button class="tab-btn-nested" data-nested-tab="graph">Graph</button>
     <button class="tab-btn-nested" data-nested-tab="card-values">Card Values</button>
   </div>
 
@@ -2672,8 +2672,7 @@ filter: drop-shadow(0 0 6px var(--zen));
     </div>
   </div>
 
-
-  <div id="nested-graph" class="nested-tab-content active">
+  <div id="nested-graph" class="nested-tab-content" style="display:none;">
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
       <i class="fas fa-chart-line" style="font-size: 3rem; color: var(--earth); margin-bottom: 16px;"></i>
       <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Portfolio Graph</h3>
@@ -2695,13 +2694,13 @@ filter: drop-shadow(0 0 6px var(--zen));
 <!-- PROFILE TAB -->
 <div class="tab-content" id="tab-profile">
   <div class="tab-nav-nested">
-    <button class="tab-btn-nested" data-nested-tab="friends">Friends</button>
+    <button class="tab-btn-nested active" data-nested-tab="friends">Friends</button>
     <button class="tab-btn-nested" data-nested-tab="chat">Chat</button>
     <button class="tab-btn-nested" data-nested-tab="trades">Trades</button>
   </div>
 
 
-  <div id="nested-friends" class="nested-tab-content" style="display:none;">
+  <div id="nested-friends" class="nested-tab-content active">
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
       <i class="fas fa-user-friends" style="font-size: 2rem; color: var(--accent); margin-bottom: 12px;"></i>
       <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Friends List</h3>
