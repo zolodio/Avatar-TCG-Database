@@ -119,57 +119,56 @@ def get_access_token() -> str:
 
 
 # ── eBay Marketplace Insights API ────────────────────────────────────────────
-def ebay_sold_items(
-    token: str,
-    keywords: str,
-    limit: int = 200,
-    offset: int = 0,
-) -> list[dict]:
+EBAY_FINDING_URL = "https://svcs.ebay.com/services/search/FindingService/v1"
+
+def ebay_sold_items(token: str, keywords: str, limit: int = 200, offset: int = 0) -> list[dict]:
     """
-    Search eBay sold listings via the Marketplace Insights REST API.
-    Returns a list of {"title": str, "price": float}.
+    Fallback: uses the eBay Finding API (no special scope needed).
+    Note: token is unused here; Finding API uses the App ID directly.
     """
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "X-EBAY-C-MARKETPLACE-ID": "EBAY_US",
-        "Content-Type": "application/json",
-    }
     params = {
-        "q": keywords,
-        "limit": min(limit, 200),   # API hard cap is 200
-        "offset": offset,
-        "sort": "lastSoldDate",     # most-recent sales first
+        "OPERATION-NAME":        "findCompletedItems",
+        "SERVICE-VERSION":       "1.0.0",
+        "SECURITY-APPNAME":      EBAY_CLIENT_ID,   # App ID, not a token
+        "RESPONSE-DATA-FORMAT":  "JSON",
+        "REST-PAYLOAD":          "",
+        "keywords":              keywords,
+        "itemFilter(0).name":    "SoldItemsOnly",
+        "itemFilter(0).value":   "true",
+        "itemFilter(1).name":    "ListingType",
+        "itemFilter(1).value":   "FixedPrice",
+        "sortOrder":             "EndTimeSoonest",
+        "paginationInput.entriesPerPage": min(limit, 100),
+        "paginationInput.pageNumber":     (offset // 100) + 1,
     }
 
     try:
-        resp = requests.get(
-            EBAY_INSIGHTS_URL, headers=headers, params=params, timeout=20
-        )
+        resp = requests.get(EBAY_FINDING_URL, params=params, timeout=20)
         resp.raise_for_status()
         data = resp.json()
-    except requests.HTTPError as exc:
-        print(f"  [ERROR] Insights API {exc.response.status_code}: "
-              f"{exc.response.text[:200]}")
-        return []
     except Exception as exc:
-        print(f"  [ERROR] Insights API call failed: {exc}")
+        print(f"  [ERROR] Finding API call failed: {exc}")
         return []
 
     results = []
-    for item in data.get("itemSales", []):
-        title = item.get("title", "")
-        price_obj = item.get("price", {})
-        if price_obj.get("currency") == "USD":
+    search_result = (
+        data.get("findCompletedItemsResponse", [{}])[0]
+            .get("searchResult", [{}])[0]
+    )
+    for item in search_result.get("item", []):
+        title = item.get("title", [""])[0]
+        price = item.get("sellingStatus", [{}])[0] \
+                    .get("convertedCurrentPrice", [{}])[0] \
+                    .get("__value__", None)
+        if title and price:
             try:
-                price = float(price_obj["value"])
-                if price > 0:
-                    results.append({"title": title, "price": price})
-            except (KeyError, ValueError):
+                p = float(price)
+                if p > 0:
+                    results.append({"title": title, "price": p})
+            except ValueError:
                 pass
 
     return results
-
-
 # ── Card CSV ─────────────────────────────────────────────────────────────────
 def fetch_cards() -> list[dict]:
     resp = requests.get(CSV_URL, timeout=20)
@@ -250,8 +249,7 @@ def aggregate(prices: list[float]) -> dict:
 
 # ── Main ─────────────────────────────────────────────────────────────────────
 def main():
-    print("==> Authenticating with eBay …")
-    token = get_access_token()
+token = None  # Finding API uses App ID directly, no OAuth needed
 
     print("\n==> Fetching card list from GitHub CSV …")
     cards = fetch_cards()
