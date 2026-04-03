@@ -2104,14 +2104,15 @@ function openModal(cardNumber) {
       '</div>';
   }
 
-  extraStatsEl.innerHTML =
-    '<div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); font-weight:700; margin-bottom:10px;text-align: center;">Card Details</div>' +
+var hasStats = cleanText(intercept) || cleanText(force) || energyHtml;
+extraStatsEl.innerHTML = hasStats
+  ? '<div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); font-weight:700; margin-bottom:10px;text-align: center;">Card Details</div>' +
     '<div style="display: inline-flex; gap: 15px; align-items: flex-start;">' +
       (intercept ? addFieldBlock('Intercept', intercept, { row: true }) : '') +
       (force ? addFieldBlock('Force', force, { row: true }) : '') +
     '</div>' +
-    '<div class="modal-divider"></div>' +
-    energyHtml;
+    (energyHtml ? '<div class="modal-divider"></div>' + energyHtml : '')
+  : '';
 
   // Rules Text
   var rulesSectionEl = document.getElementById('modalRulesSection');
@@ -2206,6 +2207,7 @@ function updateModalButton(isOwned) {
   var btn = document.getElementById('modalToggle');
   if (isOwned) { btn.textContent = 'Remove from Collection'; btn.className = 'modal-toggle-btn remove'; }
   else { btn.textContent = 'Add to Collection'; btn.className = 'modal-toggle-btn add'; }
+  updateModalDividers();
 }
 
 /* ---- COLLECTION ACTIONS ---- */
@@ -2303,7 +2305,27 @@ function openClearDialog() { updateClearCompareBtn(); document.getElementById('c
 function closeClearDialog() { document.getElementById('clearMethodOverlay').classList.remove('active'); }
 function openHowToPopup() { document.getElementById('howToPopup').classList.add('active'); }
 function closeHowToPopup() { document.getElementById('howToPopup').classList.remove('active'); }
-
+function updateModalDividers() {
+  var sectionIds = ['modalRulesSection', 'modalFlavorSection', 'modalDescriptionSection', 'modalExtraStats', 'modalObtainedSection'];
+  var dividers = document.querySelectorAll('.modal-collection-section .modal-divider');
+  var last = sectionIds.length - 1;
+  for (var i = 0; i <= last; i++) {
+    var el = document.getElementById(sectionIds[i]);
+    var hasContent = el && el.innerHTML.trim().length > 0;
+    var show = false;
+    if (hasContent) {
+      if (i === last) {
+        show = true;
+      } else {
+        for (var j = i + 1; j <= last; j++) {
+          var nxt = document.getElementById(sectionIds[j]);
+          if (nxt && nxt.innerHTML.trim()) { show = true; break; }
+        }
+      }
+    }
+    if (dividers[i]) dividers[i].style.display = show ? '' : 'none';
+  }
+}
 /* ---- EVENTS ---- */
 function setupEvents() {
   document.getElementById('searchInput').addEventListener('input', function() { searchQuery = this.value; renderCards(); });
