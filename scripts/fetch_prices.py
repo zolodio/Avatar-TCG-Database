@@ -119,35 +119,36 @@ def get_access_token() -> str:
 
 
 # ── eBay Marketplace Insights API ────────────────────────────────────────────
+import urllib.parse
+
 EBAY_FINDING_URL = "https://svcs.ebay.com/services/search/FindingService/v1"
 
 def ebay_sold_items(token: str, keywords: str, limit: int = 200, offset: int = 0) -> list[dict]:
-    """
-    Fallback: uses the eBay Finding API (no special scope needed).
-    Note: token is unused here; Finding API uses the App ID directly.
-    """
-    params = {
-        "OPERATION-NAME":        "findCompletedItems",
-        "SERVICE-VERSION":       "1.0.0",
-        "SECURITY-APPNAME":      EBAY_CLIENT_ID,   # App ID, not a token
-        "RESPONSE-DATA-FORMAT":  "JSON",
-        "REST-PAYLOAD":          "",
-        "keywords":              keywords,
-        "itemFilter(0).name":    "SoldItemsOnly",
-        "itemFilter(0).value":   "true",
-        "itemFilter(1).name":    "ListingType",
-        "itemFilter(1).value":   "FixedPrice",
-        "sortOrder":             "EndTimeSoonest",
-        "paginationInput.entriesPerPage": min(limit, 100),
-        "paginationInput.pageNumber":     (offset // 100) + 1,
-    }
+    params = [
+        ("OPERATION-NAME",                  "findCompletedItems"),
+        ("SERVICE-VERSION",                 "1.0.0"),
+        ("SECURITY-APPNAME",                EBAY_CLIENT_ID),
+        ("RESPONSE-DATA-FORMAT",            "JSON"),
+        ("keywords",                        keywords),
+        ("itemFilter(0).name",              "SoldItemsOnly"),
+        ("itemFilter(0).value",             "true"),
+        ("itemFilter(1).name",              "ListingType"),
+        ("itemFilter(1).value",             "FixedPrice"),
+        ("sortOrder",                       "EndTimeSoonest"),
+        ("paginationInput.entriesPerPage",  str(min(limit, 100))),
+        ("paginationInput.pageNumber",      str((offset // 100) + 1)),
+    ]
+
+    # Build query string manually — keys with () must NOT be percent-encoded
+    query_string = "&".join(
+        f"{k}={urllib.parse.quote(str(v), safe='')}"
+        for k, v in params
+    )
 
     try:
-        resp = requests.get(EBAY_FINDING_URL, params=params, timeout=20)
+        resp = requests.get(f"{EBAY_FINDING_URL}?{query_string}", timeout=20)
         resp.raise_for_status()
         data = resp.json()
-        print(f"  [DEBUG] Raw response keys: {list(data.keys())}")
-        print(f"  [DEBUG] First 300 chars: {str(data)[:300]}")  
     except Exception as exc:
         print(f"  [ERROR] Finding API call failed: {exc}")
         return []
@@ -159,9 +160,9 @@ def ebay_sold_items(token: str, keywords: str, limit: int = 200, offset: int = 0
     )
     for item in search_result.get("item", []):
         title = item.get("title", [""])[0]
-        price = item.get("sellingStatus", [{}])[0] \
-                    .get("convertedCurrentPrice", [{}])[0] \
-                    .get("__value__", None)
+        price = (item.get("sellingStatus", [{}])[0]
+                     .get("convertedCurrentPrice", [{}])[0]
+                     .get("__value__", None))
         if title and price:
             try:
                 p = float(price)
