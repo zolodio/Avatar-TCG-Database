@@ -26,7 +26,8 @@ jobs:
 
       - name: Fetch eBay prices
         env:
-          EBAY_APP_ID: ${{ secrets.EBAY_APP_ID }}
+          EBAY_CLIENT_ID:     ${{ secrets.EBAY_CLIENT_ID }}
+          EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
         run: python scripts/fetch_prices.py
 
       - name: Commit prices.json
