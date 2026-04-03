@@ -599,7 +599,7 @@ body {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   max-width: 480px; width: 95%;
-  max-height: 85vh;
+  max-height: 100%;
   display: flex; flex-direction: column;
   box-shadow: var(--shadow-lg);
   animation: modalSlideUp 0.3s ease;
@@ -608,8 +608,8 @@ body {
 
 .modal-header {
   display: flex; justify-content: space-between; align-items: flex-start;
-  padding: 16px 18px;
-  border-bottom: 1px solid var(--border);
+  padding: 15px 15px 0px;
+  border-bottom: 0px solid var(--border);
   flex-shrink: 0;
 }
 .modal-close { background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; padding: 4px; transition: color 0.2s; }
@@ -638,7 +638,7 @@ body {
 .modal-body::-webkit-scrollbar-thumb:hover { background: var(--border); }
 
 .modal-card-name { font-family: 'Cinzel', serif; font-weight: 700; font-size: 1.15rem; margin-bottom: 6px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; }
-.modal-card-number { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 14px; }
+.modal-card-number { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 1px; }
 
 .modal-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
 .modal-tag {
@@ -1404,10 +1404,13 @@ body {
 <!-- CARD DETAIL MODAL -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal-card" id="modalCard">
-    <div class="modal-header">
-      <div></div>
-      <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
-    </div>
+<div class="modal-header">
+  <div style="flex:1; min-width:0; padding-right:12px;">
+    <div class="modal-card-name" id="modalName"></div>
+    <div class="modal-card-number" id="modalNumber"></div>
+  </div>
+  <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+</div>
     <div class="modal-img-section" id="modalImgSection"></div>
     <div class="modal-body">
       <div class="modal-collection-section">
@@ -1416,8 +1419,6 @@ body {
           <span class="qty-display" id="qtyDisplay">0</span>
           <button class="qty-btn" id="qtyPlus">+</button>
         </div>
-        <div class="modal-card-name" id="modalName"></div>
-        <div class="modal-card-number" id="modalNumber"></div>
         <div class="modal-tags" id="modalTags"></div>
         <div id="modalCompareInfo"></div>
 
