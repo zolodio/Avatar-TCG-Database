@@ -104,13 +104,17 @@ def ebay_completed_items(keywords: str, page: int = 1, per_page: int = 100) -> l
         "sortOrder": "EndTimeSoonest",
     }
 
-    try:
-        resp = requests.get(FINDING_API, params=params, timeout=15)
-        resp.raise_for_status()
-        data = resp.json()
-    except Exception as exc:
-        print(f"  [ERROR] eBay API call failed: {exc}")
-        return []
+ def safe_request(url, params, retries=3):
+    for i in range(retries):
+        try:
+            resp = requests.get(url, params=params, timeout=15)
+            resp.raise_for_status()
+            return resp.json()
+        except Exception as e:
+            if i == retries - 1:
+                print(f"[ERROR] अंतिम failure: {e}")
+                return None
+            time.sleep(1.5 * (i + 1))
 
     results = []
     try:
@@ -125,7 +129,7 @@ def ebay_completed_items(keywords: str, page: int = 1, per_page: int = 100) -> l
             price = float(price_info.get("__value__", 0))
             currency = price_info.get("@currencyId", "USD")
             # Only keep USD listings (most eBay.com results)
-            if currency == "USD" and price > 0:
+            if currency in ("USD", "US $", None) and price > 0:
                 results.append({"title": title, "price": price})
     except (KeyError, IndexError, TypeError, ValueError):
         pass
@@ -200,13 +204,13 @@ def main():
     all_listings: list[dict] = []
 
     # 1. Broad searches to catch bulk/lot listings and common cards
-    broad_queries = [
-        "Avatar Last Airbender Quick Strike TCG single",
-        "Avatar Quick Strike card TCG holo",
-    ]
+broad_queries = [
+    "Avatar Quick Strike card -lot -bundle",
+    "Avatar Quick Strike single card",
+]
     for query in broad_queries:
         for page in range(1, BROAD_PAGES + 1):
-            print(f"  Broad search p{page}: "{query[:50]}"")
+            print(f'  Broad search p{page}: "{query[:50]}"')
             listings = ebay_completed_items(query, page=page)
             all_listings.extend(listings)
             print(f"    → {len(listings)} results")
@@ -232,8 +236,12 @@ def main():
     hinted = [l for l in all_listings if "_card_hint" in l]
     normal = [l for l in all_listings if "_card_hint" not in l]
 
-    for listing in hinted:
-        num = listing["_card_hint"]
+for listing in hinted:
+    num = listing["_card_hint"]
+    title_clean = normalize_title(listing["title"])
+    card_name = next(c["name"] for c in cards if c["number"] == num)
+
+    if similarity(title_clean, card_name) >= 0.6:
         prices_by_card.setdefault(num, []).append(listing["price"])
 
     fuzzy_matches = match_listings_to_cards(normal, cards)
