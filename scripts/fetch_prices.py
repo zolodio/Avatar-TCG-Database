@@ -146,6 +146,8 @@ def ebay_sold_items(token: str, keywords: str, limit: int = 200, offset: int = 0
         resp = requests.get(EBAY_FINDING_URL, params=params, timeout=20)
         resp.raise_for_status()
         data = resp.json()
+        print(f"  [DEBUG] Raw response keys: {list(data.keys())}")
+        print(f"  [DEBUG] First 300 chars: {str(data)[:300]}")  
     except Exception as exc:
         print(f"  [ERROR] Finding API call failed: {exc}")
         return []
@@ -269,7 +271,11 @@ def main():
         all_listings.extend(listings)
         print(f"    → {len(listings)} results")
         time.sleep(SLEEP_BETWEEN)
-
+    print(f"\n==> Total listings collected: {len(all_listings)}")
+    if all_listings:
+      print(f"  Sample: {all_listings[:3]}")
+    else:
+      print("  [DEBUG] No listings returned — check Finding API response")
     # ── 2. Targeted searches for rare / zenemental / promo ─────────────────
     targeted_cards = [c for c in cards if c["rarity"] in TARGETED_RARITIES]
     print(f"\n==> Targeted searches for {len(targeted_cards)} rare/zen/promo cards …")
