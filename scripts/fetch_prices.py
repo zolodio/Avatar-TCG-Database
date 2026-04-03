@@ -249,8 +249,7 @@ def aggregate(prices: list[float]) -> dict:
 
 # ── Main ─────────────────────────────────────────────────────────────────────
 def main():
-token = None  # Finding API uses App ID directly, no OAuth needed
-
+    token = None  # Finding API uses App ID directly, no OAuth needed
     print("\n==> Fetching card list from GitHub CSV …")
     cards = fetch_cards()
     print(f"    {len(cards)} cards loaded")
