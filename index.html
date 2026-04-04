@@ -2510,7 +2510,7 @@ function openModal(cardNumber) {
   } else {
     imgHtml += '<div class="modal-img-placeholder-lg"><i class="fas fa-hat-wizard"></i><span>No back image</span></div>';
   }
-  imgHtml += '</div></div></div>';
+  imgHtml += '</div></div>';
 
   if (card.traits && card.traits.trim()) {
     var traitList = card.traits.split(/[,;\s]+/).map(function(t) { return t.trim().toLowerCase(); }).filter(function(t) { return t.length > 0; });
