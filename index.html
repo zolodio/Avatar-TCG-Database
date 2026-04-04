@@ -1194,10 +1194,10 @@ body {
   <div id="nested-zen-calc" class="nested-tab-content" style="display:none;">
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
       <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
-        <i class="fas fa-dice-d20" style="color:var(--zen); font-size:1.2rem;"></i>
+        <i class="fas fa-dice-d20 fa-spin" style="color:var(--zen); font-size:1.2rem;"></i>
         <div>
           <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Zenemental Pack Calculator</div>
-          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-in-6 pull rate</div>
+          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-in-6 pull rate &middot; Core cards only</div>
         </div>
       </div>
       <div id="zenPackWidget">
@@ -1230,7 +1230,7 @@ body {
   <div id="nested-rare-calc" class="nested-tab-content" style="display:none;">
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
       <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
-        <i class="fas fa-star" style="color:var(--water); font-size:1.2rem;"></i>
+        <i class="fas fa-star fa-spin" style="color:var(--water); font-size:1.2rem;"></i>
         <div>
           <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Rare Pack Calculator</div>
           <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-per-pack &middot; Core cards only</div>
@@ -1600,7 +1600,7 @@ var PACK_CONFIGS = {
     p:         1,
     color:     'var(--air)',
     colorGlow: 'var(--air-glow)',
-    checkIcon: 'fas fa-door-open',
+    checkIcon: 'fas fa-window-maximize',
     pullDesc:  '1-per-pack'
   },
   rare: {
@@ -1609,7 +1609,7 @@ var PACK_CONFIGS = {
     p:         1,
     color:     'var(--water)',
     colorGlow: 'var(--water-glow)',
-    checkIcon: 'fas fa-gem',
+    checkIcon: 'fas fa-star',
     pullDesc:  '1-per-pack'
   },
   uncommon: {
@@ -1618,7 +1618,7 @@ var PACK_CONFIGS = {
     p:         3,
     color:     'var(--earth)',
     colorGlow: 'var(--earth-glow)',
-    checkIcon: 'fas fa-leaf',
+    checkIcon: 'fas fa-circle',
     pullDesc:  '3-per-pack'
   },
   common: {
@@ -1627,7 +1627,7 @@ var PACK_CONFIGS = {
     p:         5,
     color:     'var(--text-secondary)',
     colorGlow: 'var(--text-secondary)',
-    checkIcon: 'fas fa-circle',
+    checkIcon: 'far fa-circle',
     pullDesc:  '5-per-pack'
   }
 };
