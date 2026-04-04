@@ -956,9 +956,9 @@ body {
 <!-- TAB NAVIGATION -->
 <div class="tab-nav">
   <button class="tab-btn active" data-tab="home"><i class="fas fa-home"></i> Home</button>
+    <button class="tab-btn" data-tab="portfolio"><i class="fas fa-chart-line"></i> Portfolio</button>
   <button class="tab-btn" data-tab="howtoplay"><i class="fas fa-book"></i> How to Play</button>
   <button class="tab-btn" data-tab="wayback"><i class="fas fa-globe"></i> Wayback Websites</button>
-  <button class="tab-btn" data-tab="portfolio"><i class="fas fa-chart-line"></i> Portfolio</button>
   <button class="tab-btn" data-tab="profile"><i class="fas fa-user"></i> Profile</button>
 </div>
 
@@ -1197,7 +1197,7 @@ body {
         <i class="fas fa-star" style="color:var(--zen); font-size:1.2rem;"></i>
         <div>
           <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Zenemental Pack Calculator</div>
-          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">Coupon Collector &middot; 1-in-6 pull rate &middot; Core cards only</div>
+          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-in-6 pull rate</div>
         </div>
       </div>
       <div id="zenPackWidget">
@@ -1215,7 +1215,7 @@ body {
         <i class="fas fa-door-open" style="color:var(--air); font-size:1.2rem;"></i>
         <div>
           <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Chamber Pack Calculator</div>
-          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">Coupon Collector &middot; 1-per-pack &middot; Core cards only</div>
+          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-per-pack &middot; Core cards only</div>
         </div>
       </div>
       <div id="chamberPackWidget">
@@ -1233,7 +1233,7 @@ body {
         <i class="fas fa-gem" style="color:var(--water); font-size:1.2rem;"></i>
         <div>
           <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Rare Pack Calculator</div>
-          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">Coupon Collector &middot; 1-per-pack &middot; Core cards only</div>
+          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-per-pack &middot; Core cards only</div>
         </div>
       </div>
       <div id="rarePackWidget">
@@ -1251,7 +1251,7 @@ body {
         <i class="fas fa-leaf" style="color:var(--earth); font-size:1.2rem;"></i>
         <div>
           <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Uncommon Pack Calculator</div>
-          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">Coupon Collector &middot; 3-per-pack &middot; Core cards only</div>
+          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">3-per-pack &middot; Core cards only</div>
         </div>
       </div>
       <div id="uncommonPackWidget">
@@ -1269,7 +1269,7 @@ body {
         <i class="fas fa-circle" style="color:var(--text-secondary); font-size:1.2rem;"></i>
         <div>
           <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Common Pack Calculator</div>
-          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">Coupon Collector &middot; 5-per-pack &middot; Core cards only</div>
+          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">5-per-pack &middot; Core cards only</div>
         </div>
       </div>
       <div id="commonPackWidget">
@@ -1343,13 +1343,6 @@ body {
       </div>
     </div>
   </div>
-</div>
-
-<!-- Save Code Footer (only visible in Home tab) -->
-<div class="save-code-footer" id="saveCodeFooter" style="display:none;">
-  <div class="save-code-header"><span class="save-code-label">Current Save Code:</span></div>
-  <div id="saveCodeDisplayFooter"></div>
-  <div class="save-code-hint">Select the code above to copy it manually</div>
 </div>
 
 </div><!-- /.app-container -->
@@ -1612,7 +1605,7 @@ var PACK_CONFIGS = {
   },
   rare: {
     widgetId:  'rarePackWidget',
-    filterFn:  function(c) { return c.rarity === 'rare'; },
+    filterFn:  function(c) { return c.rarity === 'rare' && c.type !== 'chamber'; },
     p:         1,
     color:     'var(--water)',
     colorGlow: 'var(--water-glow)',
@@ -1621,7 +1614,7 @@ var PACK_CONFIGS = {
   },
   uncommon: {
     widgetId:  'uncommonPackWidget',
-    filterFn:  function(c) { return c.rarity === 'uncommon'; },
+    filterFn:  function(c) { return c.rarity === 'uncommon' && c.type !== 'chamber'; },
     p:         3,
     color:     'var(--earth)',
     colorGlow: 'var(--earth-glow)',
@@ -1630,7 +1623,7 @@ var PACK_CONFIGS = {
   },
   common: {
     widgetId:  'commonPackWidget',
-    filterFn:  function(c) { return c.rarity === 'common'; },
+    filterFn:  function(c) { return c.rarity === 'common' && c.type !== 'chamber'; },
     p:         5,
     color:     'var(--text-secondary)',
     colorGlow: 'var(--text-secondary)',
@@ -1664,7 +1657,7 @@ function updatePackCounter(rarityKey) {
 
   /* Filter to core cards only */
   var cards = allCards.filter(function(c) {
-    return isCoreCard(c.number) && cfg.filterFn(c);
+    return isPackCard(c.number) && cfg.filterFn(c);
   });
 
   var total  = cards.length;
@@ -1743,7 +1736,7 @@ function updatePackCounter(rarityKey) {
         'border:1px solid ' + chipBorder + ';' +
         'border-radius:6px;">' +
         '<i class="fas ' + (have ? 'fa-check-circle' : 'fa-circle') + '" style="font-size:0.72rem;flex-shrink:0;color:' + chipColor + ';"></i>' +
-        '<span style="font-size:0.7rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:' + (have ? 'var(--text-primary)' : 'var(--text-muted)') + ';" title="' + escapeHtml(c.name) + '">' + escapeHtml(c.name) + '</span>' +
+    '<span style="font-size:0.7rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:' + (have ? 'var(--text-primary)' : 'var(--text-muted)') + ';" title="' + escapeHtml(c.name) + '">' + (rarityKey === 'chamber' ? '<span style="color:var(--text-muted);font-size:0.62rem;margin-right:3px;">#' + escapeHtml(c.number) + '</span>' : '') + escapeHtml(c.name) + '</span>' +
       '</div>';
   });
   chipsHtml += '</div></div>';
@@ -2131,7 +2124,12 @@ function isCoreCard(cardNumber) {
   if (!isNaN(parsed) && parsed >= 1 && parsed <= 235 && /^\d+$/.test(num)) return true;
   return false;
 }
-
+/* ---- PACK CARD CHECK (numbered 1–235 only) ---- */
+function isPackCard(cardNumber) {
+  var num = cardNumber.trim();
+  var parsed = parseInt(num, 10);
+  return /^\d+$/.test(num) && !isNaN(parsed) && parsed >= 1 && parsed <= 235;
+}
 /* ---- BONUS TOTAL CARDS ---- */
 function getBonusTotalCards() {
   var b = 0;
@@ -2333,7 +2331,7 @@ function renderCards() {
   var empty = document.getElementById('emptyState');
   var showCompare = hasCompareData();
 
-  document.getElementById('resultsCount').textContent = cards.length + ' card' + (cards.length !== 1 ? 's' : '');
+  document.getElementById('resultsCount').textContent = cards.length + ' item' + (cards.length !== 1 ? 's' : '');
 
   if (cards.length === 0) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
   empty.style.display = 'none';
