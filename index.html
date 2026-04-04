@@ -166,6 +166,7 @@ body {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
+.tab-nav-nested::-webkit-scrollbar { display: none; }
 .tab-btn-nested {
   background: transparent;
   border: none;
@@ -179,6 +180,7 @@ body {
   text-transform: capitalize;
   border-bottom: 2px solid transparent;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 .tab-btn-nested:hover { color: var(--text-primary); border-bottom-color: var(--border-light); }
 .tab-btn-nested.active { color: var(--zen); border-bottom-color: var(--zen); }
@@ -493,7 +495,6 @@ body {
 }
 .card-compare-badge i { font-size: 0.55rem; }
 
-/* PRICE BADGE on card grid */
 .card-price-badge {
   position: absolute; bottom: 6px; left: 6px;
   background: rgba(0,0,0,0.78);
@@ -647,7 +648,6 @@ body {
   display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
 }
 
-/* Trait badge container */
 .modal-trait-badges {
   position: absolute; bottom: 1%; left: 50%;
   transform: translateX(-50%);
@@ -695,7 +695,7 @@ body {
 .modal-compare-info i { color: var(--water); font-size: 0.9rem; }
 .modal-compare-info span { font-size: 0.82rem; color: var(--water); font-weight: 600; }
 
-/* ── PRICE SECTION ── */
+/* PRICE SECTION */
 .price-section {
   margin: 14px 0 0;
   background: var(--bg-card);
@@ -749,7 +749,6 @@ body {
 .price-loading i { animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .price-no-data { text-align: center; padding: 6px 0; font-size: 0.75rem; color: var(--text-muted); font-style: italic; }
-/* ── END PRICE SECTION ── */
 
 /* EMPTY STATE */
 .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
@@ -1173,9 +1172,16 @@ body {
 <div class="tab-content" id="tab-portfolio">
   <div class="tab-nav-nested">
     <button class="tab-btn-nested active" data-nested-tab="save-code-portfolio">Save Code</button>
+    <button class="tab-btn-nested" data-nested-tab="zen-calc">Zenemental</button>
+    <button class="tab-btn-nested" data-nested-tab="chamber-calc">Chamber</button>
+    <button class="tab-btn-nested" data-nested-tab="rare-calc">Rare</button>
+    <button class="tab-btn-nested" data-nested-tab="uncommon-calc">Uncommon</button>
+    <button class="tab-btn-nested" data-nested-tab="common-calc">Common</button>
     <button class="tab-btn-nested" data-nested-tab="graph">Graph</button>
     <button class="tab-btn-nested" data-nested-tab="card-values">Card Values</button>
   </div>
+
+  <!-- SAVE CODE -->
   <div id="nested-save-code-portfolio" class="nested-tab-content active">
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px;">
       <div class="save-code-header"><span class="save-code-label">Current Save Code:</span></div>
@@ -1183,14 +1189,107 @@ body {
       <div class="save-code-hint">Select the code above to copy it manually</div>
     </div>
   </div>
-  <div id="nested-graph" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
-      <i class="fas fa-chart-line" style="font-size: 3rem; color: var(--earth); margin-bottom: 16px;"></i>
-      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Portfolio Graph</h3>
-      <p style="color: var(--text-secondary);">Visualize your collection value over time</p>
-      <p style="color: var(--text-secondary);">Coming Soon...</p>
+
+  <!-- ZENEMENTAL PACK CALCULATOR -->
+  <div id="nested-zen-calc" class="nested-tab-content" style="display:none;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+        <i class="fas fa-star" style="color:var(--zen); font-size:1.2rem;"></i>
+        <div>
+          <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Zenemental Pack Calculator</div>
+          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">Coupon Collector &middot; 1-in-6 pull rate &middot; Core cards only</div>
+        </div>
+      </div>
+      <div id="zenPackWidget">
+        <div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;">
+          <i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;
+        </div>
+      </div>
     </div>
   </div>
+
+  <!-- CHAMBER PACK CALCULATOR -->
+  <div id="nested-chamber-calc" class="nested-tab-content" style="display:none;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+        <i class="fas fa-door-open" style="color:var(--air); font-size:1.2rem;"></i>
+        <div>
+          <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Chamber Pack Calculator</div>
+          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">Coupon Collector &middot; 1-per-pack &middot; Core cards only</div>
+        </div>
+      </div>
+      <div id="chamberPackWidget">
+        <div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;">
+          <i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RARE PACK CALCULATOR -->
+  <div id="nested-rare-calc" class="nested-tab-content" style="display:none;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+        <i class="fas fa-gem" style="color:var(--water); font-size:1.2rem;"></i>
+        <div>
+          <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Rare Pack Calculator</div>
+          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">Coupon Collector &middot; 1-per-pack &middot; Core cards only</div>
+        </div>
+      </div>
+      <div id="rarePackWidget">
+        <div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;">
+          <i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UNCOMMON PACK CALCULATOR -->
+  <div id="nested-uncommon-calc" class="nested-tab-content" style="display:none;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+        <i class="fas fa-leaf" style="color:var(--earth); font-size:1.2rem;"></i>
+        <div>
+          <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Uncommon Pack Calculator</div>
+          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">Coupon Collector &middot; 3-per-pack &middot; Core cards only</div>
+        </div>
+      </div>
+      <div id="uncommonPackWidget">
+        <div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;">
+          <i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMMON PACK CALCULATOR -->
+  <div id="nested-common-calc" class="nested-tab-content" style="display:none;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+        <i class="fas fa-circle" style="color:var(--text-secondary); font-size:1.2rem;"></i>
+        <div>
+          <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Common Pack Calculator</div>
+          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">Coupon Collector &middot; 5-per-pack &middot; Core cards only</div>
+        </div>
+      </div>
+      <div id="commonPackWidget">
+        <div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;">
+          <i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRAPH TAB (Portfolio graph coming soon) -->
+  <div id="nested-graph" class="nested-tab-content" style="display:none;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
+      <i class="fas fa-chart-line" style="font-size: 2.5rem; color: var(--earth); margin-bottom: 14px;"></i>
+      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 6px; font-size:1rem;">Portfolio Graph</h3>
+      <p style="color: var(--text-secondary); font-size:0.85rem;">Visualize your collection value over time &mdash; coming soon</p>
+    </div>
+  </div>
+
+  <!-- CARD VALUES TAB -->
   <div id="nested-card-values" class="nested-tab-content" style="display:none;">
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
       <i class="fas fa-coins" style="font-size: 3rem; color: var(--promo); margin-bottom: 16px;"></i>
@@ -1281,6 +1380,8 @@ body {
     <p>Paste a friend's save code to compare. Cards they own will be highlighted with a blue badge showing their quantity.</p>
     <h3>Save Codes</h3>
     <p>Your save code is automatically generated and displayed at the bottom. Select it to copy and save offline.</p>
+    <h3>Pack Calculators</h3>
+    <p>Find them under Portfolio. Each rarity tab (Zenemental, Chamber, Rare, Uncommon, Common) uses the Coupon Collector formula to estimate how many more packs you need to complete that subset of core cards, based on how many you already own.</p>
   </div>
 </div>
 
@@ -1421,10 +1522,7 @@ body {
         </div>
         <div class="modal-tags" id="modalTags"></div>
         <div id="modalCompareInfo"></div>
-
-        <!-- PRICE WIDGET (injected by renderModalPrices) -->
         <div id="modalPriceSection"></div>
-
         <div id="modalRulesSection" style="margin-top: 14px;"></div>
         <div class="modal-divider"></div>
         <div id="modalFlavorSection" style="margin-top: 14px;"></div>
@@ -1468,6 +1566,247 @@ var traitIconMap = {
   'air':    'https://github.com/zolodio/Avatar-TCG-Database/raw/main/air.png'
 };
 
+/* ================================================================
+   PACK CALCULATOR ENGINE
+   ================================================================
+   Coupon Collector Problem with multiple pulls per pack.
+
+   When you have j unique cards of a given type (out of n total),
+   the expected packs to find the next new one is:
+
+       E[packs | j owned] = n / (p × (n − j))
+
+   Where p = expected cards of this type per pack.
+
+   Total expected packs from c owned to all n:
+       E = (n / p) × H(n − c)   where H = harmonic number
+
+   Config per rarity:
+     zenemental : p = 1/6, filter by rarity === 'zenemental'
+     chamber    : p = 1,   filter by type  === 'chamber'
+     rare       : p = 1,   filter by rarity === 'rare'
+     uncommon   : p = 3,   filter by rarity === 'uncommon'
+     common     : p = 5,   filter by rarity === 'common'
+
+   All calculations use CORE CARDS ONLY (isCoreCard check).
+   ================================================================ */
+
+var PACK_CONFIGS = {
+  zenemental: {
+    widgetId:  'zenPackWidget',
+    filterFn:  function(c) { return c.rarity === 'zenemental'; },
+    p:         1 / 6,
+    color:     'var(--zen)',
+    colorGlow: 'var(--zen-glow)',
+    checkIcon: 'fas fa-star',
+    pullDesc:  '1-in-6 pull rate'
+  },
+  chamber: {
+    widgetId:  'chamberPackWidget',
+    filterFn:  function(c) { return c.type === 'chamber'; },
+    p:         1,
+    color:     'var(--air)',
+    colorGlow: 'var(--air-glow)',
+    checkIcon: 'fas fa-door-open',
+    pullDesc:  '1-per-pack'
+  },
+  rare: {
+    widgetId:  'rarePackWidget',
+    filterFn:  function(c) { return c.rarity === 'rare'; },
+    p:         1,
+    color:     'var(--water)',
+    colorGlow: 'var(--water-glow)',
+    checkIcon: 'fas fa-gem',
+    pullDesc:  '1-per-pack'
+  },
+  uncommon: {
+    widgetId:  'uncommonPackWidget',
+    filterFn:  function(c) { return c.rarity === 'uncommon'; },
+    p:         3,
+    color:     'var(--earth)',
+    colorGlow: 'var(--earth-glow)',
+    checkIcon: 'fas fa-leaf',
+    pullDesc:  '3-per-pack'
+  },
+  common: {
+    widgetId:  'commonPackWidget',
+    filterFn:  function(c) { return c.rarity === 'common'; },
+    p:         5,
+    color:     'var(--text-secondary)',
+    colorGlow: 'var(--text-secondary)',
+    checkIcon: 'fas fa-circle',
+    pullDesc:  '5-per-pack'
+  }
+};
+
+function packHarmonic(k) {
+  var s = 0;
+  for (var i = 1; i <= k; i++) s += 1 / i;
+  return s;
+}
+
+function packExpected(n, p, owned) {
+  var remaining = n - owned;
+  if (remaining <= 0) return 0;
+  return (n / p) * packHarmonic(remaining);
+}
+
+function packStepExpected(n, p, j) {
+  /* Expected packs for the step from j to j+1 unique cards */
+  return n / (p * (n - j));
+}
+
+function updatePackCounter(rarityKey) {
+  var cfg = PACK_CONFIGS[rarityKey];
+  if (!cfg) return;
+  var el = document.getElementById(cfg.widgetId);
+  if (!el) return;
+
+  /* Filter to core cards only */
+  var cards = allCards.filter(function(c) {
+    return isCoreCard(c.number) && cfg.filterFn(c);
+  });
+
+  var total  = cards.length;
+  var owned  = cards.filter(function(c) { return (collection[c.number] || 0) > 0; }).length;
+  var remaining = total - owned;
+  var pct    = total > 0 ? Math.round((owned / total) * 100) : 0;
+  var color  = cfg.color;
+  var n      = total;
+  var p      = cfg.p;
+
+  /* No data yet */
+  if (total === 0) {
+    el.innerHTML =
+      '<div style="text-align:center;padding:20px 0;color:var(--text-muted);font-size:0.8rem;">' +
+        'No matching core cards found in database.' +
+      '</div>';
+    return;
+  }
+
+  /* Set complete */
+  if (remaining === 0) {
+    el.innerHTML =
+      '<div style="text-align:center;padding:24px 0;">' +
+        '<i class="' + cfg.checkIcon + '" style="font-size:2.4rem;color:' + color + ';display:block;margin-bottom:10px;"></i>' +
+        '<div style="font-family:\'Cinzel\',serif;font-size:1.05rem;color:' + color + ';font-weight:700;">Set complete!</div>' +
+        '<div style="color:var(--text-secondary);font-size:0.8rem;margin-top:6px;">You own all ' + total + ' core ' + rarityKey + ' cards.</div>' +
+      '</div>';
+    return;
+  }
+
+  var expected = packExpected(n, p, owned);
+
+  /* -- Stat boxes -- */
+  var statsHtml =
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px;">' +
+      '<div style="background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius);padding:12px 8px;text-align:center;">' +
+        '<div style="font-family:\'Cinzel\',serif;font-size:1.6rem;font-weight:700;color:white;">' + Math.round(expected) + '</div>' +
+        '<div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:3px;line-height:1.3;">Expected<br>packs left</div>' +
+      '</div>' +
+      '<div style="background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius);padding:12px 8px;text-align:center;">' +
+        '<div style="font-family:\'Cinzel\',serif;font-size:1.6rem;font-weight:700;color:white;">' + remaining + '</div>' +
+        '<div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:3px;line-height:1.3;">Cards<br>needed</div>' +
+      '</div>' +
+      '<div style="background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius);padding:12px 8px;text-align:center;">' +
+        '<div style="font-family:\'Cinzel\',serif;font-size:1.6rem;font-weight:700;color:white;">' + pct + '%</div>' +
+        '<div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:3px;line-height:1.3;">Set<br>complete</div>' +
+      '</div>' +
+    '</div>';
+
+  /* -- Progress bar -- */
+  var progressHtml =
+    '<div style="margin-bottom:18px;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
+        '<span style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--text-muted);">' + rarityKey + ' progress (core only)</span>' +
+        '<span style="font-family:\'Cinzel\',serif;font-size:0.85rem;font-weight:700;color:' + color + ';">' + owned + ' / ' + total + '</span>' +
+      '</div>' +
+      '<div style="height:8px;background:var(--bg-primary);border-radius:99px;overflow:hidden;">' +
+        '<div style="height:100%;border-radius:99px;background:linear-gradient(90deg,' + color + ',' + cfg.colorGlow + ');width:' + pct + '%;transition:width 0.5s cubic-bezier(0.4,0,0.2,1);"></div>' +
+      '</div>' +
+    '</div>';
+
+  /* -- Card chips -- */
+  var chipsHtml =
+    '<div style="margin-bottom:18px;">' +
+      '<div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--text-muted);margin-bottom:8px;">Your ' + rarityKey + ' core cards</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:5px;">';
+
+  cards.forEach(function(c) {
+    var have = (collection[c.number] || 0) > 0;
+    var chipColor   = have ? color : 'var(--text-muted)';
+    var chipBg      = have ? 'rgba(' + colorToRgba(color) + ',0.1)' : 'var(--bg-primary)';
+    var chipBorder  = have ? 'rgba(' + colorToRgba(color) + ',0.3)' : 'var(--border)';
+    chipsHtml +=
+      '<div style="display:flex;align-items:center;gap:6px;padding:5px 8px;overflow:hidden;' +
+        'background:' + chipBg + ';' +
+        'border:1px solid ' + chipBorder + ';' +
+        'border-radius:6px;">' +
+        '<i class="fas ' + (have ? 'fa-check-circle' : 'fa-circle') + '" style="font-size:0.72rem;flex-shrink:0;color:' + chipColor + ';"></i>' +
+        '<span style="font-size:0.7rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:' + (have ? 'var(--text-primary)' : 'var(--text-muted)') + ';" title="' + escapeHtml(c.name) + '">' + escapeHtml(c.name) + '</span>' +
+      '</div>';
+  });
+  chipsHtml += '</div></div>';
+
+  /* -- Per-step breakdown -- */
+  var breakdownHtml =
+    '<div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--text-muted);margin-bottom:4px;">Expected packs per new card</div>' +
+    '<div style="font-size:0.7rem;color:var(--text-muted);margin-bottom:10px;font-style:italic;line-height:1.5;">' +
+      'Formula: ' + n + '&nbsp;&divide;&nbsp;(' + formatP(p) + '&nbsp;&times;&nbsp;(' + n + '&nbsp;&minus;&nbsp;j)) packs when you have j cards.' +
+    '</div>' +
+    '<div style="background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">';
+
+  for (var j = 0; j < total; j++) {
+    var sp   = packStepExpected(n, p, j);
+    var done = j < owned;
+    breakdownHtml +=
+      '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 12px;' +
+        'border-bottom:1px solid var(--border);' +
+        (done ? 'opacity:0.35;' : '') + '">' +
+        '<span style="font-size:0.75rem;color:var(--text-secondary);">' +
+          'Card ' + (j + 1) + ' of ' + total +
+          ' <span style="color:var(--text-muted);font-size:0.65rem;">(when you have ' + j + '/' + total + ')</span>' +
+        '</span>' +
+        '<span style="font-family:\'Cinzel\',serif;font-size:0.78rem;font-weight:700;color:' + (done ? 'var(--text-muted)' : color) + ';">' +
+          (done ? '<i class="fas fa-check" style="font-size:0.65rem;"></i>' : '~' + Math.round(sp) + ' packs') +
+        '</span>' +
+      '</div>';
+  }
+  breakdownHtml += '</div>';
+
+  el.innerHTML = statsHtml + progressHtml + chipsHtml + breakdownHtml;
+}
+
+/* helper: strip css var name to approx rgba for chip backgrounds */
+function colorToRgba(cssVar) {
+  var map = {
+    'var(--zen)':           '180,77,223',
+    'var(--air)':           '240,201,70',
+    'var(--water)':         '46,140,232',
+    'var(--earth)':         '92,184,92',
+    'var(--text-secondary)':'138,142,168'
+  };
+  return map[cssVar] || '138,142,168';
+}
+
+function formatP(p) {
+  /* Format pull rate nicely for the formula display */
+  if (p === 1)       return '1';
+  if (p === 3)       return '3';
+  if (p === 5)       return '5';
+  if (p === 1/6)     return '1/6';
+  return p.toFixed(3);
+}
+
+function updateAllPackCounters() {
+  Object.keys(PACK_CONFIGS).forEach(function(key) {
+    updatePackCounter(key);
+  });
+}
+/* ================================================================
+   END PACK CALCULATOR ENGINE
+   ================================================================ */
+
 /* ---- TAB SYSTEM ---- */
 function initTabs() {
   document.querySelectorAll('.tab-btn').forEach(function(btn) {
@@ -1486,6 +1825,16 @@ function initTabs() {
       parent.querySelectorAll('.nested-tab-content').forEach(function(c) { c.style.display = 'none'; });
       var content = parent.querySelector('#nested-' + nestedName);
       if (content) content.style.display = 'block';
+
+      /* Refresh the relevant pack counter when its tab is shown */
+      var packTabMap = {
+        'zen-calc':      'zenemental',
+        'chamber-calc':  'chamber',
+        'rare-calc':     'rare',
+        'uncommon-calc': 'uncommon',
+        'common-calc':   'common'
+      };
+      if (packTabMap[nestedName]) updatePackCounter(packTabMap[nestedName]);
     });
   });
 
@@ -1814,7 +2163,6 @@ function getBonusTotalCards() {
   b += (collection['PRNT003'] || 0) * -1;
   b += (collection['PRNT004'] || 0) * -1;
   b += (collection['PRNT005'] || 0) * -1;
-
   return b;
 }
 
@@ -1871,6 +2219,7 @@ async function init() {
   updateCompareBtn();
   initTabs();
   setupEvents();
+  updateAllPackCounters();
 }
 
 /* ---- FILTERS ---- */
@@ -2003,7 +2352,6 @@ function renderCards() {
     html += '<div class="card-item' + (isOwned ? ' owned' : '') + '" data-number="' + c.number + '" style="--rarity-color:' + rarityColor + '">';
     html += '<span class="list-card-number">#' + c.number + '</span>';
     html += '<div class="card-img-wrap">';
-
     html += '<div class="card-flip-container"><div class="card-flip-inner" data-flip-id="' + c.number + '">';
     html += '<div class="card-flip-front"><img src="' + imgUrl + '" alt="' + escapeHtml(c.name) + '" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="card-img-placeholder" style="display:none"><i class="fas fa-hat-wizard"></i><span>#' + c.number + '</span></div></div>';
     html += '<div class="card-flip-back">';
@@ -2013,7 +2361,6 @@ function renderCards() {
       html += '<div class="card-img-placeholder"><i class="fas fa-hat-wizard"></i><span>No back image</span></div>';
     }
     html += '</div></div></div>';
-
     html += '<span class="card-number-badge">#' + c.number + '</span>';
     if (isOwned) html += '<span class="card-owned-badge"><i class="fas fa-check"></i></span>';
     if (qty > 0) html += '<span class="card-qty-badge">x' + qty + '</span>';
@@ -2021,7 +2368,6 @@ function renderCards() {
     if (avgPrice) html += '<span class="card-price-badge"><i class="fas fa-tag"></i>' + avgPrice + '</span>';
     html += '<button class="card-flip-btn" data-flip-target="' + c.number + '" title="Flip View"><i class="fas fa-rotate"></i></button>';
     html += '</div>';
-
     html += '<div class="card-info"><div class="card-name" title="' + escapeHtml(c.name) + '">' + escapeHtml(c.name) + '</div>';
     html += '<div class="card-meta"><span class="card-type-tag tag-' + c.type + '">' + c.type + '</span><span class="card-rarity-dot dot-' + c.rarity + '"></span><span class="card-rarity-label rarity-' + c.rarity + '">' + c.rarity + '</span></div></div>';
     html += '<div class="list-card-right">';
@@ -2070,10 +2416,8 @@ function openModal(cardNumber) {
     compareInfoEl.innerHTML = '';
   }
 
-  // Render prices
   renderModalPrices(card.number);
 
-  // Extra stats
   var extraStatsEl = document.getElementById('modalExtraStats');
 
   function cleanText(s) { return (s === undefined || s === null) ? '' : String(s).trim(); }
@@ -2110,17 +2454,16 @@ function openModal(cardNumber) {
       '</div>';
   }
 
-var hasStats = cleanText(intercept) || cleanText(force) || energyHtml;
-extraStatsEl.innerHTML = hasStats
-  ? '<div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); font-weight:700; margin-bottom:10px;text-align: center;">Card Details</div>' +
-    '<div style="display: inline-flex; gap: 15px; align-items: flex-start;">' +
-      (intercept ? addFieldBlock('Intercept', intercept, { row: true }) : '') +
-      (force ? addFieldBlock('Force', force, { row: true }) : '') +
-    '</div>' +
-    (energyHtml ? '<div class="modal-divider"></div>' + energyHtml : '')
-  : '';
+  var hasStats = cleanText(intercept) || cleanText(force) || energyHtml;
+  extraStatsEl.innerHTML = hasStats
+    ? '<div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); font-weight:700; margin-bottom:10px;text-align: center;">Card Details</div>' +
+      '<div style="display: inline-flex; gap: 15px; align-items: flex-start;">' +
+        (intercept ? addFieldBlock('Intercept', intercept, { row: true }) : '') +
+        (force ? addFieldBlock('Force', force, { row: true }) : '') +
+      '</div>' +
+      (energyHtml ? '<div class="modal-divider"></div>' + energyHtml : '')
+    : '';
 
-  // Rules Text
   var rulesSectionEl = document.getElementById('modalRulesSection');
   if (cleanText(card.rulesText)) {
     rulesSectionEl.innerHTML =
@@ -2130,7 +2473,6 @@ extraStatsEl.innerHTML = hasStats
       '</div>';
   } else { rulesSectionEl.innerHTML = ''; }
 
-  // Flavor Text
   var flavorSectionEl = document.getElementById('modalFlavorSection');
   if (cleanText(card.flavorText)) {
     flavorSectionEl.innerHTML =
@@ -2140,7 +2482,6 @@ extraStatsEl.innerHTML = hasStats
       '</div>';
   } else { flavorSectionEl.innerHTML = ''; }
 
-  // Description Text (from V1)
   var descriptionSectionEl = document.getElementById('modalDescriptionSection');
   if (cleanText(card.descriptionText)) {
     descriptionSectionEl.innerHTML =
@@ -2150,7 +2491,6 @@ extraStatsEl.innerHTML = hasStats
       '</div>';
   } else { descriptionSectionEl.innerHTML = ''; }
 
-  // Obtained Via
   var obtainedSectionEl = document.getElementById('modalObtainedSection');
   if (cleanText(card.obtainedVia)) {
     obtainedSectionEl.innerHTML =
@@ -2170,7 +2510,7 @@ extraStatsEl.innerHTML = hasStats
   } else {
     imgHtml += '<div class="modal-img-placeholder-lg"><i class="fas fa-hat-wizard"></i><span>No back image</span></div>';
   }
-  imgHtml += '</div></div>';
+  imgHtml += '</div></div></div>';
 
   if (card.traits && card.traits.trim()) {
     var traitList = card.traits.split(/[,;\s]+/).map(function(t) { return t.trim().toLowerCase(); }).filter(function(t) { return t.length > 0; });
@@ -2226,6 +2566,7 @@ function onCollectionChanged(n) {
   updateStats();
   renderCards();
   updateSaveCodeDisplay();
+  updateAllPackCounters();
   if (currentModalCard && currentModalCard.number === n) {
     var qty = collection[n] || 0;
     document.getElementById('qtyDisplay').textContent = qty;
@@ -2283,7 +2624,7 @@ function processCSVImport(text) {
       if (qty > 0) collection[num] = qty;
     }
   }
-  saveCollection(); updateStats(); renderCards(); updateSaveCodeDisplay();
+  saveCollection(); updateStats(); renderCards(); updateSaveCodeDisplay(); updateAllPackCounters();
   showToast('Collection imported from CSV!');
 }
 
@@ -2332,6 +2673,7 @@ function updateModalDividers() {
     if (dividers[i]) dividers[i].style.display = show ? '' : 'none';
   }
 }
+
 /* ---- EVENTS ---- */
 function setupEvents() {
   document.getElementById('searchInput').addEventListener('input', function() { searchQuery = this.value; renderCards(); });
@@ -2443,7 +2785,7 @@ function setupEvents() {
   document.getElementById('clearMethodOverlay').addEventListener('click', function(e) { if (e.target === this) closeClearDialog(); });
 
   document.getElementById('clearOwnOk').addEventListener('click', function() {
-    collection = {}; saveCollection(); updateStats(); buildFilters(); renderCards(); updateSaveCodeDisplay();
+    collection = {}; saveCollection(); updateStats(); buildFilters(); renderCards(); updateSaveCodeDisplay(); updateAllPackCounters();
     document.getElementById('clearOwnConfirmOverlay').classList.remove('active');
     showToast('Collection cleared');
   });
@@ -2501,7 +2843,7 @@ document.getElementById('codeInputOk').addEventListener('click', function() {
   if (!code) { errorEl.textContent = 'Please enter a save code.'; return; }
   var decoded = decodeCollectionFromCode(code);
   if (!decoded) { errorEl.textContent = 'Invalid save code. Check that you pasted the full code correctly.'; return; }
-  collection = decoded; saveCollection(); updateStats(); renderCards(); updateSaveCodeDisplay();
+  collection = decoded; saveCollection(); updateStats(); renderCards(); updateSaveCodeDisplay(); updateAllPackCounters();
   closeCodeInputDialog();
   showToast('Collection restored from save code!');
 });
