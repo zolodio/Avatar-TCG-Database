@@ -919,6 +919,28 @@ body {
 .status-dot.loading { background: var(--accent); animation: blink 1s ease-in-out infinite; }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
+/* CARD ZOOM OVERLAY */
+.card-zoom-overlay {
+  position: fixed;
+  z-index: 500;
+  pointer-events: none;
+  border-radius: var(--radius);
+  box-shadow: 0 16px 56px rgba(0,0,0,0.85);
+  overflow: hidden;
+  width: 260px;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  border: 1px solid var(--border-light);
+  background: var(--bg-primary);
+}
+.card-zoom-overlay.visible { opacity: 1; }
+.card-zoom-overlay img { width: 100%; height: auto; display: block; }
+.card-zoom-overlay.zoom-mobile {
+  width: min(82vw, 300px);
+  transform: translate(-50%, -50%);
+  z-index: 600;
+}
+
 /* RESPONSIVE */
 @media (max-width: 480px) {
   .header-title { font-size: 1.3rem; }
@@ -975,7 +997,7 @@ body {
     label.textContent = isOpen ? 'Expand' : 'Collapse';
   })()"
   style="width:100%; display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:10px 14px; cursor:pointer; font-family:'Nunito Sans',sans-serif; font-weight:700; font-size:0.8rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.08em;">
-    <span><i class="fas fa-chart-bar" style="margin-right:8px; color:var(--zen);"></i>Collection Stats</span>
+    <span><i class="fas fa-clone" style="margin-right:8px; color:var(--zen); transform: scale(1,1.65)"></i>Collection Stats</span>
     <span style="display:flex; align-items:center; gap:6px;">
       <span id="statsToggleLabel" style="font-size:0.65rem; color:var(--text-muted); font-weight:400; text-transform:none; letter-spacing:0;">Collapse</span>
       <i id="statsToggleIcon" class="fas fa-chevron-down" style="font-size:0.75rem; transition:transform 0.25s;"></i>
@@ -1212,7 +1234,7 @@ body {
   <div id="nested-chamber-calc" class="nested-tab-content" style="display:none;">
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
       <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
-        <i class="fas fa-window-maximize" style="color:var(--air); font-size:1.2rem;"></i>
+        <i class="fas fa-window-maximize" style="color:var(--air); font-size:1.2rem; transform: scale(.9, 1.75);"></i>
         <div>
           <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Chamber Pack Calculator</div>
           <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-per-pack &middot; Core cards only</div>
@@ -2804,7 +2826,8 @@ function setupEvents() {
 
   var scrollBtn = document.getElementById('scrollTopBtn');
   window.addEventListener('scroll', function() { scrollBtn.classList.toggle('show', window.scrollY > 400); });
-  scrollBtn.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+scrollBtn.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+  initCardZoom();
 }
 
 /* ---- IMPORT FLOW ---- */
@@ -2862,7 +2885,90 @@ document.addEventListener('keydown', function(e) {
   else if (document.getElementById('importConfirmOverlay').classList.contains('active')) document.getElementById('importConfirmOverlay').classList.remove('active');
   else if (document.getElementById('modalOverlay').classList.contains('active')) closeModal();
 });
+/* ---- CARD ZOOM ---- */
+function initCardZoom() {
+  var overlay = document.createElement('div');
+  overlay.className = 'card-zoom-overlay';
+  overlay.innerHTML = '<img src="" alt="">';
+  document.body.appendChild(overlay);
 
+  var zoomImg = overlay.querySelector('img');
+  var longPressTimer = null;
+  var mobileZooming = false;
+  var imgSection = document.getElementById('modalImgSection');
+
+  function getModalSrc() {
+    var inner = imgSection.querySelector('.modal-flip-inner');
+    if (inner && inner.classList.contains('flipped')) {
+      var b = imgSection.querySelector('.modal-flip-back img');
+      if (b && b.naturalWidth) return b.src;
+    }
+    var f = imgSection.querySelector('.modal-flip-front img');
+    return (f && f.naturalWidth) ? f.src : null;
+  }
+
+  function positionNearCursor(cx, cy) {
+    var w = 320, h = Math.round(w * 4 / 3);
+    var margin = 10, vw = window.innerWidth, vh = window.innerHeight;
+    var left = cx + 24;
+    var top  = cy - h / 2;
+    if (left + w > vw - margin) left = cx - w - 24;
+    if (left < margin) left = margin;
+    if (top  < margin) top  = margin;
+    if (top + h > vh - margin) top = vh - h - margin;
+    overlay.style.left = left + 'px';
+    overlay.style.top  = top  + 'px';
+  }
+
+  function hideZoom() {
+    overlay.classList.remove('visible', 'zoom-mobile');
+    mobileZooming = false;
+  }
+
+  /* ---- Desktop ---- */
+  imgSection.addEventListener('mousemove', function(e) {
+    if (!document.getElementById('modalOverlay').classList.contains('active')) return;
+    var src = getModalSrc();
+    if (!src) return;
+    if (!overlay.classList.contains('visible')) {
+      overlay.classList.remove('zoom-mobile');
+      zoomImg.src = src;
+      overlay.classList.add('visible');
+    }
+    if (zoomImg.src !== src) zoomImg.src = src;
+    positionNearCursor(e.clientX, e.clientY);
+  });
+
+  imgSection.addEventListener('mouseleave', hideZoom);
+
+  /* ---- Mobile (long-press) ---- */
+  imgSection.addEventListener('touchstart', function() {
+    if (!document.getElementById('modalOverlay').classList.contains('active')) return;
+    longPressTimer = setTimeout(function() {
+      var src = getModalSrc();
+      if (!src) return;
+      overlay.classList.add('zoom-mobile');
+      overlay.style.left = '50%';
+      overlay.style.top  = '50%';
+      zoomImg.src = src;
+      overlay.classList.add('visible');
+      mobileZooming = true;
+    }, 420);
+  }, { passive: true });
+
+  imgSection.addEventListener('touchend', function() {
+    clearTimeout(longPressTimer);
+    if (mobileZooming) hideZoom();
+  }, { passive: true });
+
+  imgSection.addEventListener('touchmove', function() {
+    clearTimeout(longPressTimer);
+  }, { passive: true });
+
+  /* Hide on modal close */
+  document.getElementById('modalClose').addEventListener('click', hideZoom);
+  document.getElementById('modalOverlay').addEventListener('click', hideZoom);
+}
 /* ---- LAUNCH ---- */
 init();
 </script>
