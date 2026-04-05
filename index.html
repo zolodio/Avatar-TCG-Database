@@ -2033,15 +2033,8 @@ function renderModalPrices(cardNumber) {
   }
 
   var p = prices[cardNumber];
-  if (!p || !p.avg) {
-    el.innerHTML =
-      '<div class="price-section">' +
-        '<div class="price-section-label">Market Price' +
-          '<span class="ebay-tag"><i class="fab fa-ebay"></i> eBay sold</span>' +
-        '</div>' +
-        '<div class="price-no-data">No recent sales data found</div>' +
-      '</div>' +
-      '<div class="modal-divider"></div>';
+if (!p || !p.avg) {
+    el.innerHTML = '';
     return;
   }
 
