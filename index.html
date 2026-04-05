@@ -2856,12 +2856,55 @@ function setupEvents() {
 
   document.getElementById('modalClose').addEventListener('click', closeModal);
   document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
-  document.getElementById('modalObtainedSection').addEventListener('click', function(e) {
+document.getElementById('modalObtainedSection').addEventListener('click', function(e) {
     var link = e.target.closest('[data-obtained-link]');
     if (!link) return;
     var num = link.getAttribute('data-obtained-link');
     closeModal();
     requestAnimationFrame(function() { openModal(num); });
+  });
+
+  /* Obtained-via hover preview */
+  var obtainedPreview = document.createElement('div');
+  obtainedPreview.className = 'card-zoom-overlay';
+  obtainedPreview.innerHTML = '<img src="" alt="">';
+  obtainedPreview.style.width = '180px';
+  document.body.appendChild(obtainedPreview);
+  var obtainedPreviewImg = obtainedPreview.querySelector('img');
+
+document.getElementById('modalObtainedSection').addEventListener('mouseover', function(e) {
+    var link = e.target.closest('[data-obtained-link]');
+    if (!link) return;
+    var num = link.getAttribute('data-obtained-link');
+    var card = allCards.find(function(c) { return c.number === num; });
+    if (!card || !card.imageLink) return;
+    obtainedPreview.classList.remove('visible', 'zoom-mobile');
+    obtainedPreviewImg.src = '';
+    obtainedPreviewImg.onload = function() {
+      obtainedPreview.classList.add('visible');
+    };
+    obtainedPreviewImg.src = card.imageLink;
+  });
+
+  document.getElementById('modalObtainedSection').addEventListener('mousemove', function(e) {
+    if (!obtainedPreview.classList.contains('visible')) return;
+    var w = 180, h = Math.round(w * 4 / 3);
+    var margin = 10, vw = window.innerWidth, vh = window.innerHeight;
+    var left = e.clientX + 16;
+    var top  = e.clientY - h / 2;
+    if (left + w > vw - margin) left = e.clientX - w - 16;
+    if (left < margin) left = margin;
+    if (top  < margin) top  = margin;
+    if (top + h > vh - margin) top = vh - h - margin;
+    obtainedPreview.style.left = left + 'px';
+    obtainedPreview.style.top  = top  + 'px';
+  });
+
+  document.getElementById('modalObtainedSection').addEventListener('mouseout', function(e) {
+    var link = e.target.closest('[data-obtained-link]');
+    if (!link) return;
+    if (e.relatedTarget && link.contains(e.relatedTarget)) return;
+    obtainedPreview.classList.remove('visible');
   });
   document.getElementById('qtyPlus').addEventListener('click', function() {
     if (!currentModalCard) return;
