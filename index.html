@@ -321,13 +321,13 @@ body {
 }
 .search-row { display: flex; gap: 8px; margin-bottom: 10px; }
 .search-box { flex: 1; position: relative; }
-.search-box i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.85rem; }
+.search-box > .fa-search { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.85rem; }
 .search-input {
   width: 100%;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 12px 14px 12px 40px;
+  padding: 12px 36px 12px 40px;
   color: var(--text-primary);
   font-size: 16px;
   font-family: 'Nunito Sans', sans-serif;
@@ -336,6 +336,17 @@ body {
 }
 .search-input::placeholder { color: var(--text-muted); }
 .search-input:focus { border-color: var(--accent); }
+
+/* SEARCH CLEAR BUTTON */
+.search-clear-btn {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: var(--text-muted); cursor: pointer;
+  font-size: 0.85rem; padding: 4px 6px; line-height: 1;
+  display: none; align-items: center; justify-content: center;
+  border-radius: 4px; transition: color 0.2s;
+}
+.search-clear-btn.visible { display: flex; }
+.search-clear-btn:hover { color: var(--text-primary); }
 
 .view-toggle {
   display: flex;
@@ -547,6 +558,9 @@ body {
 .modal-flip-btn:hover { border-color: var(--zen); color: var(--zen); background: rgba(180,77,223,0.08); }
 .modal-flip-btn:hover i { transform: rotateY(180deg); }
 .modal-flip-btn.is-flipped { border-color: var(--zen); color: var(--zen); background: rgba(180,77,223,0.1); }
+
+/* MODAL IMG SECTION — click cursor hint */
+.modal-img-section { cursor: zoom-in; }
 
 .card-info { padding: 10px; }
 .card-name { font-weight: 700; font-size: 0.78rem; line-height: 1.3; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -919,27 +933,40 @@ body {
 .status-dot.loading { background: var(--accent); animation: blink 1s ease-in-out infinite; }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-/* CARD ZOOM OVERLAY */
+/* CARD ZOOM OVERLAY — fullscreen click-to-open */
 .card-zoom-overlay {
   position: fixed;
+  inset: 0;
   z-index: 500;
   pointer-events: none;
+  background: rgba(0,0,0,0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  cursor: pointer;
+}
+.card-zoom-overlay.visible { opacity: 1; pointer-events: auto; }
+.card-zoom-overlay img {
+  max-width: min(88vw, 420px);
+  max-height: 88vh;
+  height: auto;
+  display: block;
   border-radius: var(--radius);
   box-shadow: 0 16px 56px rgba(0,0,0,0.85);
-  overflow: hidden;
-  width: 260px;
-  opacity: 0;
-  transition: opacity 0.12s ease;
-  border: 1px solid var(--border-light);
-  background: var(--bg-primary);
+  cursor: default;
 }
-.card-zoom-overlay.visible { opacity: 1; }
-.card-zoom-overlay img { width: 100%; height: auto; display: block; }
-.card-zoom-overlay.zoom-mobile {
-  width: min(82vw, 300px);
-  transform: translate(-50%, -50%);
-  z-index: 600;
+.card-zoom-close-btn {
+  position: absolute; top: 20px; right: 20px;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25);
+  color: #fff; font-size: 1.1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s; z-index: 1;
 }
+.card-zoom-close-btn:hover { background: rgba(255,255,255,0.25); }
+
 /* CELEBRATION */
 .celebration-popup {
   position: fixed; inset: 0; z-index: 1000;
@@ -1078,6 +1105,7 @@ body {
     <div class="search-box">
       <i class="fas fa-search"></i>
       <input class="search-input" id="searchInput" placeholder="Search cards..." type="text">
+      <button class="search-clear-btn" id="searchClearBtn" title="Clear search"><i class="fas fa-times"></i></button>
     </div>
     <div class="view-toggle">
       <button class="view-btn active" data-view="grid" title="Grid view"><i class="fas fa-th"></i></button>
@@ -1358,7 +1386,7 @@ body {
     </div>
   </div>
 
-  <!-- GRAPH TAB (Portfolio graph coming soon) -->
+  <!-- GRAPH TAB -->
   <div id="nested-graph" class="nested-tab-content" style="display:none;">
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
       <i class="fas fa-chart-line" style="font-size: 2.5rem; color: var(--earth); margin-bottom: 14px;"></i>
@@ -1437,10 +1465,12 @@ body {
     <p>Track your Avatar Quick Strike TCG collection by marking cards you own.</p>
     <h3>Adding Cards</h3>
     <p>Click any card to open the detail view. Use the quantity controls to set how many copies you own, then add to your collection.</p>
+    <h3>Card Zoom</h3>
+    <p>Click the card image in the detail view to open a fullscreen zoom. Click anywhere outside the image or the X button to close it.</p>
     <h3>Market Prices</h3>
     <p>Cards with eBay sold data show a price widget in the detail view — low, average, and high from recent sales. Prices update daily automatically.</p>
     <h3>Search &amp; Filter</h3>
-    <p>Use the search box to find cards by name or number. Filter by card type, rarity, and ownership status.</p>
+    <p>Use the search box to find cards by name or number. Click the X in the search bar to clear your search. Filter by card type, rarity, and ownership status.</p>
     <h3>Sorting</h3>
     <p>Choose how to sort your cards (number, name, rarity, type, quantity, or price). Click the arrow button to reverse the sort order.</p>
     <h3>Collection Progress</h3>
@@ -1639,27 +1669,6 @@ var traitIconMap = {
 
 /* ================================================================
    PACK CALCULATOR ENGINE
-   ================================================================
-   Coupon Collector Problem with multiple pulls per pack.
-
-   When you have j unique cards of a given type (out of n total),
-   the expected packs to find the next new one is:
-
-       E[packs | j owned] = n / (p × (n − j))
-
-   Where p = expected cards of this type per pack.
-
-   Total expected packs from c owned to all n:
-       E = (n / p) × H(n − c)   where H = harmonic number
-
-   Config per rarity:
-     zenemental : p = 1/6, filter by rarity === 'zenemental'
-     chamber    : p = 1,   filter by type  === 'chamber'
-     rare       : p = 1,   filter by rarity === 'rare'
-     uncommon   : p = 3,   filter by rarity === 'uncommon'
-     common     : p = 5,   filter by rarity === 'common'
-
-   All calculations use CORE CARDS ONLY (isCoreCard check).
    ================================================================ */
 
 var PACK_CONFIGS = {
@@ -1723,7 +1732,6 @@ function packExpected(n, p, owned) {
 }
 
 function packStepExpected(n, p, j) {
-  /* Expected packs for the step from j to j+1 unique cards */
   return n / (p * (n - j));
 }
 
@@ -1733,7 +1741,6 @@ function updatePackCounter(rarityKey) {
   var el = document.getElementById(cfg.widgetId);
   if (!el) return;
 
-  /* Filter to core cards only */
   var cards = allCards.filter(function(c) {
     return isPackCard(c.number) && cfg.filterFn(c);
   });
@@ -1746,7 +1753,6 @@ function updatePackCounter(rarityKey) {
   var n      = total;
   var p      = cfg.p;
 
-  /* No data yet */
   if (total === 0) {
     el.innerHTML =
       '<div style="text-align:center;padding:20px 0;color:var(--text-muted);font-size:0.8rem;">' +
@@ -1755,7 +1761,6 @@ function updatePackCounter(rarityKey) {
     return;
   }
 
-  /* Set complete */
   if (remaining === 0) {
     el.innerHTML =
       '<div style="text-align:center;padding:24px 0;">' +
@@ -1768,7 +1773,6 @@ function updatePackCounter(rarityKey) {
 
   var expected = packExpected(n, p, owned);
 
-  /* -- Stat boxes -- */
   var statsHtml =
     '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px;">' +
       '<div style="background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius);padding:12px 8px;text-align:center;">' +
@@ -1785,7 +1789,6 @@ function updatePackCounter(rarityKey) {
       '</div>' +
     '</div>';
 
-  /* -- Progress bar -- */
   var progressHtml =
     '<div style="margin-bottom:18px;">' +
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
@@ -1797,7 +1800,6 @@ function updatePackCounter(rarityKey) {
       '</div>' +
     '</div>';
 
-  /* -- Card chips -- */
   var chipsHtml =
     '<div style="margin-bottom:18px;">' +
       '<div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--text-muted);margin-bottom:8px;">Your ' + rarityKey + ' core cards</div>' +
@@ -1819,7 +1821,6 @@ function updatePackCounter(rarityKey) {
   });
   chipsHtml += '</div></div>';
 
-  /* -- Per-step breakdown -- */
   var breakdownHtml =
     '<div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--text-muted);margin-bottom:4px;">Expected packs per new card</div>' +
     '<div style="font-size:0.7rem;color:var(--text-muted);margin-bottom:10px;font-style:italic;line-height:1.5;">' +
@@ -1848,7 +1849,6 @@ function updatePackCounter(rarityKey) {
   el.innerHTML = statsHtml + progressHtml + chipsHtml + breakdownHtml;
 }
 
-/* helper: strip css var name to approx rgba for chip backgrounds */
 function colorToRgba(cssVar) {
   var map = {
     'var(--zen)':           '180,77,223',
@@ -1861,7 +1861,6 @@ function colorToRgba(cssVar) {
 }
 
 function formatP(p) {
-  /* Format pull rate nicely for the formula display */
   if (p === 1)       return '1';
   if (p === 3)       return '3';
   if (p === 5)       return '5';
@@ -1874,9 +1873,6 @@ function updateAllPackCounters() {
     updatePackCounter(key);
   });
 }
-/* ================================================================
-   END PACK CALCULATOR ENGINE
-   ================================================================ */
 
 /* ---- TAB SYSTEM ---- */
 function initTabs() {
@@ -1897,7 +1893,6 @@ function initTabs() {
       var content = parent.querySelector('#nested-' + nestedName);
       if (content) content.style.display = 'block';
 
-      /* Refresh the relevant pack counter when its tab is shown */
       var packTabMap = {
         'zen-calc':      'zenemental',
         'chamber-calc':  'chamber',
@@ -1930,7 +1925,6 @@ function switchTab(tabName) {
   if (tab) tab.classList.add('active');
   var btn = document.querySelector('.tab-btn[data-tab="' + tabName + '"]');
   if (btn) btn.classList.add('active');
-  document.getElementById('saveCodeFooter').style.display = tabName === 'home' ? 'block' : 'none';
 }
 
 /* ---- STATE ---- */
@@ -1959,7 +1953,7 @@ var rarityColorMap = {
   promo: 'var(--promo)'
 };
 
-/* ---- PERSISTENCE (IndexedDB primary, cookie fallback) ---- */
+/* ---- PERSISTENCE ---- */
 var DB_NAME = 'AvatarQSTracker', DB_STORE = 'collection', DB_KEY = 'myCollection', COOKIE_KEY = 'aqst_col';
 
 function openDB() {
@@ -2033,7 +2027,7 @@ function renderModalPrices(cardNumber) {
   }
 
   var p = prices[cardNumber];
-if (!p || !p.avg) {
+  if (!p || !p.avg) {
     el.innerHTML = '';
     return;
   }
@@ -2195,13 +2189,11 @@ function isCoreCard(cardNumber) {
   if (!isNaN(parsed) && parsed >= 1 && parsed <= 235 && /^\d+$/.test(num)) return true;
   return false;
 }
-/* ---- PACK CARD CHECK (numbered 1–235 only) ---- */
 function isPackCard(cardNumber) {
   var num = cardNumber.trim();
   var parsed = parseInt(num, 10);
   return /^\d+$/.test(num) && !isNaN(parsed) && parsed >= 1 && parsed <= 235;
 }
-/* ---- BONUS TOTAL CARDS ---- */
 function getBonusTotalCards() {
   var b = 0;
   b += (collection['STRT001'] || 0) * 61;
@@ -2560,41 +2552,30 @@ function openModal(cardNumber) {
         escapeHtml(card.descriptionText).replace(/\n/g, '<br>') +
       '</div>';
   } else { descriptionSectionEl.innerHTML = ''; }
-function renderObtainedVia(text) {
-    if (!text) return '';
 
-    /* Build lookup maps once */
+  function renderObtainedVia(text) {
+    if (!text) return '';
     var byName   = {};
     var byNumber = {};
     allCards.forEach(function(c) {
       byName[c.name.toLowerCase().trim()] = c;
       byNumber[c.number.toLowerCase().trim()] = c;
     });
-
-    /* Split on commas, semicolons, or newlines while keeping the delimiters */
     var tokens = text.split(/([,;\n]+)/);
-
     return tokens.map(function(token) {
-      /* Preserve delimiter tokens as-is */
       if (/^[,;\n]+$/.test(token)) {
         return token.replace(/\n/g, '<br>');
       }
-
       var trimmed = token.trim();
       if (!trimmed) return escapeHtml(token);
-
-      /* Try exact match by name, then by number (both case-insensitive) */
       var match = byName[trimmed.toLowerCase()] || byNumber[trimmed.toLowerCase()] || null;
-
-      /* Fuzzy: if no exact match, try stripping leading # for number lookup */
       if (!match && trimmed.charAt(0) === '#') {
         match = byNumber[trimmed.slice(1).toLowerCase()] || null;
       }
-
       if (match) {
         return '<span ' +
           'data-obtained-link="' + escapeHtml(match.number) + '" ' +
-'style="' +
+          'style="' +
             'color:var(--text-secondary);' +
             'cursor:pointer;' +
             'white-space:nowrap;' +
@@ -2605,16 +2586,15 @@ function renderObtainedVia(text) {
           '>' + escapeHtml(trimmed) + '</span>' +
           (token !== trimmed ? escapeHtml(token.slice(token.indexOf(trimmed) + trimmed.length)) : '');
       }
-
       return escapeHtml(token);
     }).join('');
   }
-  
+
   var obtainedSectionEl = document.getElementById('modalObtainedSection');
   if (cleanText(card.obtainedVia)) {
     obtainedSectionEl.innerHTML =
       '<div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); font-weight:700; margin-bottom:10px;text-align: center;">Obtained Via</div>' +
-'<div style="color: var(--text-secondary); font-size:0.88rem; line-height:1.6; white-space:normal; word-wrap:break-word; overflow-wrap:break-word; word-break:break-word; overflow:hidden;">' +
+      '<div style="color: var(--text-secondary); font-size:0.88rem; line-height:1.6; white-space:normal; word-wrap:break-word; overflow-wrap:break-word; word-break:break-word; overflow:hidden;">' +
         renderObtainedVia(card.obtainedVia) +
       '</div>';
   } else { obtainedSectionEl.innerHTML = ''; }
@@ -2796,7 +2776,22 @@ function updateModalDividers() {
 
 /* ---- EVENTS ---- */
 function setupEvents() {
-  document.getElementById('searchInput').addEventListener('input', function() { searchQuery = this.value; renderCards(); });
+  /* Search input — show/hide clear button */
+  document.getElementById('searchInput').addEventListener('input', function() {
+    searchQuery = this.value;
+    renderCards();
+    document.getElementById('searchClearBtn').classList.toggle('visible', this.value.length > 0);
+  });
+
+  /* Search clear button */
+  document.getElementById('searchClearBtn').addEventListener('click', function() {
+    var inp = document.getElementById('searchInput');
+    inp.value = '';
+    searchQuery = '';
+    renderCards();
+    this.classList.remove('visible');
+    inp.focus();
+  });
 
   document.getElementById('sortSelect').addEventListener('change', function() {
     sortBy = this.value;
@@ -2858,7 +2853,8 @@ function setupEvents() {
 
   document.getElementById('modalClose').addEventListener('click', closeModal);
   document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
-document.getElementById('modalObtainedSection').addEventListener('click', function(e) {
+
+  document.getElementById('modalObtainedSection').addEventListener('click', function(e) {
     var link = e.target.closest('[data-obtained-link]');
     if (!link) return;
     var num = link.getAttribute('data-obtained-link');
@@ -2869,27 +2865,25 @@ document.getElementById('modalObtainedSection').addEventListener('click', functi
   /* Obtained-via hover preview */
   var obtainedPreview = document.createElement('div');
   obtainedPreview.className = 'card-zoom-overlay';
-  obtainedPreview.innerHTML = '<img src="" alt="">';
-  obtainedPreview.style.width = '180px';
+  obtainedPreview.style.cssText = 'position:fixed;pointer-events:none;border-radius:10px;overflow:hidden;width:180px;opacity:0;transition:opacity 0.12s;border:1px solid var(--border-light);background:var(--bg-primary);inset:auto;display:block;';
+  obtainedPreview.innerHTML = '<img src="" alt="" style="width:100%;height:auto;display:block;">';
   document.body.appendChild(obtainedPreview);
   var obtainedPreviewImg = obtainedPreview.querySelector('img');
 
-document.getElementById('modalObtainedSection').addEventListener('mouseover', function(e) {
+  document.getElementById('modalObtainedSection').addEventListener('mouseover', function(e) {
     var link = e.target.closest('[data-obtained-link]');
     if (!link) return;
     var num = link.getAttribute('data-obtained-link');
     var card = allCards.find(function(c) { return c.number === num; });
     if (!card || !card.imageLink) return;
-    obtainedPreview.classList.remove('visible', 'zoom-mobile');
+    obtainedPreview.style.opacity = '0';
     obtainedPreviewImg.src = '';
-    obtainedPreviewImg.onload = function() {
-      obtainedPreview.classList.add('visible');
-    };
+    obtainedPreviewImg.onload = function() { obtainedPreview.style.opacity = '1'; };
     obtainedPreviewImg.src = card.imageLink;
   });
 
   document.getElementById('modalObtainedSection').addEventListener('mousemove', function(e) {
-    if (!obtainedPreview.classList.contains('visible')) return;
+    if (obtainedPreview.style.opacity === '0') return;
     var w = 180, h = Math.round(w * 4 / 3);
     var margin = 10, vw = window.innerWidth, vh = window.innerHeight;
     var left = e.clientX + 16;
@@ -2906,8 +2900,9 @@ document.getElementById('modalObtainedSection').addEventListener('mouseover', fu
     var link = e.target.closest('[data-obtained-link]');
     if (!link) return;
     if (e.relatedTarget && link.contains(e.relatedTarget)) return;
-    obtainedPreview.classList.remove('visible');
+    obtainedPreview.style.opacity = '0';
   });
+
   document.getElementById('qtyPlus').addEventListener('click', function() {
     if (!currentModalCard) return;
     setQty(currentModalCard.number, (collection[currentModalCard.number] || 0) + 1);
@@ -2975,7 +2970,7 @@ document.getElementById('modalObtainedSection').addEventListener('mouseover', fu
 
   var scrollBtn = document.getElementById('scrollTopBtn');
   window.addEventListener('scroll', function() { scrollBtn.classList.toggle('show', window.scrollY > 400); });
-scrollBtn.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+  scrollBtn.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
   initCardZoom();
 }
 
@@ -3023,6 +3018,9 @@ document.getElementById('codeInputOverlay').addEventListener('click', function(e
 /* ---- KEYDOWN ESCAPE HANDLING ---- */
 document.addEventListener('keydown', function(e) {
   if (e.key !== 'Escape') return;
+  /* Close fullscreen zoom first if open */
+  var zoomEl = document.querySelector('.card-zoom-overlay.visible');
+  if (zoomEl) { zoomEl.classList.remove('visible'); return; }
   if (document.getElementById('howToPopup').classList.contains('active')) closeHowToPopup();
   else if (document.getElementById('compareInputOverlay').classList.contains('active')) closeCompareDialog();
   else if (document.getElementById('clearMethodOverlay').classList.contains('active')) closeClearDialog();
@@ -3034,16 +3032,16 @@ document.addEventListener('keydown', function(e) {
   else if (document.getElementById('importConfirmOverlay').classList.contains('active')) document.getElementById('importConfirmOverlay').classList.remove('active');
   else if (document.getElementById('modalOverlay').classList.contains('active')) closeModal();
 });
-/* ---- CARD ZOOM ---- */
+
+/* ---- CARD ZOOM — fullscreen on click ---- */
 function initCardZoom() {
   var overlay = document.createElement('div');
   overlay.className = 'card-zoom-overlay';
-  overlay.innerHTML = '<img src="" alt="">';
+  overlay.innerHTML = '<img src="" alt=""><button class="card-zoom-close-btn" title="Close"><i class="fas fa-times"></i></button>';
   document.body.appendChild(overlay);
 
   var zoomImg = overlay.querySelector('img');
-  var longPressTimer = null;
-  var mobileZooming = false;
+  var closeBtn = overlay.querySelector('.card-zoom-close-btn');
   var imgSection = document.getElementById('modalImgSection');
 
   function getModalSrc() {
@@ -3056,68 +3054,41 @@ function initCardZoom() {
     return (f && f.naturalWidth) ? f.src : null;
   }
 
-  function positionNearCursor(cx, cy) {
-    var w = 320, h = Math.round(w * 4 / 3);
-    var margin = 10, vw = window.innerWidth, vh = window.innerHeight;
-    var left = cx + 24;
-    var top  = cy - h / 2;
-    if (left + w > vw - margin) left = cx - w - 24;
-    if (left < margin) left = margin;
-    if (top  < margin) top  = margin;
-    if (top + h > vh - margin) top = vh - h - margin;
-    overlay.style.left = left + 'px';
-    overlay.style.top  = top  + 'px';
+  function showZoom() {
+    var src = getModalSrc();
+    if (!src) return;
+    zoomImg.src = src;
+    overlay.classList.add('visible');
   }
 
   function hideZoom() {
-    overlay.classList.remove('visible', 'zoom-mobile');
-    mobileZooming = false;
+    overlay.classList.remove('visible');
   }
 
-  /* ---- Desktop ---- */
-  imgSection.addEventListener('mousemove', function(e) {
+  /* Click image section to open fullscreen zoom */
+  imgSection.addEventListener('click', function(e) {
     if (!document.getElementById('modalOverlay').classList.contains('active')) return;
-    var src = getModalSrc();
-    if (!src) return;
-    if (!overlay.classList.contains('visible')) {
-      overlay.classList.remove('zoom-mobile');
-      zoomImg.src = src;
-      overlay.classList.add('visible');
-    }
-    if (zoomImg.src !== src) zoomImg.src = src;
-    positionNearCursor(e.clientX, e.clientY);
+    if (e.target.closest('.modal-flip-btn')) return;
+    if (overlay.classList.contains('visible')) return;
+    showZoom();
   });
 
-  imgSection.addEventListener('mouseleave', hideZoom);
+  /* Click the backdrop to close */
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay || e.target === zoomImg) hideZoom();
+  });
 
-  /* ---- Mobile (long-press) ---- */
-  imgSection.addEventListener('touchstart', function() {
-    if (!document.getElementById('modalOverlay').classList.contains('active')) return;
-    longPressTimer = setTimeout(function() {
-      var src = getModalSrc();
-      if (!src) return;
-      overlay.classList.add('zoom-mobile');
-      overlay.style.left = '50%';
-      overlay.style.top  = '50%';
-      zoomImg.src = src;
-      overlay.classList.add('visible');
-      mobileZooming = true;
-    }, 420);
-  }, { passive: true });
+  /* X button closes zoom */
+  closeBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    hideZoom();
+  });
 
-  imgSection.addEventListener('touchend', function() {
-    clearTimeout(longPressTimer);
-    if (mobileZooming) hideZoom();
-  }, { passive: true });
-
-  imgSection.addEventListener('touchmove', function() {
-    clearTimeout(longPressTimer);
-  }, { passive: true });
-
-  /* Hide on modal close */
+  /* Also hide when modal itself closes */
   document.getElementById('modalClose').addEventListener('click', hideZoom);
   document.getElementById('modalOverlay').addEventListener('click', hideZoom);
 }
+
 /* ---- CELEBRATION ENGINE ---- */
 var completionState = {};
 
@@ -3183,7 +3154,6 @@ function launchConfetti(level) {
 
   var particles = [];
 
-  /* Rain from top */
   for (var i = 0; i < cfg.particles; i++) {
     particles.push(makeParticle(
       Math.random() * W,
@@ -3193,7 +3163,6 @@ function launchConfetti(level) {
     ));
   }
 
-  /* Corner bursts for level 5 */
   if (cfg.burstCorners) {
     for (var b = 0; b < 120; b++) {
       var side = b < 60 ? -1 : 1;
@@ -3290,20 +3259,17 @@ function triggerCelebration(key, level) {
 function computeCompletionState() {
   var state = {};
 
-  /* Overall (248 core cards) */
   var coreOwned = allCards.filter(function(c) {
     return isCoreCard(c.number) && (collection[c.number] || 0) > 0;
   }).length;
   state.overall = coreOwned >= 248;
 
-  /* Rarity breakdown chips */
   ['common','uncommon','rare','zenemental','promo'].forEach(function(r) {
     var pool = allCards.filter(function(c) { return c.rarity === r; });
     var owned = pool.filter(function(c) { return (collection[c.number] || 0) > 0; }).length;
     state['rarity_' + r] = pool.length > 0 && owned >= pool.length;
   });
 
-  /* Pack calculators */
   Object.keys(PACK_CONFIGS).forEach(function(key) {
     var cfg   = PACK_CONFIGS[key];
     var pool  = allCards.filter(function(c) { return isPackCard(c.number) && cfg.filterFn(c); });
@@ -3326,9 +3292,9 @@ function checkCompletions() {
 }
 
 function initCompletionState() {
-  /* Snapshot silently on load — no celebrations for existing progress */
   completionState = computeCompletionState();
 }
+
 /* ---- LAUNCH ---- */
 init();
 </script>
