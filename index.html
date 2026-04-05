@@ -2567,13 +2567,60 @@ function openModal(cardNumber) {
         escapeHtml(card.descriptionText).replace(/\n/g, '<br>') +
       '</div>';
   } else { descriptionSectionEl.innerHTML = ''; }
+function renderObtainedVia(text) {
+    if (!text) return '';
 
+    /* Build lookup maps once */
+    var byName   = {};
+    var byNumber = {};
+    allCards.forEach(function(c) {
+      byName[c.name.toLowerCase().trim()] = c;
+      byNumber[c.number.toLowerCase().trim()] = c;
+    });
+
+    /* Split on commas, semicolons, or newlines while keeping the delimiters */
+    var tokens = text.split(/([,;\n]+)/);
+
+    return tokens.map(function(token) {
+      /* Preserve delimiter tokens as-is */
+      if (/^[,;\n]+$/.test(token)) {
+        return token.replace(/\n/g, '<br>');
+      }
+
+      var trimmed = token.trim();
+      if (!trimmed) return escapeHtml(token);
+
+      /* Try exact match by name, then by number (both case-insensitive) */
+      var match = byName[trimmed.toLowerCase()] || byNumber[trimmed.toLowerCase()] || null;
+
+      /* Fuzzy: if no exact match, try stripping leading # for number lookup */
+      if (!match && trimmed.charAt(0) === '#') {
+        match = byNumber[trimmed.slice(1).toLowerCase()] || null;
+      }
+
+      if (match) {
+        return '<span ' +
+          'data-obtained-link="' + escapeHtml(match.number) + '" ' +
+          'style="' +
+            'color:var(--text-secondary);' +
+            'cursor:pointer;' +
+          '" ' +
+          'onmouseenter="this.style.color=\'var(--text-primary)\'" ' +
+          'onmouseleave="this.style.color=\'var(--text-secondary)\'"' +
+          '>' + escapeHtml(trimmed) + '</span>' +
+          (token !== trimmed ? escapeHtml(token.slice(token.indexOf(trimmed) + trimmed.length)) : '');
+      }
+
+      return escapeHtml(token);
+    }).join('');
+  }
+  
   var obtainedSectionEl = document.getElementById('modalObtainedSection');
   if (cleanText(card.obtainedVia)) {
     obtainedSectionEl.innerHTML =
       '<div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); font-weight:700; margin-bottom:10px;text-align: center;">Obtained Via</div>' +
       '<div style="color: var(--text-secondary); font-size:0.88rem; line-height:1.6;">' +
-        escapeHtml(card.obtainedVia).replace(/\n/g, '<br>') +
+        renderObtainedVia(card.obtainedVia) +
       '</div>';
   } else { obtainedSectionEl.innerHTML = ''; }
 
@@ -2816,7 +2863,13 @@ function setupEvents() {
 
   document.getElementById('modalClose').addEventListener('click', closeModal);
   document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
-
+  document.getElementById('modalObtainedSection').addEventListener('click', function(e) {
+    var link = e.target.closest('[data-obtained-link]');
+    if (!link) return;
+    var num = link.getAttribute('data-obtained-link');
+    closeModal();
+    requestAnimationFrame(function() { openModal(num); });
+  });
   document.getElementById('qtyPlus').addEventListener('click', function() {
     if (!currentModalCard) return;
     setQty(currentModalCard.number, (collection[currentModalCard.number] || 0) + 1);
