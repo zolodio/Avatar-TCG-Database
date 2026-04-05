@@ -940,7 +940,63 @@ body {
   transform: translate(-50%, -50%);
   z-index: 600;
 }
+/* CELEBRATION */
+.celebration-popup {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px; pointer-events: none;
+  opacity: 0; transition: opacity 0.3s ease;
+  background: rgba(0,0,0,0.35); backdrop-filter: blur(2px);
+}
+.celebration-popup.visible { opacity: 1; pointer-events: auto; }
+.celebration-popup.hiding  { opacity: 0; pointer-events: none; }
 
+.celebration-inner {
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 32px 28px;
+  text-align: center; max-width: 320px; width: 100%;
+  box-shadow: var(--shadow-lg);
+  animation: celebBounce 0.45s cubic-bezier(0.34,1.56,0.64,1);
+}
+.celebration-popup.level-1 .celebration-inner { border-color: var(--text-secondary); }
+.celebration-popup.level-2 .celebration-inner { border-color: var(--earth);  box-shadow: 0 0 40px rgba(92,184,92,0.25),  var(--shadow-lg); }
+.celebration-popup.level-3 .celebration-inner { border-color: var(--water);  box-shadow: 0 0 40px rgba(46,140,232,0.25), var(--shadow-lg); }
+.celebration-popup.level-4 .celebration-inner { border-color: var(--zen);    box-shadow: 0 0 50px rgba(180,77,223,0.35), var(--shadow-lg); }
+.celebration-popup.level-5 .celebration-inner { border-color: var(--promo);  box-shadow: 0 0 70px rgba(232,182,50,0.45),  var(--shadow-lg); }
+
+.celebration-emoji { margin-bottom: 12px; line-height: 1; animation: celebPulse 0.75s ease-in-out infinite alternate; }
+.celebration-popup.level-1 .celebration-emoji { font-size: 2.4rem; }
+.celebration-popup.level-2 .celebration-emoji { font-size: 2.8rem; }
+.celebration-popup.level-3 .celebration-emoji { font-size: 3.2rem; }
+.celebration-popup.level-4 .celebration-emoji { font-size: 3.6rem; }
+.celebration-popup.level-5 .celebration-emoji { font-size: 4.4rem; animation-duration: 0.5s; }
+
+.celebration-title {
+  font-family: 'Cinzel', serif; font-weight: 900; margin-bottom: 6px;
+}
+.celebration-popup.level-1 .celebration-title { font-size: 1.05rem; color: var(--text-secondary); }
+.celebration-popup.level-2 .celebration-title { font-size: 1.15rem; color: var(--earth); }
+.celebration-popup.level-3 .celebration-title { font-size: 1.25rem; color: var(--water); }
+.celebration-popup.level-4 .celebration-title { font-size: 1.35rem; color: var(--zen); }
+.celebration-popup.level-5 .celebration-title { font-size: 1.65rem; color: var(--promo); }
+
+.celebration-subset { font-size: 0.88rem; font-weight: 700; color: var(--text-primary); margin-bottom: 5px; }
+.celebration-sub    { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 22px; }
+
+.celebration-close {
+  padding: 10px 30px; border-radius: 99px; border: none;
+  font-family: 'Nunito Sans', sans-serif; font-weight: 700; font-size: 0.85rem;
+  cursor: pointer; transition: all 0.2s; letter-spacing: 0.03em;
+}
+.celebration-close:hover { filter: brightness(1.15); transform: scale(1.04); }
+.celebration-popup.level-1 .celebration-close { background: var(--text-secondary); color: #fff; }
+.celebration-popup.level-2 .celebration-close { background: var(--earth);  color: #fff; }
+.celebration-popup.level-3 .celebration-close { background: var(--water);  color: #fff; }
+.celebration-popup.level-4 .celebration-close { background: var(--zen);    color: #fff; }
+.celebration-popup.level-5 .celebration-close { background: var(--promo);  color: #000; font-size: 0.92rem; }
+
+@keyframes celebBounce  { from { transform: scale(0.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes celebPulse   { from { transform: scale(1);   } to { transform: scale(1.18); } }
 /* RESPONSIVE */
 @media (max-width: 480px) {
   .header-title { font-size: 1.3rem; }
@@ -2240,6 +2296,7 @@ async function init() {
   initTabs();
   setupEvents();
   updateAllPackCounters();
+  initCompletionState();
 }
 
 /* ---- FILTERS ---- */
@@ -2587,6 +2644,7 @@ function onCollectionChanged(n) {
   renderCards();
   updateSaveCodeDisplay();
   updateAllPackCounters();
+  checkCompletions();
   if (currentModalCard && currentModalCard.number === n) {
     var qty = collection[n] || 0;
     document.getElementById('qtyDisplay').textContent = qty;
@@ -2968,6 +3026,217 @@ function initCardZoom() {
   /* Hide on modal close */
   document.getElementById('modalClose').addEventListener('click', hideZoom);
   document.getElementById('modalOverlay').addEventListener('click', hideZoom);
+}
+/* ---- CELEBRATION ENGINE ---- */
+var completionState = {};
+
+var CELEBRATION_CFG = {
+  1: { particles: 80,  burstCorners: false, duration: 3500, title: 'Set Complete!',     emoji: '⭐' },
+  2: { particles: 160, burstCorners: false, duration: 4500, title: 'Set Complete!',     emoji: '🌟' },
+  3: { particles: 280, burstCorners: false, duration: 5500, title: 'Set Complete!',     emoji: '💎' },
+  4: { particles: 450, burstCorners: false, duration: 6500, title: 'Set Complete!',     emoji: '✨' },
+  5: { particles: 700, burstCorners: true,  duration: 9000, title: '🎉 COLLECTION COMPLETE 🎉', emoji: '🏆' }
+};
+
+var COMPLETION_LEVELS = {
+  overall:           5,
+  pack_zenemental:   4,
+  rarity_zenemental: 4,
+  rarity_promo:      4,
+  pack_chamber:      3,
+  rarity_rare:       3,
+  pack_rare:         3,
+  rarity_uncommon:   2,
+  pack_uncommon:     2,
+  rarity_common:     1,
+  pack_common:       1
+};
+
+var COMPLETION_NAMES = {
+  overall:           'Entire Collection',
+  rarity_common:     'All Common Cards',
+  rarity_uncommon:   'All Uncommon Cards',
+  rarity_rare:       'All Rare Cards',
+  rarity_zenemental: 'All Zenemental Cards',
+  rarity_promo:      'All Promo Cards',
+  pack_common:       'Common Pack Cards',
+  pack_uncommon:     'Uncommon Pack Cards',
+  pack_rare:         'Rare Pack Cards',
+  pack_chamber:      'Chamber Cards',
+  pack_zenemental:   'Zenemental Pack Cards'
+};
+
+function launchConfetti(level) {
+  var cfg = CELEBRATION_CFG[level];
+  var canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;';
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  document.body.appendChild(canvas);
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  var COLORS = ['#e8532e','#2e8ce8','#5cb85c','#f0c946','#b44ddf','#e8b632','#ff6b3d','#3da5ff','#6fd86f','#ffd966'];
+
+  function makeParticle(x, y, vx, vy) {
+    return {
+      x: x, y: y, vx: vx, vy: vy,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      w: 7 + Math.random() * 9,
+      h: 4 + Math.random() * 5,
+      angle: Math.random() * Math.PI * 2,
+      spin:  (Math.random() - 0.5) * 0.22,
+      gravity: 0.13 + Math.random() * 0.1,
+      shape: Math.random() > 0.65 ? 'circle' : 'rect'
+    };
+  }
+
+  var particles = [];
+
+  /* Rain from top */
+  for (var i = 0; i < cfg.particles; i++) {
+    particles.push(makeParticle(
+      Math.random() * W,
+      -20 - Math.random() * 160,
+      (Math.random() - 0.5) * 5,
+      2 + Math.random() * 4
+    ));
+  }
+
+  /* Corner bursts for level 5 */
+  if (cfg.burstCorners) {
+    for (var b = 0; b < 120; b++) {
+      var side = b < 60 ? -1 : 1;
+      var angle = (side === -1 ? 0 : Math.PI) + (Math.random() - 0.5) * 1.4;
+      var speed = 8 + Math.random() * 10;
+      particles.push(makeParticle(
+        side === -1 ? 0 : W,
+        H,
+        Math.cos(angle) * speed,
+        -Math.abs(Math.sin(angle) * speed) - 4
+      ));
+    }
+  }
+
+  var start = performance.now();
+  var fadeStart = cfg.duration * 0.65;
+
+  function draw(now) {
+    var elapsed = now - start;
+    ctx.clearRect(0, 0, W, H);
+    var anyAlive = false;
+
+    particles.forEach(function(p) {
+      p.x     += p.vx;
+      p.y     += p.vy;
+      p.vy    += p.gravity;
+      p.vx    *= 0.993;
+      p.angle += p.spin;
+      if (p.y < H + 30) anyAlive = true;
+
+      var alpha = elapsed < fadeStart ? 1 :
+        Math.max(0, 1 - (elapsed - fadeStart) / (cfg.duration - fadeStart));
+
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle);
+      ctx.fillStyle = p.color;
+      if (p.shape === 'circle') {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.w / 2, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      }
+      ctx.restore();
+    });
+
+    if (anyAlive && elapsed < cfg.duration + 1500) { requestAnimationFrame(draw); }
+    else { canvas.remove(); }
+  }
+
+  requestAnimationFrame(draw);
+}
+
+function showCelebrationPopup(key, level) {
+  var cfg  = CELEBRATION_CFG[level];
+  var name = COMPLETION_NAMES[key] || key;
+
+  var old = document.getElementById('celebrationPopup');
+  if (old) { old.remove(); }
+
+  var popup = document.createElement('div');
+  popup.id        = 'celebrationPopup';
+  popup.className = 'celebration-popup level-' + level;
+
+  popup.innerHTML =
+    '<div class="celebration-inner">' +
+      '<div class="celebration-emoji">' + cfg.emoji + '</div>' +
+      '<div class="celebration-title">' + escapeHtml(cfg.title) + '</div>' +
+      '<div class="celebration-subset">' + escapeHtml(name) + '</div>' +
+      '<div class="celebration-sub">You collected them all!</div>' +
+      '<button class="celebration-close">Awesome!</button>' +
+    '</div>';
+
+  document.body.appendChild(popup);
+  requestAnimationFrame(function() { popup.classList.add('visible'); });
+
+  function dismiss() {
+    popup.classList.add('hiding');
+    setTimeout(function() { if (popup.parentNode) popup.remove(); }, 320);
+  }
+
+  popup.querySelector('.celebration-close').addEventListener('click', dismiss);
+  popup.addEventListener('click', function(e) { if (e.target === popup) dismiss(); });
+  setTimeout(dismiss, 5000 + level * 1200);
+}
+
+function triggerCelebration(key, level) {
+  launchConfetti(level);
+  setTimeout(function() { showCelebrationPopup(key, level); }, 300);
+}
+
+function computeCompletionState() {
+  var state = {};
+
+  /* Overall (248 core cards) */
+  var coreOwned = allCards.filter(function(c) {
+    return isCoreCard(c.number) && (collection[c.number] || 0) > 0;
+  }).length;
+  state.overall = coreOwned >= 248;
+
+  /* Rarity breakdown chips */
+  ['common','uncommon','rare','zenemental','promo'].forEach(function(r) {
+    var pool = allCards.filter(function(c) { return c.rarity === r; });
+    var owned = pool.filter(function(c) { return (collection[c.number] || 0) > 0; }).length;
+    state['rarity_' + r] = pool.length > 0 && owned >= pool.length;
+  });
+
+  /* Pack calculators */
+  Object.keys(PACK_CONFIGS).forEach(function(key) {
+    var cfg   = PACK_CONFIGS[key];
+    var pool  = allCards.filter(function(c) { return isPackCard(c.number) && cfg.filterFn(c); });
+    var owned = pool.filter(function(c) { return (collection[c.number] || 0) > 0; }).length;
+    state['pack_' + key] = pool.length > 0 && owned >= pool.length;
+  });
+
+  return state;
+}
+
+function checkCompletions() {
+  var newState = computeCompletionState();
+  Object.keys(newState).forEach(function(key) {
+    if (newState[key] && !completionState[key]) {
+      var level = COMPLETION_LEVELS[key] || 1;
+      triggerCelebration(key, level);
+    }
+  });
+  completionState = newState;
+}
+
+function initCompletionState() {
+  /* Snapshot silently on load — no celebrations for existing progress */
+  completionState = computeCompletionState();
 }
 /* ---- LAUNCH ---- */
 init();
