@@ -2594,9 +2594,11 @@ function renderObtainedVia(text) {
       if (match) {
         return '<span ' +
           'data-obtained-link="' + escapeHtml(match.number) + '" ' +
-          'style="' +
+'style="' +
             'color:var(--text-secondary);' +
             'cursor:pointer;' +
+            'white-space:nowrap;' +
+            'display:inline-block;' +
           '" ' +
           'onmouseenter="this.style.color=\'var(--text-primary)\'" ' +
           'onmouseleave="this.style.color=\'var(--text-secondary)\'"' +
@@ -2612,7 +2614,7 @@ function renderObtainedVia(text) {
   if (cleanText(card.obtainedVia)) {
     obtainedSectionEl.innerHTML =
       '<div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); font-weight:700; margin-bottom:10px;text-align: center;">Obtained Via</div>' +
-      '<div style="color: var(--text-secondary); font-size:0.88rem; line-height:1.6;">' +
+'<div style="color: var(--text-secondary); font-size:0.88rem; line-height:1.6; white-space:normal; word-wrap:break-word; overflow-wrap:break-word; word-break:break-word; overflow:hidden;">' +
         renderObtainedVia(card.obtainedVia) +
       '</div>';
   } else { obtainedSectionEl.innerHTML = ''; }
