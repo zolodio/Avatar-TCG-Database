@@ -1450,7 +1450,7 @@ body {
   </div>
 </div>
 <!-- DIGITAL TAB -->
-<div id="digital-collection" class="tab-content">
+<div id="digital-collection" class="nested-tab-content">
     
   <!-- Redemption Section -->
   <div class="digital-redemption-panel">
@@ -2241,7 +2241,24 @@ function parseCSV(text) {
     parts.push(current.trim());
     return parts;
   }
-
+// ── CARD DATABASE OBJECT ────────────────────────────────────────
+// Wrapper for allCards with search methods for digital collection
+var cardDatabase = {
+  cards: [],
+  
+  // Find a card by number (used by digital collection redemption)
+  findCard: function(number) {
+    if (!number) return null;
+    return this.cards.find(function(c) { 
+      return c.number === String(number); 
+    });
+  },
+  
+  // Initialize with allCards
+  init: function(allCardsArray) {
+    this.cards = allCardsArray || [];
+  }
+};
   function unquote(v) {
     if (v === undefined || v === null) return '';
     v = String(v).trim();
@@ -2277,7 +2294,7 @@ function parseCSV(text) {
     if (/^(STRT|BSTR|RLBK|PLMT|MTBX|XBK|XAPR|XDVD|K3|H9|XXB|XPS|APE|PRNT|SHDW)\d{3}$/.test(s)) return true;
     return false;
   }
-
+  
   var cards = [];
   for (var i = 1; i < lines.length; i++) {
     var parts = parseLine(lines[i]);
