@@ -1043,6 +1043,49 @@ body {
   .card-grid { grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); }
   .header-title { font-size: 1.9rem; }
 }
+.digital-redemption-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.tab-action-btn {
+  padding: 11px 18px;
+  border-radius: var(--radius);
+  border: none;
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tab-action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(180, 77, 223, 0.3);
+}
+
+.tab-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#redemption-message.success {
+  background: rgba(61, 184, 108, 0.1);
+  border: 1px solid rgba(61, 184, 108, 0.3);
+  color: var(--success);
+}
+
+#redemption-message.error {
+  background: rgba(224, 72, 72, 0.1);
+  border: 1px solid rgba(224, 72, 72, 0.3);
+  color: var(--danger);
+}
 	</style>
 </head>
 <body>
@@ -1061,7 +1104,8 @@ body {
 <!-- TAB NAVIGATION -->
 <div class="tab-nav">
   <button class="tab-btn active" data-tab="home"><i class="fas fa-home"></i> Home</button>
-    <button class="tab-btn" data-tab="portfolio"><i class="fas fa-chart-line"></i> Portfolio</button>
+  <button class="tab-btn" data-tab="portfolio"><i class="fas fa-chart-line"></i> Portfolio</button>
+  <button class="tab-btn" data-tab="digital-collection"><i class="fas fa-cloud-download-alt"></i> Digital</button>
   <button class="tab-btn" data-tab="howtoplay"><i class="fas fa-book"></i> How to Play</button>
   <button class="tab-btn" data-tab="wayback"><i class="fas fa-globe"></i> Wayback Websites</button>
   <button class="tab-btn" data-tab="profile"><i class="fas fa-user"></i> Profile</button>
@@ -1405,7 +1449,110 @@ body {
     </div>
   </div>
 </div>
+<!-- DIGITAL TAB -->
+<div id="tab-digital-collection" class="tab-content">
+  
+  <!-- NESTED TAB NAVIGATION -->
+  <div class="tab-nav-nested">
+    <button class="tab-btn-nested active" data-nested-tab="digital-main">Collection</button>
+    <button class="tab-btn-nested" data-nested-tab="digital-redeem">Redeem</button>
+  </div>
 
+  <!-- DIGITAL MAIN TAB -->
+  <div id="nested-digital-main" class="nested-tab-content active">
+    <!-- Stats Bar -->
+    <div class="stats-bar" id="digital-stats-bar"></div>
+
+    <!-- Digital Collection Controls -->
+    <div class="export-row" id="digital-controls">
+      <button class="export-btn" id="btn-digital-export-json" title="Export as JSON backup">
+        <i class="fas fa-download"></i> Export JSON
+      </button>
+      <button class="export-btn" id="btn-digital-export-csv" title="Export as CSV for spreadsheet">
+        <i class="fas fa-file-csv"></i> Export CSV
+      </button>
+      <button class="import-btn" id="btn-digital-import-json" title="Import from JSON backup">
+        <i class="fas fa-upload"></i> Import JSON
+      </button>
+      <button class="clear-btn" id="btn-digital-clear" title="Clear all digital cards">
+        <i class="fas fa-trash"></i> Clear All
+      </button>
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="controls-section" style="position: static; background: transparent; padding: 10px 0; margin-bottom: 8px;">
+      <div class="search-row">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" class="search-input" id="digital-search" placeholder="Search by name or card number…">
+          <button class="search-clear-btn" id="digital-search-clear"><i class="fas fa-times"></i></button>
+        </div>
+      </div>
+
+      <div class="filter-row" id="digital-filters">
+        <button class="filter-pill active" data-filter="all">All</button>
+        <button class="filter-pill" data-filter="common">Common</button>
+        <button class="filter-pill" data-filter="uncommon">Uncommon</button>
+        <button class="filter-pill" data-filter="rare">Rare</button>
+        <button class="filter-pill" data-filter="zenemental">Zenemental</button>
+        <button class="filter-pill" data-filter="promo">Promo</button>
+      </div>
+    </div>
+
+    <!-- Cards Display -->
+    <div class="sort-row">
+      <div class="results-count" id="digital-results-count">0 cards</div>
+      <div class="sort-controls">
+        <select class="sort-select" id="digital-sort-by">
+          <option value="acquired">Recently Added</option>
+          <option value="number">Card Number</option>
+          <option value="name">Card Name</option>
+          <option value="rarity">Rarity</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card-grid" id="digital-cards-display"></div>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="digital-empty-state" style="display: none;">
+      <i class="fas fa-inbox"></i>
+      <p>No digital cards yet. Redeem codes from the Booster app to get started!</p>
+    </div>
+  </div>
+
+  <!-- DIGITAL REDEEM TAB -->
+  <div id="nested-digital-redeem" class="nested-tab-content" style="display: none;">
+    <!-- Redemption Section -->
+    <div class="digital-redemption-panel">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+        <i class="fas fa-ticket-alt" style="font-size: 1.5rem; color: var(--zen);"></i>
+        <div>
+          <h3 style="font-family: 'Cinzel', serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 2px;">Redeem Digital Pack</h3>
+          <p style="font-size: 0.75rem; color: var(--text-muted);">Paste AQS3 codes from the Booster app</p>
+        </div>
+      </div>
+
+      <textarea 
+        id="redemption-code-input" 
+        placeholder="Paste AQS3... code here"
+        style="width: 100%; min-height: 80px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; color: var(--text-primary); font-family: 'VT323', monospace; font-size: 0.85rem; resize: vertical; margin-bottom: 12px;">
+      </textarea>
+
+      <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+        <button id="btn-redeem" class="tab-action-btn" style="flex: 1; background: var(--zen); color: #fff;">
+          <i class="fas fa-check-circle"></i> Redeem Code
+        </button>
+        <button id="btn-redeem-clear" class="tab-action-btn" style="flex: 1; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary);">
+          <i class="fas fa-times"></i> Clear
+        </button>
+      </div>
+
+      <div id="redemption-message" style="min-height: 24px; font-size: 0.85rem; border-radius: 6px; padding: 8px 12px; margin-bottom: 16px; display: none;"></div>
+    </div>
+  </div>
+
+</div>
 <!-- PROFILE TAB -->
 <div class="tab-content" id="tab-profile">
   <div class="tab-nav-nested">
@@ -2106,7 +2253,24 @@ function parseCSV(text) {
     parts.push(current.trim());
     return parts;
   }
-
+// ── CARD DATABASE OBJECT ────────────────────────────────────────
+// Wrapper for allCards with search methods for digital collection
+var cardDatabase = {
+  cards: [],
+  
+  // Find a card by number (used by digital collection redemption)
+  findCard: function(number) {
+    if (!number) return null;
+    return this.cards.find(function(c) { 
+      return c.number === String(number); 
+    });
+  },
+  
+  // Initialize with allCards
+  init: function(allCardsArray) {
+    this.cards = allCardsArray || [];
+  }
+};
   function unquote(v) {
     if (v === undefined || v === null) return '';
     v = String(v).trim();
@@ -2142,7 +2306,7 @@ function parseCSV(text) {
     if (/^(STRT|BSTR|RLBK|PLMT|MTBX|XBK|XAPR|XDVD|K3|H9|XXB|XPS|APE|PRNT|SHDW)\d{3}$/.test(s)) return true;
     return false;
   }
-
+  
   var cards = [];
   for (var i = 1; i < lines.length; i++) {
     var parts = parseLine(lines[i]);
@@ -2282,6 +2446,7 @@ async function init() {
   setupEvents();
   updateAllPackCounters();
   initCompletionState();
+  initDigitalCollection();
 }
 
 /* ---- FILTERS ---- */
@@ -3297,6 +3462,12 @@ function initCompletionState() {
 
 /* ---- LAUNCH ---- */
 init();
+</script>
+<script src="scripts/digital-collection.js"></script>
+<script>
+  if (typeof initDigitalCollectionTab === 'function') {
+    initDigitalCollectionTab();
+  }
 </script>
 </body>
 </html>
