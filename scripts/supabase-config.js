@@ -14,5 +14,5 @@
 //
 // ================================================================
 
-var SUPABASE_URL      = 'https://YOUR_PROJECT_ID.supabase.co';
-var SUPABASE_ANON_KEY = 'YOUR_ANON_PUBLIC_KEY_HERE';
+var SUPABASE_URL      = 'https://ixoifwdewpyykifpthaq.supabase.co';
+var SUPABASE_ANON_KEY = 'sb_publishable_4vG553G8xvPGyN_cZRPW0A_h1yrihPH';
