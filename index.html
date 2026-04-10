@@ -2827,6 +2827,7 @@ function setQty(n, qty) { if (qty <= 0) delete collection[n]; else collection[n]
 
 function onCollectionChanged(n) {
   saveCollection();
+	if (window._aqst_cloudSync) window._aqst_cloudSync();
   updateStats();
   renderCards();
   updateSaveCodeDisplay();
@@ -3463,6 +3464,9 @@ function initCompletionState() {
 /* ---- LAUNCH ---- */
 init();
 </script>
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="scripts/supabase-config.js"></script>
+<script src="scripts/auth.js"></script>
 <script src="scripts/digital-collection.js"></script>
 <script>
   if (typeof initDigitalCollectionTab === 'function') {
