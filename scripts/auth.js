@@ -303,19 +303,30 @@
     renderLoggedOut();
   }
 
-  // ── Boot ──────────────────────────────────────────────────────
+// ── Boot ──────────────────────────────────────────────────────
   function boot() {
+    // Always build the UI so the panel is visible
+    buildUI();
+
+    // Check config — show a gentle message if not set up yet
     if (typeof SUPABASE_URL === 'undefined' || SUPABASE_URL.indexOf('YOUR_PROJECT') !== -1) {
-      console.warn('[AvatarTCG] Supabase not configured. Edit scripts/supabase-config.js');
+      var p = document.getElementById('auth-panel');
+      if (p) p.innerHTML =
+        '<div style="font-size:0.8rem;color:var(--text-muted);text-align:center;padding:10px 0;">' +
+        '⚙️ Cloud sync not configured yet.<br>' +
+        '<span style="font-size:0.7rem;">Edit <code>scripts/supabase-config.js</code> with your Supabase keys.</span></div>';
       return;
     }
+
     if (!window.supabase || !window.supabase.createClient) {
-      console.warn('[AvatarTCG] Supabase SDK not loaded.');
+      var p2 = document.getElementById('auth-panel');
+      if (p2) p2.innerHTML =
+        '<div style="font-size:0.8rem;color:var(--danger);text-align:center;padding:10px 0;">' +
+        '❌ Supabase SDK failed to load. Check your internet connection.</div>';
       return;
     }
 
     sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    buildUI();
 
     sb.auth.onAuthStateChange(function (event, session) {
       if (session && session.user) onLogin(session.user);
@@ -325,7 +336,6 @@
     // Background sync every 2 min
     setInterval(function () { if (currentUser) cloudPush(); }, 120000);
 
-    // Sync when user tabs away or closes the page
     document.addEventListener('visibilitychange', function () {
       if (document.hidden && currentUser) cloudPush();
     });
@@ -333,8 +343,3 @@
       if (currentUser) cloudPush();
     });
   }
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
-  else boot();
-
-})();
