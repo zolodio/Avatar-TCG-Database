@@ -1555,6 +1555,64 @@ body {
 </div>
 <!-- PROFILE TAB -->
 <div class="tab-content" id="tab-profile">
+
+  <!-- AUTH PANEL — always visible at top of Profile tab -->
+  <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:18px;">
+    <div id="auth-logged-out">
+      <div style="font-family:'Cinzel',serif;font-weight:700;font-size:1rem;margin-bottom:4px;">Sign In / Create Account</div>
+      <div style="font-size:0.74rem;color:var(--text-muted);margin-bottom:14px;">Sync your collection across any device.</div>
+      <div style="display:flex;flex-direction:column;gap:9px;">
+        <input id="auth-email" type="email"    placeholder="Email address"                    style="width:100%;padding:11px 13px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.85rem;font-family:'Nunito Sans',sans-serif;outline:none;box-sizing:border-box;">
+        <input id="auth-pass"  type="password" placeholder="Password"                        style="width:100%;padding:11px 13px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.85rem;font-family:'Nunito Sans',sans-serif;outline:none;box-sizing:border-box;">
+        <input id="auth-pass2" type="password" placeholder="Confirm password (sign up only)" style="width:100%;padding:11px 13px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.85rem;font-family:'Nunito Sans',sans-serif;outline:none;box-sizing:border-box;">
+        <div id="auth-err"    style="display:none;font-size:0.76rem;color:var(--danger);padding:8px 12px;background:rgba(224,72,72,0.08);border-radius:6px;border:1px solid rgba(224,72,72,0.2);"></div>
+        <div id="auth-status" style="font-size:0.74rem;color:var(--text-muted);min-height:16px;"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <button id="auth-login-btn"  style="padding:12px;border-radius:var(--radius);border:none;background:var(--zen);color:#fff;font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;">Log In</button>
+          <button id="auth-signup-btn" style="padding:12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-card);color:var(--text-primary);font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;">Sign Up</button>
+        </div>
+        <button id="auth-reset-btn" style="background:none;border:none;color:var(--text-muted);font-size:0.7rem;cursor:pointer;font-family:'Nunito Sans',sans-serif;padding:2px 0;text-align:left;">Forgot password?</button>
+      </div>
+    </div>
+
+    <div id="auth-logged-in" style="display:none;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--zen);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">👤</div>
+        <div style="flex:1;min-width:0;">
+          <div id="auth-user-email" style="font-weight:700;font-size:0.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
+          <div id="auth-sync-dot"   style="font-size:0.7rem;margin-top:2px;color:var(--text-muted);">Not synced</div>
+        </div>
+        <button id="auth-logout-btn" style="padding:7px 13px;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary);color:var(--text-secondary);font-size:0.72rem;font-family:'Nunito Sans',sans-serif;font-weight:600;cursor:pointer;">Log Out</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <button id="auth-push-btn" style="padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--zen);font-size:0.78rem;font-family:'Nunito Sans',sans-serif;font-weight:700;cursor:pointer;">☁️ Sync Now</button>
+        <button id="auth-pull-btn" style="padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--water);font-size:0.78rem;font-family:'Nunito Sans',sans-serif;font-weight:700;cursor:pointer;">⬇️ Load Cloud</button>
+      </div>
+    </div>
+
+    <div id="auth-no-config" style="display:none;font-size:0.8rem;color:var(--text-muted);text-align:center;padding:6px 0;">
+      ⚙️ Cloud sync not configured — edit <code>scripts/supabase-config.js</code>
+    </div>
+  </div>
+
+  <!-- MERGE CONFLICT DIALOG -->
+  <div id="auth-merge-dlg" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:300;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);">
+    <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;max-width:360px;width:100%;">
+      <div style="font-family:'Cinzel',serif;font-weight:700;font-size:1rem;margin-bottom:5px;">Collection Conflict</div>
+      <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:14px;">Both this device and the cloud have data. Which should win?</div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:14px;font-size:0.82rem;">
+        <div style="font-size:0.65rem;font-weight:700;color:var(--text-muted);margin-bottom:4px;">THIS DEVICE</div>
+        <div id="auth-merge-local" style="margin-bottom:10px;"></div>
+        <div style="font-size:0.65rem;font-weight:700;color:var(--text-muted);margin-bottom:4px;">CLOUD</div>
+        <div id="auth-merge-cloud"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button id="auth-use-cloud" style="padding:12px;border-radius:var(--radius);border:none;background:var(--water);color:#fff;font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;">Use Cloud Data</button>
+        <button id="auth-use-local" style="padding:12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-card);color:var(--text-primary);font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;">Keep Local &amp; Upload It</button>
+      </div>
+    </div>
+  </div>
+
   <div class="tab-nav-nested">
     <button class="tab-btn-nested active" data-nested-tab="friends">Friends</button>
     <button class="tab-btn-nested" data-nested-tab="chat">Chat</button>
