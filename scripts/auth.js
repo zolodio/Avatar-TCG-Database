@@ -100,21 +100,26 @@
 
     var cloud = await cloudPull();
 
-    if (!cloud) { await cloudPush(); return; }
+    if (!cloud) { await cloudPush(); }
+    else {
+      var localCount = Object.keys(getPhysical()).length;
+      var cloudCount = Object.keys(cloud.physical || {}).length;
 
-    var localCount = Object.keys(getPhysical()).length;
-    var cloudCount = Object.keys(cloud.physical || {}).length;
+      if (localCount === 0 && cloudCount === 0) { setSyncDot('ok'); }
+      else if (localCount === 0) { applyPhysical(cloud.physical); applyDigital(cloud.digital); setSyncDot('ok'); }
+      else if (cloudCount === 0) { await cloudPush(); }
+      else {
+        // Both sides have data — show conflict dialog
+        window._pendingCloudData = cloud;
+        var when = cloud.updated_at ? ' (saved ' + new Date(cloud.updated_at).toLocaleDateString() + ')' : '';
+        setText('auth-merge-local', localCount + ' card entries on this device');
+        setText('auth-merge-cloud', cloudCount + ' card entries in the cloud' + when);
+        setDisplay('auth-merge-dlg', 'flex');
+      }
+    }
 
-    if (localCount === 0 && cloudCount === 0) { setSyncDot('ok'); return; }
-    if (localCount === 0) { applyPhysical(cloud.physical); applyDigital(cloud.digital); setSyncDot('ok'); return; }
-    if (cloudCount === 0) { await cloudPush(); return; }
-
-    // Both sides have data — show conflict dialog
-    window._pendingCloudData = cloud;
-    var when = cloud.updated_at ? ' (saved ' + new Date(cloud.updated_at).toLocaleDateString() + ')' : '';
-    setText('auth-merge-local', localCount + ' card entries on this device');
-    setText('auth-merge-cloud', cloudCount + ' card entries in the cloud' + when);
-    setDisplay('auth-merge-dlg', 'flex');
+    // ── Fire social hook ──────────────────────────────────────
+    if (typeof window.socialOnLogin === 'function') window.socialOnLogin(user);
   }
 
   function onLogout() {
@@ -122,6 +127,9 @@
     setDisplay('auth-logged-in', 'none');
     show('auth-logged-out');
     setSyncDot('idle');
+
+    // ── Fire social hook ──────────────────────────────────────
+    if (typeof window.socialOnLogout === 'function') window.socialOnLogout();
   }
 
   // ── Auth actions ──────────────────────────────────────────────
@@ -186,7 +194,6 @@
       setDisplay('auth-merge-dlg', 'none'); cloudPush();
     });
 
-    // Enter key on password fields triggers login
     ['auth-email','auth-pass','auth-pass2'].forEach(function (id) {
       var el = $(id);
       if (el) el.addEventListener('keydown', function (e) { if (e.key === 'Enter') doLogin(); });
@@ -195,7 +202,6 @@
 
   // ── Boot ──────────────────────────────────────────────────────
   function boot() {
-    // Check config
     if (typeof SUPABASE_URL === 'undefined' || SUPABASE_URL.indexOf('YOUR_PROJECT') !== -1) {
       hide('auth-logged-out');
       hide('auth-logged-in');
@@ -209,6 +215,10 @@
     }
 
     sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ── Expose client globally for social features ────────────
+    window.sb = sb;
+
     wireButtons();
 
     sb.auth.onAuthStateChange(function (event, session) {
