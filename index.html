@@ -1024,6 +1024,344 @@ body {
 
 @keyframes celebBounce  { from { transform: scale(0.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 @keyframes celebPulse   { from { transform: scale(1);   } to { transform: scale(1.18); } }
+
+.digital-redemption-panel {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 16px; margin-bottom: 20px;
+}
+.tab-action-btn {
+  padding: 11px 18px; border-radius: var(--radius); border: none;
+  font-family: 'Nunito Sans', sans-serif; font-weight: 700; font-size: 0.82rem;
+  cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
+}
+.tab-action-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(180,77,223,0.3); }
+.tab-action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+#redemption-message.success { background: rgba(61,184,108,0.1); border: 1px solid rgba(61,184,108,0.3); color: var(--success); }
+#redemption-message.error { background: rgba(224,72,72,0.1); border: 1px solid rgba(224,72,72,0.3); color: var(--danger); }
+
+/* ── SOCIAL FEATURES CSS ─────────────────────────────────────── */
+
+/* Username setup panel */
+.social-setup-panel {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 22px; margin-top: 18px;
+}
+.social-setup-title { font-family: 'Cinzel', serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
+.social-setup-sub { font-size: 0.76rem; color: var(--text-muted); margin-bottom: 14px; }
+.social-input {
+  width: 100%; background: var(--bg-primary); border: 1px solid var(--border);
+  border-radius: 8px; padding: 11px 13px; color: var(--text-primary);
+  font-size: 0.9rem; font-family: 'Nunito Sans', sans-serif; outline: none;
+  transition: border-color 0.2s; margin-bottom: 10px; display: block; box-sizing: border-box;
+}
+.social-input:focus { border-color: var(--zen); }
+.social-btn {
+  padding: 12px 24px; border-radius: var(--radius); border: none;
+  background: var(--zen); color: #fff; font-family: 'Nunito Sans', sans-serif;
+  font-weight: 700; font-size: 0.88rem; cursor: pointer; transition: opacity 0.2s;
+}
+.social-btn:hover { opacity: 0.88; }
+.social-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.social-err { font-size: 0.75rem; color: var(--danger); margin-bottom: 8px; min-height: 18px; }
+
+/* Social tabs section (shown when logged in + has profile) */
+#socialSection { display: none; margin-top: 18px; }
+
+/* Friends */
+.friends-search-row { display: flex; gap: 8px; margin-bottom: 14px; }
+.friends-search-btn {
+  padding: 10px 18px; border-radius: var(--radius); border: none;
+  background: var(--accent); color: #fff; font-family: 'Nunito Sans', sans-serif;
+  font-weight: 700; font-size: 0.82rem; cursor: pointer; transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.friends-search-btn:hover { opacity: 0.88; }
+.friend-card {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px 14px; margin-bottom: 8px;
+  transition: border-color 0.2s;
+}
+.friend-card:hover { border-color: var(--border-light); }
+.friend-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--water), var(--zen));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cinzel', serif; font-weight: 700; font-size: 0.88rem; color: #fff;
+  flex-shrink: 0;
+}
+.friend-info { flex: 1; min-width: 0; }
+.friend-name { font-weight: 700; font-size: 0.85rem; }
+.friend-sub  { font-size: 0.68rem; color: var(--text-muted); margin-top: 1px; }
+.friend-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.friend-btn {
+  padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border);
+  background: var(--bg-card); color: var(--text-secondary); font-size: 0.7rem;
+  font-family: 'Nunito Sans', sans-serif; font-weight: 700; cursor: pointer;
+  transition: all 0.2s;
+}
+.friend-btn:hover { border-color: var(--accent); color: var(--accent); }
+.friend-btn.danger:hover { border-color: var(--danger); color: var(--danger); }
+.friend-btn.accept { border-color: rgba(61,184,108,0.4); color: var(--success); }
+.friend-btn.accept:hover { background: rgba(61,184,108,0.1); }
+.friend-btn.chat-btn:hover { border-color: var(--water); color: var(--water); }
+.friend-btn.trade-btn:hover { border-color: var(--air); color: var(--air); }
+.pending-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(240,201,70,0.12); border: 1px solid rgba(240,201,70,0.25);
+  color: var(--air); font-size: 0.62rem; font-weight: 700; padding: 2px 8px;
+  border-radius: 99px; text-transform: uppercase; letter-spacing: 0.06em;
+}
+
+/* Chat */
+.chat-layout { display: flex; gap: 10px; height: 500px; }
+.chat-sidebar {
+  width: 150px; flex-shrink: 0;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow-y: auto; display: flex; flex-direction: column;
+}
+.chat-sidebar-header {
+  padding: 10px 12px; font-size: 0.65rem; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--text-muted); font-weight: 700;
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.chat-room-btn {
+  display: flex; align-items: center; gap: 8px; padding: 10px 12px;
+  background: none; border: none; border-bottom: 1px solid var(--border);
+  color: var(--text-secondary); font-size: 0.75rem; font-family: 'Nunito Sans', sans-serif;
+  font-weight: 600; cursor: pointer; text-align: left; width: 100%; transition: all 0.2s;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.chat-room-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+.chat-room-btn.active { background: rgba(180,77,223,0.12); color: var(--zen); border-left: 2px solid var(--zen); }
+.chat-room-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-muted); flex-shrink: 0; }
+.chat-room-btn.active .chat-room-dot { background: var(--zen); }
+.chat-main {
+  flex: 1; min-width: 0; display: flex; flex-direction: column;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+}
+.chat-header {
+  padding: 12px 16px; border-bottom: 1px solid var(--border);
+  font-family: 'Cinzel', serif; font-weight: 700; font-size: 0.88rem;
+  color: var(--text-primary); flex-shrink: 0; display: flex; align-items: center; gap: 8px;
+}
+.chat-messages {
+  flex: 1; overflow-y: auto; padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.chat-messages::-webkit-scrollbar { width: 4px; }
+.chat-messages::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+.chat-msg { display: flex; gap: 9px; align-items: flex-start; }
+.chat-msg.mine { flex-direction: row-reverse; }
+.chat-msg-avatar {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--water), var(--zen));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.62rem; font-weight: 700; color: #fff; font-family: 'Cinzel', serif;
+}
+.chat-msg.mine .chat-msg-avatar { background: linear-gradient(135deg, var(--zen), var(--fire)); }
+.chat-msg-content { max-width: 72%; }
+.chat-msg-name { font-size: 0.62rem; color: var(--text-muted); margin-bottom: 3px; font-weight: 700; }
+.chat-msg.mine .chat-msg-name { text-align: right; }
+.chat-bubble {
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: 12px 12px 12px 3px; padding: 8px 12px;
+  font-size: 0.82rem; line-height: 1.5; color: var(--text-primary); word-break: break-word;
+}
+.chat-msg.mine .chat-bubble {
+  background: rgba(180,77,223,0.15); border-color: rgba(180,77,223,0.25);
+  border-radius: 12px 12px 3px 12px;
+}
+.chat-ts { font-size: 0.58rem; color: var(--text-muted); margin-top: 3px; }
+.chat-msg.mine .chat-ts { text-align: right; }
+.chat-input-row {
+  display: flex; gap: 8px; padding: 12px 14px;
+  border-top: 1px solid var(--border); flex-shrink: 0;
+}
+.chat-input {
+  flex: 1; background: var(--bg-primary); border: 1px solid var(--border);
+  border-radius: 99px; padding: 9px 16px; color: var(--text-primary);
+  font-size: 0.85rem; font-family: 'Nunito Sans', sans-serif; outline: none;
+  transition: border-color 0.2s;
+}
+.chat-input:focus { border-color: var(--zen); }
+.chat-send-btn {
+  width: 38px; height: 38px; border-radius: 50%; border: none;
+  background: var(--zen); color: #fff; cursor: pointer; font-size: 0.85rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.2s; flex-shrink: 0;
+}
+.chat-send-btn:hover { opacity: 0.85; }
+
+/* Trades */
+.trade-new-btn {
+  display: flex; align-items: center; gap: 8px; padding: 11px 18px;
+  border-radius: var(--radius); border: 1px dashed var(--border-light);
+  background: transparent; color: var(--text-secondary); font-family: 'Nunito Sans', sans-serif;
+  font-weight: 700; font-size: 0.82rem; cursor: pointer; transition: all 0.2s;
+  width: 100%; justify-content: center; margin-bottom: 14px;
+}
+.trade-new-btn:hover { border-color: var(--air); color: var(--air); background: rgba(240,201,70,0.06); }
+.trade-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 10px;
+}
+.trade-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+.trade-partner { font-weight: 700; font-size: 0.85rem; }
+.trade-date { font-size: 0.65rem; color: var(--text-muted); margin-top: 2px; }
+.trade-status-badge {
+  padding: 3px 10px; border-radius: 99px; font-size: 0.62rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.trade-status-badge.pending   { background: rgba(240,201,70,0.12);  color: var(--air);     border: 1px solid rgba(240,201,70,0.25); }
+.trade-status-badge.accepted  { background: rgba(61,184,108,0.12);  color: var(--success); border: 1px solid rgba(61,184,108,0.25); }
+.trade-status-badge.rejected  { background: rgba(224,72,72,0.12);   color: var(--danger);  border: 1px solid rgba(224,72,72,0.25); }
+.trade-status-badge.cancelled { background: rgba(90,94,120,0.2);    color: var(--text-muted); border: 1px solid var(--border); }
+.trade-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.trade-col-label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; }
+.trade-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.trade-chip { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 6px; padding: 3px 9px; font-size: 0.7rem; color: var(--text-secondary); font-weight: 600; }
+.trade-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.trade-action-btn {
+  padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--bg-card); color: var(--text-secondary); font-size: 0.72rem;
+  font-family: 'Nunito Sans', sans-serif; font-weight: 700; cursor: pointer; transition: all 0.2s;
+}
+.trade-action-btn.accept { border-color: rgba(61,184,108,0.4); color: var(--success); }
+.trade-action-btn.accept:hover { background: rgba(61,184,108,0.12); }
+.trade-action-btn.reject { border-color: rgba(224,72,72,0.35); color: var(--danger); }
+.trade-action-btn.reject:hover { background: rgba(224,72,72,0.1); }
+.trade-note { font-size: 0.75rem; color: var(--text-muted); font-style: italic; margin-bottom: 10px; }
+
+/* Trade builder modal */
+.social-modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 110;
+  display: none; align-items: center; justify-content: center;
+  padding: 16px; backdrop-filter: blur(4px);
+}
+.social-modal-overlay.active { display: flex; }
+.social-modal {
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); max-width: 560px; width: 100%;
+  max-height: 90vh; display: flex; flex-direction: column;
+  box-shadow: var(--shadow-lg); animation: modalSlideUp 0.3s ease;
+}
+.social-modal-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 18px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.social-modal-title { font-family: 'Cinzel', serif; font-weight: 700; font-size: 1rem; }
+.social-modal-body { overflow-y: auto; padding: 16px 18px; flex: 1; }
+.social-modal-footer {
+  padding: 14px 18px; border-top: 1px solid var(--border);
+  display: flex; gap: 10px; justify-content: flex-end; flex-shrink: 0;
+}
+.tb-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); font-weight: 700; margin-bottom: 8px; }
+.tb-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 6px; max-height: 160px; overflow-y: auto; margin-bottom: 10px; padding: 2px;
+}
+.tb-chip {
+  border: 1px solid var(--border); border-radius: 6px; padding: 6px 4px;
+  font-size: 0.65rem; font-weight: 600; text-align: center; cursor: pointer;
+  background: var(--bg-card); color: var(--text-secondary); transition: all 0.18s;
+  line-height: 1.3; word-break: break-word;
+}
+.tb-chip:hover { border-color: var(--air); color: var(--air); }
+.tb-chip.selected { border-color: var(--air); background: rgba(240,201,70,0.1); color: var(--air); }
+.tb-selected-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; min-height: 28px; }
+.tb-sel-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(240,201,70,0.1); border: 1px solid rgba(240,201,70,0.3);
+  border-radius: 99px; padding: 3px 10px; font-size: 0.7rem; color: var(--air); font-weight: 600;
+}
+.tb-sel-chip .rm { cursor: pointer; opacity: 0.6; transition: opacity 0.15s; }
+.tb-sel-chip .rm:hover { opacity: 1; }
+.tb-select {
+  width: 100%; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--text-primary); font-size: 0.88rem;
+  padding: 10px 12px; font-family: 'Nunito Sans', sans-serif; outline: none; margin-bottom: 14px;
+}
+.tb-textarea {
+  width: 100%; background: var(--bg-primary); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 12px; color: var(--text-primary);
+  font-size: 0.85rem; font-family: 'Nunito Sans', sans-serif; outline: none;
+  resize: vertical; min-height: 56px; transition: border-color 0.2s;
+}
+.tb-textarea:focus { border-color: var(--zen); }
+
+/* Forum */
+.forum-cat-row {
+  display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px;
+  margin-bottom: 14px; scrollbar-width: none;
+}
+.forum-cat-row::-webkit-scrollbar { display: none; }
+.forum-cat-pill {
+  flex-shrink: 0; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 99px; padding: 6px 14px; font-size: 0.72rem; color: var(--text-secondary);
+  cursor: pointer; font-family: 'Nunito Sans', sans-serif; font-weight: 600;
+  transition: all 0.2s; white-space: nowrap;
+}
+.forum-cat-pill:hover { border-color: var(--border-light); }
+.forum-cat-pill.active { background: var(--zen); color: #fff; border-color: var(--zen); }
+.forum-new-btn {
+  display: flex; align-items: center; gap: 8px; padding: 11px 18px;
+  border-radius: var(--radius); border: 1px dashed var(--border-light);
+  background: transparent; color: var(--text-secondary); font-family: 'Nunito Sans', sans-serif;
+  font-weight: 700; font-size: 0.82rem; cursor: pointer; transition: all 0.2s;
+  width: 100%; justify-content: center; margin-bottom: 14px;
+}
+.forum-new-btn:hover { border-color: var(--zen); color: var(--zen); background: rgba(180,77,223,0.06); }
+.forum-post-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 10px;
+  cursor: pointer; transition: all 0.2s;
+}
+.forum-post-card:hover { border-color: var(--border-light); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.forum-post-card.pinned { border-color: rgba(180,77,223,0.3); }
+.forum-post-title { font-weight: 700; font-size: 0.9rem; line-height: 1.3; margin-bottom: 5px; }
+.forum-post-card.pinned .forum-post-title::before { content: '📌 '; }
+.forum-post-meta { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.forum-post-author { font-size: 0.68rem; color: var(--text-muted); }
+.forum-post-cat {
+  font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 2px 8px; border-radius: 99px; background: rgba(180,77,223,0.1);
+  color: var(--zen); border: 1px solid rgba(180,77,223,0.2);
+}
+.forum-reply-count { font-size: 0.65rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; margin-left: auto; }
+.forum-post-preview { font-size: 0.78rem; color: var(--text-secondary); margin: 5px 0 8px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Forum detail modal */
+.forum-detail-modal {
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); max-width: 600px; width: 100%;
+  max-height: 90vh; display: flex; flex-direction: column;
+  box-shadow: var(--shadow-lg); animation: modalSlideUp 0.3s ease;
+}
+.forum-reply-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px 14px; margin-bottom: 8px;
+}
+.forum-reply-author-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.forum-reply-author { font-size: 0.72rem; font-weight: 700; color: var(--text-primary); }
+.forum-reply-ts { font-size: 0.62rem; color: var(--text-muted); }
+.forum-reply-body { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; word-break: break-word; }
+.forum-reply-input-row { display: flex; gap: 8px; padding: 12px 18px; border-top: 1px solid var(--border); flex-shrink: 0; }
+.forum-reply-input {
+  flex: 1; background: var(--bg-primary); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 9px 14px; color: var(--text-primary);
+  font-size: 0.85rem; font-family: 'Nunito Sans', sans-serif; outline: none;
+  resize: none; height: 40px; transition: border-color 0.2s, height 0.15s;
+}
+.forum-reply-input:focus { border-color: var(--zen); height: 72px; }
+.forum-reply-send-btn {
+  padding: 9px 16px; border-radius: var(--radius); border: none;
+  background: var(--zen); color: #fff; font-size: 0.78rem; font-weight: 700;
+  font-family: 'Nunito Sans', sans-serif; cursor: pointer; transition: opacity 0.2s; align-self: flex-end;
+}
+.forum-reply-send-btn:hover { opacity: 0.88; }
+
 /* RESPONSIVE */
 @media (max-width: 480px) {
   .header-title { font-size: 1.3rem; }
@@ -1038,6 +1376,12 @@ body {
   .tab-nav { gap: 4px; padding: 6px; }
   .tab-btn { padding: 8px 12px; font-size: 0.78rem; }
   .price-grid { gap: 4px; }
+    .chat-layout { flex-direction: column; height: auto; }
+  .chat-sidebar { width: 100%; height: 52px; flex-direction: row; overflow-x: auto; overflow-y: hidden; }
+  .chat-sidebar-header { display: none; }
+  .chat-room-btn { border-bottom: none; border-right: 1px solid var(--border); min-width: 80px; justify-content: center; }
+  .chat-main { height: 400px; }
+  .trade-columns { grid-template-columns: 1fr; }
 }
 @media (min-width: 768px) {
   .card-grid { grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); }
@@ -1612,49 +1956,96 @@ body {
       </div>
     </div>
   </div>
+<!-- USERNAME SETUP (shown when logged in but no profile yet) -->
+  <div id="socialSetup" style="display:none;">
+    <div class="social-setup-panel">
+      <div class="social-setup-title">Choose a Username</div>
+      <div class="social-setup-sub">Pick a display name for Friends, Chat, Trades &amp; Forum. You can only set this once.</div>
+      <div class="social-err" id="setupErr"></div>
+      <input class="social-input" id="setupUsername" type="text" placeholder="Username (3–24 chars, letters/numbers/_)" maxlength="24">
+      <button class="social-btn" id="setupSubmitBtn">Save Username</button>
+    </div>
+  </div>
 
+  <!-- SOCIAL SECTION (shown when logged in + profile exists) -->
+  <div id="socialSection">
+    <!-- Profile header -->
+    <div style="display:flex;align-items:center;gap:12px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:16px;">
+      <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--zen),var(--water));display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-weight:700;font-size:1rem;color:#fff;flex-shrink:0;" id="socialAvatarInitial">?</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-family:'Cinzel',serif;font-weight:700;font-size:0.95rem;" id="socialUsername">–</div>
+        <div style="font-size:0.68rem;color:var(--text-muted);margin-top:2px;" id="socialUserSub">Community member</div>
+      </div>
+    </div>
+
+    <!-- Social nested tabs -->
   <div class="tab-nav-nested">
     <button class="tab-btn-nested active" data-nested-tab="friends">Friends</button>
     <button class="tab-btn-nested" data-nested-tab="chat">Chat</button>
     <button class="tab-btn-nested" data-nested-tab="trades">Trades</button>
+        <button class="tab-btn-nested" data-social-tab="forum">Forum</button>
   </div>
-  <div id="nested-friends" class="nested-tab-content active">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
-      <i class="fas fa-user-friends" style="font-size: 2rem; color: var(--accent); margin-bottom: 12px;"></i>
-      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Friends List</h3>
-      <p style="color: var(--text-secondary); font-size: 0.9rem;">Coming soon...</p>
+    <!-- FRIENDS -->
+    <div id="social-friends" class="social-pane">
+      <div class="friends-search-row">
+        <input class="search-input" id="friendSearchInput" placeholder="Search by username…" type="text" style="font-size:0.88rem;">
+        <button class="friends-search-btn" id="friendSearchBtn"><i class="fas fa-search"></i> Find</button>
+      </div>
+      <div id="friendSearchResults"></div>
+      <div id="friendPendingSection" style="margin-bottom:14px;display:none;">
+        <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--air);font-weight:700;margin-bottom:8px;"><i class="fas fa-clock" style="margin-right:5px;"></i>Pending Requests</div>
+        <div id="friendPendingList"></div>
+      </div>
+      <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);font-weight:700;margin-bottom:8px;"><i class="fas fa-user-friends" style="margin-right:5px;"></i>Your Friends</div>
+      <div id="friendList"><div class="empty-state" style="padding:30px 0;"><p>No friends yet — search above!</p></div></div>
     </div>
-  </div>
-  <div id="nested-chat" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
-      <i class="fas fa-comments" style="font-size: 2rem; color: var(--water); margin-bottom: 12px;"></i>
-      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Chat</h3>
-      <p style="color: var(--text-secondary); font-size: 0.9rem;">Coming soon...</p>
-    </div>
-  </div>
-  <div id="nested-trades" class="nested-tab-content" style="display:none;">
-    <div class="tab-nav-nested" style="border-bottom: 1px solid var(--border); margin-bottom: 16px;">
-      <button class="tab-btn-nested active" data-trade-subtab="proposed">Proposed</button>
-      <button class="tab-btn-nested" data-trade-subtab="pending">Pending</button>
-    </div>
-    <div id="trade-proposed" class="trade-subtab-content active">
-      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
-        <i class="fas fa-handshake" style="font-size: 2rem; color: var(--earth); margin-bottom: 12px;"></i>
-        <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Proposed Trades</h3>
-        <p style="color: var(--text-secondary); font-size: 0.9rem;">No proposed trades yet</p>
-        <p style="color: var(--text-secondary);">Coming Soon...</p>
+
+    <!-- CHAT -->
+    <div id="social-chat" class="social-pane" style="display:none;">
+      <div class="chat-layout">
+        <div class="chat-sidebar" id="chatSidebar">
+          <div class="chat-sidebar-header">Channels</div>
+          <button class="chat-room-btn active" data-room="global"><span class="chat-room-dot"></span>Global</button>
+        </div>
+        <div class="chat-main">
+          <div class="chat-header" id="chatHeaderLabel"><i class="fas fa-hashtag" style="color:var(--zen);font-size:0.78rem;"></i> Global Chat</div>
+          <div class="chat-messages" id="chatMessages"><div style="text-align:center;padding:40px 20px;color:var(--text-muted);font-size:0.8rem;">Loading messages…</div></div>
+          <div class="chat-input-row">
+            <input class="chat-input" id="chatInput" placeholder="Type a message…" maxlength="500">
+            <button class="chat-send-btn" id="chatSendBtn"><i class="fas fa-paper-plane"></i></button>
+          </div>
+        </div>
       </div>
     </div>
-    <div id="trade-pending" class="trade-subtab-content" style="display:none;">
-      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
-        <i class="fas fa-hourglass-half" style="font-size: 2rem; color: var(--air); margin-bottom: 12px;"></i>
-        <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Pending Trades</h3>
-        <p style="color: var(--text-secondary); font-size: 0.9rem;">No pending trades</p>
-        <p style="color: var(--text-secondary);">Coming Soon...</p>
+
+    <!-- TRADES -->
+    <div id="social-trades" class="social-pane" style="display:none;">
+      <div class="tab-nav-nested" style="margin-bottom:14px;">
+        <button class="tab-btn-nested active" data-trade-tab="incoming">Incoming</button>
+        <button class="tab-btn-nested" data-trade-tab="outgoing">Outgoing</button>
+        <button class="tab-btn-nested" data-trade-tab="history">History</button>
       </div>
+      <button class="trade-new-btn" id="tradeNewBtn"><i class="fas fa-plus"></i> Propose a Trade</button>
+      <div id="tradeIncoming"></div>
+      <div id="tradeOutgoing" style="display:none;"></div>
+      <div id="tradeHistory" style="display:none;"></div>
     </div>
-  </div>
-</div>
+
+    <!-- FORUM -->
+    <div id="social-forum" class="social-pane" style="display:none;">
+      <div class="forum-cat-row" id="forumCatRow">
+        <button class="forum-cat-pill active" data-cat="all">All</button>
+        <button class="forum-cat-pill" data-cat="general">General</button>
+        <button class="forum-cat-pill" data-cat="trading">Trading</button>
+        <button class="forum-cat-pill" data-cat="strategy">Strategy</button>
+        <button class="forum-cat-pill" data-cat="collection">Collection</button>
+        <button class="forum-cat-pill" data-cat="news">News</button>
+      </div>
+      <button class="forum-new-btn" id="forumNewBtn"><i class="fas fa-pen"></i> New Post</button>
+      <div id="forumPostList"><div class="empty-state" style="padding:30px 0;"><p>Loading posts…</p></div></div>
+    </div>
+  </div><!-- /#socialSection -->
+</div><!-- /#tab-profile -->
 
 </div><!-- /.app-container -->
 
@@ -1666,28 +2057,17 @@ body {
     <button class="how-to-close" id="howToClose"><i class="fas fa-times"></i></button>
   </div>
   <div class="how-to-content">
-    <h3>Getting Started</h3>
-    <p>Track your Avatar Quick Strike TCG collection by marking cards you own.</p>
-    <h3>Adding Cards</h3>
-    <p>Click any card to open the detail view. Use the quantity controls to set how many copies you own, then add to your collection.</p>
-    <h3>Card Zoom</h3>
-    <p>Click the card image in the detail view to open a fullscreen zoom. Click anywhere outside the image or the X button to close it.</p>
-    <h3>Market Prices</h3>
-    <p>Cards with eBay sold data show a price widget in the detail view — low, average, and high from recent sales. Prices update daily automatically.</p>
-    <h3>Search &amp; Filter</h3>
-    <p>Use the search box to find cards by name or number. Click the X in the search bar to clear your search. Filter by card type, rarity, and ownership status.</p>
-    <h3>Sorting</h3>
-    <p>Choose how to sort your cards (number, name, rarity, type, quantity, or price). Click the arrow button to reverse the sort order.</p>
-    <h3>Collection Progress</h3>
-    <p>The stats bar shows how many of the 248 core cards you own. Your total card count includes bonus cards from special products.</p>
-    <h3>Export &amp; Import</h3>
-    <p>Export your collection as CSV or save code. Import a previously exported save code or CSV file to restore your collection.</p>
-    <h3>Compare Collections</h3>
-    <p>Paste a friend's save code to compare. Cards they own will be highlighted with a blue badge showing their quantity.</p>
-    <h3>Save Codes</h3>
-    <p>Your save code is automatically generated and displayed at the bottom. Select it to copy and save offline.</p>
-    <h3>Pack Calculators</h3>
-    <p>Find them under Portfolio. Each rarity tab (Zenemental, Chamber, Rare, Uncommon, Common) uses the Coupon Collector formula to estimate how many more packs you need to complete that subset of core cards, based on how many you already own.</p>
+       <h3>Getting Started</h3><p>Track your Avatar Quick Strike TCG collection by marking cards you own.</p>
+    <h3>Adding Cards</h3><p>Click any card to open the detail view. Use the quantity controls to set how many copies you own.</p>
+    <h3>Card Zoom</h3><p>Click the card image in the detail view to open a fullscreen zoom. Note: Some bugs.</p>
+    <h3>Market Prices</h3><p>Cards with eBay sold data show a price widget — low, average, and high from recent sales. Note: some users may not see the pricing yet as it is still in beta.</p>
+    <h3>Search &amp; Filter</h3><p>Use the search box to find cards by name or number. Filter by type, rarity, and ownership status.</p>
+    <h3>Sorting</h3><p>Choose how to sort cards. Click the arrow button to reverse the sort order.</p>
+    <h3>Collection Progress</h3><p>The stats bar shows how many of the 248 core cards you own.</p>
+    <h3>Export &amp; Import</h3><p>Export your collection as CSV or save code. Import a backup code to restore.</p>
+    <h3>Compare Collections</h3><p>Paste a friend's save code to compare. Cards they own show a blue badge.</p>
+    <h3>Pack Calculators</h3><p>Under Portfolio — estimates packs needed to complete each rarity subset.</p>
+    <h3>Friends, Chat &amp; Trades</h3><p>Sign in under Profile, set a username, then access Friends, Chat, Trades and Forum.</p>
   </div>
 </div>
 
@@ -1738,7 +2118,7 @@ body {
 <!-- CODE INPUT DIALOG -->
 <div class="code-input-overlay" id="codeInputOverlay">
   <div class="code-input-box">
-    <div class="code-input-header"><h3>Enter Save Code</h3></div>
+    <div class="code-input-header"><i class="fas fa-code"></i><h3>Enter Save Code</h3></div>
     <div class="code-input-hint">Paste the backup save code that was copied to your clipboard during export.</div>
     <textarea class="code-textarea" id="codeTextarea" placeholder="Paste save code here..."></textarea>
     <div class="code-input-error" id="codeInputError"></div>
@@ -1756,7 +2136,7 @@ body {
       <i class="fas fa-people-arrows" style="color: var(--water);"></i>
       <h3>Compare Collections</h3>
     </div>
-    <div class="code-input-hint">Paste your friend's save code below to compare their collection against yours. Cards they own will show a blue quantity badge.</div>
+<div class="code-input-hint">Paste your friend's save code to compare their collection.</div>
     <textarea class="code-textarea compare-mode" id="compareTextarea" placeholder="Paste friend's save code here..."></textarea>
     <div class="code-input-error" id="compareInputError"></div>
     <div class="code-input-actions">
@@ -1845,6 +2225,75 @@ body {
   </div>
 </div>
 
+<!-- TRADE BUILDER MODAL -->
+<div class="social-modal-overlay" id="tradeBuilderOverlay">
+  <div class="social-modal">
+    <div class="social-modal-header">
+      <div class="social-modal-title"><i class="fas fa-handshake" style="color:var(--air);margin-right:8px;"></i>Propose a Trade</div>
+      <button class="modal-close" id="tradeBuilderClose"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="social-modal-body">
+      <div class="tb-label">Send trade to</div>
+      <select class="tb-select" id="tbReceiver"><option value="">— Select a friend —</option></select>
+      <div class="tb-label">Cards you're offering (from your collection)</div>
+      <div class="tb-grid" id="tbOfferGrid"></div>
+      <div style="font-size:0.65rem;color:var(--text-muted);margin-bottom:5px;">Selected:</div>
+      <div class="tb-selected-row" id="tbOfferSelected"></div>
+      <div class="tb-label">Cards you want in return</div>
+      <div class="tb-grid" id="tbRequestGrid"></div>
+      <div style="font-size:0.65rem;color:var(--text-muted);margin-bottom:5px;">Selected:</div>
+      <div class="tb-selected-row" id="tbRequestSelected"></div>
+      <div class="tb-label">Note (optional)</div>
+      <textarea class="tb-textarea" id="tbNote" placeholder="Add a note…"></textarea>
+      <div class="social-err" id="tradeBuilderError"></div>
+    </div>
+    <div class="social-modal-footer">
+      <button class="confirm-btn confirm-cancel" id="tradeBuilderCancel">Cancel</button>
+      <button class="confirm-btn confirm-ok" style="background:var(--air);border-color:var(--air);" id="tradeBuilderSubmit">Send Trade</button>
+    </div>
+  </div>
+</div>
+
+<!-- FORUM NEW POST MODAL -->
+<div class="social-modal-overlay" id="forumNewOverlay">
+  <div class="social-modal" style="max-width:520px;">
+    <div class="social-modal-header">
+      <div class="social-modal-title"><i class="fas fa-pen" style="color:var(--zen);margin-right:8px;"></i>New Post</div>
+      <button class="modal-close" id="forumNewClose"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="social-modal-body">
+      <select class="tb-select" id="forumNewCat" style="margin-bottom:10px;">
+        <option value="general">General</option>
+        <option value="trading">Trading</option>
+        <option value="strategy">Strategy</option>
+        <option value="collection">Collection</option>
+        <option value="news">News</option>
+      </select>
+      <input class="social-input" id="forumNewTitle" type="text" placeholder="Post title…" maxlength="120" style="margin-bottom:10px;">
+      <textarea class="tb-textarea" id="forumNewBody" placeholder="What's on your mind?" maxlength="4000" style="min-height:100px;"></textarea>
+      <div class="social-err" id="forumNewError"></div>
+    </div>
+    <div class="social-modal-footer">
+      <button class="confirm-btn confirm-cancel" id="forumNewCancel">Cancel</button>
+      <button class="confirm-btn confirm-ok" style="background:var(--zen);border-color:var(--zen);" id="forumNewSubmit">Post</button>
+    </div>
+  </div>
+</div>
+
+<!-- FORUM DETAIL MODAL -->
+<div class="social-modal-overlay" id="forumDetailOverlay">
+  <div class="forum-detail-modal">
+    <div class="social-modal-header">
+      <div class="social-modal-title" id="forumDetailTitle" style="max-width:calc(100% - 48px);font-size:0.95rem;">–</div>
+      <button class="modal-close" id="forumDetailClose"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="social-modal-body" id="forumDetailBody" style="padding:14px 18px;"></div>
+    <div class="forum-reply-input-row">
+      <textarea class="forum-reply-input" id="forumReplyInput" placeholder="Write a reply… (Ctrl+Enter to send)" maxlength="2000"></textarea>
+      <button class="forum-reply-send-btn" id="forumReplySendBtn">Reply</button>
+    </div>
+  </div>
+</div>
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
