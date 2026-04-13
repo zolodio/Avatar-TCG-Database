@@ -1,0 +1,17 @@
+{
+  "name": "avatar-tcg-price-scraper",
+  "version": "1.0.0",
+  "description": "Fetches Avatar TCG sold prices from eBay and stores them in Supabase.",
+  "main": "scrape-prices.js",
+  "type": "module",
+  "scripts": {
+    "scrape": "node scrape-prices.js",
+    "scrape:card": "node scrape-prices.js --card="
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.0.0",
+    "dotenv": "^16.0.0",
+    "node-fetch": "^3.0.0",
+    "csv-parse": "^5.0.0"
+  }
+}
