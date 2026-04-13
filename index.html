@@ -1456,6 +1456,7 @@ body {
   <div class="tab-nav-nested">
     <button class="tab-btn-nested active" data-nested-tab="digital-main">Collection</button>
     <button class="tab-btn-nested" data-nested-tab="digital-redeem">Redeem</button>
+    <button class="tab-btn-nested" data-nested-tab="digital-deckbuilder">Deck Builder</button>
   </div>
 
   <!-- DIGITAL MAIN TAB -->
@@ -1529,15 +1530,12 @@ body {
         <i class="fas fa-ticket-alt" style="font-size: 1.5rem; color: var(--zen);"></i>
         <div>
           <h3 style="font-family: 'Cinzel', serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 2px;">Redeem Digital Pack</h3>
-          <p style="font-size: 0.75rem; color: var(--text-muted);">Paste AQS3 codes from the Booster app</p>
+          <p style="font-size: 0.75rem; color: var(--text-muted);">Paste One-Time Redemption codes from the Booster App to Add Cards to Your Digital Collection.</p>
         </div>
-      </div>
+      </div> 
 
       <textarea 
-        id="redemption-code-input" 
-        placeholder="Paste AQS3... code here"
-        style="width: 100%; min-height: 80px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; color: var(--text-primary); font-family: 'VT323', monospace; font-size: 0.85rem; resize: vertical; margin-bottom: 12px;">
-      </textarea>
+        id="redemption-code-input" placeholder="Paste Redmption Code Here..." style="width:100%;min-height:80px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;color:var(--text-primary);font-family:'VT323',monospace;font-size:0.85rem;resize:vertical;margin-bottom:12px;"></textarea>
 
       <div style="display: flex; gap: 8px; margin-bottom: 16px;">
         <button id="btn-redeem" class="tab-action-btn" style="flex: 1; background: var(--zen); color: #fff;">
@@ -1551,8 +1549,17 @@ body {
       <div id="redemption-message" style="min-height: 24px; font-size: 0.85rem; border-radius: 6px; padding: 8px 12px; margin-bottom: 16px; display: none;"></div>
     </div>
   </div>
-
+  <!-- DECK BUILDER TAB -->
+  <div id="nested-digital-deckbuilder" class="nested-tab-content" style="display:none;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
+      <i class="fas fa-align-justify" style="font-size: 3rem; color: var(--promo); margin-bottom: 16px;"></i>
+      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Deck Builder</h3>
+      <p style="color: var(--text-secondary);">Deck Building with Compatibility Rules for Online Gameplay and Trading</p>
+      <p style="color: var(--text-secondary);">Coming Soon...</p>
+    </div>
+  </div>
 </div>
+
 <!-- PROFILE TAB -->
 <div class="tab-content" id="tab-profile">
 
@@ -3524,6 +3531,7 @@ init();
 </script>
 	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="scripts/supabase-config.js"></script>
+<script src="scripts/prices.js"></script>
 <script src="scripts/auth.js"></script>
 <script src="scripts/digital-collection.js"></script>
 <script>
