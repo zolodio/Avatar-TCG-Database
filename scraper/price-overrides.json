@@ -1,1 +1,23 @@
+{
+  "_README": {
+    "purpose": "Set custom eBay search terms for cards that don't pull prices correctly.",
+    "how_to_use": [
+      "1. Add an entry below using the card NUMBER as the key.",
+      "2. Set the value to the exact search phrase you'd type into eBay.",
+      "3. Save this file and re-run:  node scrape-prices.js",
+      "4. To test a single card:      node scrape-prices.js --card=001"
+    ],
+    "default_behavior": "If a card has NO entry here, it searches:  '<defaultPrefix> <Card Name>'",
+    "tip": "Copy the eBay search that gives you the best sold results, then paste it here.",
+    "defaultPrefix": "Avatar TCG"
+  },
 
+  "overrides": {
+
+    "EXAMPLES — delete or replace these with real ones:": "",
+
+    "001": "Avatar TCG Aang holo rare",
+    "042": "Avatar TCG Zuko foil"
+
+  }
+}
