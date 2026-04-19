@@ -83,6 +83,30 @@
     return '<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(232,182,50,0.12);color:var(--promo);border:1px solid rgba(232,182,50,0.3);border-radius:99px;padding:2px 8px;font-size:0.58rem;font-weight:700;letter-spacing:0.08em;vertical-align:middle;margin-left:6px;">✦ PRO</span>';
   }
 
+  // ── Persistent header profile indicator ─────────────────────────
+  function updateHeaderProfile() {
+    if (!currentProfile) return;
+    var hdr=$('headerProfileIndicator');
+    if (!hdr) return;
+    var initials=String(currentProfile.username||'?').charAt(0).toUpperCase();
+    hdr.innerHTML=
+      '<div style="display:flex;align-items:center;gap:10px;cursor:pointer;width:100%;">' +
+        '<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--water),var(--zen));display:flex;align-items:center;justify-content:center;font-family:\'Cinzel\',serif;font-weight:700;font-size:0.88rem;color:#fff;flex-shrink:0;position:relative;overflow:hidden;">' +
+          initials +
+        '</div>' +
+        '<div style="flex:1;min-width:0;text-align:right;">' +
+          '<div style="font-family:\'Cinzel\',serif;font-weight:700;font-size:0.82rem;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + esc(currentProfile.username) + '</div>' +
+          '<div style="font-size:0.62rem;color:var(--text-muted);">Profile</div>' +
+        '</div>' +
+      '</div>';
+    hdr.style.display='block';
+    hdr.onclick=function(){ document.querySelector('[data-tab="profile"]').click(); };
+  }
+
+  function hideHeaderProfile() {
+    var hdr=$('headerProfileIndicator'); if (hdr) { hdr.style.display='none'; hdr.innerHTML=''; }
+  }
+
   // ── Social tab switcher ───────────────────────────────────────
   function initSocialTabs() {
     var sec=$('socialSection'); if (!sec) return;
@@ -96,10 +120,11 @@
         this.classList.add('active');
         sec.querySelectorAll('.social-pane').forEach(function(p){ p.style.display='none'; });
         var pane=$('social-'+name); if (pane) pane.style.display='';
-        if (name==='chat')    loadChat();
-        if (name==='trades')  loadTrades();
-        if (name==='forum')   loadForum();
-        if (name==='friends') loadFriends();
+        if (name==='chat')          { loadChat(); }
+        if (name==='trades')        { loadTrades(); }
+        if (name==='forum')         { loadForum(); }
+        if (name==='friends')       { loadFriends(); }
+        if (name==='edit-profile')  { initProfileEditor(); }
       });
     });
     sec.querySelectorAll('[data-trade-tab]').forEach(function(btn){
@@ -154,6 +179,7 @@
   function activateSocialSection(profile) {
     $('socialSection').style.display='block';
     refreshProfileHeader(profile);
+    updateHeaderProfile(); // ← Show persistent header profile
     initSocialTabs();
     loadFriends();
   }
@@ -1011,6 +1037,7 @@
     currentUser=null; currentProfile=null;
     if (chatSub)       { try { chatSub.unsubscribe();       } catch(e){} chatSub=null; }
     if (forumReplySub) { try { forumReplySub.unsubscribe(); } catch(e){} forumReplySub=null; }
+    hideHeaderProfile(); // ← Hide persistent header profile
     if ($('socialSetup'))   $('socialSetup').style.display  ='none';
     if ($('socialSection')) $('socialSection').style.display='none';
     closeProfileEditor();
