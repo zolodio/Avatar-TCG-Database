@@ -2002,8 +2002,10 @@ body {
     <!-- EDIT PROFILE PANE -->
     <div id="social-edit-profile" class="social-pane">
       <div id="profileEditorContainer"></div>
-      <button class="editBtn"><i class="fas fa-edit"></i>Edit Profile</button>
-
+      '<button id="editProfileBtn" type="button" ' +
+        'style="flex-shrink:0;padding:7px 13px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-secondary);font-size:0.7rem;font-family:\'Nunito Sans\',sans-serif;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all 0.2s;">' +
+        '<i class="fas fa-pen"></i> Edit' +
+      '</button>'
     </div>
 
     <!-- FRIENDS -->
