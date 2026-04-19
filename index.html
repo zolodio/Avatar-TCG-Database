@@ -1569,8 +1569,8 @@ body {
         </div>
         <span id="engineInfo">Ruffle Flash Emulator</span>
       </div>
-      < src="https://unpkg.com/@ruffle-rs/ruffle"></>
-      <>
+      <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+      <script>
       (function() {
         var SWF_URL = "https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/main/Avatar_demo.swf";
         var playerArea = document.getElementById("playerArea");
@@ -1620,7 +1620,7 @@ body {
         btnReload.addEventListener("click", loadSWF);
         btnRetry.addEventListener("click", loadSWF);
       })();
-      </>
+      </script>
       <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; margin-top: 16px;">
         <iframe src="https://www.youtube.com/embed/TNPI9iAmMZI" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 12px; border: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
@@ -1800,6 +1800,7 @@ body {
   <div class="tab-nav-nested">
     <button class="tab-btn-nested active" data-nested-tab="digital-main">Collection</button>
     <button class="tab-btn-nested" data-nested-tab="digital-redeem">Redeem</button>
+    <button class="tab-btn-nested" data-nested-tab="digital-deckbuilder">Deck Builder</button>
   </div>
 
   <!-- DIGITAL MAIN TAB -->
@@ -1873,15 +1874,12 @@ body {
         <i class="fas fa-ticket-alt" style="font-size: 1.5rem; color: var(--zen);"></i>
         <div>
           <h3 style="font-family: 'Cinzel', serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 2px;">Redeem Digital Pack</h3>
-          <p style="font-size: 0.75rem; color: var(--text-muted);">Paste AQS3 codes from the Booster app</p>
+          <p style="font-size: 0.75rem; color: var(--text-muted);">Paste One-Time Redemption codes from the Booster App to Add Cards to Your Digital Collection.</p>
         </div>
       </div>
 
       <textarea 
-        id="redemption-code-input" 
-        placeholder="Paste AQS3... code here"
-        style="width: 100%; min-height: 80px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; color: var(--text-primary); font-family: 'VT323', monospace; font-size: 0.85rem; resize: vertical; margin-bottom: 12px;">
-      </textarea>
+        id="redemption-code-input" placeholder="Paste Redmption Code Here..." style="width:100%;min-height:80px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;color:var(--text-primary);font-family:'VT323',monospace;font-size:0.85rem;resize:vertical;margin-bottom:12px;"></textarea>
 
       <div style="display: flex; gap: 8px; margin-bottom: 16px;">
         <button id="btn-redeem" class="tab-action-btn" style="flex: 1; background: var(--zen); color: #fff;">
@@ -1893,6 +1891,15 @@ body {
       </div>
 
       <div id="redemption-message" style="min-height: 24px; font-size: 0.85rem; border-radius: 6px; padding: 8px 12px; margin-bottom: 16px; display: none;"></div>
+    </div>
+  </div>
+  <!-- DECK BUILDER TAB -->
+  <div id="nested-digital-deckbuilder" class="nested-tab-content" style="display:none;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
+      <i class="fas fa-align-justify" style="font-size: 3rem; color: var(--promo); margin-bottom: 16px;"></i>
+      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Deck Builder</h3>
+      <p style="color: var(--text-secondary);">Deck Building with Compatibility Rules for Online Gameplay and Trading</p>
+      <p style="color: var(--text-secondary);">Coming Soon...</p>
     </div>
   </div>
 
@@ -2057,16 +2064,28 @@ body {
     <button class="how-to-close" id="howToClose"><i class="fas fa-times"></i></button>
   </div>
   <div class="how-to-content">
-       <h3>Getting Started</h3><p>Track your Avatar Quick Strike TCG collection by marking cards you own.</p>
-    <h3>Adding Cards</h3><p>Click any card to open the detail view. Use the quantity controls to set how many copies you own.</p>
-    <h3>Card Zoom</h3><p>Click the card image in the detail view to open a fullscreen zoom. Note: Some bugs.</p>
-    <h3>Market Prices</h3><p>Cards with eBay sold data show a price widget — low, average, and high from recent sales. Note: some users may not see the pricing yet as it is still in beta.</p>
-    <h3>Search &amp; Filter</h3><p>Use the search box to find cards by name or number. Filter by type, rarity, and ownership status.</p>
-    <h3>Sorting</h3><p>Choose how to sort cards. Click the arrow button to reverse the sort order.</p>
-    <h3>Collection Progress</h3><p>The stats bar shows how many of the 248 core cards you own.</p>
-    <h3>Export &amp; Import</h3><p>Export your collection as CSV or save code. Import a backup code to restore.</p>
-    <h3>Compare Collections</h3><p>Paste a friend's save code to compare. Cards they own show a blue badge.</p>
-    <h3>Pack Calculators</h3><p>Under Portfolio — estimates packs needed to complete each rarity subset.</p>
+    <h3>Getting Started</h3>
+    <p>Track your Avatar Quick Strike TCG collection by marking cards you own.</p>
+    <h3>Adding Cards</h3>
+    <p>Click any card to open the detail view. Use the quantity controls to set how many copies you own, then add to your collection.</p>
+    <h3>Card Zoom</h3>
+    <p>Click the card image in the detail view to open a fullscreen zoom. Click anywhere outside the image or the X button to close it.</p>
+    <h3>Market Prices</h3>
+    <p>Cards with eBay sold data show a price widget in the detail view — low, average, and high from recent sales. Prices update daily automatically.</p>
+    <h3>Search &amp; Filter</h3>
+    <p>Use the search box to find cards by name or number. Click the X in the search bar to clear your search. Filter by card type, rarity, and ownership status.</p>
+    <h3>Sorting</h3>
+    <p>Choose how to sort your cards (number, name, rarity, type, quantity, or price). Click the arrow button to reverse the sort order.</p>
+    <h3>Collection Progress</h3>
+    <p>The stats bar shows how many of the 248 core cards you own. Your total card count includes bonus cards from special products.</p>
+    <h3>Export &amp; Import</h3>
+    <p>Export your collection as CSV or save code. Import a previously exported save code or CSV file to restore your collection.</p>
+    <h3>Compare Collections</h3>
+    <p>Paste a friend's save code to compare. Cards they own will be highlighted with a blue badge showing their quantity.</p>
+    <h3>Save Codes</h3>
+    <p>Your save code is automatically generated and displayed at the bottom. Select it to copy and save offline.</p>
+    <h3>Pack Calculators</h3>
+    <p>Find them under Portfolio. Each rarity tab (Zenemental, Chamber, Rare, Uncommon, Common) uses the Coupon Collector formula to estimate how many more packs you need to complete that subset of core cards, based on how many you already own.</p>
     <h3>Friends, Chat &amp; Trades</h3><p>Sign in under Profile, set a username, then access Friends, Chat, Trades and Forum.</p>
   </div>
 </div>
@@ -2136,7 +2155,7 @@ body {
       <i class="fas fa-people-arrows" style="color: var(--water);"></i>
       <h3>Compare Collections</h3>
     </div>
-<div class="code-input-hint">Paste your friend's save code to compare their collection.</div>
+    <div class="code-input-hint">Paste your friend's save code below to compare their collection against yours. Cards they own will show a blue quantity badge.</div>
     <textarea class="code-textarea compare-mode" id="compareTextarea" placeholder="Paste friend's save code here..."></textarea>
     <div class="code-input-error" id="compareInputError"></div>
     <div class="code-input-actions">
@@ -3973,6 +3992,7 @@ init();
 </script>
 	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="scripts/supabase-config.js"></script>
+<script src="scripts/prices.js"></script>
 <script src="scripts/auth.js"></script>
 <script src="scripts/digital-collection.js"></script>
 <script>
