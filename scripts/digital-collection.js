@@ -229,7 +229,7 @@
     cards.forEach(function (c) {
       var rc = DC_RARITY_COLOR[c.rarity] || 'var(--text-secondary)';
       html +=
-        '<div class="card-item owned" style="--rarity-color:' + rc + '">' +
+        '<div class="card-item owned" data-number="' + dcEscHtml(c.number) + '" style="--rarity-color:' + rc + '">' +
           '<div class="card-img-wrap">' +
             '<div class="card-flip-container">' +
               '<div class="card-flip-inner">' +
@@ -363,6 +363,23 @@
     });
   }
 
+  /* ── REMOVE SINGLE CARD (called from the modal in index.html) ────────────── */
+  window.removeDigitalCard = function (cardNumber) {
+    // Remove ONE instance of this card number from dcCards
+    var idx = dcCards.findIndex(function (r) { return r.number === cardNumber; });
+    if (idx === -1) { dcShowToast('Card not found in digital collection'); return; }
+    var removed = dcCards.splice(idx, 1)[0];
+
+    // Persist: rewrite all remaining records
+    dcSaveAll(dcCards).then(function () {
+      dcRenderStats();
+      dcRenderCards();
+      dcShowToast('Removed ' + (removed.name || cardNumber) + ' from digital collection');
+    }).catch(function () {
+      dcShowToast('Error removing card — please try again');
+    });
+  };
+
   /* ── REDEEM ──────────────────────────────────────────────────────────────── */
   function dcRedeem() {
     var inp    = document.getElementById('redemption-code-input');
@@ -492,7 +509,7 @@
     var btnExJ = document.getElementById('btn-digital-export-json');
     if (btnExJ) btnExJ.addEventListener('click', dcExportJSON);
 
-    // Export CSV
+    // Export CSV (button removed from HTML but handler kept for safety)
     var btnExC = document.getElementById('btn-digital-export-csv');
     if (btnExC) btnExC.addEventListener('click', dcExportCSV);
 
