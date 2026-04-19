@@ -1819,16 +1819,33 @@ body {
 
   <!-- DIGITAL MAIN TAB -->
   <div id="nested-digital-main" class="nested-tab-content active">
-    <!-- Stats Bar -->
-    <div class="stats-bar" id="digital-stats-bar"></div>
+    <!-- Stats Bar (collapsible) -->
+    <div style="margin-bottom: 18px;">
+      <button id="digitalStatsToggleBtn" onclick="(function(){
+        var body = document.getElementById('digitalStatsCollapsible');
+        var icon = document.getElementById('digitalStatsToggleIcon');
+        var label = document.getElementById('digitalStatsToggleLabel');
+        var isOpen = body.style.display !== 'none';
+        body.style.display = isOpen ? 'none' : 'block';
+        icon.style.transform = isOpen ? 'rotate(-90deg)' : 'rotate(0deg)';
+        label.textContent = isOpen ? 'Expand' : 'Collapse';
+      })()"
+      style="width:100%; display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:10px 14px; cursor:pointer; font-family:'Nunito Sans',sans-serif; font-weight:700; font-size:0.8rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.08em;">
+        <span>Digital Collection Stats</span>
+        <span style="display:flex; align-items:center; gap:6px;">
+          <span id="digitalStatsToggleLabel" style="font-size:0.65rem; color:var(--text-muted); font-weight:400; text-transform:none; letter-spacing:0;">Collapse</span>
+          <i id="digitalStatsToggleIcon" class="fas fa-chevron-down" style="font-size:0.75rem; transition:transform 0.25s;"></i>
+        </span>
+      </button>
+      <div id="digitalStatsCollapsible" style="margin-top:10px;">
+        <div class="stats-bar" id="digital-stats-bar"></div>
+      </div>
+    </div>
 
     <!-- Digital Collection Controls -->
     <div class="export-row" id="digital-controls">
       <button class="export-btn" id="btn-digital-export-json" title="Export as JSON backup">
         <i class="fas fa-download"></i> Export JSON
-      </button>
-      <button class="export-btn" id="btn-digital-export-csv" title="Export as CSV for spreadsheet">
-        <i class="fas fa-file-csv"></i> Export CSV
       </button>
       <button class="import-btn" id="btn-digital-import-json" title="Import from JSON backup">
         <i class="fas fa-upload"></i> Import JSON
@@ -1854,7 +1871,6 @@ body {
         <button class="filter-pill" data-filter="uncommon">Uncommon</button>
         <button class="filter-pill" data-filter="rare">Rare</button>
         <button class="filter-pill" data-filter="zenemental">Zenemental</button>
-        <button class="filter-pill" data-filter="promo">Promo</button>
       </div>
     </div>
 
@@ -2115,6 +2131,10 @@ body {
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
     <p id="confirmMsg">Are you sure?</p>
+    <div id="confirmWarning" style="display:none; margin-bottom:12px; padding:8px 12px; background:rgba(224,72,72,0.08); border:1px solid rgba(224,72,72,0.2); border-radius:6px; font-size:0.75rem; color:var(--danger); display:flex; align-items:center; gap:8px;">
+      <i class="fas fa-exclamation-triangle" style="flex-shrink:0;"></i>
+      <span id="confirmWarningText"></span>
+    </div>
     <div class="confirm-actions">
       <button class="confirm-btn confirm-cancel" id="confirmCancel">Cancel</button>
       <button class="confirm-btn confirm-ok" id="confirmOk">Remove</button>
@@ -2662,6 +2682,8 @@ var currentModalCard = null;
 var confirmCallback = null;
 var importMethod = "csv";
 var modalFlipped = false;
+var modalDigitalMode = false;
+var modalDigitalRemoveCallback = null;
 
 var rarityColorMap = {
   common: 'var(--text-secondary)',
@@ -3186,7 +3208,10 @@ function escapeHtml(str) {
 }
 
 /* ---- MODAL ---- */
-function openModal(cardNumber) {
+function openModal(cardNumber, opts) {
+  opts = opts || {};
+  modalDigitalMode = opts.digital || false;
+  modalDigitalRemoveCallback = opts.onRemove || null;
   var card = allCards.find(function(c) { return c.number === cardNumber; });
   if (!card) return;
   currentModalCard = card;
@@ -3372,6 +3397,8 @@ function openModal(cardNumber) {
   });
 
   document.getElementById('qtyDisplay').textContent = qty;
+  var qtyControls = document.querySelector('.modal-qty-controls');
+  if (qtyControls) qtyControls.style.display = modalDigitalMode ? 'none' : '';
   updateModalButton(isOwned);
   document.getElementById('modalOverlay').classList.add('active');
   document.body.style.overflow = 'hidden';
@@ -3382,12 +3409,19 @@ function closeModal() {
   document.body.style.overflow = '';
   currentModalCard = null;
   modalFlipped = false;
+  modalDigitalMode = false;
+  modalDigitalRemoveCallback = null;
 }
 
 function updateModalButton(isOwned) {
   var btn = document.getElementById('modalToggle');
-  if (isOwned) { btn.textContent = 'Remove from Collection'; btn.className = 'modal-toggle-btn remove'; }
-  else { btn.textContent = 'Add to Collection'; btn.className = 'modal-toggle-btn add'; }
+  if (modalDigitalMode) {
+    btn.textContent = 'Remove from Digital Collection';
+    btn.className = 'modal-toggle-btn remove';
+  } else {
+    if (isOwned) { btn.textContent = 'Remove from Collection'; btn.className = 'modal-toggle-btn remove'; }
+    else { btn.textContent = 'Add to Collection'; btn.className = 'modal-toggle-btn add'; }
+  }
   updateModalDividers();
 }
 
@@ -3420,8 +3454,30 @@ function showToast(msg) {
 }
 
 /* ---- CONFIRM DIALOG ---- */
-function showConfirm(msg, cb) { document.getElementById('confirmMsg').textContent = msg; confirmCallback = cb; document.getElementById('confirmOverlay').classList.add('active'); }
-function closeConfirm() { document.getElementById('confirmOverlay').classList.remove('active'); confirmCallback = null; }
+function showConfirm(msg, cb, opts) {
+  opts = opts || {};
+  document.getElementById('confirmMsg').textContent = msg;
+  var warnEl = document.getElementById('confirmWarning');
+  var warnTextEl = document.getElementById('confirmWarningText');
+  if (opts.warning && warnEl && warnTextEl) {
+    warnTextEl.textContent = opts.warning;
+    warnEl.style.display = 'flex';
+  } else if (warnEl) {
+    warnEl.style.display = 'none';
+  }
+  var okBtn = document.getElementById('confirmOk');
+  if (okBtn) okBtn.textContent = opts.okText || 'Remove';
+  confirmCallback = cb;
+  document.getElementById('confirmOverlay').classList.add('active');
+}
+function closeConfirm() {
+  document.getElementById('confirmOverlay').classList.remove('active');
+  confirmCallback = null;
+  var warnEl = document.getElementById('confirmWarning');
+  if (warnEl) warnEl.style.display = 'none';
+  var okBtn = document.getElementById('confirmOk');
+  if (okBtn) okBtn.textContent = 'Remove';
+}
 
 /* ---- EXPORT ---- */
 function exportCollection() {
@@ -3588,6 +3644,36 @@ function setupEvents() {
     if (item) openModal(item.dataset.number);
   });
 
+  /* Digital collection card clicks — open modal in view-only mode */
+  var digitalGrid = document.getElementById('digital-cards-display');
+  if (digitalGrid) {
+    digitalGrid.addEventListener('click', function(e) {
+      var flipBtn = e.target.closest('.card-flip-btn');
+      if (flipBtn) {
+        e.stopPropagation();
+        var targetNumber = flipBtn.getAttribute('data-flip-target');
+        var flipInner = flipBtn.closest('.card-img-wrap').querySelector('.card-flip-inner[data-flip-id="' + targetNumber + '"]');
+        if (flipInner) { flipInner.classList.toggle('flipped'); flipBtn.classList.toggle('is-flipped'); }
+        return;
+      }
+      var item = e.target.closest('.card-item');
+      if (item) {
+        var cardNumber = item.dataset.number;
+        openModal(cardNumber, {
+          digital: true,
+          onRemove: function(num) {
+            /* Try the global removeDigitalCard exposed by digital-collection.js */
+            if (typeof window.removeDigitalCard === 'function') {
+              window.removeDigitalCard(num);
+            } else if (window.digitalCollection && typeof window.digitalCollection.removeCard === 'function') {
+              window.digitalCollection.removeCard(num);
+            }
+          }
+        });
+      }
+    });
+  }
+
   document.getElementById('modalClose').addEventListener('click', closeModal);
   document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
 
@@ -3652,6 +3738,22 @@ function setupEvents() {
 
   document.getElementById('modalToggle').addEventListener('click', function() {
     if (!currentModalCard) return;
+    if (modalDigitalMode) {
+      showConfirm(
+        'Remove "' + currentModalCard.name + '" from your digital collection?',
+        function() {
+          var num = currentModalCard.number;
+          closeModal();
+          if (typeof modalDigitalRemoveCallback === 'function') modalDigitalRemoveCallback(num);
+          showToast('Removed from digital collection');
+        },
+        {
+          warning: 'This action cannot be undone.',
+          okText: 'Remove'
+        }
+      );
+      return;
+    }
     var isOwned = (collection[currentModalCard.number] || 0) > 0;
     if (isOwned) {
       showConfirm('Remove "' + currentModalCard.name + '" from your collection?', function() { removeFromCollection(currentModalCard.number); showToast('Removed from collection'); });
