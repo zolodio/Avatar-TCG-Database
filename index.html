@@ -3399,6 +3399,8 @@ function openModal(cardNumber, opts) {
   document.getElementById('qtyDisplay').textContent = qty;
   var qtyControls = document.querySelector('.modal-qty-controls');
   if (qtyControls) qtyControls.style.display = modalDigitalMode ? 'none' : '';
+  var obtainedSection = document.getElementById('modalObtainedSection');
+  if (obtainedSection) obtainedSection.style.display = modalDigitalMode ? 'none' : '';
   updateModalButton(isOwned);
   document.getElementById('modalOverlay').classList.add('active');
   document.body.style.overflow = 'hidden';
