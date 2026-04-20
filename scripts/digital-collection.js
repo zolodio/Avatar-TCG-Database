@@ -142,6 +142,12 @@
     setTimeout(function () { t.classList.remove('show'); }, 2400);
   }
 
+  /* ── CLOUD SYNC HELPER ───────────────────────────────────────────────────── */
+  function dcSyncToCloud() {
+    window.aqstDigitalCollection = dcCards;
+    if (typeof window._aqst_cloudSync === 'function') window._aqst_cloudSync();
+  }
+
   /* ── RARITY / TYPE COLOR MAP ─────────────────────────────────────────────── */
   var DC_RARITY_COLOR = {
     common:     'var(--text-secondary)',
@@ -341,6 +347,7 @@
         if (!Array.isArray(data)) throw new Error('Invalid format');
         dcSaveAll(data).then(function () {
           dcCards = data;
+          dcSyncToCloud();
           dcRenderStats();
           dcRenderCards();
           dcShowToast('Digital collection imported — ' + data.length + ' records');
@@ -357,6 +364,7 @@
     if (!confirm('Clear ALL digital cards? This cannot be undone.')) return;
     dcClearAll().then(function () {
       dcCards = [];
+      dcSyncToCloud();
       dcRenderStats();
       dcRenderCards();
       dcShowToast('Digital collection cleared');
@@ -372,6 +380,7 @@
 
     // Persist: rewrite all remaining records
     dcSaveAll(dcCards).then(function () {
+      dcSyncToCloud();
       dcRenderStats();
       dcRenderCards();
       dcShowToast('Removed ' + (removed.name || cardNumber) + ' from digital collection');
@@ -456,6 +465,7 @@
         dcMarkCodeUsed(code)
       ]).then(function () {
         dcCards = dcCards.concat(resolvedCards);
+        dcSyncToCloud();
         dcRenderStats();
         dcRenderCards();
 
@@ -537,16 +547,35 @@
   window.initDigitalCollection = function () {
     dcGetAll().then(function (records) {
       dcCards = records || [];
+      window.aqstDigitalCollection = dcCards;
       dcRenderStats();
       dcRenderCards();
     }).catch(function () {
       dcCards = [];
+      window.aqstDigitalCollection = [];
     });
 
     dcInitFilters();
     dcInitSearch();
     dcInitSort();
     dcWireEvents();
+  };
+
+  // Called by auth.js after a cloud pull overwrites window.aqstDigitalCollection
+  window.aqstRefreshDigital = function () {
+    var incoming = window.aqstDigitalCollection;
+    if (!Array.isArray(incoming)) return;
+    dcCards = incoming;
+    // Replace local IndexedDB with the cloud data
+    dcClearAll().then(function () {
+      return dcCards.length ? dcSaveAll(dcCards) : Promise.resolve();
+    }).then(function () {
+      dcRenderStats();
+      dcRenderCards();
+    }).catch(function () {
+      dcRenderStats();
+      dcRenderCards();
+    });
   };
 
   // Called again after tab switch (idempotent re-render)
