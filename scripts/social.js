@@ -891,21 +891,38 @@
       if (pendSec) pendSec.style.display = 'none';
     }
 
-    var frRes = await sb().from('friendships')
-      .select('id, user_id, friend_id, fp:profiles!friendships_friend_id_fkey(username,avatar_card_number,avatar_offset_x,avatar_offset_y,is_pro), sp:profiles!friendships_user_id_fkey(username,avatar_card_number,avatar_offset_x,avatar_offset_y,is_pro)')
-      .or('user_id.eq.'+currentUser.id+',friend_id.eq.'+currentUser.id).eq('status', 'accepted');
-    var friendListEl = $('friendList'), friends = frRes.data || [];
-    if (!friends.length) {
+    // ── Two-query approach: avoids .or().eq() chaining issues in Supabase JS v2
+    var asUserRes   = await sb().from('friendships').select('id, user_id, friend_id').eq('user_id',   currentUser.id).eq('status', 'accepted');
+    var asFriendRes = await sb().from('friendships').select('id, user_id, friend_id').eq('friend_id', currentUser.id).eq('status', 'accepted');
+    var allShips    = (asUserRes.data || []).concat(asFriendRes.data || []);
+
+    // Deduplicate (shouldn't happen but guard)
+    var seen = {}; allShips = allShips.filter(function(f){ if (seen[f.id]) return false; seen[f.id]=true; return true; });
+
+    var friendListEl = $('friendList');
+    if (!allShips.length) {
       friendListEl.innerHTML = '<div class="empty-state" style="padding:30px 0;"><p>No friends yet — search above!</p></div>'; return;
     }
-    friendListEl.innerHTML = friends.map(function (f) {
-      var isInit = f.user_id === currentUser.id, other = isInit ? f.fp : f.sp; if (!other) other = {};
-      return '<div class="friend-card">'+avatarHtml(other, 38)+
-        '<div class="friend-info"><div class="friend-name">'+esc(other.username||'?')+(other.is_pro?proBadge():'')+'</div></div>'+
-        '<div class="friend-actions">'+
-        '<button class="friend-btn chat-btn"  data-dm="'+esc(other.username||'')+'">Chat</button>'+
-        '<button class="friend-btn trade-btn" data-trade-with="'+esc(other.username||'')+'">Trade</button>'+
-        '<button class="friend-btn danger"    data-remove="'+f.id+'">Remove</button>'+
+
+    // Collect other-user IDs then batch-fetch profiles
+    var otherIds = allShips.map(function(f){ return f.user_id === currentUser.id ? f.friend_id : f.user_id; });
+    var profRes  = await sb().from('profiles').select('user_id,username,display_name,avatar_card_number,avatar_offset_x,avatar_offset_y,is_pro').in('user_id', otherIds);
+    var profMap  = {};
+    (profRes.data || []).forEach(function(p){ profMap[p.user_id] = p; });
+
+    friendListEl.innerHTML = allShips.map(function(f) {
+      var otherId = f.user_id === currentUser.id ? f.friend_id : f.user_id;
+      var p = profMap[otherId] || { username: '?' };
+      return '<div class="friend-card">' + avatarHtml(p, 38) +
+        '<div class="friend-info">' +
+          '<div class="friend-name">' + esc(p.display_name || p.username || '?') + (p.is_pro ? proBadge() : '') + '</div>' +
+          '<div class="friend-sub" style="font-size:0.68rem;color:var(--text-muted);">@' + esc(p.username || '?') + '</div>' +
+        '</div>' +
+        '<div class="friend-actions" style="flex-wrap:wrap;gap:5px;">' +
+          '<button class="friend-btn" data-view-friend="' + esc(otherId) + '" data-friend-name="' + esc(p.username || '?') + '" style="background:rgba(74,125,255,0.1);border-color:rgba(74,125,255,0.3);color:var(--accent);">Profile</button>' +
+          '<button class="friend-btn chat-btn"  data-dm="' + esc(p.username || '') + '">Chat</button>' +
+          '<button class="friend-btn trade-btn" data-trade-with="' + esc(p.username || '') + '">Trade</button>' +
+          '<button class="friend-btn danger"    data-remove="' + f.id + '">Remove</button>' +
         '</div></div>';
     }).join('');
   }
@@ -937,6 +954,205 @@
     await sb().from('friendships').delete().eq('id', id); loadFriends(); toast('Friend removed.');
   }
 
+  // ══════════════════════════════════════════════════════════════
+  //  FRIEND PROFILE MODAL
+  // ══════════════════════════════════════════════════════════════
+  function injectFriendProfileModal() {
+    if ($('friendProfileOverlay')) return;
+    var el = document.createElement('div');
+    el.id = 'friendProfileOverlay';
+    el.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:24px 12px;overflow-y:auto;';
+    el.innerHTML =
+      '<div id="friendProfileModal" style="width:100%;max-width:520px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;margin:auto;">' +
+        // Header
+        '<div id="friendProfileHeader" style="display:flex;align-items:center;gap:14px;padding:18px 18px 14px;border-bottom:1px solid var(--border);position:relative;"></div>' +
+        // Tab row
+        '<div style="display:flex;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;">' +
+          '<button class="fpTab" data-fp-tab="profile"  style="flex:1;padding:11px 0;border:none;background:none;cursor:pointer;font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;color:var(--zen);border-bottom:2px solid var(--zen);transition:all 0.15s;white-space:nowrap;"><i class="fas fa-user" style="margin-right:5px;"></i>Profile</button>' +
+          '<button class="fpTab" data-fp-tab="collection" style="flex:1;padding:11px 0;border:none;background:none;cursor:pointer;font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;color:var(--text-muted);border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;"><i class="fas fa-layer-group" style="margin-right:5px;"></i>Collection</button>' +
+          '<button class="fpTab" data-fp-tab="friends"    style="flex:1;padding:11px 0;border:none;background:none;cursor:pointer;font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;color:var(--text-muted);border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;"><i class="fas fa-users" style="margin-right:5px;"></i>Friends</button>' +
+        '</div>' +
+        // Pane
+        '<div id="friendProfilePane" style="padding:16px;min-height:180px;max-height:55vh;overflow-y:auto;"></div>' +
+        // Footer actions
+        '<div style="display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:var(--bg-card);">' +
+          '<button id="fpChatBtn"  style="flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary);color:var(--text-secondary);font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.2s;"><i class="fas fa-comment" style="margin-right:5px;"></i>Chat</button>' +
+          '<button id="fpTradeBtn" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(74,125,255,0.3);background:rgba(74,125,255,0.08);color:var(--accent);font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.2s;"><i class="fas fa-exchange-alt" style="margin-right:5px;"></i>Offer Trade</button>' +
+          '<button id="fpCloseBtn" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--text-muted);font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.2s;"><i class="fas fa-times"></i></button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(el);
+
+    // Tab switching
+    el.querySelectorAll('.fpTab').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        el.querySelectorAll('.fpTab').forEach(function(b) {
+          b.style.color = 'var(--text-muted)'; b.style.borderBottomColor = 'transparent';
+        });
+        this.style.color = 'var(--zen)'; this.style.borderBottomColor = 'var(--zen)';
+        var tab = this.getAttribute('data-fp-tab');
+        var uid = el.getAttribute('data-fp-uid'), uname = el.getAttribute('data-fp-uname');
+        loadFriendModalTab(tab, uid, uname);
+      });
+    });
+
+    el.addEventListener('click', function(e) { if (e.target === el) closeFriendProfileModal(); });
+    $('fpCloseBtn').addEventListener('click', closeFriendProfileModal);
+  }
+
+  function openFriendProfileModal(friendUserId, friendUsername) {
+    injectFriendProfileModal();
+    var overlay = $('friendProfileOverlay');
+    overlay.setAttribute('data-fp-uid',   friendUserId);
+    overlay.setAttribute('data-fp-uname', friendUsername);
+    overlay.style.display = 'flex';
+
+    // Reset tabs to Profile
+    overlay.querySelectorAll('.fpTab').forEach(function(b) {
+      b.style.color = 'var(--text-muted)'; b.style.borderBottomColor = 'transparent';
+    });
+    var first = overlay.querySelector('[data-fp-tab="profile"]');
+    if (first) { first.style.color = 'var(--zen)'; first.style.borderBottomColor = 'var(--zen)'; }
+
+    // Render header (placeholder while profile loads)
+    var hdr = $('friendProfileHeader');
+    hdr.innerHTML = '<div style="font-family:\'Cinzel\',serif;font-size:1rem;font-weight:700;color:var(--text-primary);">Loading…</div>';
+
+    // Wire footer buttons
+    $('fpChatBtn').onclick  = function() { closeFriendProfileModal(); openDM(friendUsername); };
+    $('fpTradeBtn').onclick = function() { closeFriendProfileModal(); openTradeBuilderFor(friendUsername); };
+
+    loadFriendModalTab('profile', friendUserId, friendUsername);
+  }
+
+  function closeFriendProfileModal() {
+    var o = $('friendProfileOverlay'); if (o) o.style.display = 'none';
+  }
+
+  async function loadFriendModalTab(tab, userId, username) {
+    var pane = $('friendProfilePane');
+    if (!pane) return;
+    pane.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--text-muted);font-size:0.8rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading…</div>';
+
+    if (tab === 'profile')    await renderFriendProfile(userId, username);
+    if (tab === 'collection') await renderFriendCollection(userId, username);
+    if (tab === 'friends')    await renderFriendFriends(userId, username);
+  }
+
+  async function renderFriendProfile(userId, username) {
+    if (!sb()) return;
+    var res = await sb().from('profiles').select('*').eq('user_id', userId).maybeSingle();
+    var p = res.data;
+    var pane = $('friendProfilePane'), hdr = $('friendProfileHeader');
+    if (!p) {
+      if (pane) pane.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--text-muted);">Profile not found.</div>';
+      return;
+    }
+
+    // Populate header
+    if (hdr) {
+      hdr.innerHTML =
+        avatarHtml(p, 52) +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="font-family:\'Cinzel\',serif;font-size:1rem;font-weight:700;line-height:1.3;">' + esc(p.display_name || p.username) + (p.is_pro ? proBadge() : '') + '</div>' +
+          (p.display_name ? '<div style="font-size:0.68rem;color:var(--text-muted);margin-top:2px;">@' + esc(p.username) + '</div>' : '') +
+        '</div>' +
+        '<button onclick="document.getElementById(\'friendProfileOverlay\').style.display=\'none\'" style="background:none;border:none;color:var(--text-muted);font-size:1.2rem;cursor:pointer;padding:4px 8px;position:absolute;top:12px;right:12px;">&times;</button>';
+    }
+
+    // Bio, traits, chamber
+    var tmap = window.traitIconMap || {};
+    var traitsHtml = '';
+    if (p.preferred_traits && p.preferred_traits.length) {
+      traitsHtml = '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:12px;">' +
+        '<span style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:700;">Traits</span>' +
+        p.preferred_traits.map(function(t) {
+          return tmap[t] ? '<img src="'+esc(tmap[t])+'" title="'+esc(t)+'" style="width:20px;height:20px;" loading="lazy">' : '<span style="font-size:0.72rem;color:var(--text-muted);text-transform:capitalize;">'+esc(t)+'</span>';
+        }).join('') + '</div>';
+    }
+
+    // Collection quick-stats via user_cards table
+    // NOTE: adjust the table/column names below if your schema differs
+    var statsHtml = '';
+    var statsRes = await sb().from('user_cards').select('card_number', { count: 'exact' }).eq('user_id', userId);
+    if (!statsRes.error) {
+      var owned = statsRes.count || 0;
+      var total = (window.allCards || []).length;
+      statsHtml =
+        '<div style="display:flex;gap:10px;margin-top:14px;">' +
+          '<div style="flex:1;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;">' +
+            '<div style="font-size:1.1rem;font-weight:700;color:var(--accent);">' + owned + '</div>' +
+            '<div style="font-size:0.68rem;color:var(--text-muted);">Cards Owned</div>' +
+          '</div>' +
+          (total ? '<div style="flex:1;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;">' +
+            '<div style="font-size:1.1rem;font-weight:700;color:var(--zen);">' + Math.round((owned/total)*100) + '%</div>' +
+            '<div style="font-size:0.68rem;color:var(--text-muted);">Complete</div>' +
+          '</div>' : '') +
+        '</div>';
+    }
+
+    if (pane) pane.innerHTML =
+      '<div style="font-size:0.85rem;color:var(--text-secondary);line-height:1.65;word-break:break-word;">' + (p.bio ? esc(p.bio) : '<em style="color:var(--text-muted);">No bio yet.</em>') + '</div>' +
+      (p.favorite_chamber ? '<div style="display:flex;align-items:center;gap:6px;margin-top:10px;"><i class="fas fa-window-maximize" style="color:var(--air);font-size:0.7rem;"></i><span style="font-size:0.78rem;color:var(--air);font-weight:600;">'+esc(p.favorite_chamber)+'</span></div>' : '') +
+      traitsHtml + statsHtml;
+  }
+
+  async function renderFriendCollection(userId, username) {
+    var pane = $('friendProfilePane'); if (!pane) return;
+    if (!sb()) { pane.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);">Not available.</div>'; return; }
+
+    // NOTE: adjust table/column names if your schema differs from user_cards(user_id, card_number, quantity)
+    var res = await sb().from('user_cards').select('card_number, quantity').eq('user_id', userId);
+    var rows = res.data || [];
+    if (!rows.length) { pane.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);font-size:0.82rem;">'+esc(username)+'\'s collection is empty.</div>'; return; }
+
+    var ownedMap = {};
+    rows.forEach(function(r) { ownedMap[r.card_number] = r.quantity || 1; });
+
+    var cards = (window.allCards || []).filter(function(c) { return ownedMap[c.number]; });
+    var rarityOrder = { common:1, uncommon:2, rare:3, zenemental:4, promo:5 };
+    cards.sort(function(a,b) { return (rarityOrder[a.rarity]||0)-(rarityOrder[b.rarity]||0) || (parseInt(a.number)||0)-(parseInt(b.number)||0); });
+
+    var RARITY_COLORS = { common:'var(--text-muted)', uncommon:'var(--earth)', rare:'var(--accent)', zenemental:'var(--zen)', promo:'var(--promo)' };
+    pane.innerHTML =
+      '<div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:10px;">' + esc(username) + ' owns <strong style="color:var(--text-primary);">' + cards.length + '</strong> cards</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:6px;">' +
+      cards.map(function(c) {
+        var qty = ownedMap[c.number];
+        return '<div title="#'+esc(c.number)+' '+esc(c.name)+'" style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;overflow:hidden;position:relative;cursor:default;">' +
+          (c.imageLink ? '<img src="'+esc(c.imageLink)+'" alt="'+esc(c.name)+'" loading="lazy" style="width:100%;display:block;">' : '<div style="height:90px;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--text-muted);padding:4px;text-align:center;">'+esc(c.name)+'</div>') +
+          '<div style="padding:3px 4px;font-size:0.55rem;color:'+RARITY_COLORS[c.rarity]+';font-weight:700;text-transform:capitalize;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+esc(c.rarity)+'</div>' +
+          (qty > 1 ? '<div style="position:absolute;top:4px;right:4px;background:var(--zen);color:#fff;border-radius:99px;font-size:0.55rem;font-weight:700;padding:1px 5px;">x'+qty+'</div>' : '') +
+        '</div>';
+      }).join('') + '</div>';
+  }
+
+  async function renderFriendFriends(userId, username) {
+    var pane = $('friendProfilePane'); if (!pane) return;
+    if (!sb()) { pane.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);">Not available.</div>'; return; }
+
+    var fA = await sb().from('friendships').select('user_id,friend_id').eq('user_id',   userId).eq('status','accepted');
+    var fB = await sb().from('friendships').select('user_id,friend_id').eq('friend_id', userId).eq('status','accepted');
+    var all = (fA.data||[]).concat(fB.data||[]);
+    if (!all.length) { pane.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);font-size:0.82rem;">'+esc(username)+' has no friends yet.</div>'; return; }
+
+    var ids = all.map(function(f){ return f.user_id === userId ? f.friend_id : f.user_id; });
+    var pr = await sb().from('profiles').select('user_id,username,display_name,avatar_card_number,avatar_offset_x,avatar_offset_y,is_pro').in('user_id', ids);
+    var profs = pr.data || [];
+    if (!profs.length) { pane.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);">Could not load friends.</div>'; return; }
+
+    pane.innerHTML =
+      '<div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:10px;">' + esc(username) + ' is friends with <strong style="color:var(--text-primary);">' + profs.length + '</strong> trainers</div>' +
+      profs.map(function(p) {
+        var isMe = p.user_id === currentUser.id;
+        return '<div class="friend-card" style="margin-bottom:8px;">' +
+          avatarHtml(p, 36) +
+          '<div class="friend-info"><div class="friend-name">' + esc(p.display_name || p.username) + (p.is_pro ? proBadge() : '') + (isMe ? ' <span style="font-size:0.62rem;color:var(--success);font-weight:700;">(You)</span>' : '') + '</div><div class="friend-sub">@' + esc(p.username) + '</div></div>' +
+          (!isMe ? '<div class="friend-actions"><button class="friend-btn" data-view-friend="' + esc(p.user_id) + '" data-friend-name="' + esc(p.username) + '" style="font-size:0.72rem;padding:5px 10px;">View</button></div>' : '') +
+        '</div>';
+      }).join('');
+  }
+
   function initFriendEvents() {
     var btn = $('friendSearchBtn'), inp = $('friendSearchInput');
     if (btn) btn.addEventListener('click', doFriendSearch);
@@ -944,6 +1160,7 @@
     document.addEventListener('click', function (e) {
       if (!currentUser) return;
       var el;
+      el = e.target.closest('[data-view-friend]'); if (el) { openFriendProfileModal(el.getAttribute('data-view-friend'), el.getAttribute('data-friend-name')); return; }
       el = e.target.closest('[data-accept]');     if (el) { respondRequest(el.getAttribute('data-accept'), 'accepted');       return; }
       el = e.target.closest('[data-decline]');    if (el) { respondRequest(el.getAttribute('data-decline'), 'declined');      return; }
       el = e.target.closest('[data-add]');        if (el) { sendFriendReq(el.getAttribute('data-add'));                       return; }
@@ -1090,13 +1307,16 @@
     if (!currentUser || !sb()) return;
     var sel = $('tbReceiver'); if (!sel) return;
     sel.innerHTML = '<option value="">— Select a friend —</option>';
-    var fr = await sb().from('friendships')
-      .select('user_id,friend_id,fp:profiles!friendships_friend_id_fkey(username,user_id),sp:profiles!friendships_user_id_fkey(username,user_id)')
-      .or('user_id.eq.'+currentUser.id+',friend_id.eq.'+currentUser.id).eq('status', 'accepted');
-    (fr.data || []).forEach(function (f) {
-      var isInit = f.user_id === currentUser.id, other = isInit ? f.fp : f.sp; if (!other) return;
-      var opt = document.createElement('option'); opt.value = other.user_id + '|' + other.username; opt.textContent = other.username; sel.appendChild(opt);
-    });
+    var frA = await sb().from('friendships').select('user_id,friend_id').eq('user_id',   currentUser.id).eq('status', 'accepted');
+    var frB = await sb().from('friendships').select('user_id,friend_id').eq('friend_id', currentUser.id).eq('status', 'accepted');
+    var frAll = (frA.data || []).concat(frB.data || []);
+    var frIds = frAll.map(function(f){ return f.user_id === currentUser.id ? f.friend_id : f.user_id; });
+    if (frIds.length) {
+      var frProf = await sb().from('profiles').select('user_id,username').in('user_id', frIds);
+      (frProf.data || []).forEach(function(p) {
+        var opt = document.createElement('option'); opt.value = p.user_id + '|' + p.username; opt.textContent = p.username; sel.appendChild(opt);
+      });
+    }
     var ac = window.allCards || [], col = window.collection || {};
     buildCardGrid($('tbOfferGrid'), ac.filter(function (c) { return (col[c.number] || 0) > 0; }), 'offer');
     buildCardGrid($('tbRequestGrid'), ac, 'request');
