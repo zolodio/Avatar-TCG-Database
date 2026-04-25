@@ -802,34 +802,91 @@
   async function loadFriends() {
     if (!currentUser || !sb()) return;
 
-    // ── CHANGE 1: use RPC so we get avatar data and the correct
-    //   friendship_id field in one server-side query ─────────────
-    var pendRes = await sb().rpc('get_pending_friend_requests');
-    var pending  = pendRes.data || [];
+    // ── Incoming: pending requests addressed to us (via RPC for avatar data)
+    var pendRes  = await sb().rpc('get_pending_friend_requests');
+    var incoming = pendRes.data || [];
+
+    // ── Outgoing: pending requests we sent that haven't been responded to yet
+    var outRes  = await sb().from('friendships')
+      .select('id, friend:profiles!friendships_friend_id_fkey(username,avatar_card_number,avatar_offset_x,avatar_offset_y,is_pro)')
+      .eq('user_id', currentUser.id)
+      .eq('status', 'pending');
+    var outgoing = outRes.data || [];
 
     var pendSec  = $('friendPendingSection');
     var pendList = $('friendPendingList');
+    var total    = incoming.length + outgoing.length;
 
-    if (pending.length) {
+    if (total > 0) {
       if (pendSec) pendSec.style.display = '';
-      if (pendList) pendList.innerHTML = pending.map(function (f) {
-        var p2 = {
-          username:           f.sender_username,
-          avatar_card_number: f.avatar_card_number,
-          avatar_offset_x:    f.avatar_offset_x,
-          avatar_offset_y:    f.avatar_offset_y
-        };
-        return '<div class="friend-card">' + avatarHtml(p2, 38) +
-          '<div class="friend-info">' +
-            '<div class="friend-name">' + esc(p2.username || 'Unknown') + '</div>' +
-            '<div class="friend-sub"><span class="pending-badge"><i class="fas fa-clock"></i> Pending</span></div>' +
+
+      // ── Build incoming cards HTML
+      var inHtml = incoming.length
+        ? incoming.map(function (f) {
+            var p2 = { username: f.sender_username, avatar_card_number: f.avatar_card_number, avatar_offset_x: f.avatar_offset_x, avatar_offset_y: f.avatar_offset_y };
+            return '<div class="friend-card">' + avatarHtml(p2, 38) +
+              '<div class="friend-info">' +
+                '<div class="friend-name">' + esc(p2.username || 'Unknown') + '</div>' +
+                '<div class="friend-sub" style="color:var(--air);"><i class="fas fa-user-plus" style="margin-right:3px;"></i>Wants to be friends</div>' +
+              '</div>' +
+              '<div class="friend-actions">' +
+                '<button class="friend-btn accept" data-accept="' + f.friendship_id + '">Accept</button>' +
+                '<button class="friend-btn danger"  data-decline="' + f.friendship_id + '">Decline</button>' +
+              '</div></div>';
+          }).join('')
+        : '<div style="text-align:center;padding:18px 0;color:var(--text-muted);font-size:0.8rem;">No incoming requests.</div>';
+
+      // ── Build outgoing cards HTML
+      var outHtml = outgoing.length
+        ? outgoing.map(function (f) {
+            var p2 = f.friend || {};
+            return '<div class="friend-card">' + avatarHtml(p2, 38) +
+              '<div class="friend-info">' +
+                '<div class="friend-name">' + esc(p2.username || 'Unknown') + (p2.is_pro ? proBadge() : '') + '</div>' +
+                '<div class="friend-sub"><i class="fas fa-paper-plane" style="margin-right:3px;"></i>Request pending…</div>' +
+              '</div>' +
+              '<div class="friend-actions">' +
+                '<button class="friend-btn danger" data-cancel-req="' + f.id + '">Cancel</button>' +
+              '</div></div>';
+          }).join('')
+        : '<div style="text-align:center;padding:18px 0;color:var(--text-muted);font-size:0.8rem;">No sent requests.</div>';
+
+      // ── Badge helpers
+      var inBadge  = incoming.length ? ' <span style="background:var(--air);color:#000;border-radius:99px;padding:1px 7px;font-size:0.6rem;font-weight:700;margin-left:4px;">' + incoming.length + '</span>' : '';
+      var outBadge = outgoing.length ? ' <span style="background:var(--border-light);color:var(--text-secondary);border-radius:99px;padding:1px 7px;font-size:0.6rem;font-weight:700;margin-left:4px;">' + outgoing.length + '</span>' : '';
+
+      // ── Shared tab style strings
+      var activeStyle   = 'background:none;border:none;border-bottom:2px solid var(--air);color:var(--air);padding:8px 14px;font-family:\'Nunito Sans\',sans-serif;font-size:0.78rem;font-weight:700;cursor:pointer;flex-shrink:0;transition:all 0.15s;';
+      var inactiveStyle = 'background:none;border:none;border-bottom:2px solid transparent;color:var(--text-muted);padding:8px 14px;font-family:\'Nunito Sans\',sans-serif;font-size:0.78rem;font-weight:700;cursor:pointer;flex-shrink:0;transition:all 0.15s;';
+
+      if (pendList) {
+        pendList.innerHTML =
+          '<div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:10px;">' +
+            '<button id="pendTabIn"  style="' + activeStyle   + '"><i class="fas fa-inbox" style="margin-right:5px;opacity:0.7;"></i>Incoming'  + inBadge  + '</button>' +
+            '<button id="pendTabOut" style="' + inactiveStyle + '"><i class="fas fa-paper-plane" style="margin-right:5px;opacity:0.7;"></i>Sent' + outBadge + '</button>' +
           '</div>' +
-          '<div class="friend-actions">' +
-            '<button class="friend-btn accept" data-accept="' + f.friendship_id + '">Accept</button>' +
-            '<button class="friend-btn danger"  data-decline="' + f.friendship_id + '">Decline</button>' +
-          '</div>' +
-        '</div>';
-      }).join('');
+          '<div id="pendContentIn">'                       + inHtml  + '</div>' +
+          '<div id="pendContentOut" style="display:none;">' + outHtml + '</div>';
+
+        // Wire sub-tab clicks (inline — no ID collision risk, freshly rendered)
+        var tabIn   = document.getElementById('pendTabIn');
+        var tabOut  = document.getElementById('pendTabOut');
+        var contIn  = document.getElementById('pendContentIn');
+        var contOut = document.getElementById('pendContentOut');
+
+        if (tabIn) tabIn.addEventListener('click', function () {
+          tabIn.style.cssText  = activeStyle;
+          tabOut.style.cssText = inactiveStyle;
+          contIn.style.display  = '';
+          contOut.style.display = 'none';
+        });
+        if (tabOut) tabOut.addEventListener('click', function () {
+          tabOut.style.cssText = activeStyle.replace('var(--air)', 'var(--text-secondary)');
+          tabIn.style.cssText  = inactiveStyle;
+          contOut.style.display = '';
+          contIn.style.display  = 'none';
+        });
+      }
     } else {
       if (pendSec) pendSec.style.display = 'none';
     }
