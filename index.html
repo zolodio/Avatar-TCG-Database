@@ -1374,7 +1374,12 @@ body {
 /* RESPONSIVE */
 @media (max-width: 480px) {
   .header-title { font-size: 1.3rem; }
-    #headerProfileIndicator { display: none; }
+  #headerProfileIndicator {
+    padding: 4px !important;
+    min-width: 0 !important;
+    max-width: fit-content !important;
+  }
+  #headerProfileIndicator .hpi-text { display: none; }
   .card-grid { grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: 8px; }
   .stats-bar { grid-template-columns: repeat(3, 1fr); gap: 6px; }
   .stat-box { padding: 10px 6px; }
