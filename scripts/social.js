@@ -15,6 +15,7 @@
   var currentProfile = null;
   var chatSub        = null;
   var forumReplySub  = null;
+  var friendReqSub   = null;
   var currentRoom    = 'global';
   var currentCat     = 'all';
   var currentPostId  = null;
@@ -216,6 +217,23 @@
     updateHeaderProfile();
     initSocialTabs();
     loadFriends();
+
+    // ── Live friend-request notifications ────────────────────────
+    // Unsubscribe any previous channel first (e.g. after profile re-setup)
+    if (friendReqSub) { try { friendReqSub.unsubscribe(); } catch(e){} friendReqSub = null; }
+
+    friendReqSub = sb().channel('friend-requests:' + currentUser.id)
+      .on('postgres_changes', {
+        event:  'INSERT',
+        schema: 'public',
+        table:  'friendships',
+        filter: 'friend_id=eq.' + currentUser.id
+      }, function () {
+        // Reload the friends panel so the pending section appears immediately
+        loadFriends();
+        toast('📬 You have a new friend request!');
+      })
+      .subscribe();
   }
 
   function refreshProfileDisplay(profile) {
@@ -784,23 +802,37 @@
   async function loadFriends() {
     if (!currentUser || !sb()) return;
 
-    var pendRes = await sb().from('friendships')
-      .select('id, user_id, profiles!friendships_user_id_fkey(username,avatar_card_number,avatar_offset_x,avatar_offset_y)')
-      .eq('friend_id', currentUser.id).eq('status', 'pending');
-    var pendSec = $('friendPendingSection'), pendList = $('friendPendingList'), pending = pendRes.data || [];
+    // ── CHANGE 1: use RPC so we get avatar data and the correct
+    //   friendship_id field in one server-side query ─────────────
+    var pendRes = await sb().rpc('get_pending_friend_requests');
+    var pending  = pendRes.data || [];
+
+    var pendSec  = $('friendPendingSection');
+    var pendList = $('friendPendingList');
+
     if (pending.length) {
-      pendSec.style.display = '';
-      pendList.innerHTML = pending.map(function (f) {
-        var p2 = f.profiles || {};
-        return '<div class="friend-card">'+avatarHtml(p2, 38)+
-          '<div class="friend-info"><div class="friend-name">'+esc(p2.username||'Unknown')+'</div>'+
-          '<div class="friend-sub"><span class="pending-badge"><i class="fas fa-clock"></i> Pending</span></div></div>'+
-          '<div class="friend-actions">'+
-          '<button class="friend-btn accept" data-accept="'+f.id+'">Accept</button>'+
-          '<button class="friend-btn danger" data-decline="'+f.id+'">Decline</button>'+
-          '</div></div>';
+      if (pendSec) pendSec.style.display = '';
+      if (pendList) pendList.innerHTML = pending.map(function (f) {
+        var p2 = {
+          username:           f.sender_username,
+          avatar_card_number: f.avatar_card_number,
+          avatar_offset_x:    f.avatar_offset_x,
+          avatar_offset_y:    f.avatar_offset_y
+        };
+        return '<div class="friend-card">' + avatarHtml(p2, 38) +
+          '<div class="friend-info">' +
+            '<div class="friend-name">' + esc(p2.username || 'Unknown') + '</div>' +
+            '<div class="friend-sub"><span class="pending-badge"><i class="fas fa-clock"></i> Pending</span></div>' +
+          '</div>' +
+          '<div class="friend-actions">' +
+            '<button class="friend-btn accept" data-accept="' + f.friendship_id + '">Accept</button>' +
+            '<button class="friend-btn danger"  data-decline="' + f.friendship_id + '">Decline</button>' +
+          '</div>' +
+        '</div>';
       }).join('');
-    } else pendSec.style.display = 'none';
+    } else {
+      if (pendSec) pendSec.style.display = 'none';
+    }
 
     var frRes = await sb().from('friendships')
       .select('id, user_id, friend_id, fp:profiles!friendships_friend_id_fkey(username,avatar_card_number,avatar_offset_x,avatar_offset_y,is_pro), sp:profiles!friendships_user_id_fkey(username,avatar_card_number,avatar_offset_x,avatar_offset_y,is_pro)')
@@ -1201,6 +1233,7 @@
     currentUser = null; currentProfile = null;
     if (chatSub)       { try { chatSub.unsubscribe();       } catch(e){} chatSub = null; }
     if (forumReplySub) { try { forumReplySub.unsubscribe(); } catch(e){} forumReplySub = null; }
+    if (friendReqSub)  { try { friendReqSub.unsubscribe();  } catch(e){} friendReqSub = null; }
     hideHeaderProfile();
     var card = $('profileDisplayCard');
     if (card) card.innerHTML = '<div style="text-align:center;padding:24px 0;color:var(--text-muted);font-size:0.8rem;">Sign in to view your profile.</div>';
