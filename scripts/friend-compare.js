@@ -1,13 +1,11 @@
 /* ================================================================
-   Avatar TCG — One-Click Friend Compare  (friend-compare.js)
+   Avatar TCG — One-Click Friend Compare  (friend-compare.js v2)
 
-   Adds a "Compare" button to the friend profile modal footer.
-   Clicking it:
-     • Loads the friend's physical collection into the main
-       Card Collection compare view (blue badges, Shared filter).
-     • Loads their digital collection into the Digital Collection
-       tab compare view (teal badges).
-     • Switches to the relevant tab automatically.
+   Fixes:
+     • Digital collection stored as dcCards[] array was being treated
+       as a {number:qty} map — now converted on the way in.
+     • Physical compare fallback correctly sets window.compareCollection
+       and triggers re-render even without applyCompareCollection.
 
    Drop in /scripts/ and add ONE line after social.js:
      <script src="scripts/friend-compare.js"></script>
@@ -27,6 +25,27 @@
     setTimeout(function () { t.classList.remove('show'); }, 2400);
   }
 
+  /**
+   * The digital collection is stored as the raw dcCards[] array
+   * (uid, number, name, rarity, …).  Compare views need a
+   * {cardNumber: qty} map instead.  Convert here.
+   */
+  function digitalArrayToMap(data) {
+    if (!data) return {};
+    // Already a plain object / map — return as-is
+    if (!Array.isArray(data)) {
+      return typeof data === 'object' ? data : {};
+    }
+    // Array of dcCard records → aggregate by .number
+    var map = {};
+    data.forEach(function (item) {
+      if (item && item.number) {
+        map[String(item.number)] = (map[String(item.number)] || 0) + 1;
+      }
+    });
+    return map;
+  }
+
   // ── fetch friend's collections row ─────────────────────────────
   async function fetchFriendData(userId) {
     if (!sb() || !userId) return { physical: {}, digital: {} };
@@ -39,7 +58,8 @@
       if (res.error) throw res.error;
       return {
         physical: (res.data && res.data.physical) || {},
-        digital:  (res.data && res.data.digital)  || {}
+        // Normalise digital regardless of whether it was stored as array or map
+        digital:  digitalArrayToMap((res.data && res.data.digital) || {})
       };
     } catch (e) {
       console.warn('[friend-compare] fetch error:', e.message || e);
@@ -52,11 +72,11 @@
     if (typeof window.applyCompareCollection === 'function') {
       window.applyCompareCollection(col);
     } else {
-      // fallback: set directly and re-render
+      // Fallback: set global and trigger whichever render helpers exist
       window.compareCollection = col;
-      if (typeof window.buildFilters  === 'function') window.buildFilters();
-      if (typeof window.renderCards   === 'function') window.renderCards();
-      if (typeof window.updateCompareBtn === 'function') window.updateCompareBtn();
+      if (typeof window.buildFilters      === 'function') window.buildFilters();
+      if (typeof window.renderCards       === 'function') window.renderCards();
+      if (typeof window.updateCompareBtn  === 'function') window.updateCompareBtn();
     }
     // Switch to Card Collection tab
     var homeTab = document.querySelector('[data-tab="home"]');
@@ -67,6 +87,7 @@
 
   // ── apply digital compare ──────────────────────────────────────
   function applyDigitalCompare(col, username) {
+    // col is already a {number: qty} map (converted in fetchFriendData)
     window.compareDigitalCollection = col;
     refreshDigitalCompare();
     // Switch to Digital Collection tab then the Collection sub-tab
@@ -84,25 +105,22 @@
   function refreshDigitalCompare() {
     var grid = document.getElementById('digital-cards-display');
     if (!grid) return;
-    var cmp = window.compareDigitalCollection || {};
+    var cmp    = window.compareDigitalCollection || {};
     var hasCmp = Object.keys(cmp).some(function (n) { return (cmp[n] || 0) > 0; });
 
     // Remove stale compare badges
     grid.querySelectorAll('.fcv-dig-cmp').forEach(function (el) { el.remove(); });
-
     if (!hasCmp) return;
 
     // Add a teal badge to every card tile the friend owns
     grid.querySelectorAll('.card-item[data-number]').forEach(function (tile) {
       var num = tile.getAttribute('data-number');
-      var qty = cmp[num] || 0;
+      var qty = cmp[String(num)] || 0;
       if (!qty) return;
 
       var wrap = tile.querySelector('.card-img-wrap');
       if (!wrap) return;
-
-      // avoid duplicates
-      if (wrap.querySelector('.fcv-dig-cmp')) return;
+      if (wrap.querySelector('.fcv-dig-cmp')) return; // avoid duplicates
 
       var badge = document.createElement('span');
       badge.className = 'fcv-dig-cmp';
@@ -121,7 +139,6 @@
 
   // ── main entry point ───────────────────────────────────────────
   async function loadAndCompare(userId, username, mode) {
-    // Show loading state on the button
     var btn = document.getElementById('fpCompareBtn');
     if (btn) {
       btn.disabled = true;
@@ -130,7 +147,6 @@
 
     var data = await fetchFriendData(userId);
 
-    // Re-enable button
     if (btn) {
       btn.disabled = false;
       btn.innerHTML = '<i class="fas fa-people-arrows" style="margin-right:5px;"></i>Compare';
@@ -173,15 +189,10 @@
     ].join('');
     btn.innerHTML = '<i class="fas fa-people-arrows"></i> Compare';
 
-    // Insert before the close button (last child)
     var closeBtn = document.getElementById('fpCloseBtn');
-    if (closeBtn) {
-      footer.insertBefore(btn, closeBtn);
-    } else {
-      footer.appendChild(btn);
-    }
+    if (closeBtn) footer.insertBefore(btn, closeBtn);
+    else footer.appendChild(btn);
 
-    // Toggle dropdown on click
     btn.addEventListener('click', function () {
       var existing = document.getElementById('fpCompareDrop');
       if (existing) { existing.remove(); return; }
@@ -227,7 +238,6 @@
         '</button>',
       ].join('');
 
-      // hover styles
       drop.querySelectorAll('button[data-cmp-mode]').forEach(function (b) {
         b.addEventListener('mouseenter', function () { this.style.background = 'var(--bg-card-hover)'; });
         b.addEventListener('mouseleave', function () { this.style.background = 'none'; });
@@ -237,16 +247,12 @@
         });
       });
 
-      // position relative to the footer
-      var footerEl = document.querySelector(
-        '#friendProfileOverlay > div > div:last-child'
-      );
+      var footerEl = document.querySelector('#friendProfileOverlay > div > div:last-child');
       if (footerEl) {
         footerEl.style.position = 'relative';
         footerEl.appendChild(drop);
       }
 
-      // Close on outside click
       setTimeout(function () {
         document.addEventListener('click', function removeDrop(e) {
           if (!drop.contains(e.target) && e.target !== btn) {
@@ -259,8 +265,6 @@
   }
 
   // ── watch for the modal being opened ──────────────────────────
-  // Use a MutationObserver so we catch it regardless of when
-  // social.js creates/opens it.
   var _observer = new MutationObserver(function () {
     var overlay = document.getElementById('friendProfileOverlay');
     if (overlay && overlay.style.display !== 'none') {
@@ -269,8 +273,7 @@
   });
   _observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
 
-  // ── re-apply digital compare badges after the digital grid
-  //    re-renders (e.g. search / filter changes) ─────────────────
+  // ── re-apply digital compare badges after grid re-renders ──────
   var _digitalObs = new MutationObserver(function (mutations) {
     var cmp = window.compareDigitalCollection || {};
     if (!Object.keys(cmp).length) return;
@@ -278,7 +281,6 @@
     if (!grid) return;
     mutations.forEach(function (m) {
       if (m.target === grid || grid.contains(m.target)) {
-        // small debounce
         clearTimeout(window._digCmpTimer);
         window._digCmpTimer = setTimeout(refreshDigitalCompare, 120);
       }
@@ -295,14 +297,16 @@
     if (grid) _digitalObs.observe(grid, { childList: true });
   }
 
-  // ── clear compare when user clears the main compare ───────────
-  // Hook into the existing clearCompareOk button so both clears stay in sync
+  // ── sync clear: wipe digital compare when physical compare clears ─
   document.addEventListener('click', function (e) {
     if (e.target && e.target.id === 'clearCompareOk') {
       window.compareDigitalCollection = {};
       refreshDigitalCompare();
     }
   });
+
+  // Expose for external use
+  window.refreshDigitalCompare = refreshDigitalCompare;
 
   console.log('[friend-compare.js] loaded ✓');
 

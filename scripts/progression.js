@@ -1,9 +1,9 @@
 // ================================================================
-//  AVATAR TCG — Progression & Discovery Module  (progression.js v1)
+//  AVATAR TCG — Progression & Discovery Module  (progression.js v2)
 //  Requires: window.sb (Supabase), window.allCards, window.collection
 //
 //  Features:
-//   1. Daily login streaks with pack rewards
+//   1. Daily login streaks
 //   2. Achievements / badges displayed on profiles
 //   3. Bender level (XP from collecting, trading, posting)
 //   4. "Cards in Common" when viewing a friend's collection
@@ -18,20 +18,20 @@
   var TOTAL_CORE_CARDS = 248;
 
   var ACHIEVEMENTS = [
-    { key: 'first_card',    name: 'First Card',        icon: '🃏', desc: 'Add your first card to your collection',        xp: 10  },
-    { key: 'collector_10',  name: 'Budding Collector',  icon: '📦', desc: 'Own 10 unique cards',                           xp: 25  },
-    { key: 'collector_50',  name: 'Dedicated Bender',  icon: '⭐', desc: 'Own 50 unique cards',                           xp: 75  },
-    { key: 'collector_100', name: 'Card Master',        icon: '💎', desc: 'Own 100 unique cards',                          xp: 150 },
-    { key: 'collector_248', name: 'Fully Realized Avatar',    icon: '🏆', desc: 'Complete the core set (248 cards)',              xp: 500 },
-    { key: 'first_trade',   name: 'First Trade',        icon: '🤝', desc: 'Complete your first trade',                     xp: 50  },
-    { key: 'first_friend',  name: 'Bending Buddy',   icon: '🦋', desc: 'Add your first friend',                         xp: 25  },
-    { key: 'streak_7',      name: 'Weekly Warrior',       icon: '🔥', desc: 'Maintain a 7-day login streak',                 xp: 50  },
-    { key: 'streak_30',     name: 'Blazing Bender',    icon: '⚡', desc: 'Maintain a 30-day login streak',                xp: 200 },
-    { key: 'forum_post',    name: 'Voice of the Arena', icon: '📣', desc: 'Write your first forum post',                   xp: 15  },
-    { key: 'set_common',    name: 'Common Sense',       icon: '📋', desc: 'Complete all Common cards in the core set',     xp: 100 },
-    { key: 'set_uncommon',  name: 'Uncommon Feat',      icon: '🌿', desc: 'Complete all Uncommon cards in the core set',   xp: 150 },
-    { key: 'set_rare',      name: 'Rare Breed',         icon: '💧', desc: 'Complete all Rare cards in the core set',       xp: 200 },
-    { key: 'set_zen',       name: 'Zen Master',         icon: '🌸', desc: 'Complete all Zenemental cards in the core set', xp: 300 },
+    { key: 'first_card',    name: 'First Card',           icon: '🃏', desc: 'Add your first card to your collection',        xp: 10  },
+    { key: 'collector_10',  name: 'Budding Collector',    icon: '📦', desc: 'Own 10 unique cards',                           xp: 25  },
+    { key: 'collector_50',  name: 'Dedicated Bender',     icon: '⭐', desc: 'Own 50 unique cards',                           xp: 75  },
+    { key: 'collector_100', name: 'Card Master',           icon: '💎', desc: 'Own 100 unique cards',                          xp: 150 },
+    { key: 'collector_248', name: 'Fully Realized Avatar', icon: '🏆', desc: 'Complete the core set (248 cards)',              xp: 500 },
+    { key: 'first_trade',   name: 'First Trade',           icon: '🤝', desc: 'Complete your first trade',                     xp: 50  },
+    { key: 'first_friend',  name: 'Bending Buddy',        icon: '🦋', desc: 'Add your first friend',                         xp: 25  },
+    { key: 'streak_7',      name: 'Weekly Warrior',        icon: '🔥', desc: 'Maintain a 7-day login streak',                 xp: 50  },
+    { key: 'streak_30',     name: 'Blazing Bender',       icon: '⚡', desc: 'Maintain a 30-day login streak',                xp: 200 },
+    { key: 'forum_post',    name: 'Voice of the Arena',   icon: '📣', desc: 'Write your first forum post',                   xp: 15  },
+    { key: 'set_common',    name: 'Common Sense',          icon: '📋', desc: 'Complete all Common cards in the core set',     xp: 100 },
+    { key: 'set_uncommon',  name: 'Uncommon Feat',         icon: '🌿', desc: 'Complete all Uncommon cards in the core set',   xp: 150 },
+    { key: 'set_rare',      name: 'Rare Breed',            icon: '💧', desc: 'Complete all Rare cards in the core set',       xp: 200 },
+    { key: 'set_zen',       name: 'Zen Master',            icon: '🌸', desc: 'Complete all Zenemental cards in the core set', xp: 300 },
   ];
 
   var LEVEL_TITLES = [
@@ -47,7 +47,7 @@
   // ── State ──────────────────────────────────────────────────────
   var _userId        = null;
   var _userProfile   = null;
-  var _scarcityMap   = {};   // card_number → owner_count
+  var _scarcityMap   = {};
   var _totalUsers    = 1;
   var _scarcityReady = false;
 
@@ -64,8 +64,8 @@
     setTimeout(function () { t.classList.remove('show'); }, 2500);
   }
 
-  function calcLevel(xp)      { return Math.floor((xp || 0) / XP_PER_LEVEL) + 1; }
-  function xpInLevel(xp)      { return (xp || 0) % XP_PER_LEVEL; }
+  function calcLevel(xp)  { return Math.floor((xp || 0) / XP_PER_LEVEL) + 1; }
+  function xpInLevel(xp)  { return (xp || 0) % XP_PER_LEVEL; }
   function levelTitle(level) {
     var title = 'Novice Bender';
     LEVEL_TITLES.forEach(function (t) { if (level >= t[0]) title = t[1]; });
@@ -88,10 +88,8 @@
       var d = res.data;
       if (!d || d.already_claimed) return;
 
-      // Show streak toast
-      var msg = '🔥 ' + d.streak + '-day streak! +' + d.xp_gained + ' XP';
-      if (d.pack_reward > 0) msg += ' · 🎁 +' + d.pack_reward + ' pack credit' + (d.pack_reward > 1 ? 's' : '') + '!';
-      toast(msg);
+      // Show streak toast — no pack rewards
+      toast('🔥 ' + d.streak + '-day streak! +' + d.xp_gained + ' XP');
 
       // Milestone banner
       if (d.streak === 7 || d.streak === 14 || d.streak === 30 || (d.streak > 30 && d.streak % 30 === 0)) {
@@ -100,10 +98,9 @@
 
       // Refresh profile XP/level in the page cache
       if (_userProfile) {
-        _userProfile.login_streak   = d.streak;
-        _userProfile.total_xp       = d.new_xp;
-        _userProfile.trainer_level  = d.level;
-        _userProfile.pack_credits   = d.pack_credits;
+        _userProfile.login_streak  = d.streak;
+        _userProfile.total_xp      = d.new_xp;
+        _userProfile.trainer_level = d.level;
       }
     } catch (e) { console.warn('[progression] handleDailyLogin error:', e); }
   }
@@ -122,12 +119,7 @@
     banner.innerHTML =
       '<div style="font-size:3rem;margin-bottom:8px;">🔥</div>' +
       '<div style="font-family:\'Cinzel\',serif;font-size:1.15rem;font-weight:900;color:var(--fire);margin-bottom:6px;">' + data.streak + '-Day Streak!</div>' +
-      '<div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:16px;">' +
-        'Keep it up, Bender!' +
-        (data.pack_reward > 0
-          ? '<br><span style="color:var(--air);font-weight:700;">🎁 +' + data.pack_reward + ' pack credit' + (data.pack_reward > 1 ? 's' : '') + ' earned!</span>'
-          : '') +
-      '</div>' +
+      '<div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:16px;">Keep it up, Bender!</div>' +
       '<button style="background:var(--fire);color:#fff;border:none;border-radius:99px;padding:9px 24px;' +
         'font-family:\'Nunito Sans\',sans-serif;font-weight:700;font-size:0.82rem;cursor:pointer;">Awesome!</button>';
     document.body.appendChild(banner);
@@ -142,19 +134,18 @@
   }
 
   // ══════════════════════════════════════════════════════════════
-  //  2 & 3. ACHIEVEMENTS + Bender LEVEL — rendering & checking
+  //  2 & 3. ACHIEVEMENTS + Bender LEVEL
   // ══════════════════════════════════════════════════════════════
 
   /** Returns HTML string for the progression card embedded in the profile */
   function renderProgressionCard(profile) {
     if (!profile) return '';
-    var xp      = profile.total_xp     || 0;
-    var level   = profile.Bender_level || calcLevel(xp);
-    var streak  = profile.login_streak  || 0;
-    var credits = profile.pack_credits  || 0;
-    var pct     = Math.round((xpInLevel(xp) / XP_PER_LEVEL) * 100);
-    var title   = levelTitle(level);
-    var earned  = earnedKeys(profile);
+    var xp     = profile.total_xp     || 0;
+    var level  = profile.Bender_level || calcLevel(xp);
+    var streak = profile.login_streak  || 0;
+    var pct    = Math.round((xpInLevel(xp) / XP_PER_LEVEL) * 100);
+    var title  = levelTitle(level);
+    var earned = earnedKeys(profile);
     var earnedDefs = ACHIEVEMENTS.filter(function (a) { return earned.indexOf(a.key) !== -1; });
 
     var achieveHtml = earnedDefs.length
@@ -210,7 +201,7 @@
         '</div>' +
       '</div>' +
 
-      /* Stats pills */
+      /* Stats pills — XP and Streak only; pack credits removed */
       '<div style="display:flex;gap:6px;">' +
         '<div style="flex:1;text-align:center;padding:6px 4px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;">' +
           '<div style="font-family:\'Cinzel\',serif;font-size:0.85rem;font-weight:700;color:var(--accent);">' + xp + '</div>' +
@@ -220,12 +211,6 @@
           '<div style="font-family:\'Cinzel\',serif;font-size:0.85rem;font-weight:700;color:var(--fire);">' + streak + '</div>' +
           '<div style="font-size:0.52rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);">Day Streak</div>' +
         '</div>' +
-        (credits > 0
-          ? '<div style="flex:1;text-align:center;padding:6px 4px;background:rgba(240,201,70,0.06);border:1px solid rgba(240,201,70,0.2);border-radius:6px;">' +
-              '<div style="font-family:\'Cinzel\',serif;font-size:0.85rem;font-weight:700;color:var(--air);">' + credits + '</div>' +
-              '<div style="font-size:0.52rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);">Pack Credits</div>' +
-            '</div>'
-          : '') +
       '</div>' +
 
       achieveHtml +
@@ -251,14 +236,12 @@
       { key: 'streak_30',     cond: (profile.login_streak || 0) >= 30 },
     ];
 
-    // Rarity set completions
     [['common','set_common'],['uncommon','set_uncommon'],['rare','set_rare'],['zenemental','set_zen']].forEach(function (r) {
-      var pool  = allCards.filter(function (c) { return c.rarity === r[0]; });
+      var pool   = allCards.filter(function (c) { return c.rarity === r[0]; });
       var ownedR = pool.filter(function (c) { return (col[c.number] || 0) > 0; }).length;
       checks.push({ key: r[1], cond: pool.length > 0 && ownedR >= pool.length });
     });
 
-    // Social checks (async)
     try {
       var frRes = await sb().from('friendships').select('id', { count: 'exact' })
         .or('user_id.eq.' + userId + ',friend_id.eq.' + userId).eq('status','accepted');
@@ -272,7 +255,6 @@
       if ((fpRes.count || 0) >= 1) checks.push({ key: 'forum_post', cond: true });
     } catch (e) { /* non-fatal */ }
 
-    // Grant new ones
     var newlyGranted = [];
     for (var i = 0; i < checks.length; i++) {
       var chk = checks[i];
@@ -281,10 +263,10 @@
       if (!def) continue;
       try {
         var gRes = await sb().rpc('grant_achievement', {
-          p_user_id:        userId,
-          p_achievement_key: chk.key,
+          p_user_id:          userId,
+          p_achievement_key:  chk.key,
           p_achievement_name: def.name,
-          p_icon:            def.icon
+          p_icon:             def.icon
         });
         if (!gRes.error && gRes.data && !gRes.data.already_had) {
           newlyGranted.push(def);
@@ -296,7 +278,6 @@
       } catch (e) { /* non-fatal */ }
     }
 
-    // Show unlock toasts
     newlyGranted.forEach(function (a, idx) {
       setTimeout(function () { showAchievementUnlock(a); }, idx * 1800);
     });
@@ -359,8 +340,8 @@
     var friendOwned = {};
     friendRows.forEach(function (r) { friendOwned[r.card_number] = r.quantity || 1; });
 
-    var commonNums = myOwned.filter(function (n) { return !!friendOwned[n]; });
-    var onlyMeNums = myOwned.filter(function (n) { return !friendOwned[n]; });
+    var commonNums   = myOwned.filter(function (n) { return !!friendOwned[n]; });
+    var onlyMeNums   = myOwned.filter(function (n) { return !friendOwned[n]; });
     var onlyThemNums = Object.keys(friendOwned).filter(function (n) { return !myCol[n] || myCol[n] <= 0; });
 
     if (!commonNums.length) {
@@ -391,7 +372,6 @@
     }
 
     return '<div>' +
-      /* Summary stats */
       '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;">' +
         '<div style="background:rgba(46,140,232,0.08);border:1px solid rgba(46,140,232,0.25);border-radius:8px;padding:10px;text-align:center;">' +
           '<div style="font-family:\'Cinzel\',serif;font-size:1.2rem;font-weight:700;color:var(--water);">' + commonNums.length + '</div>' +
@@ -406,7 +386,6 @@
           '<div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">Only Them</div>' +
         '</div>' +
       '</div>' +
-      /* Common cards grid */
       '<div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--water);font-weight:700;margin-bottom:8px;">' +
         '<i class="fas fa-people-arrows" style="margin-right:5px;"></i>Cards you both own' +
       '</div>' +
@@ -439,16 +418,15 @@
     var cnt = _scarcityMap[cardNumber] || 0;
     var pct = Math.round((cnt / _totalUsers) * 100);
     var label, color, bg;
-    if (cnt === 0)   { label = 'Unclaimed';  color = 'var(--text-muted)'; bg = 'rgba(90,94,120,0.1)'; }
-    else if (pct < 5)  { label = 'Ultra Rare'; color = 'var(--promo)';     bg = 'rgba(232,182,50,0.1)'; }
-    else if (pct < 15) { label = 'Scarce';     color = 'var(--zen)';       bg = 'rgba(180,77,223,0.1)'; }
-    else if (pct < 35) { label = 'Uncommon';   color = 'var(--water)';     bg = 'rgba(46,140,232,0.1)'; }
-    else if (pct < 65) { label = 'Common';     color = 'var(--earth)';     bg = 'rgba(92,184,92,0.1)';  }
-    else               { label = 'Widespread'; color = 'var(--text-secondary)'; bg = 'rgba(138,142,168,0.1)'; }
+    if (cnt === 0)    { label = 'Unclaimed';  color = 'var(--text-muted)';      bg = 'rgba(90,94,120,0.1)'; }
+    else if (pct < 5)  { label = 'Ultra Rare'; color = 'var(--promo)';           bg = 'rgba(232,182,50,0.1)'; }
+    else if (pct < 15) { label = 'Scarce';     color = 'var(--zen)';             bg = 'rgba(180,77,223,0.1)'; }
+    else if (pct < 35) { label = 'Uncommon';   color = 'var(--water)';           bg = 'rgba(46,140,232,0.1)'; }
+    else if (pct < 65) { label = 'Common';     color = 'var(--earth)';           bg = 'rgba(92,184,92,0.1)'; }
+    else               { label = 'Widespread'; color = 'var(--text-secondary)';  bg = 'rgba(138,142,168,0.1)'; }
     return { ownerCount: cnt, pct: pct, label: label, color: color, bg: bg };
   }
 
-  // Render scarcity pill HTML (for modal injection)
   function scarcityPillHtml(cardNumber) {
     var info = getScarcityInfo(cardNumber);
     if (!info) return '';
@@ -460,12 +438,10 @@
     '</span>';
   }
 
-  window.getCardScarcity    = getScarcityInfo;
-  window.scarcityPillHtml   = scarcityPillHtml;
+  window.getCardScarcity  = getScarcityInfo;
+  window.scarcityPillHtml = scarcityPillHtml;
 
-  // Inject scarcity pill into card modal when it opens
   function injectScarcityOnModal() {
-    // Hook into the existing openModal to append scarcity info
     var _origOpen = window.openModal;
     if (!_origOpen) return;
     window.openModal = function (cardNumber, opts) {
@@ -510,14 +486,13 @@
     }
 
     var filters = [
-      { key:'all',        label:'All Cards',   total: TOTAL_CORE_CARDS, col: 'cards_owned' },
-      { key:'common',     label:'Common',      total: null,             col: 'common_owned' },
-      { key:'uncommon',   label:'Uncommon',    total: null,             col: 'uncommon_owned' },
-      { key:'rare',       label:'Rare',        total: null,             col: 'rare_owned' },
-      { key:'zenemental', label:'Zenemental',  total: null,             col: 'zenemental_owned' },
+      { key:'all',        label:'All Cards',  total: TOTAL_CORE_CARDS, col: 'cards_owned' },
+      { key:'common',     label:'Common',     total: null,             col: 'common_owned' },
+      { key:'uncommon',   label:'Uncommon',   total: null,             col: 'uncommon_owned' },
+      { key:'rare',       label:'Rare',       total: null,             col: 'rare_owned' },
+      { key:'zenemental', label:'Zenemental', total: null,             col: 'zenemental_owned' },
     ];
 
-    // Calculate per-rarity totals from allCards
     var allCards = window.allCards || [];
     filters.forEach(function (f) {
       if (f.key !== 'all') {
@@ -526,7 +501,6 @@
     });
 
     el.innerHTML =
-      /* Filter pills */
       '<div style="display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;">' +
         filters.map(function (f, i) {
           var isActive = (i === 0 && _lbFilter === 'all') || _lbFilter === f.key;
@@ -561,14 +535,11 @@
   function buildLbTable(rows, filterDef) {
     var medals = ['🥇','🥈','🥉'];
     var allCards = window.allCards || [];
-
-    // Sort by chosen column
-    var col   = filterDef.col;
-    var total = filterDef.total;
+    var col    = filterDef.col;
+    var total  = filterDef.total;
     var sorted = rows.slice().sort(function (a, b) { return (b[col] || 0) - (a[col] || 0); });
 
     return '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">' +
-      /* Header */
       '<div style="display:grid;grid-template-columns:40px 1fr 90px 64px;gap:6px;padding:8px 12px;' +
         'background:var(--bg-primary);border-bottom:1px solid var(--border);">' +
         '<span style="font-size:0.58rem;text-transform:uppercase;color:var(--text-muted);font-weight:700;">#</span>' +
@@ -576,15 +547,12 @@
         '<span style="font-size:0.58rem;text-transform:uppercase;color:var(--text-muted);font-weight:700;text-align:center;">Progress</span>' +
         '<span style="font-size:0.58rem;text-transform:uppercase;color:var(--text-muted);font-weight:700;text-align:right;">Cards</span>' +
       '</div>' +
-
-      /* Rows */
       sorted.slice(0, 25).map(function (row, i) {
         var count = row[col] || 0;
         var pct   = total > 0 ? Math.round((count / total) * 100) : 0;
         var isMe  = _userId && row.user_id === _userId;
         var rank  = i < 3 ? medals[i] : (i + 1);
 
-        // Tiny avatar
         var avatarCard = row.avatar_card_number
           ? (allCards.find(function (c) { return c.number === String(row.avatar_card_number); }) || null)
           : null;
@@ -629,9 +597,7 @@
     if (document.getElementById('progKeyframes')) return;
     var s = document.createElement('style');
     s.id = 'progKeyframes';
-    s.textContent = [
-      '@keyframes progBounce{from{transform:translate(-50%,-50%) scale(0.45);opacity:0}to{transform:translate(-50%,-50%) scale(1);opacity:1}}',
-    ].join('');
+    s.textContent = '@keyframes progBounce{from{transform:translate(-50%,-50%) scale(0.45);opacity:0}to{transform:translate(-50%,-50%) scale(1);opacity:1}}';
     document.head.appendChild(s);
   }
 
@@ -639,7 +605,6 @@
   //  PUBLIC HOOKS
   // ══════════════════════════════════════════════════════════════
 
-  /** Called by modified socialOnLogin (in social.js) */
   window.progressionOnLogin = function (userId, profile) {
     _userId      = userId;
     _userProfile = profile;
@@ -649,20 +614,15 @@
     window._currentLbUserId = userId;
   };
 
-  /** Exposed so social.js refreshProfileDisplay can call it */
-  window.progressionRenderCard = renderProgressionCard;
+  window.progressionRenderCard       = renderProgressionCard;
+  window.progressionLoadLeaderboard  = loadLeaderboard;
 
-  /** For leaderboard tab click (wired in HTML) */
-  window.progressionLoadLeaderboard = loadLeaderboard;
-
-  // ── Auto-load scarcity on page start (works for anonymous users too) ──
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () { loadScarcityData(); });
   } else {
     loadScarcityData();
   }
 
-  // Click delegation for leaderboard tab
   document.addEventListener('click', function (e) {
     var btn = e.target.closest('[data-nested-tab="leaderboard"]');
     if (btn) setTimeout(loadLeaderboard, 60);
