@@ -77,8 +77,6 @@
   }
 
   // ── Avatar crop clamp helper ──────────────────────────────────
-  // Ensures the image never shows a gap inside the circle.
-  // img is rendered at 185% width; aspect ratio 3:4 assumed.
   function clampOffset(ox, oy, containerPx) {
     containerPx = containerPx || PE_PREVIEW_SIZE;
     var imgW = containerPx * 1.85;
@@ -92,7 +90,6 @@
   }
 
   // ── Avatar rendering ──────────────────────────────────────────
-  // profile: { username, avatar_card_number?, avatar_offset_x?, avatar_offset_y?, is_pro? }
   function avatarHtml(profile, size) {
     size = size || 42;
     var fs = Math.round(size * 0.38) + 'px';
@@ -115,8 +112,6 @@
   }
 
   // ── Persistent header profile indicator ──────────────────────
-  // On narrow/portrait viewports: show avatar image only.
-  // On wide viewports: show avatar + name + label.
   function updateHeaderProfile() {
     if (!currentProfile) return;
     var hdr = $('headerProfileIndicator');
@@ -221,13 +216,10 @@
     initSocialTabs();
     loadFriends();
 
-    // ── Fire progression hook ──────────────────────────────────────
     if (typeof window.progressionOnLogin === 'function' && currentUser) {
       window.progressionOnLogin(currentUser.id, profile);
     }
 
-    // ── Live friend-request notifications ────────────────────────
-    // Unsubscribe any previous channel first (e.g. after profile re-setup)
     if (friendReqSub) { try { friendReqSub.unsubscribe(); } catch(e){} friendReqSub = null; }
 
     friendReqSub = sb().channel('friend-requests:' + currentUser.id)
@@ -237,7 +229,6 @@
         table:  'friendships',
         filter: 'friend_id=eq.' + currentUser.id
       }, function () {
-        // Reload the friends panel so the pending section appears immediately
         loadFriends();
         toast('📬 You have a new friend request!');
       })
@@ -309,7 +300,6 @@
       editBtn.addEventListener('click', openProfileEditor);
     }
 
-    // ── Progression card (XP / level / streak / achievements) ────────
     var progContainer = $('progressionCardContainer');
     if (!progContainer) {
       progContainer = document.createElement('div');
@@ -320,7 +310,9 @@
     if (typeof window.progressionRenderCard === 'function') {
       progContainer.innerHTML = window.progressionRenderCard(profile);
     }
-  }  // ← end refreshProfileDisplay
+  }
+
+  // ══════════════════════════════════════════════════════════════
   //  PROFILE EDITOR MODAL
   // ══════════════════════════════════════════════════════════════
   function injectProfileEditorModal() {
@@ -349,19 +341,15 @@
 
           '<div id="peBody" class="social-modal-body" style="padding:0;overflow-y:auto;">' +
 
-            /* ── Avatar section ── */
             '<div style="padding:18px 18px 14px;border-bottom:1px solid var(--border);background:var(--bg-card);">' +
               '<div style="font-size:0.67rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);font-weight:700;margin-bottom:12px;">Profile Picture</div>' +
               '<div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;">' +
-
-                /* draggable preview circle */
                 '<div style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px;">' +
                   '<div id="peAvatarPreview" ' +
                     'style="width:'+PE_PREVIEW_SIZE+'px;height:'+PE_PREVIEW_SIZE+'px;border-radius:50%;overflow:hidden;position:relative;' +
                     'background:var(--bg-primary);border:3px solid var(--border-light);cursor:default;user-select:none;-webkit-user-select:none;touch-action:none;"></div>' +
                   '<div id="peDragHint" style="font-size:0.55rem;color:var(--text-muted);text-align:center;letter-spacing:0.04em;opacity:0;transition:opacity 0.25s;">drag to reposition</div>' +
                 '</div>' +
-
                 '<div style="flex:1;min-width:0;">' +
                   '<div style="font-size:0.8rem;color:var(--text-secondary);line-height:1.55;margin-bottom:8px;">' +
                     'Choose artwork from cards <strong style="color:var(--text-primary);">#1–#165</strong> (free). ' +
@@ -380,10 +368,7 @@
               '<div id="peLoadMore" style="text-align:center;margin-top:8px;"></div>' +
             '</div>' +
 
-            /* ── Fields section ── */
             '<div style="padding:18px;">' +
-
-              /* Display Name */
               '<div style="margin-bottom:16px;">' +
                 '<label style="font-size:0.67rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);font-weight:700;display:block;margin-bottom:6px;">' +
                   'Display Name <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:0.65rem;">— shown instead of username (optional)</span>' +
@@ -392,7 +377,6 @@
                   'style="width:100%;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;padding:11px 13px;color:var(--text-primary);font-size:0.88rem;font-family:\'Nunito Sans\',sans-serif;outline:none;box-sizing:border-box;transition:border-color 0.2s;">' +
               '</div>' +
 
-              /* Username */
               '<div style="margin-bottom:16px;">' +
                 '<label style="font-size:0.67rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);font-weight:700;display:block;margin-bottom:6px;">Username</label>' +
                 '<div style="position:relative;">' +
@@ -403,7 +387,6 @@
                 '<div id="peUsernameHint" style="font-size:0.68rem;margin-top:4px;min-height:16px;color:var(--text-muted);"></div>' +
               '</div>' +
 
-              /* Bio */
               '<div style="margin-bottom:16px;">' +
                 '<label style="font-size:0.67rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);font-weight:700;display:block;margin-bottom:6px;">Bio</label>' +
                 '<textarea id="peBio" maxlength="200" placeholder="Tell the community about yourself…" ' +
@@ -411,7 +394,6 @@
                 '<div id="peBioCount" style="font-size:0.63rem;color:var(--text-muted);text-align:right;margin-top:3px;">0 / 200</div>' +
               '</div>' +
 
-              /* Preferred Traits */
               '<div style="margin-bottom:16px;">' +
                 '<label style="font-size:0.67rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);font-weight:700;display:block;margin-bottom:8px;">' +
                   'Preferred Traits <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:0.65rem;">— pick up to 3</span>' +
@@ -420,7 +402,6 @@
                 '<div id="peTraitsHint" style="font-size:0.67rem;color:var(--text-muted);margin-top:6px;min-height:16px;"></div>' +
               '</div>' +
 
-              /* Favorite Chamber */
               '<div style="margin-bottom:6px;">' +
                 '<label style="font-size:0.67rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);font-weight:700;display:block;margin-bottom:6px;">Favorite Chamber</label>' +
                 '<select id="peChamber" style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:11px 12px;color:var(--text-primary);font-size:0.88rem;font-family:\'Nunito Sans\',sans-serif;outline:none;cursor:pointer;">' +
@@ -498,7 +479,6 @@
     });
   }
 
-  // ── Avatar grid ───────────────────────────────────────────────
   function getAvatarCards() {
     var all = (window.allCards || []).filter(function (c) {
       var n = parseInt(c.number, 10); return !isNaN(n) && n >= 1 && c.imageLink;
@@ -545,7 +525,6 @@
     }
   }
 
-  // ── Draggable avatar preview ──────────────────────────────────
   function renderPeAvatarPreview() {
     var el = $('peAvatarPreview');
     var hint = $('peDragHint');
@@ -558,7 +537,6 @@
         el.innerHTML =
           '<img src="'+esc(card.imageLink)+'" alt="" loading="lazy" ' +
           'style="position:absolute;width:185%;height:auto;top:'+peOffsetY+'%;left:'+peOffsetX+'%;pointer-events:none;user-select:none;-webkit-user-select:none;">' +
-          /* Subtle vignette ring so users know it's interactive */
           '<div style="position:absolute;inset:0;border-radius:50%;box-shadow:inset 0 0 0 2px rgba(180,77,223,0.45);pointer-events:none;"></div>';
         if (hint) hint.style.opacity = '1';
         return;
@@ -574,7 +552,6 @@
       esc(initials(p.username || '?'))+'</div>';
   }
 
-  // One-time drag setup — called from initProfileEditorEvents
   function initAvatarDrag() {
     if (_dragBound) return;
     _dragBound = true;
@@ -595,7 +572,6 @@
       if (img) { img.style.left = peOffsetX + '%'; img.style.top = peOffsetY + '%'; }
     }
 
-    // Mouse
     document.addEventListener('mousedown', function (e) {
       var el = getEl();
       if (!el || !peSelectedAvatar) return;
@@ -618,7 +594,6 @@
       var el = getEl(); if (el && peSelectedAvatar) el.style.cursor = 'grab';
     });
 
-    // Touch
     document.addEventListener('touchstart', function (e) {
       var el = getEl();
       if (!el || !peSelectedAvatar) return;
@@ -637,7 +612,6 @@
     document.addEventListener('touchcancel', function () { _dragging = false; });
   }
 
-  // ── Username availability debounced check ─────────────────────
   var checkUsername = debounce(async function () {
     var inp=$('peUsername'), icon=$('peUsernameIcon'), hint=$('peUsernameHint');
     if (!inp || !sb()) return;
@@ -664,7 +638,6 @@
     }
   }, 600);
 
-  // ── Trait helpers ─────────────────────────────────────────────
   function applyTraitStyle(btn, active) {
     btn.style.borderColor = active ? 'var(--zen)' : 'var(--border)';
     btn.style.background  = active ? 'rgba(180,77,223,0.15)' : 'var(--bg-primary)';
@@ -682,7 +655,6 @@
     if (bio && cnt) cnt.textContent = bio.value.length + ' / 200';
   }
 
-  // ── Save ──────────────────────────────────────────────────────
   async function saveProfileChanges() {
     var errEl = $('peError'); if (errEl) errEl.textContent = '';
     if (!peUsernameValid) { if (errEl) errEl.textContent = 'Fix the username before saving.'; return; }
@@ -719,7 +691,6 @@
     toast('Profile updated! ✨');
   }
 
-  // ── Wire profile editor events ────────────────────────────────
   function initProfileEditorEvents() {
     var overlay = $('profileEditorOverlay'); if (!overlay) return;
 
@@ -728,7 +699,6 @@
 
     var saveBtn = $('peSave'); if (saveBtn) saveBtn.addEventListener('click', saveProfileChanges);
 
-    // Avatar grid clicks
     var grid = $('peAvatarGrid');
     if (grid) {
       grid.addEventListener('click', function (e) {
@@ -742,7 +712,6 @@
           peSelectedAvatar = null;
         } else {
           peSelectedAvatar = num;
-          // Reset crop to default when switching cards
           peOffsetX = -42;
           peOffsetY = -6;
         }
@@ -750,7 +719,6 @@
         renderPeAvatarPreview();
       });
 
-      // Hover effects
       grid.addEventListener('mouseover', function (e) {
         var t = e.target.closest('.pe-card-thumb');
         if (t && t.getAttribute('data-cn') !== peSelectedAvatar) t.style.transform = 'scale(1.06)';
@@ -786,7 +754,6 @@
       el.addEventListener('blur',  function () { if (this.style.borderColor === 'var(--accent)') this.style.borderColor = ''; });
     });
 
-    // Trait buttons
     var traitsWrap = $('peTraits');
     if (traitsWrap) traitsWrap.addEventListener('click', function (e) {
       var btn = e.target.closest('.pe-trait-btn'); if (!btn) return;
@@ -804,13 +771,11 @@
       updateTraitsHint();
     });
 
-    // Pro upgrade
     var proBtn = $('peProceedUpgrade');
     if (proBtn) proBtn.addEventListener('click', function () {
       toast('✦ Pro accounts — coming soon! Follow us for updates.');
     });
 
-    // Wire drag — called once here, safe from double-binding via _dragBound flag
     initAvatarDrag();
   }
 
@@ -820,11 +785,9 @@
   async function loadFriends() {
     if (!currentUser || !sb()) return;
 
-    // ── Incoming: pending requests addressed to us (via RPC for avatar data)
     var pendRes  = await sb().rpc('get_pending_friend_requests');
     var incoming = pendRes.data || [];
 
-    // ── Outgoing: pending requests we sent that haven't been responded to yet
     var outRes  = await sb().from('friendships')
       .select('id, friend:profiles!friendships_friend_id_fkey(username,avatar_card_number,avatar_offset_x,avatar_offset_y,is_pro)')
       .eq('user_id', currentUser.id)
@@ -838,7 +801,6 @@
     if (total > 0) {
       if (pendSec) pendSec.style.display = '';
 
-      // ── Build incoming cards HTML
       var inHtml = incoming.length
         ? incoming.map(function (f) {
             var p2 = { username: f.sender_username, avatar_card_number: f.avatar_card_number, avatar_offset_x: f.avatar_offset_x, avatar_offset_y: f.avatar_offset_y };
@@ -854,7 +816,6 @@
           }).join('')
         : '<div style="text-align:center;padding:18px 0;color:var(--text-muted);font-size:0.8rem;">No incoming requests.</div>';
 
-      // ── Build outgoing cards HTML
       var outHtml = outgoing.length
         ? outgoing.map(function (f) {
             var p2 = f.friend || {};
@@ -869,11 +830,9 @@
           }).join('')
         : '<div style="text-align:center;padding:18px 0;color:var(--text-muted);font-size:0.8rem;">No sent requests.</div>';
 
-      // ── Badge helpers
       var inBadge  = incoming.length ? ' <span style="background:var(--air);color:#000;border-radius:99px;padding:1px 7px;font-size:0.6rem;font-weight:700;margin-left:4px;">' + incoming.length + '</span>' : '';
       var outBadge = outgoing.length ? ' <span style="background:var(--border-light);color:var(--text-secondary);border-radius:99px;padding:1px 7px;font-size:0.6rem;font-weight:700;margin-left:4px;">' + outgoing.length + '</span>' : '';
 
-      // ── Shared tab style strings
       var activeStyle   = 'background:none;border:none;border-bottom:2px solid var(--air);color:var(--air);padding:8px 14px;font-family:\'Nunito Sans\',sans-serif;font-size:0.78rem;font-weight:700;cursor:pointer;flex-shrink:0;transition:all 0.15s;';
       var inactiveStyle = 'background:none;border:none;border-bottom:2px solid transparent;color:var(--text-muted);padding:8px 14px;font-family:\'Nunito Sans\',sans-serif;font-size:0.78rem;font-weight:700;cursor:pointer;flex-shrink:0;transition:all 0.15s;';
 
@@ -886,7 +845,6 @@
           '<div id="pendContentIn">'                       + inHtml  + '</div>' +
           '<div id="pendContentOut" style="display:none;">' + outHtml + '</div>';
 
-        // Wire sub-tab clicks (inline — no ID collision risk, freshly rendered)
         var tabIn   = document.getElementById('pendTabIn');
         var tabOut  = document.getElementById('pendTabOut');
         var contIn  = document.getElementById('pendContentIn');
@@ -909,12 +867,10 @@
       if (pendSec) pendSec.style.display = 'none';
     }
 
-    // ── Two-query approach: avoids .or().eq() chaining issues in Supabase JS v2
     var asUserRes   = await sb().from('friendships').select('id, user_id, friend_id').eq('user_id',   currentUser.id).eq('status', 'accepted');
     var asFriendRes = await sb().from('friendships').select('id, user_id, friend_id').eq('friend_id', currentUser.id).eq('status', 'accepted');
     var allShips    = (asUserRes.data || []).concat(asFriendRes.data || []);
 
-    // Deduplicate (shouldn't happen but guard)
     var seen = {}; allShips = allShips.filter(function(f){ if (seen[f.id]) return false; seen[f.id]=true; return true; });
 
     var friendListEl = $('friendList');
@@ -922,7 +878,6 @@
       friendListEl.innerHTML = '<div class="empty-state" style="padding:30px 0;"><p>No friends yet — search above!</p></div>'; return;
     }
 
-    // Collect other-user IDs then batch-fetch profiles
     var otherIds = allShips.map(function(f){ return f.user_id === currentUser.id ? f.friend_id : f.user_id; });
     var profRes  = await sb().from('profiles').select('user_id,username,display_name,avatar_card_number,avatar_offset_x,avatar_offset_y,is_pro').in('user_id', otherIds);
     var profMap  = {};
@@ -973,6 +928,29 @@
   }
 
   // ══════════════════════════════════════════════════════════════
+  //  FETCH FRIEND COLLECTIONS  (reads from `collections` table,
+  //  the same table auth.js writes to — NOT the missing user_cards)
+  // ══════════════════════════════════════════════════════════════
+  async function fetchFriendCollectionData(userId) {
+    if (!sb() || !userId) return { physical: {}, digital: {} };
+    try {
+      var res = await sb()
+        .from('collections')
+        .select('physical, digital')
+        .eq('user_id', userId)
+        .maybeSingle();
+      if (res.error) throw res.error;
+      return {
+        physical: (res.data && res.data.physical) || {},
+        digital:  (res.data && res.data.digital)  || {}
+      };
+    } catch (e) {
+      console.warn('[social] fetchFriendCollectionData error:', e.message || e);
+      return { physical: {}, digital: {} };
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════════
   //  FRIEND PROFILE MODAL
   // ══════════════════════════════════════════════════════════════
   function injectFriendProfileModal() {
@@ -982,17 +960,13 @@
     el.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:24px 12px;overflow-y:auto;';
     el.innerHTML =
       '<div id="friendProfileModal" style="width:100%;max-width:520px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;margin:auto;">' +
-        // Header
         '<div id="friendProfileHeader" style="display:flex;align-items:center;gap:14px;padding:18px 18px 14px;border-bottom:1px solid var(--border);position:relative;"></div>' +
-        // Tab row
         '<div style="display:flex;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;">' +
-          '<button class="fpTab" data-fp-tab="profile"  style="flex:1;padding:11px 0;border:none;background:none;cursor:pointer;font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;color:var(--zen);border-bottom:2px solid var(--zen);transition:all 0.15s;white-space:nowrap;"><i class="fas fa-user" style="margin-right:5px;"></i>Profile</button>' +
+          '<button class="fpTab" data-fp-tab="profile"    style="flex:1;padding:11px 0;border:none;background:none;cursor:pointer;font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;color:var(--zen);border-bottom:2px solid var(--zen);transition:all 0.15s;white-space:nowrap;"><i class="fas fa-user" style="margin-right:5px;"></i>Profile</button>' +
           '<button class="fpTab" data-fp-tab="collection" style="flex:1;padding:11px 0;border:none;background:none;cursor:pointer;font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;color:var(--text-muted);border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;"><i class="fas fa-layer-group" style="margin-right:5px;"></i>Collection</button>' +
           '<button class="fpTab" data-fp-tab="friends"    style="flex:1;padding:11px 0;border:none;background:none;cursor:pointer;font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;color:var(--text-muted);border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;"><i class="fas fa-users" style="margin-right:5px;"></i>Friends</button>' +
         '</div>' +
-        // Pane
         '<div id="friendProfilePane" style="padding:16px;min-height:180px;max-height:55vh;overflow-y:auto;"></div>' +
-        // Footer actions
         '<div style="display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:var(--bg-card);">' +
           '<button id="fpChatBtn"  style="flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary);color:var(--text-secondary);font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.2s;"><i class="fas fa-comment" style="margin-right:5px;"></i>Chat</button>' +
           '<button id="fpTradeBtn" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(74,125,255,0.3);background:rgba(74,125,255,0.08);color:var(--accent);font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.2s;"><i class="fas fa-exchange-alt" style="margin-right:5px;"></i>Offer Trade</button>' +
@@ -1001,7 +975,6 @@
       '</div>';
     document.body.appendChild(el);
 
-    // Tab switching
     el.querySelectorAll('.fpTab').forEach(function(btn) {
       btn.addEventListener('click', function() {
         el.querySelectorAll('.fpTab').forEach(function(b) {
@@ -1025,18 +998,15 @@
     overlay.setAttribute('data-fp-uname', friendUsername);
     overlay.style.display = 'flex';
 
-    // Reset tabs to Profile
     overlay.querySelectorAll('.fpTab').forEach(function(b) {
       b.style.color = 'var(--text-muted)'; b.style.borderBottomColor = 'transparent';
     });
     var first = overlay.querySelector('[data-fp-tab="profile"]');
     if (first) { first.style.color = 'var(--zen)'; first.style.borderBottomColor = 'var(--zen)'; }
 
-    // Render header (placeholder while profile loads)
     var hdr = $('friendProfileHeader');
     hdr.innerHTML = '<div style="font-family:\'Cinzel\',serif;font-size:1rem;font-weight:700;color:var(--text-primary);">Loading…</div>';
 
-    // Wire footer buttons
     $('fpChatBtn').onclick  = function() { closeFriendProfileModal(); openDM(friendUsername); };
     $('fpTradeBtn').onclick = function() { closeFriendProfileModal(); openTradeBuilderFor(friendUsername); };
 
@@ -1057,6 +1027,7 @@
     if (tab === 'friends')    await renderFriendFriends(userId, username);
   }
 
+  // ── renderFriendProfile — uses collections table for card count ──
   async function renderFriendProfile(userId, username) {
     if (!sb()) return;
     var res = await sb().from('profiles').select('*').eq('user_id', userId).maybeSingle();
@@ -1067,7 +1038,6 @@
       return;
     }
 
-    // Populate header
     if (hdr) {
       hdr.innerHTML =
         avatarHtml(p, 52) +
@@ -1078,7 +1048,6 @@
         '<button onclick="document.getElementById(\'friendProfileOverlay\').style.display=\'none\'" style="background:none;border:none;color:var(--text-muted);font-size:1.2rem;cursor:pointer;padding:4px 8px;position:absolute;top:12px;right:12px;">&times;</button>';
     }
 
-    // Bio, traits, chamber
     var tmap = window.traitIconMap || {};
     var traitsHtml = '';
     if (p.preferred_traits && p.preferred_traits.length) {
@@ -1089,25 +1058,33 @@
         }).join('') + '</div>';
     }
 
-    // Collection quick-stats via user_cards table
-    // NOTE: adjust the table/column names below if your schema differs
+    // ── Card count from collections table (not user_cards) ──────
     var statsHtml = '';
-    var statsRes = await sb().from('user_cards').select('card_number', { count: 'exact' }).eq('user_id', userId);
-    if (!statsRes.error) {
-      var owned = statsRes.count || 0;
-      var total = (window.allCards || []).length;
+    try {
+      var colData = await fetchFriendCollectionData(userId);
+      var physOwned = Object.keys(colData.physical).filter(function(n){ return (colData.physical[n]||0) > 0; }).length;
+      var digOwned  = Object.keys(colData.digital).filter(function(n){  return (colData.digital[n]||0)  > 0; }).length;
+      var allC      = window.allCards || [];
+      var coreTotal = allC.filter(function(c){
+        var n = parseInt(c.number, 10); return !isNaN(n) && n >= 1 && n <= 248;
+      }).length || 248;
+
       statsHtml =
-        '<div style="display:flex;gap:10px;margin-top:14px;">' +
-          '<div style="flex:1;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;">' +
-            '<div style="font-size:1.1rem;font-weight:700;color:var(--accent);">' + owned + '</div>' +
-            '<div style="font-size:0.68rem;color:var(--text-muted);">Cards Owned</div>' +
+        '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;">' +
+          '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;">' +
+            '<div style="font-family:\'Cinzel\',serif;font-size:1.1rem;font-weight:700;color:var(--accent);">' + physOwned + '</div>' +
+            '<div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">Physical</div>' +
           '</div>' +
-          (total ? '<div style="flex:1;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;">' +
-            '<div style="font-size:1.1rem;font-weight:700;color:var(--zen);">' + Math.round((owned/total)*100) + '%</div>' +
-            '<div style="font-size:0.68rem;color:var(--text-muted);">Complete</div>' +
-          '</div>' : '') +
+          '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;">' +
+            '<div style="font-family:\'Cinzel\',serif;font-size:1.1rem;font-weight:700;color:var(--zen);">' + Math.round((physOwned / coreTotal) * 100) + '%</div>' +
+            '<div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">Complete</div>' +
+          '</div>' +
+          '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;">' +
+            '<div style="font-family:\'Cinzel\',serif;font-size:1.1rem;font-weight:700;color:var(--water);">' + digOwned + '</div>' +
+            '<div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">Digital</div>' +
+          '</div>' +
         '</div>';
-    }
+    } catch (e) { /* non-fatal — just omit stats */ }
 
     if (pane) pane.innerHTML =
       '<div style="font-size:0.85rem;color:var(--text-secondary);line-height:1.65;word-break:break-word;">' + (p.bio ? esc(p.bio) : '<em style="color:var(--text-muted);">No bio yet.</em>') + '</div>' +
@@ -1115,34 +1092,113 @@
       traitsHtml + statsHtml;
   }
 
+  // ── renderFriendCollection — reads from collections table ──────
+  // Shows a Physical / Digital toggle. No more empty-collection bug.
   async function renderFriendCollection(userId, username) {
     var pane = $('friendProfilePane'); if (!pane) return;
-    if (!sb()) { pane.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);">Not available.</div>'; return; }
+    if (!sb()) {
+      pane.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);">Not available offline.</div>';
+      return;
+    }
 
-    // NOTE: adjust table/column names if your schema differs from user_cards(user_id, card_number, quantity)
-    var res = await sb().from('user_cards').select('card_number, quantity').eq('user_id', userId);
-    var rows = res.data || [];
-    if (!rows.length) { pane.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);font-size:0.82rem;">'+esc(username)+'\'s collection is empty.</div>'; return; }
+    pane.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);font-size:0.8rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection…</div>';
 
-    var ownedMap = {};
-    rows.forEach(function(r) { ownedMap[r.card_number] = r.quantity || 1; });
+    var data     = await fetchFriendCollectionData(userId);
+    var physical = data.physical;
+    var digital  = data.digital;
 
-    var cards = (window.allCards || []).filter(function(c) { return ownedMap[c.number]; });
-    var rarityOrder = { common:1, uncommon:2, rare:3, zenemental:4, promo:5 };
-    cards.sort(function(a,b) { return (rarityOrder[a.rarity]||0)-(rarityOrder[b.rarity]||0) || (parseInt(a.number)||0)-(parseInt(b.number)||0); });
+    var physCount = Object.keys(physical).filter(function(n){ return (physical[n]||0) > 0; }).length;
+    var digCount  = Object.keys(digital).filter(function(n){  return (digital[n]||0)  > 0; }).length;
 
-    var RARITY_COLORS = { common:'var(--text-muted)', uncommon:'var(--earth)', rare:'var(--accent)', zenemental:'var(--zen)', promo:'var(--promo)' };
-    pane.innerHTML =
-      '<div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:10px;">' + esc(username) + ' owns <strong style="color:var(--text-primary);">' + cards.length + '</strong> cards</div>' +
-      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:6px;">' +
-      cards.map(function(c) {
-        var qty = ownedMap[c.number];
-        return '<div title="#'+esc(c.number)+' '+esc(c.name)+'" style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;overflow:hidden;position:relative;cursor:default;">' +
-          (c.imageLink ? '<img src="'+esc(c.imageLink)+'" alt="'+esc(c.name)+'" loading="lazy" style="width:100%;display:block;">' : '<div style="height:90px;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--text-muted);padding:4px;text-align:center;">'+esc(c.name)+'</div>') +
-          '<div style="padding:3px 4px;font-size:0.55rem;color:'+RARITY_COLORS[c.rarity]+';font-weight:700;text-transform:capitalize;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+esc(c.rarity)+'</div>' +
-          (qty > 1 ? '<div style="position:absolute;top:4px;right:4px;background:var(--zen);color:#fff;border-radius:99px;font-size:0.55rem;font-weight:700;padding:1px 5px;">x'+qty+'</div>' : '') +
+    // Which mode is active: start on physical, fall back to digital if empty
+    var mode = (physCount === 0 && digCount > 0) ? 'digital' : 'physical';
+
+    function buildPane(activeMode) {
+      var col       = activeMode === 'physical' ? physical : digital;
+      var ownedNums = Object.keys(col).filter(function(n){ return (col[n]||0) > 0; });
+      var allC      = window.allCards || [];
+      var cards     = allC.filter(function(c){ return ownedNums.indexOf(c.number) !== -1; });
+
+      cards.sort(function(a,b){
+        var ro = { common:1, uncommon:2, rare:3, zenemental:4, promo:5 };
+        return (ro[a.rarity]||0) - (ro[b.rarity]||0) || (parseInt(a.number,10)||0) - (parseInt(b.number,10)||0);
+      });
+
+      var RC = { common:'var(--text-muted)', uncommon:'var(--earth)', rare:'var(--accent)', zenemental:'var(--zen)', promo:'var(--promo)' };
+      var myCol = window.collection || {};
+
+      // Toggle buttons
+      function toggleBtn(btnMode, btnLabel, btnIcon, count) {
+        var isActive = btnMode === activeMode;
+        return '<button data-fp-col-mode="' + btnMode + '" style="' +
+          'flex:1;padding:9px 10px;border-radius:8px;border:1px solid ' + (isActive ? 'var(--zen)' : 'var(--border)') + ';' +
+          'background:' + (isActive ? 'rgba(180,77,223,0.12)' : 'var(--bg-primary)') + ';' +
+          'color:' + (isActive ? 'var(--zen)' : 'var(--text-secondary)') + ';' +
+          'font-family:\'Nunito Sans\',sans-serif;font-weight:700;font-size:0.76rem;cursor:pointer;' +
+          'display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s;" ' +
+          (isActive ? 'disabled' : '') + '>' +
+          btnIcon + ' ' + btnLabel +
+          ' <span style="font-size:0.62rem;opacity:0.75;font-weight:400;">(' + count + ')</span>' +
+        '</button>';
+      }
+
+      var toggleHtml =
+        '<div style="display:flex;gap:6px;margin-bottom:12px;">' +
+          toggleBtn('physical', 'Physical',
+            '<i class="fas fa-clone" style="transform:scale(.75,1.175);font-size:0.7rem;"></i>',
+            physCount) +
+          toggleBtn('digital', 'Digital',
+            '<i class="fas fa-cloud-download-alt" style="font-size:0.7rem;"></i>',
+            digCount) +
         '</div>';
-      }).join('') + '</div>';
+
+      var cardsHtml;
+      if (cards.length === 0) {
+        cardsHtml =
+          '<div style="text-align:center;padding:30px 0;color:var(--text-muted);font-size:0.82rem;">' +
+            '<i class="fas fa-inbox" style="font-size:2rem;opacity:0.25;display:block;margin-bottom:10px;"></i>' +
+            esc(username) + ' hasn\'t synced their ' + activeMode + ' collection yet.' +
+          '</div>';
+      } else {
+        cardsHtml =
+          '<div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:10px;">' +
+            '<strong style="color:var(--text-primary);">' + esc(username) + '</strong> owns ' +
+            '<strong style="color:var(--text-primary);">' + cards.length + '</strong> ' + activeMode + ' card' + (cards.length !== 1 ? 's' : '') +
+          '</div>' +
+          '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:6px;">' +
+          cards.map(function(c) {
+            var qty   = col[c.number] || 0;
+            var iHave = (myCol[c.number] || 0) > 0;
+            return '<div title="#'+esc(c.number)+' '+esc(c.name)+'" style="' +
+              'background:var(--bg-card);border:1px solid ' + (iHave ? 'rgba(46,140,232,0.45)' : 'var(--border)') + ';' +
+              'border-radius:8px;overflow:hidden;position:relative;cursor:default;' +
+              (iHave ? 'box-shadow:0 0 0 1px rgba(46,140,232,0.15);' : '') + '">' +
+              (c.imageLink
+                ? '<img src="'+esc(c.imageLink)+'" alt="'+esc(c.name)+'" loading="lazy" style="width:100%;display:block;">'
+                : '<div style="height:90px;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--text-muted);padding:4px;text-align:center;">'+esc(c.name)+'</div>') +
+              '<div style="padding:3px 4px;font-size:0.55rem;color:'+RC[c.rarity]+';font-weight:700;text-transform:capitalize;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+esc(c.rarity)+'</div>' +
+              (qty > 1 ? '<div style="position:absolute;top:4px;right:4px;background:var(--zen);color:#fff;border-radius:99px;font-size:0.55rem;font-weight:700;padding:1px 5px;">×'+qty+'</div>' : '') +
+              (iHave ? '<div style="position:absolute;bottom:4px;right:4px;background:rgba(46,140,232,0.85);color:#fff;border-radius:99px;font-size:0.45rem;font-weight:700;padding:1px 4px;" title="You own this too"><i class="fas fa-people-arrows"></i></div>' : '') +
+            '</div>';
+          }).join('') + '</div>';
+      }
+
+      return toggleHtml + cardsHtml;
+    }
+
+    // Render initial state
+    pane.innerHTML = buildPane(mode);
+
+    // Wire toggle buttons — delegate on the pane
+    pane.addEventListener('click', function(e) {
+      var btn = e.target.closest('[data-fp-col-mode]');
+      if (!btn || btn.disabled) return;
+      var newMode = btn.getAttribute('data-fp-col-mode');
+      mode = newMode;
+      pane.innerHTML = buildPane(mode);
+      // re-attach listener after innerHTML replace
+      pane.addEventListener('click', arguments.callee);
+    });
   }
 
   async function renderFriendFriends(userId, username) {
@@ -1256,13 +1312,10 @@
   function openDM(username) {
     if (!currentProfile) return;
     var roomId = [currentProfile.username, username].sort().join('__dm__');
-    // ── Pre-set the room BEFORE the tab click so that loadChat() fetches
-    //    the DM room directly instead of always loading global first.
     currentRoom = roomId;
     addRoomBtn(username + ' (DM)', roomId);
     var tab = document.querySelector('[data-nested-tab="chat"]');
-    if (tab) tab.click(); // fires loadChat() → fetchMessages(currentRoom=roomId) ✓
-    // After the pane renders, sync the sidebar active state and the header label
+    if (tab) tab.click();
     setTimeout(function () {
       document.querySelectorAll('.chat-room-btn').forEach(function (b) { b.classList.remove('active'); });
       var btn = document.querySelector('[data-room="' + roomId + '"]');
