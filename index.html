@@ -2018,6 +2018,7 @@ body {
       <button class="tab-btn-nested" data-nested-tab="chat"><i class="fas fa-comments"></i> Chat</button>
       <button class="tab-btn-nested" data-nested-tab="trades"><i class="fas fa-handshake"></i> Trades</button>
       <button class="tab-btn-nested" data-nested-tab="forum"><i class="fas fa-comments-dollar"></i> Forum</button>
+      <button class="tab-btn-nested" data-nested-tab="leaderboard"><i class="fas fa-trophy"></i> Leaderboard</button>
     </div>
 
     <!-- EDIT PROFILE PANE -->
@@ -2091,6 +2092,22 @@ body {
       <button class="forum-new-btn" id="forumNewBtn"><i class="fas fa-pen"></i> New Post</button>
       <div id="forumPostList"><div class="empty-state" style="padding:30px 0;"><p>Loading posts…</p></div></div>
     </div>
+
+    <!-- LEADERBOARD -->
+    <div id="social-leaderboard" class="social-pane" style="display:none;">
+      <div style="margin-bottom:14px;">
+        <div style="font-family:'Cinzel',serif;font-weight:700;font-size:1rem;color:var(--text-primary);margin-bottom:4px;">
+          <i class="fas fa-trophy" style="color:var(--promo);margin-right:8px;"></i>Set Completion Leaderboard
+        </div>
+        <div style="font-size:0.72rem;color:var(--text-muted);">See who's closest to completing the core set.</div>
+      </div>
+      <div id="leaderboardContent">
+        <div style="text-align:center;padding:40px 0;color:var(--text-muted);font-size:0.8rem;">
+          <i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading leaderboard…
+        </div>
+      </div>
+    </div>
+
   </div><!-- /#socialSection -->
 </div><!-- /#tab-profile -->
 
@@ -4155,6 +4172,7 @@ init();
   }
 </script>
 <script src="scripts/social.js"></script>
+<script src="scripts/progression.js"></script>
 <script scr="scripts/deck-builder.js"></script>
 </body>
 </html>
