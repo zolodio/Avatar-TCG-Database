@@ -109,23 +109,12 @@
       else if (localCount === 0) { applyPhysical(cloud.physical); applyDigital(cloud.digital); setSyncDot('ok'); }
       else if (cloudCount === 0) { await cloudPush(); }
       else {
-        // Both sides have data — only show conflict dialog if they actually differ
-        var localPhysStr = JSON.stringify(getPhysical());
-        var cloudPhysStr = JSON.stringify(cloud.physical || {});
-        var localDigStr  = JSON.stringify(getDigital());
-        var cloudDigStr  = JSON.stringify(cloud.digital  || {});
-
-        if (localPhysStr === cloudPhysStr && localDigStr === cloudDigStr) {
-          // Data is identical — nothing to resolve
-          setSyncDot('ok');
-        } else {
-          // Genuine conflict — show the dialog
-          window._pendingCloudData = cloud;
-          var when = cloud.updated_at ? ' (saved ' + new Date(cloud.updated_at).toLocaleDateString() + ')' : '';
-          setText('auth-merge-local', localCount + ' card entries on this device');
-          setText('auth-merge-cloud', cloudCount + ' card entries in the cloud' + when);
-          setDisplay('auth-merge-dlg', 'flex');
-        }
+        // Both sides have data — show conflict dialog
+        window._pendingCloudData = cloud;
+        var when = cloud.updated_at ? ' (saved ' + new Date(cloud.updated_at).toLocaleDateString() + ')' : '';
+        setText('auth-merge-local', localCount + ' card entries on this device');
+        setText('auth-merge-cloud', cloudCount + ' card entries in the cloud' + when);
+        setDisplay('auth-merge-dlg', 'flex');
       }
     }
 

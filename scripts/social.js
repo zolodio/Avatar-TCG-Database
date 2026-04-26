@@ -156,13 +156,10 @@
         this.classList.add('active');
         sec.querySelectorAll('.social-pane').forEach(function (p) { p.style.display = 'none'; });
         var pane = $('social-' + name); if (pane) pane.style.display = '';
-        if (name === 'chat')        loadChat();
-        if (name === 'trades')      loadTrades();
-        if (name === 'forum')       loadForum();
-        if (name === 'friends')     loadFriends();
-        if (name === 'leaderboard' && typeof window.progressionLoadLeaderboard === 'function') {
-          window.progressionLoadLeaderboard();
-        }
+        if (name === 'chat')    loadChat();
+        if (name === 'trades')  loadTrades();
+        if (name === 'forum')   loadForum();
+        if (name === 'friends') loadFriends();
       });
     });
     sec.querySelectorAll('[data-trade-tab]').forEach(function (btn) {
@@ -220,11 +217,6 @@
     updateHeaderProfile();
     initSocialTabs();
     loadFriends();
-
-    // ── Fire progression hook ──────────────────────────────────────
-    if (typeof window.progressionOnLogin === 'function' && currentUser) {
-      window.progressionOnLogin(currentUser.id, profile);
-    }
 
     // ── Live friend-request notifications ────────────────────────
     // Unsubscribe any previous channel first (e.g. after profile re-setup)
@@ -308,18 +300,7 @@
       editBtn.addEventListener('mouseleave', function () { this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)'; this.style.background='var(--bg-primary)'; });
       editBtn.addEventListener('click', openProfileEditor);
     }
-
-    // ── Progression card (XP / level / streak / achievements) ────────
-    var progContainer = $('progressionCardContainer');
-    if (!progContainer) {
-      progContainer = document.createElement('div');
-      progContainer.id = 'progressionCardContainer';
-      progContainer.style.marginTop = '12px';
-      if (wrap.parentNode) wrap.parentNode.insertBefore(progContainer, wrap.nextSibling);
-    }
-    if (typeof window.progressionRenderCard === 'function') {
-      progContainer.innerHTML = window.progressionRenderCard(profile);
-    }
+  }
 
   // ══════════════════════════════════════════════════════════════
   //  PROFILE EDITOR MODAL
@@ -1255,22 +1236,10 @@
   }
 
   function openDM(username) {
-    if (!currentProfile) return;
+    var tab = document.querySelector('[data-nested-tab="chat"]'); if (tab) tab.click();
     var roomId = [currentProfile.username, username].sort().join('__dm__');
-    // ── Pre-set the room BEFORE the tab click so that loadChat() fetches
-    //    the DM room directly instead of always loading global first.
-    currentRoom = roomId;
     addRoomBtn(username + ' (DM)', roomId);
-    var tab = document.querySelector('[data-nested-tab="chat"]');
-    if (tab) tab.click(); // fires loadChat() → fetchMessages(currentRoom=roomId) ✓
-    // After the pane renders, sync the sidebar active state and the header label
-    setTimeout(function () {
-      document.querySelectorAll('.chat-room-btn').forEach(function (b) { b.classList.remove('active'); });
-      var btn = document.querySelector('[data-room="' + roomId + '"]');
-      if (btn) btn.classList.add('active');
-      var hdr = $('chatHeaderLabel');
-      if (hdr) hdr.innerHTML = '<i class="fas fa-comment" style="color:var(--zen);font-size:0.78rem;"></i> ' + esc(username) + ' (DM)';
-    }, 60);
+    setTimeout(function () { switchRoom(username + ' (DM)', roomId); }, 50);
   }
 
   async function sendMessage() {
