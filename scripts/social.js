@@ -1160,7 +1160,7 @@
     if (!profs.length) { pane.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);">Could not load friends.</div>'; return; }
 
     pane.innerHTML =
-      '<div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:10px;">' + esc(username) + ' is friends with <strong style="color:var(--text-primary);">' + profs.length + '</strong> trainers</div>' +
+      '<div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:10px;">' + esc(username) + ' is friends with <strong style="color:var(--text-primary);">' + profs.length + '</strong> benders</div>' +
       profs.map(function(p) {
         var isMe = p.user_id === currentUser.id;
         return '<div class="friend-card" style="margin-bottom:8px;">' +
