@@ -5,7 +5,7 @@
 //  Features:
 //   1. Daily login streaks with pack rewards
 //   2. Achievements / badges displayed on profiles
-//   3. Trainer level (XP from collecting, trading, posting)
+//   3. Bender level (XP from collecting, trading, posting)
 //   4. "Cards in Common" when viewing a friend's collection
 //   5. Price / scarcity index based on how many users own each card
 //   6. Set completion leaderboard
@@ -20,13 +20,13 @@
   var ACHIEVEMENTS = [
     { key: 'first_card',    name: 'First Card',        icon: '🃏', desc: 'Add your first card to your collection',        xp: 10  },
     { key: 'collector_10',  name: 'Budding Collector',  icon: '📦', desc: 'Own 10 unique cards',                           xp: 25  },
-    { key: 'collector_50',  name: 'Dedicated Trainer',  icon: '⭐', desc: 'Own 50 unique cards',                           xp: 75  },
+    { key: 'collector_50',  name: 'Dedicated Bender',  icon: '⭐', desc: 'Own 50 unique cards',                           xp: 75  },
     { key: 'collector_100', name: 'Card Master',        icon: '💎', desc: 'Own 100 unique cards',                          xp: 150 },
-    { key: 'collector_248', name: 'Avatar Champion',    icon: '🏆', desc: 'Complete the core set (248 cards)',              xp: 500 },
+    { key: 'collector_248', name: 'Fully Realized Avatar',    icon: '🏆', desc: 'Complete the core set (248 cards)',              xp: 500 },
     { key: 'first_trade',   name: 'First Trade',        icon: '🤝', desc: 'Complete your first trade',                     xp: 50  },
-    { key: 'first_friend',  name: 'Social Butterfly',   icon: '🦋', desc: 'Add your first friend',                         xp: 25  },
-    { key: 'streak_7',      name: 'Week Warrior',       icon: '🔥', desc: 'Maintain a 7-day login streak',                 xp: 50  },
-    { key: 'streak_30',     name: 'Blazing Trainer',    icon: '⚡', desc: 'Maintain a 30-day login streak',                xp: 200 },
+    { key: 'first_friend',  name: 'Bending Buddy',   icon: '🦋', desc: 'Add your first friend',                         xp: 25  },
+    { key: 'streak_7',      name: 'Weekly Warrior',       icon: '🔥', desc: 'Maintain a 7-day login streak',                 xp: 50  },
+    { key: 'streak_30',     name: 'Blazing Bender',    icon: '⚡', desc: 'Maintain a 30-day login streak',                xp: 200 },
     { key: 'forum_post',    name: 'Voice of the Arena', icon: '📣', desc: 'Write your first forum post',                   xp: 15  },
     { key: 'set_common',    name: 'Common Sense',       icon: '📋', desc: 'Complete all Common cards in the core set',     xp: 100 },
     { key: 'set_uncommon',  name: 'Uncommon Feat',      icon: '🌿', desc: 'Complete all Uncommon cards in the core set',   xp: 150 },
@@ -35,13 +35,13 @@
   ];
 
   var LEVEL_TITLES = [
-    [1,  'Novice Trainer'],
-    [5,  'Junior Trainer'],
-    [10, 'Senior Trainer'],
-    [20, 'Expert Trainer'],
-    [35, 'Elite Trainer'],
-    [50, 'Master Trainer'],
-    [75, 'Grandmaster Trainer'],
+    [1,  'Novice Bender'],
+    [5,  'Junior Bender'],
+    [10, 'Senior Bender'],
+    [20, 'Expert Bender'],
+    [35, 'Elite Bender'],
+    [50, 'Master Bender'],
+    [75, 'Grandmaster Bender'],
   ];
 
   // ── State ──────────────────────────────────────────────────────
@@ -67,7 +67,7 @@
   function calcLevel(xp)      { return Math.floor((xp || 0) / XP_PER_LEVEL) + 1; }
   function xpInLevel(xp)      { return (xp || 0) % XP_PER_LEVEL; }
   function levelTitle(level) {
-    var title = 'Novice Trainer';
+    var title = 'Novice Bender';
     LEVEL_TITLES.forEach(function (t) { if (level >= t[0]) title = t[1]; });
     return title;
   }
@@ -123,7 +123,7 @@
       '<div style="font-size:3rem;margin-bottom:8px;">🔥</div>' +
       '<div style="font-family:\'Cinzel\',serif;font-size:1.15rem;font-weight:900;color:var(--fire);margin-bottom:6px;">' + data.streak + '-Day Streak!</div>' +
       '<div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:16px;">' +
-        'Keep it up, Trainer!' +
+        'Keep it up, Bender!' +
         (data.pack_reward > 0
           ? '<br><span style="color:var(--air);font-weight:700;">🎁 +' + data.pack_reward + ' pack credit' + (data.pack_reward > 1 ? 's' : '') + ' earned!</span>'
           : '') +
@@ -142,14 +142,14 @@
   }
 
   // ══════════════════════════════════════════════════════════════
-  //  2 & 3. ACHIEVEMENTS + TRAINER LEVEL — rendering & checking
+  //  2 & 3. ACHIEVEMENTS + Bender LEVEL — rendering & checking
   // ══════════════════════════════════════════════════════════════
 
   /** Returns HTML string for the progression card embedded in the profile */
   function renderProgressionCard(profile) {
     if (!profile) return '';
     var xp      = profile.total_xp     || 0;
-    var level   = profile.trainer_level || calcLevel(xp);
+    var level   = profile.Bender_level || calcLevel(xp);
     var streak  = profile.login_streak  || 0;
     var credits = profile.pack_credits  || 0;
     var pct     = Math.round((xpInLevel(xp) / XP_PER_LEVEL) * 100);
@@ -353,7 +353,7 @@
     var friendRows = res.data || [];
     if (!friendRows.length) {
       return '<div style="text-align:center;padding:28px;color:var(--text-muted);font-size:0.82rem;">' +
-        'This trainer hasn\'t synced their collection yet.</div>';
+        'This Bender hasn\'t synced their collection yet.</div>';
     }
 
     var friendOwned = {};
@@ -505,7 +505,7 @@
 
   function renderLeaderboard(el, rows) {
     if (!rows.length) {
-      el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);">No trainers yet — start collecting!</div>';
+      el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);">No benders yet — start collecting!</div>';
       return;
     }
 
@@ -572,7 +572,7 @@
       '<div style="display:grid;grid-template-columns:40px 1fr 90px 64px;gap:6px;padding:8px 12px;' +
         'background:var(--bg-primary);border-bottom:1px solid var(--border);">' +
         '<span style="font-size:0.58rem;text-transform:uppercase;color:var(--text-muted);font-weight:700;">#</span>' +
-        '<span style="font-size:0.58rem;text-transform:uppercase;color:var(--text-muted);font-weight:700;">Trainer</span>' +
+        '<span style="font-size:0.58rem;text-transform:uppercase;color:var(--text-muted);font-weight:700;">Bender</span>' +
         '<span style="font-size:0.58rem;text-transform:uppercase;color:var(--text-muted);font-weight:700;text-align:center;">Progress</span>' +
         '<span style="font-size:0.58rem;text-transform:uppercase;color:var(--text-muted);font-weight:700;text-align:right;">Cards</span>' +
       '</div>' +
