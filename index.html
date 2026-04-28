@@ -3563,7 +3563,7 @@ function applyCompareCollection(decoded) {
   buildFilters(); renderCards(); updateCompareBtn();
   if (currentModalCard) openModal(currentModalCard.number);
 }
-
+window.applyCompareCollection = applyCompareCollection;
 /* ---- CLEAR HELPERS ---- */
 function openClearDialog() { updateClearCompareBtn(); document.getElementById('clearMethodOverlay').classList.add('active'); }
 function closeClearDialog() { document.getElementById('clearMethodOverlay').classList.remove('active'); }
