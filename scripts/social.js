@@ -293,7 +293,7 @@
         '<span style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:700;margin-right:2px;">Traits</span>' +
         profile.preferred_traits.slice(0, 3).map(function (t) {
           return tmap[t]
-            ? '<img src="'+esc(tmap[t])+'" title="'+esc(t)+'" style="width:20px;height:20px;opacity:0.9; border-radius: 10px; background: var(--promo); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center;  backdrop-filter: blur(4px); transition: all 0.2s;" loading="lazy">'
+            ? '<img src="'+esc(tmap[t])+'" title="'+esc(t)+'" style="width:20px;height:20px;opacity:0.9;" loading="lazy">'
             : '<span style="font-size:0.68rem;color:var(--text-muted);text-transform:capitalize;">'+esc(t)+'</span>';
         }).join('') + '</div>';
     }
