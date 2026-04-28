@@ -718,6 +718,36 @@ body {
 .modal-compare-info i { color: var(--water); font-size: 0.9rem; }
 .modal-compare-info span { font-size: 0.82rem; color: var(--water); font-weight: 600; }
 
+/* CHAMBER SIDE TABS */
+.chamber-side-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 14px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.chamber-side-btn {
+  flex: 1;
+  background: var(--bg-card);
+  border: none;
+  color: var(--text-secondary);
+  padding: 9px 0;
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.04em;
+}
+.chamber-side-btn:first-child { border-right: 1px solid var(--border); }
+.chamber-side-btn.active {
+  background: rgba(240,201,70,0.12);
+  color: var(--air);
+}
+.chamber-panel { display: none; }
+.chamber-panel.active { display: block; }
+
 /* PRICE SECTION */
 .price-section {
   margin: 14px 0 0;
@@ -3314,18 +3344,89 @@ function openModal(cardNumber, opts) {
   }
 
 var skipCardDetails = (card.type === 'ally' || card.type === 'advantage');
-  var hasStats = !skipCardDetails && (cleanText(intercept) || cleanText(force) || energyHtml);
-  extraStatsEl.innerHTML = hasStats
-    ? '<div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); font-weight:700; margin-bottom:10px;text-align: center;">Card Details</div>' +
-      '<div style="display: inline-flex; gap: 15px; align-items: flex-start;">' +
-        (intercept ? addFieldBlock('Intercept', intercept, { row: true }) : '') +
-        (force ? addFieldBlock('Force', force, { row: true }) : '') +
-      '</div>' +
-      (energyHtml ? '<div class="modal-divider"></div>' + energyHtml : '')
-    : '';
 
-  var rulesSectionEl = document.getElementById('modalRulesSection');
-  if (cleanText(card.rulesText)) {
+  if (card.type === 'chamber') {
+    // Build a helper to render one chamber side's stats
+    function chamberSideHtml(prefix) {
+      var cI   = cleanText(card[prefix + 'I']);
+      var cF   = cleanText(card[prefix + 'F']);
+      var cG   = cleanText(card[prefix + 'G']);
+      var cY   = cleanText(card[prefix + 'Y']);
+      var cR   = cleanText(card[prefix + 'R']);
+      var cRul = cleanText(card[prefix + 'Rul']);
+      var cFlv = cleanText(card[prefix + 'Flav']);
+      var eHtml = '';
+      if (cG || cY || cR) {
+        eHtml =
+          '<div style="margin-top:10px;text-align:center;">' +
+            '<div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);font-weight:700;margin-bottom:8px;">Energy Cost</div>' +
+            '<div style="display:flex;gap:10px;flex-wrap:wrap;">' +
+              (cG ? addFieldBlock('Green',  cG, { row: true }) : '') +
+              (cY ? addFieldBlock('Yellow', cY, { row: true }) : '') +
+              (cR ? addFieldBlock('Red',    cR, { row: true }) : '') +
+            '</div>' +
+          '</div>';
+      }
+      var statsHtml = (cI || cF)
+        ? '<div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);font-weight:700;margin-bottom:10px;text-align:center;">Card Details</div>' +
+          '<div style="display:inline-flex;gap:15px;align-items:flex-start;">' +
+            (cI ? addFieldBlock('Intercept', cI, { row: true }) : '') +
+            (cF ? addFieldBlock('Force',     cF, { row: true }) : '') +
+          '</div>'
+        : '';
+      var rulesHtml = cRul
+        ? '<div style="margin-top:12px;"><div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);font-weight:700;margin-bottom:8px;text-align:center;">Rules Text</div>' +
+          '<div style="color:var(--text-secondary);font-size:0.88rem;line-height:1.6;">' + escapeHtml(cRul).replace(/\n/g,'<br>') + '</div></div>'
+        : '';
+      var flavHtml = cFlv
+        ? '<div style="margin-top:12px;"><div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);font-weight:700;margin-bottom:8px;text-align:center;">Flavor Text</div>' +
+          '<div style="color:var(--text-secondary);font-size:0.88rem;line-height:1.6;font-style:italic;">' + escapeHtml(cFlv).replace(/\n/g,'<br>') + '</div></div>'
+        : '';
+      return statsHtml + (eHtml ? '<div class="modal-divider"></div>' + eHtml : '') + rulesHtml + flavHtml;
+    }
+
+    var frontHtml = chamberSideHtml('chamberFront');
+    var backHtml  = chamberSideHtml('chamberBack');
+    var hasFront  = frontHtml.trim().length > 0;
+    var hasBack   = backHtml.trim().length  > 0;
+
+    if (hasFront || hasBack) {
+      extraStatsEl.innerHTML =
+        '<div class="chamber-side-tabs">' +
+          '<button class="chamber-side-btn active" data-chamber-side="front">⬛ Front Side</button>' +
+          '<button class="chamber-side-btn" data-chamber-side="back">🔄 Back Side</button>' +
+        '</div>' +
+        '<div class="chamber-panel active" id="chamberPanelFront">' + (hasFront ? frontHtml : '<div style="color:var(--text-muted);font-size:0.8rem;padding:8px 0;">No front-side data.</div>') + '</div>' +
+        '<div class="chamber-panel" id="chamberPanelBack">'  + (hasBack  ? backHtml  : '<div style="color:var(--text-muted);font-size:0.8rem;padding:8px 0;">No back-side data.</div>')  + '</div>';
+
+      // Wire up the side-tab buttons
+      extraStatsEl.querySelectorAll('.chamber-side-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          extraStatsEl.querySelectorAll('.chamber-side-btn').forEach(function(b) { b.classList.remove('active'); });
+          extraStatsEl.querySelectorAll('.chamber-panel').forEach(function(p) { p.classList.remove('active'); });
+          btn.classList.add('active');
+          var panel = extraStatsEl.querySelector('#chamberPanel' + btn.dataset.chamberSide.charAt(0).toUpperCase() + btn.dataset.chamberSide.slice(1));
+          if (panel) panel.classList.add('active');
+        });
+      });
+    } else {
+      extraStatsEl.innerHTML = '';
+    }
+
+  } else {
+    var hasStats = !skipCardDetails && (cleanText(intercept) || cleanText(force) || energyHtml);
+    extraStatsEl.innerHTML = hasStats
+      ? '<div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); font-weight:700; margin-bottom:10px;text-align: center;">Card Details</div>' +
+        '<div style="display: inline-flex; gap: 15px; align-items: flex-start;">' +
+          (intercept ? addFieldBlock('Intercept', intercept, { row: true }) : '') +
+          (force ? addFieldBlock('Force', force, { row: true }) : '') +
+        '</div>' +
+        (energyHtml ? '<div class="modal-divider"></div>' + energyHtml : '')
+      : '';
+  }
+
+var rulesSectionEl = document.getElementById('modalRulesSection');
+  if (card.type !== 'chamber' && cleanText(card.rulesText)) {
     rulesSectionEl.innerHTML =
       '<div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); font-weight:700; margin-bottom:10px;text-align: center;">Rules Text</div>' +
       '<div style="color: var(--text-secondary); font-size:0.88rem; line-height:1.6; white-space:normal; word-wrap:break-word; overflow-wrap:break-word; word-break:break-word;">' +
@@ -3333,8 +3434,8 @@ var skipCardDetails = (card.type === 'ally' || card.type === 'advantage');
       '</div>';
   } else { rulesSectionEl.innerHTML = ''; }
 
-  var flavorSectionEl = document.getElementById('modalFlavorSection');
-  if (cleanText(card.flavorText)) {
+var flavorSectionEl = document.getElementById('modalFlavorSection');
+  if (card.type !== 'chamber' && cleanText(card.flavorText)) {
     flavorSectionEl.innerHTML =
       '<div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); font-weight:700; margin-bottom:10px;text-align: center;">Flavor Text</div>' +
       '<div style="color: var(--text-secondary); font-size:0.88rem; line-height:1.6; white-space:normal; word-wrap:break-word; overflow-wrap:break-word; word-break:break-word;">' +
