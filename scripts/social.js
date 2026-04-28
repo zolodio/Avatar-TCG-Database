@@ -286,16 +286,18 @@
     var isPro       = profile.is_pro;
 
     var traitsHtml = '';
-    if (profile.preferred_traits && profile.preferred_traits.length) {
-      var tmap = window.traitIconMap || {};
-      traitsHtml =
-        '<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;align-items:center;">' +
-        '<span style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:700;margin-right:2px;">Traits</span>' +
-        profile.preferred_traits.slice(0, 3).map(function (t) {
-          return tmap[t]
-            ? '<img src="'+esc(tmap[t])+'" title="'+esc(t)+'" style="width:20px;height:20px;opacity:0.9;" loading="lazy">'
-            : '<span style="font-size:0.68rem;color:var(--text-muted);text-transform:capitalize;">'+esc(t)+'</span>';
-        }).join('') + '</div>';
+      if (profile.preferred_traits && profile.preferred_traits.length) {
+        var tmap = window.traitIconMap || {};
+        traitsHtml =
+          '<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;align-items:center;">' +
+          '<span style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:700;margin-right:2px;">Traits</span>' +
+          profile.preferred_traits.slice(0, 3).map(function (t) {
+            return tmap[t]
+              ? '<div class="modal-trait-badge">' +
+                  '<img src="'+esc(tmap[t])+'" title="'+esc(t)+'" style="width:20px;height:20px;opacity:0.9;" loading="lazy">' +
+                '</div>'
+              : '<span style="font-size:0.68rem;color:var(--text-muted);text-transform:capitalize;">'+esc(t)+'</span>';
+          }).join('') + '</div>';
     }
 
     var chamberHtml = profile.favorite_chamber
