@@ -3896,12 +3896,16 @@ function setupEvents() {
     obtainedPreview.style.top  = top  + 'px';
   });
 
-  document.getElementById('modalObtainedSection').addEventListener('mouseout', function(e) {
-    var link = e.target.closest('[data-obtained-link]');
-    if (!link) return;
-    if (e.relatedTarget && link.contains(e.relatedTarget)) return;
-    obtainedPreview.style.opacity = '0';
-  });
+document.getElementById('modalObtainedSection').addEventListener('mouseout', function(e) {
+  var toEl = e.relatedTarget;
+
+  // If still inside container → don't hide
+  if (toEl && this.contains(toEl)) {
+    if (toEl.closest && toEl.closest('[data-obtained-link]')) return;
+  }
+
+  obtainedPreview.style.opacity = '0';
+});
 
   document.getElementById('qtyPlus').addEventListener('click', function() {
     if (!currentModalCard) return;
