@@ -1752,7 +1752,53 @@
     var rb = $('forumReplySendBtn'); if (rb) rb.addEventListener('click', sendForumReply);
     var ri = $('forumReplyInput'); if (ri) ri.addEventListener('keydown', function (e) { if (e.ctrlKey && e.key === 'Enter') sendForumReply(); });
   }
+// ══════════════════════════════════════════════════════════════
+//  LOAD & COMPARE  (called by fpCompareBtn in friend profile)
+// ══════════════════════════════════════════════════════════════
+window.loadAndCompare = async function (friendUserId, friendUsername, mode) {
+  mode = mode || 'physical';
 
+  if (!friendUserId) {
+    toast('No friend selected to compare.');
+    return;
+  }
+
+  // Close the friend profile modal if open
+  closeFriendProfileModal();
+
+  toast('Loading ' + friendUsername + '\'s collection…');
+
+  try {
+    var data = await fetchFriendCollectionData(friendUserId);
+    var col  = (mode === 'digital') ? data.digital : data.physical;
+
+    if (!col || !Object.keys(col).length) {
+      toast(friendUsername + ' hasn\'t synced their ' + mode + ' collection yet.');
+      return;
+    }
+
+    // applyCompareCollection is defined in the main inline script
+    if (typeof window.applyCompareCollection === 'function') {
+      window.applyCompareCollection(col);
+    } else {
+      // Fallback: set the global directly and re-render
+      window.compareCollection = col;
+      if (typeof window.buildFilters   === 'function') window.buildFilters();
+      if (typeof window.renderCards    === 'function') window.renderCards();
+      if (typeof window.updateCompareBtn === 'function') window.updateCompareBtn();
+    }
+
+    // Switch to the Card Collection (home) tab
+    var homeTabBtn = document.querySelector('.tab-btn[data-tab="home"]');
+    if (homeTabBtn) homeTabBtn.click();
+
+    toast('Comparing with ' + friendUsername + ' — ' + Object.keys(col).length + ' cards loaded!');
+
+  } catch (e) {
+    console.error('[social] loadAndCompare error:', e);
+    toast('Could not load ' + friendUsername + '\'s collection. Try again.');
+  }
+};
   // ══════════════════════════════════════════════════════════════
   //  PUBLIC HOOKS (called by auth.js)
   // ══════════════════════════════════════════════════════════════
