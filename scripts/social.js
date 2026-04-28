@@ -1224,15 +1224,19 @@
         '<button onclick="document.getElementById(\'friendProfileOverlay\').style.display=\'none\'" style="background:none;border:none;color:var(--text-muted);font-size:1.2rem;cursor:pointer;padding:4px 8px;position:absolute;top:12px;right:12px;">&times;</button>';
     }
 
-    var tmap = window.traitIconMap || {};
-    var traitsHtml = '';
-    if (p.preferred_traits && p.preferred_traits.length) {
-      traitsHtml = '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:12px;">' +
-        '<span style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:700;">Traits</span>' +
-        p.preferred_traits.map(function(t) {
-          return tmap[t] ? '<img src="'+esc(tmap[t])+'" title="'+esc(t)+'" style="width:20px;height:20px;" loading="lazy">' : '<span style="font-size:0.72rem;color:var(--text-muted);text-transform:capitalize;">'+esc(t)+'</span>';
-        }).join('') + '</div>';
-    }
+var tmap = window.traitIconMap || {};
+var traitsHtml = '';
+if (p.preferred_traits && p.preferred_traits.length) {
+  traitsHtml = '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:12px;">' +
+    '<span style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:700;">Traits</span>' +
+    p.preferred_traits.map(function(t) {
+      return tmap[t]
+        ? '<div class="modal-trait-badge">' +
+            '<img src="'+esc(tmap[t])+'" title="'+esc(t)+'" style="width:20px;height:20px;" loading="lazy">' +
+          '</div>'
+        : '<span style="font-size:0.72rem;color:var(--text-muted);text-transform:capitalize;">'+esc(t)+'</span>';
+    }).join('') + '</div>';
+}
 
     // ── Stats grid — % complete now uses isCoreCard (BUG FIX 2) ─
     var statsHtml = '';
