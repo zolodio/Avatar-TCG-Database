@@ -1,11 +1,17 @@
 // ================================================================
-//  AVATAR TCG — Social Features + Profile Editor  (social.js v3)
-//  Requires: window.sb (Supabase client, set by auth.js)
+//  AVATAR TCG — Social Features + Profile Editor  (social.js v4)
+//  Merged with social-patches.js — no separate patch file needed.
 //
-//  New profile columns needed:
-//    display_name, avatar_card_number, bio,
-//    preferred_traits text[], favorite_chamber, is_pro,
-//    avatar_offset_x float8, avatar_offset_y float8
+//  Bug fixes vs v3 + social-patches.js:
+//    1. Progress bars now render on FIRST open of friend profile.
+//       appendEnhancedStats() is called directly inside
+//       renderFriendProfile() instead of relying on a
+//       MutationObserver + setTimeout race.
+//    2. "% Complete" stat now uses isCoreCard() — the same
+//       definition as the Physical · All Cards progress bar —
+//       so both numbers always agree.
+//
+//  Requires: window.sb (Supabase client, set by auth.js)
 // ================================================================
 (function () {
   'use strict';
@@ -30,21 +36,35 @@
   var peAvatarPage     = 0;
   var PE_PAGE_SIZE     = 48;
   var FREE_CARD_MAX    = 165;
-  var PE_PREVIEW_SIZE  = 96;   // px — drag preview circle in editor
+  var PE_PREVIEW_SIZE  = 96;
 
-  // Avatar crop offset state (% of container, same unit as CSS left/top)
+  // Avatar crop offset state
   var peOffsetX = -42;
   var peOffsetY = -6;
 
-  // Drag state (module-scoped so initAvatarDrag doesn't double-bind)
-  var _dragBound      = false;
-  var _dragging       = false;
-  var _dragStartX     = 0;
-  var _dragStartY     = 0;
-  var _dragInitOX     = 0;
-  var _dragInitOY     = 0;
+  // Drag state
+  var _dragBound  = false;
+  var _dragging   = false;
+  var _dragStartX = 0;
+  var _dragStartY = 0;
+  var _dragInitOX = 0;
+  var _dragInitOY = 0;
 
   var TRAIT_KEYS = ['bull','fox','lion','mind','body','spirit','light','shadow','dark','water','earth','fire','air'];
+
+  // ── Rarity constants (used by progress-bar builders) ──────────
+  var RARITY_COLORS = {
+    common:     'var(--text-secondary)',
+    uncommon:   'var(--earth)',
+    rare:       'var(--water)',
+    zenemental: 'var(--zen)',
+    promo:      'var(--promo)'
+  };
+  var RARITY_LABELS = {
+    common:'Common', uncommon:'Uncommon', rare:'Rare',
+    zenemental:'Zen', promo:'Promo'
+  };
+  var PACK_RARITIES = ['common','uncommon','rare','zenemental'];
 
   // ── Tiny helpers ──────────────────────────────────────────────
   function sb()  { return window.sb; }
@@ -74,6 +94,28 @@
   }
   function debounce(fn, ms) {
     var t; return function(){ clearTimeout(t); t=setTimeout(fn,ms); };
+  }
+  function allCards() { return window.allCards || []; }
+
+  /* ------------------------------------------------------------------
+     isPackCard — cards #1–235 (numeric only); used for rarity bars
+     matching the pack-opening calculator logic.
+  ------------------------------------------------------------------ */
+  function isPackCard(num) {
+    var n = parseInt(num, 10);
+    return /^\d+$/.test(String(num)) && !isNaN(n) && n >= 1 && n <= 235;
+  }
+
+  /* ------------------------------------------------------------------
+     isCoreCard — authoritative "All Cards" total used by both the
+     main-page progress bar AND the friend-profile progress bar.
+     Includes numeric 1–235 plus ABK/APR/FPR promos.
+  ------------------------------------------------------------------ */
+  function isCoreCard(num) {
+    var s = String(num).trim();
+    if (/^ABK00[1-8]$/i.test(s) || /^APR00[1-2]$/i.test(s) || /^FPR00[1-3]$/i.test(s)) return true;
+    var n = parseInt(s, 10);
+    return /^\d+$/.test(s) && !isNaN(n) && n >= 1 && n <= 235;
   }
 
   // ── Avatar crop clamp helper ──────────────────────────────────
@@ -928,8 +970,7 @@
   }
 
   // ══════════════════════════════════════════════════════════════
-  //  FETCH FRIEND COLLECTIONS  (reads from `collections` table,
-  //  the same table auth.js writes to — NOT the missing user_cards)
+  //  FETCH FRIEND COLLECTIONS  (reads from `collections` table)
   // ══════════════════════════════════════════════════════════════
   async function fetchFriendCollectionData(userId) {
     if (!sb() || !userId) return { physical: {}, digital: {} };
@@ -940,9 +981,18 @@
         .eq('user_id', userId)
         .maybeSingle();
       if (res.error) throw res.error;
+      // Normalise digital: may be stored as array or map
+      var dig = (res.data && res.data.digital) || {};
+      if (Array.isArray(dig)) {
+        var map = {};
+        dig.forEach(function(item) {
+          if (item && item.number) map[String(item.number)] = (map[String(item.number)] || 0) + 1;
+        });
+        dig = map;
+      }
       return {
         physical: (res.data && res.data.physical) || {},
-        digital:  (res.data && res.data.digital)  || {}
+        digital:  dig
       };
     } catch (e) {
       console.warn('[social] fetchFriendCollectionData error:', e.message || e);
@@ -951,8 +1001,120 @@
   }
 
   // ══════════════════════════════════════════════════════════════
+  //  PROGRESS BAR BUILDERS  (from social-patches.js)
+  // ══════════════════════════════════════════════════════════════
+
+  /* buildPhysicalStats — "Physical · All Cards" overall bar uses
+     isCoreCard so it always matches the main-page progress bar.
+     Rarity breakdown uses isPackCard (matching pack-calculator). */
+  function buildPhysicalStats(physCol) {
+    var ac = allCards();
+
+    // ── Overall bar (isCoreCard — same as main page) ──────────
+    var coreTotal = ac.filter(function(c) { return isCoreCard(c.number); }).length || 248;
+    var coreOwned = ac.filter(function(c) { return isCoreCard(c.number) && (physCol[c.number] || 0) > 0; }).length;
+    var corePct   = Math.round((coreOwned / coreTotal) * 100);
+
+    var overallHtml =
+      '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
+          '<span style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:700;">Physical · All Cards</span>' +
+          '<span style="font-family:\'Cinzel\',serif;font-size:0.82rem;font-weight:700;color:white;">' + coreOwned + ' / ' + coreTotal + ' &nbsp;(' + corePct + '%)</span>' +
+        '</div>' +
+        '<div style="height:7px;background:var(--bg-primary);border-radius:99px;overflow:hidden;">' +
+          '<div style="height:100%;border-radius:99px;background:linear-gradient(90deg,var(--water),var(--accent),var(--zen));width:' + corePct + '%;transition:width 0.5s;"></div>' +
+        '</div>' +
+      '</div>';
+
+    // ── Rarity bars (isPackCard — matching pack-calculator) ───
+    var rarityBarsHtml = PACK_RARITIES.map(function(r) {
+      var pool  = ac.filter(function(c) { return isPackCard(c.number) && c.rarity === r; });
+      var total = pool.length || 1;
+      var owned = pool.filter(function(c) { return (physCol[c.number] || 0) > 0; }).length;
+      var pct   = Math.round((owned / total) * 100);
+      var clr   = RARITY_COLORS[r];
+      return '<div style="margin-bottom:9px;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">' +
+          '<span style="font-size:0.6rem;text-transform:capitalize;color:' + clr + ';font-weight:700;">' + RARITY_LABELS[r] + '</span>' +
+          '<span style="font-size:0.6rem;color:var(--text-muted);">' + owned + ' / ' + total + ' (' + pct + '%)</span>' +
+        '</div>' +
+        '<div style="height:4px;background:var(--bg-primary);border-radius:99px;overflow:hidden;">' +
+          '<div style="height:100%;border-radius:99px;background:' + clr + ';width:' + pct + '%;"></div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    return overallHtml +
+      '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;">' +
+        '<div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:700;margin-bottom:10px;">Rarity Breakdown (pack cards)</div>' +
+        rarityBarsHtml +
+      '</div>';
+  }
+
+  /* buildDigitalStats — total + per-rarity chips for digital collection */
+  function buildDigitalStats(digCol) {
+    var ac = allCards();
+
+    var digAll = Object.keys(digCol).filter(function(n) { return (digCol[n] || 0) > 0; }).length;
+
+    var countsByRarity = {};
+    PACK_RARITIES.forEach(function(r) { countsByRarity[r] = 0; });
+    ac.forEach(function(c) {
+      if ((digCol[c.number] || 0) > 0 && countsByRarity[c.rarity] !== undefined) {
+        countsByRarity[c.rarity]++;
+      }
+    });
+
+    var rarityChips = PACK_RARITIES.map(function(r) {
+      return '<div style="text-align:center;padding:6px 4px;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;">' +
+        '<div style="font-family:\'Cinzel\',serif;font-size:0.78rem;font-weight:700;color:' + RARITY_COLORS[r] + ';">' + countsByRarity[r] + '</div>' +
+        '<div style="font-size:0.5rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--text-muted);margin-top:2px;">' + RARITY_LABELS[r] + '</div>' +
+      '</div>';
+    }).join('');
+
+    return '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-top:10px;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">' +
+        '<span style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:700;">Digital · All Cards</span>' +
+        '<span style="font-family:\'Cinzel\',serif;font-size:0.82rem;font-weight:700;color:var(--zen);">' + digAll + '</span>' +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(' + PACK_RARITIES.length + ',1fr);gap:5px;">' +
+        rarityChips +
+      '</div>' +
+    '</div>';
+  }
+
+  /* appendEnhancedStats — fetches collection data then appends
+     physical progress bars + digital breakdown to the profile pane.
+     Called directly at the end of renderFriendProfile so it always
+     runs on first open, not just on subsequent tab clicks. */
+  async function appendEnhancedStats(pane, userId) {
+    if (!pane || !userId) return;
+    try {
+      var data     = await fetchFriendCollectionData(userId);
+      var physHtml = buildPhysicalStats(data.physical);
+      var digHtml  = buildDigitalStats(data.digital);
+
+      // Remove any previously appended stats block
+      var old = pane.querySelector('#fp-enhanced-stats');
+      if (old) old.remove();
+
+      // Only append if the pane is still visible (user hasn't switched tabs)
+      if (!document.body.contains(pane)) return;
+
+      var wrapper = document.createElement('div');
+      wrapper.id = 'fp-enhanced-stats';
+      wrapper.style.marginTop = '14px';
+      wrapper.innerHTML = physHtml + digHtml;
+      pane.appendChild(wrapper);
+    } catch (e) {
+      console.warn('[social] appendEnhancedStats error:', e);
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════════
   //  FRIEND PROFILE MODAL
   // ══════════════════════════════════════════════════════════════
+
   function injectFriendProfileModal() {
     if ($('friendProfileOverlay')) return;
     var el = document.createElement('div');
@@ -967,10 +1129,12 @@
           '<button class="fpTab" data-fp-tab="friends"    style="flex:1;padding:11px 0;border:none;background:none;cursor:pointer;font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;color:var(--text-muted);border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;"><i class="fas fa-users" style="margin-right:5px;"></i>Friends</button>' +
         '</div>' +
         '<div id="friendProfilePane" style="padding:16px;min-height:180px;max-height:55vh;overflow-y:auto;"></div>' +
+        // ── Footer: Chat | Compare | Offer Trade | ✕ ────────────
         '<div style="display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:var(--bg-card);">' +
-          '<button id="fpChatBtn"  style="flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary);color:var(--text-secondary);font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.2s;"><i class="fas fa-comment" style="margin-right:5px;"></i>Chat</button>' +
-          '<button id="fpTradeBtn" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(74,125,255,0.3);background:rgba(74,125,255,0.08);color:var(--accent);font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.2s;"><i class="fas fa-exchange-alt" style="margin-right:5px;"></i>Offer Trade</button>' +
-          '<button id="fpCloseBtn" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--text-muted);font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.2s;"><i class="fas fa-times"></i></button>' +
+          '<button id="fpChatBtn"    style="flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary);color:var(--text-secondary);font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.2s;"><i class="fas fa-comment" style="margin-right:5px;"></i>Chat</button>' +
+          '<button id="fpCompareBtn" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(46,140,232,0.35);background:rgba(46,140,232,0.08);color:var(--water);font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:5px;"><i class="fas fa-people-arrows"></i>Compare</button>' +
+          '<button id="fpTradeBtn"   style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(74,125,255,0.3);background:rgba(74,125,255,0.08);color:var(--accent);font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.2s;"><i class="fas fa-exchange-alt" style="margin-right:5px;"></i>Offer Trade</button>' +
+          '<button id="fpCloseBtn"   style="padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--text-muted);font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.2s;"><i class="fas fa-times"></i></button>' +
         '</div>' +
       '</div>';
     document.body.appendChild(el);
@@ -981,8 +1145,9 @@
           b.style.color = 'var(--text-muted)'; b.style.borderBottomColor = 'transparent';
         });
         this.style.color = 'var(--zen)'; this.style.borderBottomColor = 'var(--zen)';
-        var tab = this.getAttribute('data-fp-tab');
-        var uid = el.getAttribute('data-fp-uid'), uname = el.getAttribute('data-fp-uname');
+        var tab   = this.getAttribute('data-fp-tab');
+        var uid   = el.getAttribute('data-fp-uid');
+        var uname = el.getAttribute('data-fp-uname');
         loadFriendModalTab(tab, uid, uname);
       });
     });
@@ -1007,8 +1172,14 @@
     var hdr = $('friendProfileHeader');
     hdr.innerHTML = '<div style="font-family:\'Cinzel\',serif;font-size:1rem;font-weight:700;color:var(--text-primary);">Loading…</div>';
 
-    $('fpChatBtn').onclick  = function() { closeFriendProfileModal(); openDM(friendUsername); };
-    $('fpTradeBtn').onclick = function() { closeFriendProfileModal(); openTradeBuilderFor(friendUsername); };
+    // Wire footer buttons
+    $('fpChatBtn').onclick    = function() { closeFriendProfileModal(); openDM(friendUsername); };
+    $('fpTradeBtn').onclick   = function() { closeFriendProfileModal(); openTradeBuilderFor(friendUsername); };
+    $('fpCompareBtn').onclick = function() {
+      if (typeof window.loadAndCompare === 'function') {
+        window.loadAndCompare(friendUserId, friendUsername, 'physical');
+      }
+    };
 
     loadFriendModalTab('profile', friendUserId, friendUsername);
   }
@@ -1027,7 +1198,10 @@
     if (tab === 'friends')    await renderFriendFriends(userId, username);
   }
 
-  // ── renderFriendProfile — uses collections table for card count ──
+  // ── renderFriendProfile ────────────────────────────────────────
+  // BUG FIX 1: appendEnhancedStats() is called directly here so
+  //            bars always appear on first open — no observer race.
+  // BUG FIX 2: % Complete uses isCoreCard() to match the main bar.
   async function renderFriendProfile(userId, username) {
     if (!sb()) return;
     var res = await sb().from('profiles').select('*').eq('user_id', userId).maybeSingle();
@@ -1058,25 +1232,23 @@
         }).join('') + '</div>';
     }
 
-    // ── Card count from collections table (not user_cards) ──────
+    // ── Stats grid — % complete now uses isCoreCard (BUG FIX 2) ─
     var statsHtml = '';
     try {
-      var colData = await fetchFriendCollectionData(userId);
-      var physOwned = Object.keys(colData.physical).filter(function(n){ return (colData.physical[n]||0) > 0; }).length;
-      var digOwned  = Object.keys(colData.digital).filter(function(n){  return (colData.digital[n]||0)  > 0; }).length;
-      var allC      = window.allCards || [];
-      var coreTotal = allC.filter(function(c){
-        var n = parseInt(c.number, 10); return !isNaN(n) && n >= 1 && n <= 248;
-      }).length || 248;
+      var colData   = await fetchFriendCollectionData(userId);
+      var ac        = allCards();
+      var coreTotal = ac.filter(function(c) { return isCoreCard(c.number); }).length || 248;
+      var coreOwned = ac.filter(function(c) { return isCoreCard(c.number) && (colData.physical[c.number] || 0) > 0; }).length;
+      var digOwned  = Object.keys(colData.digital).filter(function(n) { return (colData.digital[n] || 0) > 0; }).length;
 
       statsHtml =
         '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;">' +
           '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;">' +
-            '<div style="font-family:\'Cinzel\',serif;font-size:1.1rem;font-weight:700;color:var(--accent);">' + physOwned + '</div>' +
+            '<div style="font-family:\'Cinzel\',serif;font-size:1.1rem;font-weight:700;color:var(--accent);">' + coreOwned + '</div>' +
             '<div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">Physical</div>' +
           '</div>' +
           '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;">' +
-            '<div style="font-family:\'Cinzel\',serif;font-size:1.1rem;font-weight:700;color:var(--zen);">' + Math.round((physOwned / coreTotal) * 100) + '%</div>' +
+            '<div style="font-family:\'Cinzel\',serif;font-size:1.1rem;font-weight:700;color:var(--zen);">' + Math.round((coreOwned / coreTotal) * 100) + '%</div>' +
             '<div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">Complete</div>' +
           '</div>' +
           '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;">' +
@@ -1084,16 +1256,20 @@
             '<div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">Digital</div>' +
           '</div>' +
         '</div>';
-    } catch (e) { /* non-fatal — just omit stats */ }
+    } catch (e) { /* non-fatal */ }
 
-    if (pane) pane.innerHTML =
-      '<div style="font-size:0.85rem;color:var(--text-secondary);line-height:1.65;word-break:break-word;">' + (p.bio ? esc(p.bio) : '<em style="color:var(--text-muted);">No bio yet.</em>') + '</div>' +
-      (p.favorite_chamber ? '<div style="display:flex;align-items:center;gap:6px;margin-top:10px;"><i class="fas fa-window-maximize" style="color:var(--air);font-size:0.7rem;"></i><span style="font-size:0.78rem;color:var(--air);font-weight:600;">'+esc(p.favorite_chamber)+'</span></div>' : '') +
-      traitsHtml + statsHtml;
+    if (pane) {
+      pane.innerHTML =
+        '<div style="font-size:0.85rem;color:var(--text-secondary);line-height:1.65;word-break:break-word;">' + (p.bio ? esc(p.bio) : '<em style="color:var(--text-muted);">No bio yet.</em>') + '</div>' +
+        (p.favorite_chamber ? '<div style="display:flex;align-items:center;gap:6px;margin-top:10px;"><i class="fas fa-window-maximize" style="color:var(--air);font-size:0.7rem;"></i><span style="font-size:0.78rem;color:var(--air);font-weight:600;">'+esc(p.favorite_chamber)+'</span></div>' : '') +
+        traitsHtml + statsHtml;
+
+      // ── BUG FIX 1: append progress bars directly here ──────
+      appendEnhancedStats(pane, userId);
+    }
   }
 
-  // ── renderFriendCollection — reads from collections table ──────
-  // Shows a Physical / Digital toggle. No more empty-collection bug.
+  // ── renderFriendCollection ────────────────────────────────────
   async function renderFriendCollection(userId, username) {
     var pane = $('friendProfilePane'); if (!pane) return;
     if (!sb()) {
@@ -1110,14 +1286,13 @@
     var physCount = Object.keys(physical).filter(function(n){ return (physical[n]||0) > 0; }).length;
     var digCount  = Object.keys(digital).filter(function(n){  return (digital[n]||0)  > 0; }).length;
 
-    // Which mode is active: start on physical, fall back to digital if empty
     var mode = (physCount === 0 && digCount > 0) ? 'digital' : 'physical';
 
     function buildPane(activeMode) {
       var col       = activeMode === 'physical' ? physical : digital;
       var ownedNums = Object.keys(col).filter(function(n){ return (col[n]||0) > 0; });
-      var allC      = window.allCards || [];
-      var cards     = allC.filter(function(c){ return ownedNums.indexOf(c.number) !== -1; });
+      var ac        = allCards();
+      var cards     = ac.filter(function(c){ return ownedNums.indexOf(c.number) !== -1; });
 
       cards.sort(function(a,b){
         var ro = { common:1, uncommon:2, rare:3, zenemental:4, promo:5 };
@@ -1127,7 +1302,6 @@
       var RC = { common:'var(--text-muted)', uncommon:'var(--earth)', rare:'var(--accent)', zenemental:'var(--zen)', promo:'var(--promo)' };
       var myCol = window.collection || {};
 
-      // Toggle buttons
       function toggleBtn(btnMode, btnLabel, btnIcon, count) {
         var isActive = btnMode === activeMode;
         return '<button data-fp-col-mode="' + btnMode + '" style="' +
@@ -1186,18 +1360,14 @@
       return toggleHtml + cardsHtml;
     }
 
-    // Render initial state
     pane.innerHTML = buildPane(mode);
 
-    // Wire toggle buttons — delegate on the pane
-    pane.addEventListener('click', function(e) {
+    pane.addEventListener('click', function onColClick(e) {
       var btn = e.target.closest('[data-fp-col-mode]');
       if (!btn || btn.disabled) return;
-      var newMode = btn.getAttribute('data-fp-col-mode');
-      mode = newMode;
+      mode = btn.getAttribute('data-fp-col-mode');
       pane.innerHTML = buildPane(mode);
-      // re-attach listener after innerHTML replace
-      pane.addEventListener('click', arguments.callee);
+      pane.addEventListener('click', onColClick);
     });
   }
 
@@ -1608,5 +1778,7 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
+
+  console.log('[social.js] v4 loaded ✓ (social-patches merged)');
 
 })();
