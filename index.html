@@ -810,7 +810,7 @@ body {
 
 /* SCROLL TO TOP */
 .scroll-top-btn {
-  position: fixed; bottom: 20px; right: 20px;
+  position: fixed; bottom: 20px; left: 20px;
   width: 44px; height: 44px; border-radius: 50%;
   background: var(--zen); color: #fff; border: none;
   cursor: pointer; z-index: 50; display: none;
@@ -1475,6 +1475,30 @@ body {
   background: rgba(224, 72, 72, 0.1);
   border: 1px solid rgba(224, 72, 72, 0.3);
   color: var(--danger);
+}
+/* ── Friend card: prevent button overlap on narrow screens ── */
+.friend-card {
+  flex-wrap: wrap;
+}
+.friend-card .friend-info {
+  min-width: 0;
+  flex: 1 1 120px;
+}
+.friend-card .friend-actions {
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: flex-end;
+}
+@media (max-width: 400px) {
+  .friend-card .friend-actions {
+    width: 100%;
+    justify-content: flex-start;
+    padding-top: 2px;
+  }
+  .friend-btn {
+    font-size: 0.65rem;
+    padding: 4px 9px;
+  }
 }
 	</style>
 </head>
@@ -4333,5 +4357,151 @@ init();
 <script scr="scripts/deck-builder.js"></script>
 <script scr="scripts/friend-collection.js"></script>
 <script scr="scripts/friend-compare.js"></script>
+<script>
+(function () {
+  /* ── Tab-specific how-to content ── */
+  var HOW_TO_PAGES = {
+    home: {
+      title: 'Card Collection Help',
+      html: `
+        <h3>Searching & Filtering</h3>
+        <p>Type in the search box to find cards by name, number, type, rarity, rules text, or flavor text. Click <strong>✕</strong> to clear instantly.</p>
+        <h3>Adding Cards</h3>
+        <p>Click any card to open its detail view. Use <strong>+/–</strong> to adjust quantity, then click <em>Add to Collection</em>.</p>
+        <h3>Rarity Filter</h3>
+        <p>Click the colored rarity chips (C / UC / R / ZEN / PR) to filter to that rarity. Click again to clear.</p>
+        <h3>Sorting</h3>
+        <p>Use the sort dropdown and the arrow button to reverse order. Sort by number, name, rarity, type, quantity, stats, or price.</p>
+        <h3>Compare Collections</h3>
+        <p>Click <em>Compare</em>, paste a friend's save code, and their cards show a blue badge. Use the <em>Shared</em> filter to see only cards you both own.</p>
+        <h3>Export / Import</h3>
+        <p>Export saves a CSV + copies your save code. Import accepts a CSV file or a pasted save code. Clear lets you wipe your collection or comparison data.</p>
+        <h3>Card Zoom</h3>
+        <p>In the card detail modal, click the image to open a fullscreen zoom. Click anywhere outside or press Esc to close.</p>`
+    },
+    portfolio: {
+      title: 'Portfolio Help',
+      html: `
+        <h3>Pack Calculators</h3>
+        <p>Each tab (Zenemental, Chamber, Rare, Uncommon, Common) shows how many packs you'd expect to need to complete that subset, using the Coupon Collector formula.</p>
+        <h3>How It Works</h3>
+        <p>The calculator uses your current owned cards to estimate remaining packs. Green chips = owned, grey = missing.</p>
+        <h3>Pull Rates</h3>
+        <ul>
+          <li><strong>Zenemental</strong> — 1-in-6 per pack</li>
+          <li><strong>Chamber</strong> — 1 per pack</li>
+          <li><strong>Rare</strong> — 1 per pack</li>
+          <li><strong>Uncommon</strong> — 3 per pack</li>
+          <li><strong>Common</strong> — 5 per pack</li>
+        </ul>
+        <h3>Save Code</h3>
+        <p>The <em>Save Code</em> tab shows your current code — select it all to copy and back up offline.</p>`
+    },
+    'digital-collection': {
+      title: 'Digital Collection Help',
+      html: `
+        <h3>Redeeming Codes</h3>
+        <p>Go to the <em>Redeem</em> tab and paste a one-time code from the Booster App. Each code can only be used once.</p>
+        <h3>Viewing Your Digital Cards</h3>
+        <p>The <em>Collection</em> tab shows all your redeemed cards. Filter by rarity or search by name/number.</p>
+        <h3>Backup & Restore</h3>
+        <p>Use <em>Export JSON</em> to save a backup file and <em>Import JSON</em> to restore it on another device.</p>
+        <h3>Deck Builder</h3>
+        <p>Coming soon — build and save decks using your digital collection.</p>`
+    },
+    howtoplay: {
+      title: 'How to Play Help',
+      html: `
+        <h3>Interactive Demo</h3>
+        <p>The Flash demo runs via the Ruffle emulator. If it doesn't load, click <em>Try Again</em> or check your connection.</p>
+        <h3>Video Tutorial</h3>
+        <p>A YouTube walkthrough is embedded below the demo. Click <em>Watch on YouTube</em> if it doesn't play inline.</p>
+        <h3>Rulebook</h3>
+        <p>Click the <em>Rulebook</em> tab and download the official PDF for the complete rules.</p>
+        <h3>Avatar Wiki</h3>
+        <p>The <em>Avatar Wiki</em> tab links to the fandom wiki with card and game information.</p>`
+    },
+    wayback: {
+      title: 'Archived Sites',
+      html: `
+        <h3>Wayback Machine Links</h3>
+        <p>These are historical snapshots of Avatar TCG websites preserved via the Internet Archive and other sources.</p>
+        <ul>
+          <li><strong>UDE.com/Avatar</strong> — Upper Deck's original game portal</li>
+          <li><strong>Musogato.com</strong> — community card database</li>
+          <li><strong>Laststicker.ru</strong> — card checklist resource</li>
+        </ul>
+        <p>Links open in a new tab. Some archived pages may load slowly.</p>`
+    },
+    profile: {
+      title: 'Together / Social Help',
+      html: `
+        <h3>Creating an Account</h3>
+        <p>Enter your email and password, then click <em>Sign Up</em>. Once in, choose a username — it can only be set once.</p>
+        <h3>Cloud Sync</h3>
+        <p>Click <em>☁ Sync Now</em> to push your physical collection to the cloud. <em>⬇ Load Cloud</em> pulls it back.</p>
+        <h3>Editing Your Profile</h3>
+        <p>Set a display name, bio, avatar (card artwork), preferred traits, and favourite chamber. Drag the avatar preview to reframe the image.</p>
+        <h3>Friends</h3>
+        <p>Search by username and send a friend request. Accept incoming requests from the <em>Pending</em> section.</p>
+        <h3>Chat</h3>
+        <p>Global chat is open to everyone. Click a friend's <em>Chat</em> button to open a private DM room.</p>
+        <h3>Trades</h3>
+        <p>Click <em>Propose a Trade</em>, select a friend, pick cards to offer and request, then send. They can accept or decline from their Trades tab.</p>
+        <h3>Forum</h3>
+        <p>Post questions, strategies, or trade offers. Filter by category and reply to threads. Press Ctrl+Enter to send a reply.</p>
+        <h3>Compare via Friend Profile</h3>
+        <p>Open a friend's profile, go to their <em>Collection</em> tab, and click <em>Compare</em> to load their physical collection into the Card Collection view.</p>`
+    }
+  };
+
+  var currentHowToTab = 'home';
+
+  function updateHowToForTab(tabName) {
+    currentHowToTab = tabName;
+    var cfg = HOW_TO_PAGES[tabName];
+    if (!cfg) return;
+    var popup = document.getElementById('howToPopup');
+    if (!popup) return;
+    var titleEl = popup.querySelector('.how-to-title');
+    var contentEl = popup.querySelector('.how-to-content');
+    if (titleEl)   titleEl.textContent = cfg.title;
+    if (contentEl) contentEl.innerHTML  = cfg.html;
+  }
+
+  /* Wire tab buttons */
+  document.querySelectorAll('.tab-btn[data-tab]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      updateHowToForTab(this.getAttribute('data-tab'));
+      /* Auto-close popup when switching tabs */
+      closeHowToPopupNow();
+    });
+  });
+
+  /* Init with current active tab */
+  var activeTab = document.querySelector('.tab-btn.active[data-tab]');
+  if (activeTab) updateHowToForTab(activeTab.getAttribute('data-tab'));
+
+  /* ── Scroll-fade: close popup as soon as user scrolls ── */
+  var scrollFadeTimer = null;
+  window.addEventListener('scroll', function () {
+    var popup = document.getElementById('howToPopup');
+    if (!popup || !popup.classList.contains('active')) return;
+    popup.style.transition = 'opacity 0.25s ease';
+    popup.style.opacity    = '0';
+    clearTimeout(scrollFadeTimer);
+    scrollFadeTimer = setTimeout(function () {
+      popup.classList.remove('active');
+      popup.style.opacity    = '';
+      popup.style.transition = '';
+    }, 260);
+  }, { passive: true });
+
+  function closeHowToPopupNow() {
+    var popup = document.getElementById('howToPopup');
+    if (popup) popup.classList.remove('active');
+  }
+})();
+</script>
 </body>
 </html>
