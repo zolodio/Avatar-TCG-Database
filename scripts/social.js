@@ -294,7 +294,7 @@
           profile.preferred_traits.slice(0, 3).map(function (t) {
             return tmap[t]
               ? '<div class="modal-trait-badge">' +
-                  '<img src="'+esc(tmap[t])+'" title="'+esc(t)+'" style="width:20px;height:20px;opacity:0.9;" loading="lazy">' +
+                  '<img src="'+esc(tmap[t])+'" title="'+esc(t)+'" loading="lazy">' +
                 '</div>'
               : '<span style="font-size:0.68rem;color:var(--text-muted);text-transform:capitalize;">'+esc(t)+'</span>';
           }).join('') + '</div>';
