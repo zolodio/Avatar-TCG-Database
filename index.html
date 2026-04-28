@@ -3164,7 +3164,7 @@ function getFilteredCards() {
   var cards = allCards.slice();
   if (searchQuery) {
     var q = searchQuery.toLowerCase();
-    cards = cards.filter(function(c) {
+cards = cards.filter(function(c) {
       return c.name.toLowerCase().indexOf(q) !== -1 ||
         c.number.toLowerCase().indexOf(q) !== -1 ||
         c.type.indexOf(q) !== -1 ||
@@ -3172,7 +3172,11 @@ function getFilteredCards() {
         c.rulesText.toLowerCase().indexOf(q) !== -1 ||
         c.flavorText.toLowerCase().indexOf(q) !== -1 ||
         c.descriptionText.toLowerCase().indexOf(q) !== -1 ||
-        c.traits.toLowerCase().indexOf(q) !== -1;
+        c.traits.toLowerCase().indexOf(q) !== -1 ||
+        (c.chamberFrontRul  && c.chamberFrontRul.toLowerCase().indexOf(q)  !== -1) ||
+        (c.chamberFrontFlav && c.chamberFrontFlav.toLowerCase().indexOf(q) !== -1) ||
+        (c.chamberBackRul   && c.chamberBackRul.toLowerCase().indexOf(q)   !== -1) ||
+        (c.chamberBackFlav  && c.chamberBackFlav.toLowerCase().indexOf(q)  !== -1);
     });
   }
   if (activeTypeFilter !== 'all') cards = cards.filter(function(c) { return c.type === activeTypeFilter; });
@@ -3188,14 +3192,47 @@ function getFilteredCards() {
   else if (sortBy === 'rarity') cards.sort(function(a, b) { return dir * ((rarityOrder[a.rarity] || 0) - (rarityOrder[b.rarity] || 0)); });
   else if (sortBy === 'type') cards.sort(function(a, b) { return dir * a.type.localeCompare(b.type); });
   else if (sortBy === 'quantity') cards.sort(function(a, b) { return dir * ((collection[a.number] || 0) - (collection[b.number] || 0)); });
-  else if (sortBy === 'intercept') cards.sort(function(a, b) { return dir * ((parseFloat(a.intercept) || 0) - (parseFloat(b.intercept) || 0)); });
-  else if (sortBy === 'force') cards.sort(function(a, b) { return dir * ((parseFloat(a.force) || 0) - (parseFloat(b.force) || 0)); });
+else if (sortBy === 'intercept') cards.sort(function(a, b) {
+    // For chamber cards, use the higher of front/back intercept values
+    function getIntercept(c) {
+      if (c.type === 'chamber') {
+        return Math.max(parseFloat(c.chamberFrontI) || 0, parseFloat(c.chamberBackI) || 0);
+      }
+      return parseFloat(c.intercept) || 0;
+    }
+    return dir * (getIntercept(a) - getIntercept(b));
+  });
+  else if (sortBy === 'force') cards.sort(function(a, b) {
+    function getForce(c) {
+      if (c.type === 'chamber') {
+        return Math.max(parseFloat(c.chamberFrontF) || 0, parseFloat(c.chamberBackF) || 0);
+      }
+      return parseFloat(c.force) || 0;
+    }
+    return dir * (getForce(a) - getForce(b));
+  });
   else if (sortBy === 'energy') cards.sort(function(a, b) {
-    var rA = parseFloat(a.redEnergy) || 0, rB = parseFloat(b.redEnergy) || 0;
-    if (rA !== rB) return dir * (rA - rB);
-    var yA = parseFloat(a.yellowEnergy) || 0, yB = parseFloat(b.yellowEnergy) || 0;
-    if (yA !== yB) return dir * (yA - yB);
-    return dir * ((parseFloat(a.greenEnergy) || 0) - (parseFloat(b.greenEnergy) || 0));
+    function getEnergy(c) {
+      if (c.type === 'chamber') {
+        // Sum front+back energy separately, use front as primary
+        var fR = parseFloat(c.chamberFrontR) || 0;
+        var fY = parseFloat(c.chamberFrontY) || 0;
+        var fG = parseFloat(c.chamberFrontG) || 0;
+        var bR = parseFloat(c.chamberBackR)  || 0;
+        var bY = parseFloat(c.chamberBackY)  || 0;
+        var bG = parseFloat(c.chamberBackG)  || 0;
+        return { r: Math.max(fR, bR), y: Math.max(fY, bY), g: Math.max(fG, bG) };
+      }
+      return {
+        r: parseFloat(c.redEnergy)    || 0,
+        y: parseFloat(c.yellowEnergy) || 0,
+        g: parseFloat(c.greenEnergy)  || 0
+      };
+    }
+    var eA = getEnergy(a), eB = getEnergy(b);
+    if (eA.r !== eB.r) return dir * (eA.r - eB.r);
+    if (eA.y !== eB.y) return dir * (eA.y - eB.y);
+    return dir * (eA.g - eB.g);
   });
   else if (sortBy === 'price') cards.sort(function(a, b) {
     var pA = (prices[a.number] && prices[a.number].avg) || 0;
