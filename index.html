@@ -2016,17 +2016,15 @@ body {
     </div>
 
     <div id="auth-logged-in" style="display:none;">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
-        <div style="width:40px;height:40px;border-radius:50%;background:var(--zen);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">👤</div>
-        <div style="flex:1;min-width:0;">
-          <div id="auth-user-email" style="font-weight:700;font-size:0.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
-          <div id="auth-sync-dot"   style="font-size:0.7rem;margin-top:2px;color:var(--text-muted);">Not synced</div>
-        </div>
-        <button id="auth-logout-btn" style="padding:7px 13px;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary);color:var(--text-secondary);font-size:0.72rem;font-family:'Nunito Sans',sans-serif;font-weight:600;cursor:pointer;">Log Out</button>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <button id="auth-push-btn" style="padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--zen);font-size:0.78rem;font-family:'Nunito Sans',sans-serif;font-weight:700;cursor:pointer;">☁️ Sync Now</button>
-        <button id="auth-pull-btn" style="padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--water);font-size:0.78rem;font-family:'Nunito Sans',sans-serif;font-weight:700;cursor:pointer;">⬇️ Load Cloud</button>
+     <div style="display:flex;align-items:center;gap:10px;">
+       <div style="width:32px;height:32px;border-radius:50%;background:var(--zen);display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;">👤</div>
+       <div style="flex:1;min-width:0;">
+        <div id="auth-user-email" style="font-weight:700;font-size:0.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-primary);"></div>
+        <div id="auth-sync-dot" style="font-size:0.65rem;margin-top:1px;color:var(--text-muted);">Not synced</div>
+       </div>
+       <button id="auth-push-btn" title="Sync Now" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--zen);font-size:0.72rem;font-family:'Nunito Sans',sans-serif;font-weight:700;cursor:pointer;white-space:nowrap;">☁️</button>
+       <button id="auth-pull-btn" title="Load Cloud" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--water);font-size:0.72rem;font-family:'Nunito Sans',sans-serif;font-weight:700;cursor:pointer;white-space:nowrap;">⬇️</button>
+       <button id="auth-logout-btn" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary);color:var(--text-muted);font-size:0.72rem;font-family:'Nunito Sans',sans-serif;font-weight:600;cursor:pointer;white-space:nowrap;">Out</button>
       </div>
     </div>
 
