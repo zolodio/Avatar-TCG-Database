@@ -1428,6 +1428,131 @@ body {
   .chat-main { height: 400px; }
   .trade-columns { grid-template-columns: 1fr; }
 }
+/* =====================================================================
+   AVATAR TCG — MOBILE FULLSCREEN MODAL PATCH
+   Add this inside a <style> tag or link as a stylesheet in your HTML,
+   AFTER the existing styles (before </head>).
+   ===================================================================== */
+
+/* ── Fullscreen modal on phones ── */
+@media (max-width: 600px) {
+
+  /* Overlay: fill the whole screen, no gap */
+  .modal-overlay {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  /* Card panel: true fullscreen */
+  .modal-card {
+    width: 100%;
+    max-width: 100%;
+    height: 100dvh;          /* dvh respects browser chrome better than vh */
+    max-height: 100%;
+    border-radius: 0;
+    border: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header: compact but taller touch target for the X */
+  .modal-header {
+    padding: 12px 14px 10px;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+  }
+
+  /* Close button: round, obvious back-button feel */
+  .modal-close {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .modal-card-name   { font-size: 1rem;   line-height: 1.25; }
+  .modal-card-number { font-size: 0.72rem; }
+
+  /* ── TOP HALF: image section locked to 42vh ── */
+  .modal-img-section {
+    flex: 0 0 42vh;
+    height: 42vh;
+    padding: 8px 14px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    /* Cursor stays zoom-in — existing zoom overlay still works */
+    cursor: zoom-in;
+  }
+
+  /* Flip container fills the image section */
+  .modal-img-section .modal-flip-container {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .modal-img-section .modal-flip-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Images: fill the section without overflowing */
+  .modal-img-section .modal-flip-front img,
+  .modal-img-section .modal-flip-back img {
+    max-height: calc(42vh - 52px);   /* leave room for flip button */
+    max-width: 100%;
+    width: auto;
+  }
+
+  .modal-img-placeholder-lg {
+    height: calc(42vh - 52px);
+    min-height: 0;
+  }
+
+  /* Flip button: tighter */
+  .modal-flip-btn {
+    flex-shrink: 0;
+    margin-top: 5px;
+    font-size: 0.7rem;
+    padding: 6px 12px;
+  }
+
+  /* ── BOTTOM HALF: scrollable content ── */
+  .modal-body {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    padding: 14px 16px 32px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Give qty controls a bit more breathing room */
+  .modal-qty-controls {
+    margin-bottom: 12px;
+  }
+
+  /* Trait badges — keep them visible over the image */
+  .modal-trait-badges {
+    bottom: 4px;
+  }
+}
 @media (min-width: 768px) {
   .card-grid { grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); }
   .header-title { font-size: 1.9rem; }
@@ -2328,7 +2453,7 @@ body {
     <div class="modal-card-name" id="modalName"></div>
     <div class="modal-card-number" id="modalNumber"></div>
   </div>
-  <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+ <button class="modal-close" id="modalClose"><i class="fas fa-arrow-left"></i></button>
 </div>
     <div class="modal-img-section" id="modalImgSection"></div>
     <div class="modal-body">
@@ -4336,9 +4461,268 @@ function checkCompletions() {
 function initCompletionState() {
   completionState = computeCompletionState();
 }
-
 /* ---- LAUNCH ---- */
 init();
+
+(function () {
+
+  /* ── 1. CSS ──────────────────────────────────────────────────────── */
+  var style = document.createElement('style');
+  style.textContent = `
+    /* Nav arrow buttons */
+    .modal-nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: #fff;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 10;
+      transition: background 0.18s;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      /* Isolated from the content animation — sits outside the animated nodes */
+    }
+    .modal-nav-btn:hover {
+      background: var(--zen);
+      border-color: var(--zen-glow);
+      box-shadow: 0 0 12px rgba(180,77,223,0.45);
+    }
+    .modal-nav-btn:active { opacity: 0.7; }
+    .modal-nav-btn.nav-disabled { opacity: 0.2; pointer-events: none; }
+    .modal-nav-prev { left: 6px; }
+    .modal-nav-next { right: 6px; }
+
+    @media (max-width: 600px) {
+      .modal-nav-btn { width: 44px; height: 44px; font-size: 1rem; }
+      .modal-nav-prev { left: 4px; }
+      .modal-nav-next { right: 4px; }
+    }
+
+    /* Position counter */
+    .modal-nav-counter {
+      position: absolute;
+      bottom: 6px; left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.62rem;
+      color: rgba(255,255,255,0.6);
+      background: rgba(0,0,0,0.5);
+      padding: 2px 9px;
+      border-radius: 99px;
+      pointer-events: none;
+      z-index: 10;
+      white-space: nowrap;
+      backdrop-filter: blur(3px);
+    }
+
+    /* ── KEY FIX: animate only the inner content, not the card frame ── */
+    /* fill-mode: both  →  'from' state applied before first paint,
+                            'to' state held after animation ends.
+       This means there is never a frame where the element snaps back. */
+    @keyframes navFromRight {
+      from { opacity: 0; transform: translateX(28px); }
+      to   { opacity: 1; transform: translateX(0);    }
+    }
+    @keyframes navFromLeft {
+      from { opacity: 0; transform: translateX(-28px); }
+      to   { opacity: 1; transform: translateX(0);     }
+    }
+
+    .modal-nav-anim-next .modal-img-section,
+    .modal-nav-anim-next .modal-body {
+      animation: navFromRight 0.22s ease-out both;
+    }
+    .modal-nav-anim-prev .modal-img-section,
+    .modal-nav-anim-prev .modal-body {
+      animation: navFromLeft 0.22s ease-out both;
+    }
+
+    /* Stagger: body slides in just after image for a layered feel */
+    .modal-nav-anim-next .modal-body,
+    .modal-nav-anim-prev .modal-body {
+      animation-delay: 0.04s;
+    }
+  `;
+  document.head.appendChild(style);
+
+  /* ── 2. STATE ──────────────────────────────────────────────────── */
+  var currentNavIndex = -1;
+  var navList         = [];
+  var animating       = false;
+
+  /* ── 3. INJECT / UPDATE NAV UI ────────────────────────────────── */
+  function ensureNavUI() {
+    var imgSection = document.getElementById('modalImgSection');
+    if (!imgSection) return;
+
+    /* Buttons are inside imgSection so they float over the image.
+       We recreate them each modal open because openModal replaces innerHTML. */
+    if (!imgSection.querySelector('.modal-nav-prev')) {
+      imgSection.style.position = 'relative';
+
+      var prev = document.createElement('button');
+      prev.className = 'modal-nav-btn modal-nav-prev';
+      prev.title = 'Previous card (←)';
+      prev.innerHTML = '<i class="fas fa-chevron-left"></i>';
+      prev.addEventListener('click', function (e) {
+        e.stopPropagation();
+        navigateModal(-1);
+      });
+
+      var next = document.createElement('button');
+      next.className = 'modal-nav-btn modal-nav-next';
+      next.title = 'Next card (→)';
+      next.innerHTML = '<i class="fas fa-chevron-right"></i>';
+      next.addEventListener('click', function (e) {
+        e.stopPropagation();
+        navigateModal(1);
+      });
+
+      var counter = document.createElement('div');
+      counter.className = 'modal-nav-counter';
+      counter.id = 'modalNavCounter';
+
+      imgSection.appendChild(prev);
+      imgSection.appendChild(next);
+      imgSection.appendChild(counter);
+    }
+
+    refreshNavUI();
+  }
+
+  function refreshNavUI() {
+    var prev    = document.querySelector('.modal-nav-prev');
+    var next    = document.querySelector('.modal-nav-next');
+    var counter = document.getElementById('modalNavCounter');
+    var total   = navList.length;
+
+    if (prev) prev.classList.toggle('nav-disabled', currentNavIndex <= 0);
+    if (next) next.classList.toggle('nav-disabled', currentNavIndex >= total - 1);
+
+    if (counter) {
+      counter.style.display = total > 1 ? '' : 'none';
+      counter.textContent   = total > 1 ? (currentNavIndex + 1) + ' / ' + total : '';
+    }
+  }
+
+  /* ── 4. NAVIGATE ──────────────────────────────────────────────── */
+  function navigateModal(direction) {
+    if (animating) return;
+    var newIndex = currentNavIndex + direction;
+    if (newIndex < 0 || newIndex >= navList.length) return;
+
+    animating = true;
+
+    var modalCardEl = document.getElementById('modalCard');
+    var animClass   = direction > 0 ? 'modal-nav-anim-next' : 'modal-nav-anim-prev';
+
+    /* Step 1 — strip any lingering animation classes */
+    if (modalCardEl) {
+      modalCardEl.classList.remove('modal-nav-anim-next', 'modal-nav-anim-prev');
+    }
+
+    currentNavIndex = newIndex;
+
+    /* Step 2 — open the new card (rebuilds modal DOM synchronously) */
+    _openModalNoNavReset(navList[newIndex].number);
+
+    /* Step 3 — on the NEXT frame, after the DOM is ready, add the class.
+       Using rAF + rAF ensures the browser has committed the new DOM
+       before starting the animation, so there's no stale-state snap. */
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        var el = document.getElementById('modalCard');
+        if (!el) { animating = false; return; }
+
+        el.classList.add(animClass);
+
+        /* Clean up when the BODY animation ends (the last / slowest element) */
+        var body = el.querySelector('.modal-body');
+        var target = body || el;
+
+        target.addEventListener('animationend', function handler () {
+          target.removeEventListener('animationend', handler);
+          el.classList.remove('modal-nav-anim-next', 'modal-nav-anim-prev');
+          animating = false;
+        });
+
+        /* Safety fallback: release the lock after 400 ms no matter what */
+        setTimeout(function () { animating = false; }, 400);
+      });
+    });
+  }
+
+  /* ── 5. HOOK openModal ────────────────────────────────────────── */
+  var _originalOpenModal = window.openModal;
+
+  /* Public: called by grid clicks — rebuilds navList from current filter */
+  window.openModal = function (cardNumber, opts) {
+    navList         = getFilteredCards();
+    currentNavIndex = navList.findIndex(function (c) { return c.number === cardNumber; });
+    _openModalNoNavReset(cardNumber, opts);
+  };
+
+  /* Internal: opens modal without touching navList */
+  function _openModalNoNavReset(cardNumber, opts) {
+    _originalOpenModal.call(window, cardNumber, opts);
+    requestAnimationFrame(function () {
+      ensureNavUI();
+    });
+  }
+
+  /* ── 6. KEYBOARD ──────────────────────────────────────────────── */
+  document.addEventListener('keydown', function (e) {
+    var overlay = document.getElementById('modalOverlay');
+    if (!overlay || !overlay.classList.contains('active')) return;
+    var tag = document.activeElement && document.activeElement.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); navigateModal(-1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); navigateModal(1);  }
+  });
+
+  /* ── 7. TOUCH SWIPE ───────────────────────────────────────────── */
+  var swipeStartX = null;
+  var swipeStartY = null;
+  var SWIPE_MIN_X = 50;
+  var SWIPE_MAX_Y = 80;
+
+  var modalOverlay = document.getElementById('modalOverlay');
+
+  modalOverlay.addEventListener('touchstart', function (e) {
+    var t     = e.touches[0];
+    swipeStartX = t.clientX;
+    swipeStartY = t.clientY;
+  }, { passive: true });
+
+  modalOverlay.addEventListener('touchend', function (e) {
+    if (swipeStartX === null) return;
+    var t  = e.changedTouches[0];
+    var dx = t.clientX - swipeStartX;
+    var dy = Math.abs(t.clientY - swipeStartY);
+    swipeStartX = swipeStartY = null;
+
+    if (dy > SWIPE_MAX_Y)          return;   // too vertical — probably a scroll
+    if (Math.abs(dx) < SWIPE_MIN_X) return;  // too short
+
+    /* Ignore swipes that started in the scrollable body */
+    var origin = e.target;
+    if (origin && origin.closest('.modal-body'))       return;
+    if (origin && origin.closest('.modal-flip-btn'))   return;
+    if (origin && origin.closest('.modal-nav-btn'))    return;
+    if (origin && origin.closest('.modal-close'))      return;
+    if (origin && origin.closest('.qty-btn'))          return;
+    if (origin && origin.closest('.modal-toggle-btn')) return;
+
+    navigateModal(dx < 0 ? 1 : -1);
+  }, { passive: true });
+
+})();
 </script>
 	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="scripts/supabase-config.js"></script>
