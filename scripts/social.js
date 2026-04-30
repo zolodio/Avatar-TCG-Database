@@ -1443,9 +1443,10 @@
   function loadChat() { fetchMessages(currentRoom); subscribeRoom(currentRoom); }
 
   async function fetchMessages(room) {
-    if (!sb()) return;
-    var res = await sb().from('messages').select('*').eq('room', room).order('created_at', {ascending:true}).limit(100);
-    renderMessages(res.data || []);
+  if (!sb()) return;
+  var res = await sb().from('messages').select('*').eq('room', room).order('created_at', {ascending:true}).limit(100);
+  renderMessages(res.data || []);
+  if (isDmRoom(room)) markDmMessagesRead(room);
   }
 
   function renderMessages(msgs) {
@@ -1459,28 +1460,58 @@
         '<div class="chat-msg-content">' +
           '<div class="chat-msg-name">'+esc(m.username||'Unknown')+'</div>' +
           '<div class="chat-bubble">'+esc(m.content)+'</div>' +
-          '<div class="chat-ts">'+fmtTime(m.created_at)+'</div>' +
-        '</div></div>';
+          '<div class="chat-ts" style="display:flex;align-items:center;gap:3px;">' +
+            fmtTime(m.created_at) + dmCheckHtml(m) +
+          '</div>' +
+          '</div></div>';
     }).join('');
     el.scrollTop = el.scrollHeight;
   }
 
   function subscribeRoom(room) {
-    if (chatSub) { try { chatSub.unsubscribe(); } catch(e){} }
-    if (!sb()) return;
-    chatSub = sb().channel('chat:'+room)
-      .on('postgres_changes', {event:'INSERT',schema:'public',table:'messages',filter:'room=eq.'+room}, function (payload) { appendMessage(payload.new); })
-      .subscribe();
+  if (chatSub) { try { chatSub.unsubscribe(); } catch(e){} }
+  if (!sb()) return;
+  var ch = sb().channel('chat:' + room)
+    .on('postgres_changes',
+      { event: 'INSERT', schema: 'public', table: 'messages', filter: 'room=eq.' + room },
+      function (payload) { appendMessage(payload.new); });
+
+  // For DMs, also watch UPDATE events to flip ✓ → ✓✓
+  if (isDmRoom(room)) {
+    ch = ch.on('postgres_changes',
+      { event: 'UPDATE', schema: 'public', table: 'messages', filter: 'room=eq.' + room },
+      function (payload) {
+        if (!payload.new || !payload.new.id || !payload.new.read_at) return;
+        var tick = document.querySelector('.msg-check[data-msg-id="' + payload.new.id + '"]');
+        if (tick) { tick.textContent = '✓✓'; tick.classList.add('msg-check--read'); }
+      });
   }
+
+  chatSub = ch.subscribe();
+}
 
   function appendMessage(m) {
     var el = $('chatMessages'); if (!el) return;
     var ph = el.querySelector('[style*="say hi"]'); if (ph) ph.remove();
     var mine = currentProfile && m.username === currentProfile.username;
-    var mp = { username: m.username, avatar_card_number: m.avatar_card_number || null, avatar_offset_x: m.avatar_offset_x || null, avatar_offset_y: m.avatar_offset_y || null };
+    // Auto-mark incoming DM messages as read while the room is open
+    if (isDmRoom(currentRoom) && !mine && m.id && sb()) {
+      sb().from('messages')
+        .update({ read_at: new Date().toISOString() })
+        .eq('id', m.id)
+        .then(function () {});
+    }
+    var mp = { username: m.username, avatar_card_number: m.avatar_card_number || null, avatar_offset_x: m  .avatar_offset_x || null, avatar_offset_y: m.avatar_offset_y || null };
     var div = document.createElement('div');
     div.className = 'chat-msg' + (mine ? ' mine' : '');
-    div.innerHTML = avatarHtml(mp, 28) + '<div class="chat-msg-content"><div class="chat-msg-name">'+esc(m.username||'Unknown')+'</div><div class="chat-bubble">'+esc(m.content)+'</div><div class="chat-ts">just now</div></div>';
+    div.innerHTML = avatarHtml(mp, 28) +
+      '<div class="chat-msg-content">' +
+        '<div class="chat-msg-name">' + esc(m.username||'Unknown') + '</div>' +
+        '<div class="chat-bubble">' + esc(m.content) + '</div>' +
+        '<div class="chat-ts" style="display:flex;align-items:center;gap:3px;">' +
+          'just now' + dmCheckHtml(m) +
+        '</div>' +
+      '</div>';
     el.appendChild(div); el.scrollTop = el.scrollHeight;
   }
 
@@ -1517,7 +1548,41 @@
       if (hdr) hdr.innerHTML = '<i class="fas fa-comment" style="color:var(--zen);font-size:0.78rem;"></i> ' + esc(username) + ' (DM)';
     }, 60);
   }
+// ── DM read-receipt helpers ───────────────────────────────────
+function isDmRoom(room) {
+  return !!(room && room.indexOf('__dm__') !== -1);
+}
 
+function dmCheckHtml(m) {
+  if (!isDmRoom(currentRoom)) return '';
+  if (!currentProfile || m.username !== currentProfile.username) return '';
+  var read = !!m.read_at;
+  return '<span class="msg-check' + (read ? ' msg-check--read' : '') +
+    '" data-msg-id="' + (m.id || '') + '">' + (read ? '✓✓' : '✓') + '</span>';
+}
+
+async function markDmMessagesRead(room) {
+  if (!isDmRoom(room) || !currentUser || !sb()) return;
+  await sb()
+    .from('messages')
+    .update({ read_at: new Date().toISOString() })
+    .eq('room', room)
+    .neq('user_id', currentUser.id)
+    .is('read_at', null);
+}
+
+function injectMsgCheckStyles() {
+  if (document.getElementById('msgCheckStyles')) return;
+  var s = document.createElement('style');
+  s.id = 'msgCheckStyles';
+  s.textContent = [
+    '.msg-check{font-size:0.6rem;color:var(--text-muted);',
+      'margin-left:3px;letter-spacing:-1px;vertical-align:middle;',
+      'transition:color 0.2s;}',
+    '.msg-check--read{color:var(--water);}'
+  ].join('');
+  document.head.appendChild(s);
+}
   async function sendMessage() {
     if (!currentProfile || !sb()) return;
     var inp = $('chatInput'), content = (inp.value || '').trim(); if (!content) return;
@@ -1829,8 +1894,9 @@
 
   // ── Boot ──────────────────────────────────────────────────────
   function boot() {
-    initFriendEvents(); initChatEvents(); initTradeEvents(); initForumEvents();
-  }
+  injectMsgCheckStyles();
+  initFriendEvents(); initChatEvents(); initTradeEvents(); initForumEvents();
+}
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 
