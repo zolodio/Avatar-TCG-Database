@@ -51,10 +51,11 @@
 
   // ── Trait Groups ──────────────────────────────────────────────
   var TRAIT_GROUPS = [
-    { key: 'animal', label: 'Animal',  traits: ['bull',  'fox',    'lion']   },
-    { key: 'focus',  label: 'Focus',   traits: ['mind',  'body',   'spirit'] },
-    { key: 'aura',   label: 'Aura',    traits: ['light', 'dark',   'shadow'] }
-  ];
+   { key: 'elemental', label: 'Element', traits: ['water', 'earth', 'fire', 'air'] },
+   { key: 'strike',  label: 'Strike',  traits: ['bull',  'fox',   'lion']          },
+   { key: 'advantage',   label: 'Advantage',   traits: ['mind',  'body',  'spirit']},
+   { key: 'ally',    label: 'Ally',    traits: ['light',  'dark',  'shadow']       }
+];
   var TRAIT_KEYS = TRAIT_GROUPS.reduce(function (a, g) { return a.concat(g.traits); }, []);
 
   function traitGroup(traitName) {
@@ -294,7 +295,7 @@
       traitsHtml =
         '<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;align-items:center;">' +
         '<span style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:700;margin-right:2px;">Traits</span>' +
-        profile.preferred_traits.slice(0, 3).map(function (t) {
+        profile.preferred_traits.slice(0, 4).map(function (t) {
           return tmap[t]
             ? '<div class="modal-trait-badge">' +
                 '<img src="'+esc(tmap[t])+'" title="'+esc(t)+'" loading="lazy">' +
