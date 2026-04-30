@@ -1,15 +1,7 @@
 // ================================================================
-//  AVATAR TCG — Social Features + Profile Editor  (social.js v4)
-//  Merged with social-patches.js — no separate patch file needed.
-//
-//  Bug fixes vs v3 + social-patches.js:
-//    1. Progress bars now render on FIRST open of friend profile.
-//       appendEnhancedStats() is called directly inside
-//       renderFriendProfile() instead of relying on a
-//       MutationObserver + setTimeout race.
-//    2. "% Complete" stat now uses isCoreCard() — the same
-//       definition as the Physical · All Cards progress bar —
-//       so both numbers always agree.
+//  AVATAR TCG — Social Features + Profile Editor  (social.js v5)
+//  Trait selection: radio-within-group — one pick from each of
+//  the three sets (bull|fox|lion) (mind|body|spirit) (light|dark|shadow)
 //
 //  Requires: window.sb (Supabase client, set by auth.js)
 // ================================================================
@@ -50,9 +42,25 @@
   var _dragInitOX = 0;
   var _dragInitOY = 0;
 
-  var TRAIT_KEYS = ['bull','fox','lion','mind','body','spirit','light','shadow','dark','water','earth','fire','air'];
+  // ── Trait Groups ──────────────────────────────────────────────
+  // Exactly one may be selected per group (radio behaviour).
+  // Labels shown above each row in the editor.
+  var TRAIT_GROUPS = [
+    { key: 'animal', label: 'Animal',  traits: ['bull',  'fox',    'lion']   },
+    { key: 'focus',  label: 'Focus',   traits: ['mind',  'body',   'spirit'] },
+    { key: 'aura',   label: 'Aura',    traits: ['light', 'dark',   'shadow'] }
+  ];
+  // Flat list kept for backward-compat helpers
+  var TRAIT_KEYS = TRAIT_GROUPS.reduce(function (a, g) { return a.concat(g.traits); }, []);
 
-  // ── Rarity constants (used by progress-bar builders) ──────────
+  function traitGroup(traitName) {
+    for (var i = 0; i < TRAIT_GROUPS.length; i++) {
+      if (TRAIT_GROUPS[i].traits.indexOf(traitName) !== -1) return TRAIT_GROUPS[i];
+    }
+    return null;
+  }
+
+  // ── Rarity constants ──────────────────────────────────────────
   var RARITY_COLORS = {
     common:     'var(--text-secondary)',
     uncommon:   'var(--earth)',
@@ -97,20 +105,11 @@
   }
   function allCards() { return window.allCards || []; }
 
-  /* ------------------------------------------------------------------
-     isPackCard — cards #1–235 (numeric only); used for rarity bars
-     matching the pack-opening calculator logic.
-  ------------------------------------------------------------------ */
   function isPackCard(num) {
     var n = parseInt(num, 10);
     return /^\d+$/.test(String(num)) && !isNaN(n) && n >= 1 && n <= 235;
   }
 
-  /* ------------------------------------------------------------------
-     isCoreCard — authoritative "All Cards" total used by both the
-     main-page progress bar AND the friend-profile progress bar.
-     Includes numeric 1–235 plus ABK/APR/FPR promos.
-  ------------------------------------------------------------------ */
   function isCoreCard(num) {
     var s = String(num).trim();
     if (/^ABK00[1-8]$/i.test(s) || /^APR00[1-2]$/i.test(s) || /^FPR00[1-3]$/i.test(s)) return true;
@@ -286,18 +285,18 @@
     var isPro       = profile.is_pro;
 
     var traitsHtml = '';
-      if (profile.preferred_traits && profile.preferred_traits.length) {
-        var tmap = window.traitIconMap || {};
-        traitsHtml =
-          '<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;align-items:center;">' +
-          '<span style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:700;margin-right:2px;">Traits</span>' +
-          profile.preferred_traits.slice(0, 3).map(function (t) {
-            return tmap[t]
-              ? '<div class="modal-trait-badge">' +
-                  '<img src="'+esc(tmap[t])+'" title="'+esc(t)+'" loading="lazy">' +
-                '</div>'
-              : '<span style="font-size:0.68rem;color:var(--text-muted);text-transform:capitalize;">'+esc(t)+'</span>';
-          }).join('') + '</div>';
+    if (profile.preferred_traits && profile.preferred_traits.length) {
+      var tmap = window.traitIconMap || {};
+      traitsHtml =
+        '<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;align-items:center;">' +
+        '<span style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:700;margin-right:2px;">Traits</span>' +
+        profile.preferred_traits.slice(0, 3).map(function (t) {
+          return tmap[t]
+            ? '<div class="modal-trait-badge">' +
+                '<img src="'+esc(tmap[t])+'" title="'+esc(t)+'" loading="lazy">' +
+              '</div>'
+            : '<span style="font-size:0.68rem;color:var(--text-muted);text-transform:capitalize;">'+esc(t)+'</span>';
+        }).join('') + '</div>';
     }
 
     var chamberHtml = profile.favorite_chamber
@@ -359,21 +358,41 @@
   // ══════════════════════════════════════════════════════════════
   //  PROFILE EDITOR MODAL
   // ══════════════════════════════════════════════════════════════
+  function buildTraitsHtml() {
+    var tmap = window.traitIconMap || {};
+
+    // Three group rows — each is a radio set
+    return TRAIT_GROUPS.map(function (group) {
+      var btnHtml = group.traits.map(function (t) {
+        var icon = tmap[t]
+          ? '<img src="'+esc(tmap[t])+'" alt="'+esc(t)+'" style="width:20px;height:20px;" loading="lazy">'
+          : '<span style="font-size:0.68rem;text-transform:capitalize;">'+esc(t)+'</span>';
+        return '<button type="button" class="pe-trait-btn" ' +
+          'data-trait="'+esc(t)+'" data-group="'+esc(group.key)+'" title="'+esc(t)+'" ' +
+          'style="flex:1;min-width:0;height:52px;border-radius:10px;border:2px solid var(--border);' +
+          'background:var(--bg-primary);cursor:pointer;' +
+          'display:flex;flex-direction:column;align-items:center;justify-content:center;' +
+          'gap:3px;transition:all 0.18s;padding:4px;">' +
+          icon +
+          '<span style="font-size:0.5rem;color:var(--text-muted);text-transform:capitalize;line-height:1;">'+esc(t)+'</span>' +
+        '</button>';
+      }).join('');
+
+      return '<div style="margin-bottom:10px;">' +
+        '<div style="font-size:0.58rem;text-transform:uppercase;letter-spacing:0.12em;' +
+          'color:var(--text-muted);font-weight:700;margin-bottom:5px;display:flex;align-items:center;gap:6px;">' +
+          esc(group.label) +
+          '<span style="flex:1;height:1px;background:var(--border);display:block;"></span>' +
+          '<span style="font-weight:400;font-size:0.52rem;letter-spacing:0;text-transform:none;' +
+            'color:var(--text-muted);">pick one</span>' +
+        '</div>' +
+        '<div style="display:flex;gap:6px;">' + btnHtml + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
   function injectProfileEditorModal() {
     if ($('profileEditorOverlay')) return;
-
-    var tmap = window.traitIconMap || {};
-    var traitsHtml = TRAIT_KEYS.map(function (t) {
-      var icon = tmap[t]
-        ? '<img src="'+esc(tmap[t])+'" alt="'+esc(t)+'" style="width:20px;height:20px;" loading="lazy">'
-        : '<span style="font-size:0.68rem;text-transform:capitalize;">'+esc(t)+'</span>';
-      return '<button type="button" class="pe-trait-btn" data-trait="'+t+'" title="'+esc(t)+'" ' +
-        'style="width:44px;height:44px;border-radius:10px;border:2px solid var(--border);background:var(--bg-primary);cursor:pointer;' +
-        'display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:all 0.18s;padding:4px;">' +
-        icon +
-        '<span style="font-size:0.48rem;color:var(--text-muted);text-transform:capitalize;line-height:1;">'+esc(t)+'</span>' +
-      '</button>';
-    }).join('');
 
     var html =
       '<div id="profileEditorOverlay" class="social-modal-overlay" style="z-index:120;">' +
@@ -439,10 +458,11 @@
               '</div>' +
 
               '<div style="margin-bottom:16px;">' +
-                '<label style="font-size:0.67rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);font-weight:700;display:block;margin-bottom:8px;">' +
-                  'Preferred Traits <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:0.65rem;">— pick up to 3</span>' +
+                '<label style="font-size:0.67rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);font-weight:700;display:block;margin-bottom:10px;">' +
+                  'Preferred Traits' +
+                  '<span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:0.65rem;"> — one from each category (optional)</span>' +
                 '</label>' +
-                '<div id="peTraits" style="display:flex;flex-wrap:wrap;gap:6px;">'+traitsHtml+'</div>' +
+                '<div id="peTraits">' + buildTraitsHtml() + '</div>' +
                 '<div id="peTraitsHint" style="font-size:0.67rem;color:var(--text-muted);margin-top:6px;min-height:16px;"></div>' +
               '</div>' +
 
@@ -496,6 +516,7 @@
     renderPeAvatarPreview();
     renderAvatarGrid();
 
+    // Restore trait button states
     TRAIT_KEYS.forEach(function (t) {
       var btn = overlay.querySelector('.pe-trait-btn[data-trait="'+t+'"]');
       if (btn) applyTraitStyle(btn, peSelectedTraits.indexOf(t) !== -1);
@@ -685,15 +706,27 @@
   function applyTraitStyle(btn, active) {
     btn.style.borderColor = active ? 'var(--zen)' : 'var(--border)';
     btn.style.background  = active ? 'rgba(180,77,223,0.15)' : 'var(--bg-primary)';
-    btn.style.transform   = active ? 'scale(1.1)' : 'scale(1)';
+    btn.style.transform   = active ? 'scale(1.08)' : 'scale(1)';
     btn.style.boxShadow   = active ? '0 0 0 2px rgba(180,77,223,0.35)' : 'none';
   }
+
   function updateTraitsHint() {
     var hint = $('peTraitsHint'); if (!hint) return;
-    var n = peSelectedTraits.length;
-    hint.textContent = n === 0 ? 'No traits selected.' : n + '/3 selected' + (n === 3 ? ' (maximum)' : '');
-    hint.style.color = n === 3 ? 'var(--air)' : 'var(--text-muted)';
+    if (!peSelectedTraits.length) {
+      hint.textContent = 'Nothing selected yet — one pick per row, all optional.';
+      hint.style.color = 'var(--text-muted)';
+      return;
+    }
+    var parts = TRAIT_GROUPS.map(function (g) {
+      var sel = g.traits.find(function (t) { return peSelectedTraits.indexOf(t) !== -1; });
+      return sel
+        ? '<span style="color:var(--zen);font-weight:700;text-transform:capitalize;">' + sel + '</span>'
+        : '<span style="color:var(--text-muted);font-style:italic;">none</span>';
+    });
+    hint.innerHTML = parts.join(' &nbsp;·&nbsp; ');
+    hint.style.color = '';
   }
+
   function updateBioCount() {
     var bio = $('peBio'), cnt = $('peBioCount');
     if (bio && cnt) cnt.textContent = bio.value.length + ' / 200';
@@ -798,22 +831,38 @@
       el.addEventListener('blur',  function () { if (this.style.borderColor === 'var(--accent)') this.style.borderColor = ''; });
     });
 
+    // ── Trait click: radio-within-group ──────────────────────────
     var traitsWrap = $('peTraits');
-    if (traitsWrap) traitsWrap.addEventListener('click', function (e) {
-      var btn = e.target.closest('.pe-trait-btn'); if (!btn) return;
-      var trait = btn.getAttribute('data-trait'), idx = peSelectedTraits.indexOf(trait);
-      if (idx !== -1) {
-        peSelectedTraits.splice(idx, 1); applyTraitStyle(btn, false);
-      } else {
-        if (peSelectedTraits.length >= 3) {
-          toast('Max 3 preferred traits.');
-          btn.animate([{transform:'translateX(-3px)'},{transform:'translateX(3px)'},{transform:'translateX(0)'}],{duration:180});
-          return;
+    if (traitsWrap) {
+      traitsWrap.addEventListener('click', function (e) {
+        var btn = e.target.closest('.pe-trait-btn'); if (!btn) return;
+        var trait     = btn.getAttribute('data-trait');
+        var groupKey  = btn.getAttribute('data-group');
+        var group     = TRAIT_GROUPS.find(function (g) { return g.key === groupKey; });
+        var idx       = peSelectedTraits.indexOf(trait);
+
+        if (idx !== -1) {
+          // Toggle off — deselect this trait
+          peSelectedTraits.splice(idx, 1);
+          applyTraitStyle(btn, false);
+        } else {
+          // Deselect any currently-selected trait from the same group first
+          if (group) {
+            group.traits.forEach(function (gt) {
+              var gi = peSelectedTraits.indexOf(gt);
+              if (gi !== -1) {
+                peSelectedTraits.splice(gi, 1);
+                var gb = traitsWrap.querySelector('.pe-trait-btn[data-trait="'+gt+'"]');
+                if (gb) applyTraitStyle(gb, false);
+              }
+            });
+          }
+          peSelectedTraits.push(trait);
+          applyTraitStyle(btn, true);
         }
-        peSelectedTraits.push(trait); applyTraitStyle(btn, true);
-      }
-      updateTraitsHint();
-    });
+        updateTraitsHint();
+      });
+    }
 
     var proBtn = $('peProceedUpgrade');
     if (proBtn) proBtn.addEventListener('click', function () {
@@ -972,7 +1021,7 @@
   }
 
   // ══════════════════════════════════════════════════════════════
-  //  FETCH FRIEND COLLECTIONS  (reads from `collections` table)
+  //  FETCH FRIEND COLLECTIONS
   // ══════════════════════════════════════════════════════════════
   async function fetchFriendCollectionData(userId) {
     if (!sb() || !userId) return { physical: {}, digital: {} };
@@ -983,7 +1032,6 @@
         .eq('user_id', userId)
         .maybeSingle();
       if (res.error) throw res.error;
-      // Normalise digital: may be stored as array or map
       var dig = (res.data && res.data.digital) || {};
       if (Array.isArray(dig)) {
         var map = {};
@@ -1003,16 +1051,10 @@
   }
 
   // ══════════════════════════════════════════════════════════════
-  //  PROGRESS BAR BUILDERS  (from social-patches.js)
+  //  PROGRESS BAR BUILDERS
   // ══════════════════════════════════════════════════════════════
-
-  /* buildPhysicalStats — "Physical · All Cards" overall bar uses
-     isCoreCard so it always matches the main-page progress bar.
-     Rarity breakdown uses isPackCard (matching pack-calculator). */
   function buildPhysicalStats(physCol) {
     var ac = allCards();
-
-    // ── Overall bar (isCoreCard — same as main page) ──────────
     var coreTotal = ac.filter(function(c) { return isCoreCard(c.number); }).length || 248;
     var coreOwned = ac.filter(function(c) { return isCoreCard(c.number) && (physCol[c.number] || 0) > 0; }).length;
     var corePct   = Math.round((coreOwned / coreTotal) * 100);
@@ -1028,7 +1070,6 @@
         '</div>' +
       '</div>';
 
-    // ── Rarity bars (isPackCard — matching pack-calculator) ───
     var rarityBarsHtml = PACK_RARITIES.map(function(r) {
       var pool  = ac.filter(function(c) { return isPackCard(c.number) && c.rarity === r; });
       var total = pool.length || 1;
@@ -1053,12 +1094,9 @@
       '</div>';
   }
 
-  /* buildDigitalStats — total + per-rarity chips for digital collection */
   function buildDigitalStats(digCol) {
     var ac = allCards();
-
     var digAll = Object.keys(digCol).filter(function(n) { return (digCol[n] || 0) > 0; }).length;
-
     var countsByRarity = {};
     PACK_RARITIES.forEach(function(r) { countsByRarity[r] = 0; });
     ac.forEach(function(c) {
@@ -1066,14 +1104,12 @@
         countsByRarity[c.rarity]++;
       }
     });
-
     var rarityChips = PACK_RARITIES.map(function(r) {
       return '<div style="text-align:center;padding:6px 4px;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;">' +
         '<div style="font-family:\'Cinzel\',serif;font-size:0.78rem;font-weight:700;color:' + RARITY_COLORS[r] + ';">' + countsByRarity[r] + '</div>' +
         '<div style="font-size:0.5rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--text-muted);margin-top:2px;">' + RARITY_LABELS[r] + '</div>' +
       '</div>';
     }).join('');
-
     return '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-top:10px;">' +
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">' +
         '<span style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:700;">Digital · All Cards</span>' +
@@ -1085,24 +1121,15 @@
     '</div>';
   }
 
-  /* appendEnhancedStats — fetches collection data then appends
-     physical progress bars + digital breakdown to the profile pane.
-     Called directly at the end of renderFriendProfile so it always
-     runs on first open, not just on subsequent tab clicks. */
   async function appendEnhancedStats(pane, userId) {
     if (!pane || !userId) return;
     try {
       var data     = await fetchFriendCollectionData(userId);
       var physHtml = buildPhysicalStats(data.physical);
       var digHtml  = buildDigitalStats(data.digital);
-
-      // Remove any previously appended stats block
       var old = pane.querySelector('#fp-enhanced-stats');
       if (old) old.remove();
-
-      // Only append if the pane is still visible (user hasn't switched tabs)
       if (!document.body.contains(pane)) return;
-
       var wrapper = document.createElement('div');
       wrapper.id = 'fp-enhanced-stats';
       wrapper.style.marginTop = '14px';
@@ -1116,7 +1143,6 @@
   // ══════════════════════════════════════════════════════════════
   //  FRIEND PROFILE MODAL
   // ══════════════════════════════════════════════════════════════
-
   function injectFriendProfileModal() {
     if ($('friendProfileOverlay')) return;
     var el = document.createElement('div');
@@ -1131,7 +1157,6 @@
           '<button class="fpTab" data-fp-tab="friends"    style="flex:1;padding:11px 0;border:none;background:none;cursor:pointer;font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;color:var(--text-muted);border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;"><i class="fas fa-users" style="margin-right:5px;"></i>Friends</button>' +
         '</div>' +
         '<div id="friendProfilePane" style="padding:16px;min-height:180px;max-height:55vh;overflow-y:auto;"></div>' +
-        // ── Footer: Chat | Compare | Offer Trade | ✕ ────────────
         '<div style="display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:var(--bg-card);">' +
           '<button id="fpChatBtn"    style="flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary);color:var(--text-secondary);font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.2s;"><i class="fas fa-comment" style="margin-right:5px;"></i>Chat</button>' +
           '<button id="fpCompareBtn" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(46,140,232,0.35);background:rgba(46,140,232,0.08);color:var(--water);font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:5px;"><i class="fas fa-people-arrows"></i>Compare</button>' +
@@ -1174,7 +1199,6 @@
     var hdr = $('friendProfileHeader');
     hdr.innerHTML = '<div style="font-family:\'Cinzel\',serif;font-size:1rem;font-weight:700;color:var(--text-primary);">Loading…</div>';
 
-    // Wire footer buttons
     $('fpChatBtn').onclick    = function() { closeFriendProfileModal(); openDM(friendUsername); };
     $('fpTradeBtn').onclick   = function() { closeFriendProfileModal(); openTradeBuilderFor(friendUsername); };
     $('fpCompareBtn').onclick = function() {
@@ -1200,10 +1224,6 @@
     if (tab === 'friends')    await renderFriendFriends(userId, username);
   }
 
-  // ── renderFriendProfile ────────────────────────────────────────
-  // BUG FIX 1: appendEnhancedStats() is called directly here so
-  //            bars always appear on first open — no observer race.
-  // BUG FIX 2: % Complete uses isCoreCard() to match the main bar.
   async function renderFriendProfile(userId, username) {
     if (!sb()) return;
     var res = await sb().from('profiles').select('*').eq('user_id', userId).maybeSingle();
@@ -1224,21 +1244,20 @@
         '<button onclick="document.getElementById(\'friendProfileOverlay\').style.display=\'none\'" style="background:none;border:none;color:var(--text-muted);font-size:1.2rem;cursor:pointer;padding:4px 8px;position:absolute;top:12px;right:12px;">&times;</button>';
     }
 
-var tmap = window.traitIconMap || {};
-var traitsHtml = '';
-if (p.preferred_traits && p.preferred_traits.length) {
-  traitsHtml = '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:12px;">' +
-    '<span style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:700;">Traits</span>' +
-    p.preferred_traits.map(function(t) {
-      return tmap[t]
-        ? '<div class="modal-trait-badge">' +
-            '<img src="'+esc(tmap[t])+'" title="'+esc(t)+'" style="width:20px;height:20px;" loading="lazy">' +
-          '</div>'
-        : '<span style="font-size:0.72rem;color:var(--text-muted);text-transform:capitalize;">'+esc(t)+'</span>';
-    }).join('') + '</div>';
-}
+    var tmap = window.traitIconMap || {};
+    var traitsHtml = '';
+    if (p.preferred_traits && p.preferred_traits.length) {
+      traitsHtml = '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:12px;">' +
+        '<span style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:700;">Traits</span>' +
+        p.preferred_traits.map(function(t) {
+          return tmap[t]
+            ? '<div class="modal-trait-badge">' +
+                '<img src="'+esc(tmap[t])+'" title="'+esc(t)+'" style="width:20px;height:20px;" loading="lazy">' +
+              '</div>'
+            : '<span style="font-size:0.72rem;color:var(--text-muted);text-transform:capitalize;">'+esc(t)+'</span>';
+        }).join('') + '</div>';
+    }
 
-    // ── Stats grid — % complete now uses isCoreCard (BUG FIX 2) ─
     var statsHtml = '';
     try {
       var colData   = await fetchFriendCollectionData(userId);
@@ -1270,12 +1289,10 @@ if (p.preferred_traits && p.preferred_traits.length) {
         (p.favorite_chamber ? '<div style="display:flex;align-items:center;gap:6px;margin-top:10px;"><i class="fas fa-window-maximize" style="color:var(--air);font-size:0.7rem;"></i><span style="font-size:0.78rem;color:var(--air);font-weight:600;">'+esc(p.favorite_chamber)+'</span></div>' : '') +
         traitsHtml + statsHtml;
 
-      // ── BUG FIX 1: append progress bars directly here ──────
       appendEnhancedStats(pane, userId);
     }
   }
 
-  // ── renderFriendCollection ────────────────────────────────────
   async function renderFriendCollection(userId, username) {
     var pane = $('friendProfilePane'); if (!pane) return;
     if (!sb()) {
@@ -1758,55 +1775,41 @@ if (p.preferred_traits && p.preferred_traits.length) {
     var rb = $('forumReplySendBtn'); if (rb) rb.addEventListener('click', sendForumReply);
     var ri = $('forumReplyInput'); if (ri) ri.addEventListener('keydown', function (e) { if (e.ctrlKey && e.key === 'Enter') sendForumReply(); });
   }
-// ══════════════════════════════════════════════════════════════
-//  LOAD & COMPARE  (called by fpCompareBtn in friend profile)
-// ══════════════════════════════════════════════════════════════
-window.loadAndCompare = async function (friendUserId, friendUsername, mode) {
-  mode = mode || 'physical';
 
-  if (!friendUserId) {
-    toast('No friend selected to compare.');
-    return;
-  }
-
-  // Close the friend profile modal if open
-  closeFriendProfileModal();
-
-  toast('Loading ' + friendUsername + '\'s collection…');
-
-  try {
-    var data = await fetchFriendCollectionData(friendUserId);
-    var col  = (mode === 'digital') ? data.digital : data.physical;
-
-    if (!col || !Object.keys(col).length) {
-      toast(friendUsername + ' hasn\'t synced their ' + mode + ' collection yet.');
-      return;
-    }
-
-    // applyCompareCollection is defined in the main inline script
-    if (typeof window.applyCompareCollection === 'function') {
-      window.applyCompareCollection(col);
-    } else {
-      // Fallback: set the global directly and re-render
-      window.compareCollection = col;
-      if (typeof window.buildFilters   === 'function') window.buildFilters();
-      if (typeof window.renderCards    === 'function') window.renderCards();
-      if (typeof window.updateCompareBtn === 'function') window.updateCompareBtn();
-    }
-
-    // Switch to the Card Collection (home) tab
-    var homeTabBtn = document.querySelector('.tab-btn[data-tab="home"]');
-    if (homeTabBtn) homeTabBtn.click();
-
-    toast('Comparing with ' + friendUsername + ' — ' + Object.keys(col).length + ' cards loaded!');
-
-  } catch (e) {
-    console.error('[social] loadAndCompare error:', e);
-    toast('Could not load ' + friendUsername + '\'s collection. Try again.');
-  }
-};
   // ══════════════════════════════════════════════════════════════
-  //  PUBLIC HOOKS (called by auth.js)
+  //  LOAD & COMPARE
+  // ══════════════════════════════════════════════════════════════
+  window.loadAndCompare = async function (friendUserId, friendUsername, mode) {
+    mode = mode || 'physical';
+    if (!friendUserId) { toast('No friend selected to compare.'); return; }
+    closeFriendProfileModal();
+    toast('Loading ' + friendUsername + '\'s collection…');
+    try {
+      var data = await fetchFriendCollectionData(friendUserId);
+      var col  = (mode === 'digital') ? data.digital : data.physical;
+      if (!col || !Object.keys(col).length) {
+        toast(friendUsername + ' hasn\'t synced their ' + mode + ' collection yet.');
+        return;
+      }
+      if (typeof window.applyCompareCollection === 'function') {
+        window.applyCompareCollection(col);
+      } else {
+        window.compareCollection = col;
+        if (typeof window.buildFilters   === 'function') window.buildFilters();
+        if (typeof window.renderCards    === 'function') window.renderCards();
+        if (typeof window.updateCompareBtn === 'function') window.updateCompareBtn();
+      }
+      var homeTabBtn = document.querySelector('.tab-btn[data-tab="home"]');
+      if (homeTabBtn) homeTabBtn.click();
+      toast('Comparing with ' + friendUsername + ' — ' + Object.keys(col).length + ' cards loaded!');
+    } catch (e) {
+      console.error('[social] loadAndCompare error:', e);
+      toast('Could not load ' + friendUsername + '\'s collection. Try again.');
+    }
+  };
+
+  // ══════════════════════════════════════════════════════════════
+  //  PUBLIC HOOKS
   // ══════════════════════════════════════════════════════════════
   window.socialOnLogin = function (user) {
     currentUser = user; if (!sb()) return; setupProfileSection(user);
@@ -1831,6 +1834,6 @@ window.loadAndCompare = async function (friendUserId, friendUsername, mode) {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 
-  console.log('[social.js] v4 loaded ✓ (social-patches merged)');
+  console.log('[social.js] v5 loaded ✓ (trait groups: radio-per-category)');
 
 })();
