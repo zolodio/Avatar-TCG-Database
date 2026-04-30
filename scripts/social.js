@@ -1,5 +1,5 @@
 // ================================================================
-//  AVATAR TCG — Social Features + Profile Editor  (social.js v6)
+//  AVATAR TCG — Social Features + Profile Editor  (social.js v5)
 //  Trait selection: radio-within-group — one pick from each of
 //  the three sets (bull|fox|lion) (mind|body|spirit) (light|dark|shadow)
 //
@@ -1439,116 +1439,16 @@
   }
 
   // ══════════════════════════════════════════════════════════════
-  //  CHAT — DM HELPERS
-  // ══════════════════════════════════════════════════════════════
-
-  function isDmRoom(room) {
-    return !!(room && room.indexOf('__dm__') !== -1);
-  }
-
-  // Render ✓ (grey, sent) or ✓✓ (blue, read) on the sender's own messages.
-  // Uses currentDmOtherReadAt — the timestamp of when the other person last
-  // read this room — to decide which state to show.
-  function dmTickHtml(m) {
-    if (!isDmRoom(currentRoom)) return '';
-    if (!currentProfile || m.username !== currentProfile.username) return '';
-    var isRead = !!(
-      currentDmOtherReadAt && m.created_at &&
-      new Date(currentDmOtherReadAt) >= new Date(m.created_at)
-    );
-    return '<span class="dm-tick' + (isRead ? ' dm-tick--read' : '') + '"' +
-      ' data-msg-ts="' + esc(m.created_at || '') + '">' +
-      (isRead ? '✓✓' : '✓') +
-      '</span>';
-  }
-
-  // Walk all tick spans and flip any that are now read.
-  function refreshDmTicks() {
-    if (!currentDmOtherReadAt) return;
-    var readTime = new Date(currentDmOtherReadAt);
-    document.querySelectorAll('.dm-tick[data-msg-ts]').forEach(function (span) {
-      var ts = span.getAttribute('data-msg-ts');
-      if (ts && readTime >= new Date(ts)) {
-        span.textContent = '✓✓';
-        span.classList.add('dm-tick--read');
-      }
-    });
-  }
-
-  // Fetch the other participant's last_read_at for this DM room.
-  async function getOtherUserReadAt(room) {
-    if (!isDmRoom(room) || !currentUser || !sb()) return null;
-    var res = await sb()
-      .from('dm_reads')
-      .select('last_read_at')
-      .eq('room', room)
-      .neq('user_id', currentUser.id)
-      .maybeSingle();
-    return (res.data && res.data.last_read_at) || null;
-  }
-
-  // Upsert my own read position for this room (called when I view or receive).
-  async function markDmRead(room) {
-    if (!isDmRoom(room) || !currentUser || !sb()) return;
-    await sb().from('dm_reads').upsert(
-      { user_id: currentUser.id, room: room, last_read_at: new Date().toISOString() },
-      { onConflict: 'user_id,room' }
-    );
-  }
-
-  // Load all persisted DM rooms for the current user and add them to the sidebar.
-  async function populateDmSidebar() {
-    if (!currentUser || !sb()) return;
-    var res = await sb()
-      .from('dm_rooms')
-      .select('*')
-      .or('user1_id.eq.' + currentUser.id + ',user2_id.eq.' + currentUser.id)
-      .order('last_message_at', { ascending: false });
-    (res.data || []).forEach(function (r) {
-      var other = r.user1_id === currentUser.id ? r.user2_username : r.user1_username;
-      addRoomBtn(other + ' (DM)', r.room_id);
-    });
-  }
-
-  // Inject the CSS for tick marks once.
-  function injectDmTickStyles() {
-    if (document.getElementById('dmTickStyles')) return;
-    var s = document.createElement('style');
-    s.id = 'dmTickStyles';
-    s.textContent =
-      '.dm-tick{font-size:0.6rem;color:var(--text-muted);margin-left:4px;' +
-      'letter-spacing:-1px;vertical-align:middle;transition:color 0.25s;}' +
-      '.dm-tick--read{color:#4ab3f4;}';
-    document.head.appendChild(s);
-  }
-
-  // ══════════════════════════════════════════════════════════════
   //  CHAT
   // ══════════════════════════════════════════════════════════════
+  function loadChat() { fetchMessages(currentRoom); subscribeRoom(currentRoom); }
 
-  async function loadChat() {
-    await populateDmSidebar();
-    fetchMessages(currentRoom);
-    subscribeRoom(currentRoom);
-  }
   async function fetchMessages(room) {
-    if (!sb()) return;
-    // For DM rooms: get the other person's read position before rendering
-    // so ticks are correct on the first paint.
-    if (isDmRoom(room)) {
-      currentDmOtherReadAt = await getOtherUserReadAt(room);
-      markDmRead(room); // fire-and-forget: record that I've now read this room
-    } else {
-      currentDmOtherReadAt = null;
-    }
-    var res = await sb()
-      .from('messages')
-      .select('*')
-      .eq('room', room)
-      .order('created_at', { ascending: true })
-      .limit(100);
-    renderMessages(res.data || []);
- }
+  if (!sb()) return;
+  var res = await sb().from('messages').select('*').eq('room', room).order('created_at', {ascending:true}).limit(100);
+  renderMessages(res.data || []);
+  if (isDmRoom(room)) markDmMessagesRead(room);
+  }
 
   function renderMessages(msgs) {
     var el = $('chatMessages'); if (!el) return;
@@ -1570,32 +1470,23 @@
   }
 
   function subscribeRoom(room) {
-    // Tear down existing subs
-    if (chatSub)   { try { chatSub.unsubscribe();   } catch(e){} chatSub   = null; }
-    if (dmReadSub) { try { dmReadSub.unsubscribe(); } catch(e){} dmReadSub = null; }
-    if (!sb()) return;
+  if (chatSub) { try { chatSub.unsubscribe(); } catch(e){} }
+  if (!sb()) return;
+  var ch = sb().channel('chat:' + room)
+    .on('postgres_changes',
+      { event: 'INSERT', schema: 'public', table: 'messages', filter: 'room=eq.' + room },
+      function (payload) { appendMessage(payload.new); });
 
-    // Always subscribe to new messages
-    chatSub = sb().channel('chat:' + room)
-      .on('postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'messages', filter: 'room=eq.' + room },
-        function (payload) { appendMessage(payload.new); })
-      .subscribe();
-
-    // For DM rooms: watch the other person's dm_reads row so ✓ → ✓✓ in real-time
-    if (isDmRoom(room)) {
-      dmReadSub = sb().channel('dm_reads:' + room)
-        .on('postgres_changes',
-          { event: '*', schema: 'public', table: 'dm_reads', filter: 'room=eq.' + room },
-          function (payload) {
-            if (!payload.new || payload.new.user_id === currentUser.id) return;
-            // The other person just read — update our cached time and refresh all ticks
-            currentDmOtherReadAt = payload.new.last_read_at;
-            refreshDmTicks();
-          })
-        .subscribe();
-    }
- }
+  // For DMs, also watch UPDATE events to flip ✓ → ✓✓
+  if (isDmRoom(room)) {
+    ch = ch.on('postgres_changes',
+      { event: 'UPDATE', schema: 'public', table: 'messages', filter: 'room=eq.' + room },
+      function (payload) {
+        if (!payload.new || !payload.new.id || !payload.new.read_at) return;
+        var tick = document.querySelector('.msg-check[data-msg-id="' + payload.new.id + '"]');
+        if (tick) { tick.textContent = '✓✓'; tick.classList.add('msg-check--read'); }
+      });
+  }
 
   chatSub = ch.subscribe();
 }
@@ -1643,38 +1534,12 @@
     s.appendChild(btn);
   }
 
-  // Open (or resume) a DM with another user.
-  // Upserts a dm_rooms row so both users see the thread in their sidebar.
-  async function openDM(username) {
-    if (!currentProfile || !sb()) return;
-
-    // Look up the other user's ID
-    var profRes = await sb().from('profiles').select('user_id').eq('username', username).maybeSingle();
-    if (!profRes.data) { toast('Could not open DM — user not found.'); return; }
-    var otherId = profRes.data.user_id;
-
+  function openDM(username) {
+    if (!currentProfile) return;
     var roomId = [currentProfile.username, username].sort().join('__dm__');
-
-    // Sort so user1 < user2 alphabetically (stable regardless of who initiates)
-    var pair = [
-      { id: currentUser.id, username: currentProfile.username },
-      { id: otherId,        username: username }
-    ].sort(function (a, b) { return a.username.localeCompare(b.username); });
-
-    // Persist the room — ignoreDuplicates so a race doesn't throw
-    await sb().from('dm_rooms').upsert({
-      room_id:         roomId,
-      user1_id:        pair[0].id,
-      user2_id:        pair[1].id,
-      user1_username:  pair[0].username,
-      user2_username:  pair[1].username,
-      last_message_at: new Date().toISOString()
-    }, { onConflict: 'room_id', ignoreDuplicates: true });
-
     currentRoom = roomId;
-    addRoomBtn(username + ' (DM)', roomId); // addRoomBtn dedupes by data-room
-
-   var tab = document.querySelector('[data-nested-tab="chat"]');
+    addRoomBtn(username + ' (DM)', roomId);
+    var tab = document.querySelector('[data-nested-tab="chat"]');
     if (tab) tab.click();
     setTimeout(function () {
       document.querySelectorAll('.chat-room-btn').forEach(function (b) { b.classList.remove('active'); });
@@ -2016,10 +1881,9 @@ function injectMsgCheckStyles() {
     currentUser = user; if (!sb()) return; setupProfileSection(user);
   };
   window.socialOnLogout = function () {
-    currentUser = null; currentProfile = null; currentDmOtherReadAt = null;
-    if (chatSub)       { try { chatSub.unsubscribe();       } catch(e){} chatSub       = null; }
-    if (dmReadSub)     { try { dmReadSub.unsubscribe();     } catch(e){} dmReadSub     = null; }
-   if (forumReplySub) { try { forumReplySub.unsubscribe(); } catch(e){} forumReplySub = null; }
+    currentUser = null; currentProfile = null;
+    if (chatSub)       { try { chatSub.unsubscribe();       } catch(e){} chatSub = null; }
+    if (forumReplySub) { try { forumReplySub.unsubscribe(); } catch(e){} forumReplySub = null; }
     if (friendReqSub)  { try { friendReqSub.unsubscribe();  } catch(e){} friendReqSub = null; }
     hideHeaderProfile();
     var card = $('profileDisplayCard');
@@ -2031,16 +1895,12 @@ function injectMsgCheckStyles() {
 
   // ── Boot ──────────────────────────────────────────────────────
   function boot() {
-    injectDmTickStyles();
-    initFriendEvents();
-    initChatEvents();
-    initTradeEvents();
-    initForumEvents();
-  }
-
- if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  injectMsgCheckStyles();
+  initFriendEvents(); initChatEvents(); initTradeEvents(); initForumEvents();
+}
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 
-  console.log('[social.js] v6 loaded ✓ (dm_rooms persistence + dm_reads receipts)');
+  console.log('[social.js] v5 loaded ✓ (trait groups: radio-per-category)');
 
 })();
