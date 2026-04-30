@@ -1,7 +1,10 @@
 // ================================================================
-//  AVATAR TCG — Social Features + Profile Editor  (social.js v5)
+//  AVATAR TCG — Social Features + Profile Editor  (social.js v6)
 //  Trait selection: radio-within-group — one pick from each of
 //  the three sets (bull|fox|lion) (mind|body|spirit) (light|dark|shadow)
+//
+//  DM rooms persisted via dm_rooms table.
+//  Read receipts via dm_reads table (✓ sent, ✓✓ read, blue).
 //
 //  Requires: window.sb (Supabase client, set by auth.js)
 // ================================================================
@@ -12,6 +15,7 @@
   var currentUser    = null;
   var currentProfile = null;
   var chatSub        = null;
+  var dmReadSub      = null;
   var forumReplySub  = null;
   var friendReqSub   = null;
   var currentRoom    = 'global';
@@ -19,6 +23,9 @@
   var currentPostId  = null;
   var tbOffer        = [];
   var tbRequest      = [];
+
+  // DM read-receipt state
+  var currentDmOtherReadAt = null;
 
   // Profile editor state
   var peSelectedAvatar = null;
@@ -43,14 +50,11 @@
   var _dragInitOY = 0;
 
   // ── Trait Groups ──────────────────────────────────────────────
-  // Exactly one may be selected per group (radio behaviour).
-  // Labels shown above each row in the editor.
   var TRAIT_GROUPS = [
     { key: 'animal', label: 'Animal',  traits: ['bull',  'fox',    'lion']   },
     { key: 'focus',  label: 'Focus',   traits: ['mind',  'body',   'spirit'] },
     { key: 'aura',   label: 'Aura',    traits: ['light', 'dark',   'shadow'] }
   ];
-  // Flat list kept for backward-compat helpers
   var TRAIT_KEYS = TRAIT_GROUPS.reduce(function (a, g) { return a.concat(g.traits); }, []);
 
   function traitGroup(traitName) {
@@ -360,8 +364,6 @@
   // ══════════════════════════════════════════════════════════════
   function buildTraitsHtml() {
     var tmap = window.traitIconMap || {};
-
-    // Three group rows — each is a radio set
     return TRAIT_GROUPS.map(function (group) {
       var btnHtml = group.traits.map(function (t) {
         var icon = tmap[t]
@@ -516,7 +518,6 @@
     renderPeAvatarPreview();
     renderAvatarGrid();
 
-    // Restore trait button states
     TRAIT_KEYS.forEach(function (t) {
       var btn = overlay.querySelector('.pe-trait-btn[data-trait="'+t+'"]');
       if (btn) applyTraitStyle(btn, peSelectedTraits.indexOf(t) !== -1);
@@ -831,7 +832,6 @@
       el.addEventListener('blur',  function () { if (this.style.borderColor === 'var(--accent)') this.style.borderColor = ''; });
     });
 
-    // ── Trait click: radio-within-group ──────────────────────────
     var traitsWrap = $('peTraits');
     if (traitsWrap) {
       traitsWrap.addEventListener('click', function (e) {
@@ -842,11 +842,9 @@
         var idx       = peSelectedTraits.indexOf(trait);
 
         if (idx !== -1) {
-          // Toggle off — deselect this trait
           peSelectedTraits.splice(idx, 1);
           applyTraitStyle(btn, false);
         } else {
-          // Deselect any currently-selected trait from the same group first
           if (group) {
             group.traits.forEach(function (gt) {
               var gi = peSelectedTraits.indexOf(gt);
@@ -1438,164 +1436,282 @@
   }
 
   // ══════════════════════════════════════════════════════════════
+  //  CHAT — DM HELPERS
+  // ══════════════════════════════════════════════════════════════
+
+  function isDmRoom(room) {
+    return !!(room && room.indexOf('__dm__') !== -1);
+  }
+
+  // Render ✓ (grey, sent) or ✓✓ (blue, read) on the sender's own messages.
+  // Uses currentDmOtherReadAt — the timestamp of when the other person last
+  // read this room — to decide which state to show.
+  function dmTickHtml(m) {
+    if (!isDmRoom(currentRoom)) return '';
+    if (!currentProfile || m.username !== currentProfile.username) return '';
+    var isRead = !!(
+      currentDmOtherReadAt && m.created_at &&
+      new Date(currentDmOtherReadAt) >= new Date(m.created_at)
+    );
+    return '<span class="dm-tick' + (isRead ? ' dm-tick--read' : '') + '"' +
+      ' data-msg-ts="' + esc(m.created_at || '') + '">' +
+      (isRead ? '✓✓' : '✓') +
+      '</span>';
+  }
+
+  // Walk all tick spans and flip any that are now read.
+  function refreshDmTicks() {
+    if (!currentDmOtherReadAt) return;
+    var readTime = new Date(currentDmOtherReadAt);
+    document.querySelectorAll('.dm-tick[data-msg-ts]').forEach(function (span) {
+      var ts = span.getAttribute('data-msg-ts');
+      if (ts && readTime >= new Date(ts)) {
+        span.textContent = '✓✓';
+        span.classList.add('dm-tick--read');
+      }
+    });
+  }
+
+  // Fetch the other participant's last_read_at for this DM room.
+  async function getOtherUserReadAt(room) {
+    if (!isDmRoom(room) || !currentUser || !sb()) return null;
+    var res = await sb()
+      .from('dm_reads')
+      .select('last_read_at')
+      .eq('room', room)
+      .neq('user_id', currentUser.id)
+      .maybeSingle();
+    return (res.data && res.data.last_read_at) || null;
+  }
+
+  // Upsert my own read position for this room (called when I view or receive).
+  async function markDmRead(room) {
+    if (!isDmRoom(room) || !currentUser || !sb()) return;
+    await sb().from('dm_reads').upsert(
+      { user_id: currentUser.id, room: room, last_read_at: new Date().toISOString() },
+      { onConflict: 'user_id,room' }
+    );
+  }
+
+  // Load all persisted DM rooms for the current user and add them to the sidebar.
+  async function populateDmSidebar() {
+    if (!currentUser || !sb()) return;
+    var res = await sb()
+      .from('dm_rooms')
+      .select('*')
+      .or('user1_id.eq.' + currentUser.id + ',user2_id.eq.' + currentUser.id)
+      .order('last_message_at', { ascending: false });
+    (res.data || []).forEach(function (r) {
+      var other = r.user1_id === currentUser.id ? r.user2_username : r.user1_username;
+      addRoomBtn(other + ' (DM)', r.room_id);
+    });
+  }
+
+  // Inject the CSS for tick marks once.
+  function injectDmTickStyles() {
+    if (document.getElementById('dmTickStyles')) return;
+    var s = document.createElement('style');
+    s.id = 'dmTickStyles';
+    s.textContent =
+      '.dm-tick{font-size:0.6rem;color:var(--text-muted);margin-left:4px;' +
+      'letter-spacing:-1px;vertical-align:middle;transition:color 0.25s;}' +
+      '.dm-tick--read{color:#4ab3f4;}';
+    document.head.appendChild(s);
+  }
+
+  // ══════════════════════════════════════════════════════════════
   //  CHAT
   // ══════════════════════════════════════════════════════════════
-  function loadChat() { fetchMessages(currentRoom); subscribeRoom(currentRoom); }
+
+  async function loadChat() {
+    await populateDmSidebar();
+    fetchMessages(currentRoom);
+    subscribeRoom(currentRoom);
+  }
 
   async function fetchMessages(room) {
-  if (!sb()) return;
-  var res = await sb().from('messages').select('*').eq('room', room).order('created_at', {ascending:true}).limit(100);
-  renderMessages(res.data || []);
-  if (isDmRoom(room)) markDmMessagesRead(room);
+    if (!sb()) return;
+    // For DM rooms: get the other person's read position before rendering
+    // so ticks are correct on the first paint.
+    if (isDmRoom(room)) {
+      currentDmOtherReadAt = await getOtherUserReadAt(room);
+      markDmRead(room); // fire-and-forget: record that I've now read this room
+    } else {
+      currentDmOtherReadAt = null;
+    }
+    var res = await sb()
+      .from('messages')
+      .select('*')
+      .eq('room', room)
+      .order('created_at', { ascending: true })
+      .limit(100);
+    renderMessages(res.data || []);
   }
 
   function renderMessages(msgs) {
     var el = $('chatMessages'); if (!el) return;
-    if (!msgs.length) { el.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--text-muted);font-size:0.8rem;">No messages yet — say hi! 👋</div>'; return; }
+    if (!msgs.length) {
+      el.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--text-muted);font-size:0.8rem;">No messages yet — say hi! 👋</div>';
+      return;
+    }
     el.innerHTML = msgs.map(function (m) {
       var mine = currentProfile && m.username === currentProfile.username;
-      var mp = { username: m.username, avatar_card_number: m.avatar_card_number || null, avatar_offset_x: m.avatar_offset_x || null, avatar_offset_y: m.avatar_offset_y || null };
-      return '<div class="chat-msg'+(mine?' mine':'')+'">' +
+      var mp = {
+        username:           m.username,
+        avatar_card_number: m.avatar_card_number || null,
+        avatar_offset_x:    m.avatar_offset_x    || null,
+        avatar_offset_y:    m.avatar_offset_y    || null
+      };
+      return '<div class="chat-msg' + (mine ? ' mine' : '') + '">' +
         avatarHtml(mp, 28) +
         '<div class="chat-msg-content">' +
-          '<div class="chat-msg-name">'+esc(m.username||'Unknown')+'</div>' +
-          '<div class="chat-bubble">'+esc(m.content)+'</div>' +
+          '<div class="chat-msg-name">' + esc(m.username || 'Unknown') + '</div>' +
+          '<div class="chat-bubble">' + esc(m.content) + '</div>' +
           '<div class="chat-ts" style="display:flex;align-items:center;gap:3px;">' +
-            fmtTime(m.created_at) + dmCheckHtml(m) +
+            fmtTime(m.created_at) + dmTickHtml(m) +
           '</div>' +
-          '</div></div>';
+        '</div>' +
+      '</div>';
     }).join('');
     el.scrollTop = el.scrollHeight;
   }
 
   function subscribeRoom(room) {
-  if (chatSub) { try { chatSub.unsubscribe(); } catch(e){} }
-  if (!sb()) return;
-  var ch = sb().channel('chat:' + room)
-    .on('postgres_changes',
-      { event: 'INSERT', schema: 'public', table: 'messages', filter: 'room=eq.' + room },
-      function (payload) { appendMessage(payload.new); });
+    // Tear down existing subs
+    if (chatSub)   { try { chatSub.unsubscribe();   } catch(e){} chatSub   = null; }
+    if (dmReadSub) { try { dmReadSub.unsubscribe(); } catch(e){} dmReadSub = null; }
+    if (!sb()) return;
 
-  // For DMs, also watch UPDATE events to flip ✓ → ✓✓
-  if (isDmRoom(room)) {
-    ch = ch.on('postgres_changes',
-      { event: 'UPDATE', schema: 'public', table: 'messages', filter: 'room=eq.' + room },
-      function (payload) {
-        if (!payload.new || !payload.new.id || !payload.new.read_at) return;
-        var tick = document.querySelector('.msg-check[data-msg-id="' + payload.new.id + '"]');
-        if (tick) { tick.textContent = '✓✓'; tick.classList.add('msg-check--read'); }
-      });
+    // Always subscribe to new messages
+    chatSub = sb().channel('chat:' + room)
+      .on('postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'messages', filter: 'room=eq.' + room },
+        function (payload) { appendMessage(payload.new); })
+      .subscribe();
+
+    // For DM rooms: watch the other person's dm_reads row so ✓ → ✓✓ in real-time
+    if (isDmRoom(room)) {
+      dmReadSub = sb().channel('dm_reads:' + room)
+        .on('postgres_changes',
+          { event: '*', schema: 'public', table: 'dm_reads', filter: 'room=eq.' + room },
+          function (payload) {
+            if (!payload.new || payload.new.user_id === currentUser.id) return;
+            // The other person just read — update our cached time and refresh all ticks
+            currentDmOtherReadAt = payload.new.last_read_at;
+            refreshDmTicks();
+          })
+        .subscribe();
+    }
   }
-
-  chatSub = ch.subscribe();
-}
 
   function appendMessage(m) {
     var el = $('chatMessages'); if (!el) return;
     var ph = el.querySelector('[style*="say hi"]'); if (ph) ph.remove();
     var mine = currentProfile && m.username === currentProfile.username;
-    // Auto-mark incoming DM messages as read while the room is open
-    if (isDmRoom(currentRoom) && !mine && m.id && sb()) {
-      sb().from('messages')
-        .update({ read_at: new Date().toISOString() })
-        .eq('id', m.id)
-        .then(function () {});
+
+    // If I'm watching a DM and the other person sends a message, mark the room read
+    if (isDmRoom(currentRoom) && !mine) {
+      markDmRead(currentRoom);
     }
-    var mp = { username: m.username, avatar_card_number: m.avatar_card_number || null, avatar_offset_x: m  .avatar_offset_x || null, avatar_offset_y: m.avatar_offset_y || null };
+
+    var mp = {
+      username:           m.username,
+      avatar_card_number: m.avatar_card_number || null,
+      avatar_offset_x:    m.avatar_offset_x    || null,
+      avatar_offset_y:    m.avatar_offset_y    || null
+    };
     var div = document.createElement('div');
     div.className = 'chat-msg' + (mine ? ' mine' : '');
-    div.innerHTML = avatarHtml(mp, 28) +
+    div.innerHTML =
+      avatarHtml(mp, 28) +
       '<div class="chat-msg-content">' +
-        '<div class="chat-msg-name">' + esc(m.username||'Unknown') + '</div>' +
+        '<div class="chat-msg-name">' + esc(m.username || 'Unknown') + '</div>' +
         '<div class="chat-bubble">' + esc(m.content) + '</div>' +
         '<div class="chat-ts" style="display:flex;align-items:center;gap:3px;">' +
-          'just now' + dmCheckHtml(m) +
+          'just now' + dmTickHtml(m) +
         '</div>' +
       '</div>';
-    el.appendChild(div); el.scrollTop = el.scrollHeight;
+    el.appendChild(div);
+    el.scrollTop = el.scrollHeight;
   }
 
   function switchRoom(label, roomId) {
     currentRoom = roomId;
     document.querySelectorAll('.chat-room-btn').forEach(function (b) { b.classList.remove('active'); });
-    var btn = document.querySelector('[data-room="'+roomId+'"]'); if (btn) btn.classList.add('active');
+    var btn = document.querySelector('[data-room="' + roomId + '"]'); if (btn) btn.classList.add('active');
     var hdr = $('chatHeaderLabel');
     if (hdr) hdr.innerHTML = '<i class="fas fa-hashtag" style="color:var(--zen);font-size:0.78rem;"></i> ' + esc(label);
-    fetchMessages(roomId); subscribeRoom(roomId);
+    fetchMessages(roomId);
+    subscribeRoom(roomId);
   }
 
   function addRoomBtn(label, roomId) {
-    var s = $('chatSidebar'); if (!s || s.querySelector('[data-room="'+roomId+'"]')) return;
+    var s = $('chatSidebar'); if (!s || s.querySelector('[data-room="' + roomId + '"]')) return;
     var btn = document.createElement('button');
-    btn.className = 'chat-room-btn'; btn.setAttribute('data-room', roomId);
+    btn.className = 'chat-room-btn';
+    btn.setAttribute('data-room', roomId);
     btn.innerHTML = '<span class="chat-room-dot"></span>' + esc(label);
     btn.addEventListener('click', function () { switchRoom(label, roomId); });
     s.appendChild(btn);
   }
 
-  function openDM(username) {
-    if (!currentProfile) return;
+  // Open (or resume) a DM with another user.
+  // Upserts a dm_rooms row so both users see the thread in their sidebar.
+  async function openDM(username) {
+    if (!currentProfile || !sb()) return;
+
+    // Look up the other user's ID
+    var profRes = await sb().from('profiles').select('user_id').eq('username', username).maybeSingle();
+    if (!profRes.data) { toast('Could not open DM — user not found.'); return; }
+    var otherId = profRes.data.user_id;
+
     var roomId = [currentProfile.username, username].sort().join('__dm__');
+
+    // Sort so user1 < user2 alphabetically (stable regardless of who initiates)
+    var pair = [
+      { id: currentUser.id, username: currentProfile.username },
+      { id: otherId,        username: username }
+    ].sort(function (a, b) { return a.username.localeCompare(b.username); });
+
+    // Persist the room — ignoreDuplicates so a race doesn't throw
+    await sb().from('dm_rooms').upsert({
+      room_id:         roomId,
+      user1_id:        pair[0].id,
+      user2_id:        pair[1].id,
+      user1_username:  pair[0].username,
+      user2_username:  pair[1].username,
+      last_message_at: new Date().toISOString()
+    }, { onConflict: 'room_id', ignoreDuplicates: true });
+
     currentRoom = roomId;
-    addRoomBtn(username + ' (DM)', roomId);
+    addRoomBtn(username + ' (DM)', roomId); // addRoomBtn dedupes by data-room
+
     var tab = document.querySelector('[data-nested-tab="chat"]');
     if (tab) tab.click();
-    setTimeout(function () {
-      document.querySelectorAll('.chat-room-btn').forEach(function (b) { b.classList.remove('active'); });
-      var btn = document.querySelector('[data-room="' + roomId + '"]');
-      if (btn) btn.classList.add('active');
-      var hdr = $('chatHeaderLabel');
-      if (hdr) hdr.innerHTML = '<i class="fas fa-comment" style="color:var(--zen);font-size:0.78rem;"></i> ' + esc(username) + ' (DM)';
-    }, 60);
+
+    setTimeout(function () { switchRoom(username + ' (DM)', roomId); }, 60);
   }
-// ── DM read-receipt helpers ───────────────────────────────────
-function isDmRoom(room) {
-  return !!(room && room.indexOf('__dm__') !== -1);
-}
 
-function dmCheckHtml(m) {
-  if (!isDmRoom(currentRoom)) return '';
-  if (!currentProfile || m.username !== currentProfile.username) return '';
-  var read = !!m.read_at;
-  return '<span class="msg-check' + (read ? ' msg-check--read' : '') +
-    '" data-msg-id="' + (m.id || '') + '">' + (read ? '✓✓' : '✓') + '</span>';
-}
-
-async function markDmMessagesRead(room) {
-  if (!isDmRoom(room) || !currentUser || !sb()) return;
-  await sb()
-    .from('messages')
-    .update({ read_at: new Date().toISOString() })
-    .eq('room', room)
-    .neq('user_id', currentUser.id)
-    .is('read_at', null);
-}
-
-function injectMsgCheckStyles() {
-  if (document.getElementById('msgCheckStyles')) return;
-  var s = document.createElement('style');
-  s.id = 'msgCheckStyles';
-  s.textContent = [
-    '.msg-check{font-size:0.6rem;color:var(--text-muted);',
-      'margin-left:3px;letter-spacing:-1px;vertical-align:middle;',
-      'transition:color 0.2s;}',
-    '.msg-check--read{color:var(--water);}'
-  ].join('');
-  document.head.appendChild(s);
-}
   async function sendMessage() {
     if (!currentProfile || !sb()) return;
     var inp = $('chatInput'), content = (inp.value || '').trim(); if (!content) return;
     inp.value = '';
     await sb().from('messages').insert({
-      room: currentRoom,
-      user_id: currentUser.id,
-      username: currentProfile.username,
+      room:               currentRoom,
+      user_id:            currentUser.id,
+      username:           currentProfile.username,
       avatar_card_number: currentProfile.avatar_card_number || null,
-      avatar_offset_x: currentProfile.avatar_offset_x || null,
-      avatar_offset_y: currentProfile.avatar_offset_y || null,
-      content: content
+      avatar_offset_x:    currentProfile.avatar_offset_x    || null,
+      avatar_offset_y:    currentProfile.avatar_offset_y    || null,
+      content:            content
     });
+    // Keep dm_rooms sorted by most-recent so the sidebar stays fresh
+    if (isDmRoom(currentRoom)) {
+      sb().from('dm_rooms')
+        .update({ last_message_at: new Date().toISOString() })
+        .eq('room_id', currentRoom)
+        .then(function () {});
+    }
   }
 
   function initChatEvents() {
@@ -1860,8 +1976,8 @@ function injectMsgCheckStyles() {
         window.applyCompareCollection(col);
       } else {
         window.compareCollection = col;
-        if (typeof window.buildFilters   === 'function') window.buildFilters();
-        if (typeof window.renderCards    === 'function') window.renderCards();
+        if (typeof window.buildFilters    === 'function') window.buildFilters();
+        if (typeof window.renderCards     === 'function') window.renderCards();
         if (typeof window.updateCompareBtn === 'function') window.updateCompareBtn();
       }
       var homeTabBtn = document.querySelector('.tab-btn[data-tab="home"]');
@@ -1879,11 +1995,13 @@ function injectMsgCheckStyles() {
   window.socialOnLogin = function (user) {
     currentUser = user; if (!sb()) return; setupProfileSection(user);
   };
+
   window.socialOnLogout = function () {
-    currentUser = null; currentProfile = null;
-    if (chatSub)       { try { chatSub.unsubscribe();       } catch(e){} chatSub = null; }
+    currentUser = null; currentProfile = null; currentDmOtherReadAt = null;
+    if (chatSub)       { try { chatSub.unsubscribe();       } catch(e){} chatSub       = null; }
+    if (dmReadSub)     { try { dmReadSub.unsubscribe();     } catch(e){} dmReadSub     = null; }
     if (forumReplySub) { try { forumReplySub.unsubscribe(); } catch(e){} forumReplySub = null; }
-    if (friendReqSub)  { try { friendReqSub.unsubscribe();  } catch(e){} friendReqSub = null; }
+    if (friendReqSub)  { try { friendReqSub.unsubscribe();  } catch(e){} friendReqSub  = null; }
     hideHeaderProfile();
     var card = $('profileDisplayCard');
     if (card) card.innerHTML = '<div style="text-align:center;padding:24px 0;color:var(--text-muted);font-size:0.8rem;">Sign in to view your profile.</div>';
@@ -1894,12 +2012,16 @@ function injectMsgCheckStyles() {
 
   // ── Boot ──────────────────────────────────────────────────────
   function boot() {
-  injectMsgCheckStyles();
-  initFriendEvents(); initChatEvents(); initTradeEvents(); initForumEvents();
-}
+    injectDmTickStyles();
+    initFriendEvents();
+    initChatEvents();
+    initTradeEvents();
+    initForumEvents();
+  }
+
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 
-  console.log('[social.js] v5 loaded ✓ (trait groups: radio-per-category)');
+  console.log('[social.js] v6 loaded ✓ (dm_rooms persistence + dm_reads receipts)');
 
 })();
