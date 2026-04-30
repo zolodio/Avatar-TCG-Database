@@ -46,10 +46,10 @@
   // Exactly one may be selected per group (radio behaviour).
   // Labels shown above each row in the editor.
   var TRAIT_GROUPS = [
-  { key: 'element', label: 'Element', traits: ['water', 'earth', 'fire', 'air'] },
-  { key: 'animal',  label: 'Animal',  traits: ['bull',  'fox',   'lion']        },
-  { key: 'focus',   label: 'Focus',   traits: ['mind',  'body',  'spirit']      },
-  { key: 'aura',    label: 'Aura',    traits: ['aura',  'dark',  'shadow']      }
+  { key: 'elemental', label: 'Element', traits: ['water', 'earth', 'fire', 'air'] },
+  { key: 'strike',  label: 'Strike',  traits: ['bull',  'fox',   'lion']        },
+  { key: 'advantage',   label: 'Advantage',   traits: ['mind',  'body',  'spirit']      },
+  { key: 'ally',    label: 'Ally',    traits: ['light',  'dark',  'shadow']      }
 ];
   // Flat list kept for backward-compat helpers
   var TRAIT_KEYS = TRAIT_GROUPS.reduce(function (a, g) { return a.concat(g.traits); }, []);
