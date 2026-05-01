@@ -1080,7 +1080,6 @@ body {
 
 /* ── SOCIAL FEATURES CSS ─────────────────────────────────────── */
 
-/* Username setup panel (shown only if no profile) */
 .social-setup-panel {
   background: var(--bg-card); border: 1px solid var(--border);
   border-radius: var(--radius-lg); padding: 22px; margin-top: 18px;
@@ -1103,10 +1102,8 @@ body {
 .social-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 .social-err { font-size: 0.75rem; color: var(--danger); margin-bottom: 8px; min-height: 18px; }
 
-/* Social tabs section (shown when logged in + has profile) */
 #socialSection { display: none; margin-top: 18px; }
 
-/* Friends */
 .friends-search-row { display: flex; gap: 8px; margin-bottom: 14px; }
 .friends-search-btn {
   padding: 10px 18px; border-radius: var(--radius); border: none;
@@ -1142,7 +1139,7 @@ body {
 .friend-btn:hover { border-color: var(--accent); color: var(--accent); }
 .friend-btn.danger:hover { border-color: var(--danger); color: var(--danger); }
 .friend-btn.accept { border-color: rgba(61,184,108,0.4); color: var(--success); }
-.friend-btn.accept:hover { background: rgba(61,184,108,0.1); }
+.friend-btn.accept:hover { background: rgba(61,184,108,0.12); }
 .friend-btn.chat-btn:hover { border-color: var(--water); color: var(--water); }
 .friend-btn.trade-btn:hover { border-color: var(--air); color: var(--air); }
 .pending-badge {
@@ -1152,7 +1149,6 @@ body {
   border-radius: 99px; text-transform: uppercase; letter-spacing: 0.06em;
 }
 
-/* Chat */
 .chat-layout { display: flex; gap: 10px; height: 500px; }
 .chat-sidebar {
   width: 150px; flex-shrink: 0;
@@ -1233,7 +1229,6 @@ body {
 }
 .chat-send-btn:hover { opacity: 0.85; }
 
-/* Trades */
 .trade-new-btn {
   display: flex; align-items: center; gap: 8px; padding: 11px 18px;
   border-radius: var(--radius); border: 1px dashed var(--border-light);
@@ -1273,7 +1268,6 @@ body {
 .trade-action-btn.reject:hover { background: rgba(224,72,72,0.1); }
 .trade-note { font-size: 0.75rem; color: var(--text-muted); font-style: italic; margin-bottom: 10px; }
 
-/* Trade builder modal */
 .social-modal-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 110;
   display: none; align-items: center; justify-content: center;
@@ -1330,7 +1324,6 @@ body {
 }
 .tb-textarea:focus { border-color: var(--zen); }
 
-/* Forum */
 .forum-cat-row {
   display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px;
   margin-bottom: 14px; scrollbar-width: none;
@@ -1371,7 +1364,6 @@ body {
 .forum-reply-count { font-size: 0.65rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; margin-left: auto; }
 .forum-post-preview { font-size: 0.78rem; color: var(--text-secondary); margin: 5px 0 8px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
-/* Forum detail modal */
 .forum-detail-modal {
   background: var(--bg-secondary); border: 1px solid var(--border);
   border-radius: var(--radius-lg); max-width: 600px; width: 100%;
@@ -1401,6 +1393,209 @@ body {
 }
 .forum-reply-send-btn:hover { opacity: 0.88; }
 
+/* ── MEDIA TAB ─────────────────────────────────────────── */
+.media-cat-nav {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+  margin-bottom: 20px;
+}
+.media-cat-nav::-webkit-scrollbar { display: none; }
+.media-cat-btn {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  color: var(--text-secondary);
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  cursor: pointer;
+  transition: all 0.22s;
+  min-width: 76px;
+  position: relative;
+}
+.media-cat-btn i { font-size: 1.25rem; transition: all 0.22s; }
+.media-cat-btn:hover {
+  border-color: var(--border-light);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.media-cat-btn.active {
+  background: linear-gradient(145deg, rgba(180,77,223,0.18) 0%, rgba(74,125,255,0.12) 100%);
+  border-color: var(--zen);
+  color: var(--zen);
+  box-shadow: 0 0 0 1px rgba(180,77,223,0.25), 0 6px 18px rgba(180,77,223,0.18);
+}
+.media-cat-btn.active i { filter: drop-shadow(0 0 5px var(--zen)); }
+.media-panel { animation: fadeIn 0.25s ease; }
+.media-section-hdr {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.media-section-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+.media-section-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 0.98rem;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+.media-section-sub {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+.media-video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+.media-video-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all 0.22s;
+}
+.media-video-card:hover {
+  border-color: var(--border-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.media-video-embed {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  background: #000;
+}
+.media-video-embed iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border: none;
+}
+.media-video-info {
+  padding: 12px 14px;
+  border-top: 1px solid var(--border);
+}
+.media-video-title {
+  font-weight: 700;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  margin-bottom: 4px;
+  color: var(--text-primary);
+}
+.media-video-meta {
+  font-size: 0.67rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.media-placeholder-card {
+  background: var(--bg-card);
+  border: 1px dashed var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 36px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 200px;
+  transition: border-color 0.2s;
+}
+.media-placeholder-card:hover { border-color: var(--zen); }
+.media-link-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 15px 18px;
+  text-decoration: none;
+  transition: all 0.22s;
+  cursor: pointer;
+}
+.media-link-card:hover {
+  border-color: var(--border-light);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+.media-link-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+.media-link-text { flex: 1; min-width: 0; }
+.media-link-title { font-weight: 700; font-size: 0.85rem; color: var(--text-primary); }
+.media-link-sub { font-size: 0.68rem; color: var(--text-muted); margin-top: 3px; line-height: 1.4; }
+.media-link-arrow { color: var(--text-muted); font-size: 0.8rem; flex-shrink: 0; }
+.media-card-wrap {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 14px;
+}
+.pdf-viewer-frame {
+  width: 100%;
+  height: 72vh;
+  min-height: 480px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--bg-primary);
+  display: block;
+}
+.music-playlist-wrap {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  background: #000;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+.music-playlist-wrap iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border: none;
+}
+@media (max-width: 480px) {
+  .media-cat-btn { padding: 11px 12px; min-width: 64px; font-size: 0.6rem; }
+  .media-cat-btn i { font-size: 1.1rem; }
+  .media-video-grid { grid-template-columns: 1fr; }
+  .pdf-viewer-frame { height: 55vh; min-height: 320px; }
+}
+
 /* RESPONSIVE */
 @media (max-width: 480px) {
   .header-title { font-size: 1.3rem; }
@@ -1421,209 +1616,56 @@ body {
   .tab-nav { gap: 4px; padding: 6px; }
   .tab-btn { padding: 8px 12px; font-size: 0.78rem; }
   .price-grid { gap: 4px; }
-    .chat-layout { flex-direction: column; height: auto; }
+  .chat-layout { flex-direction: column; height: auto; }
   .chat-sidebar { width: 100%; height: 52px; flex-direction: row; overflow-x: auto; overflow-y: hidden; }
   .chat-sidebar-header { display: none; }
   .chat-room-btn { border-bottom: none; border-right: 1px solid var(--border); min-width: 80px; justify-content: center; }
   .chat-main { height: 400px; }
   .trade-columns { grid-template-columns: 1fr; }
 }
-/* =====================================================================
-   AVATAR TCG — MOBILE FULLSCREEN MODAL PATCH
-   Add this inside a <style> tag or link as a stylesheet in your HTML,
-   AFTER the existing styles (before </head>).
-   ===================================================================== */
 
-/* ── Fullscreen modal on phones ── */
 @media (max-width: 600px) {
-
-  /* Overlay: fill the whole screen, no gap */
-  .modal-overlay {
-    padding: 0;
-    align-items: stretch;
-  }
-
-  /* Card panel: true fullscreen */
+  .modal-overlay { padding: 0; align-items: stretch; }
   .modal-card {
-    width: 100%;
-    max-width: 100%;
-    height: 100dvh;          /* dvh respects browser chrome better than vh */
-    max-height: 100%;
-    border-radius: 0;
-    border: none;
-    display: flex;
-    flex-direction: column;
+    width: 100%; max-width: 100%;
+    height: 100dvh; max-height: 100%;
+    border-radius: 0; border: none;
+    display: flex; flex-direction: column;
   }
-
-  /* Header: compact but taller touch target for the X */
-  .modal-header {
-    padding: 12px 14px 10px;
-    flex-shrink: 0;
-    border-bottom: 1px solid var(--border);
-    align-items: center;
-  }
-
-  /* Close button: round, obvious back-button feel */
-  .modal-close {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    flex-shrink: 0;
-  }
-
+  .modal-header { padding: 12px 14px 10px; flex-shrink: 0; border-bottom: 1px solid var(--border); align-items: center; }
+  .modal-close { width: 42px; height: 42px; border-radius: 50%; background: var(--bg-card); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
   .modal-card-name   { font-size: 1rem;   line-height: 1.25; }
   .modal-card-number { font-size: 0.72rem; }
-
-  /* ── TOP HALF: image section locked to 42vh ── */
-  .modal-img-section {
-    flex: 0 0 42vh;
-    height: 42vh;
-    padding: 8px 14px 4px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 1px solid var(--border);
-    overflow: hidden;
-    /* Cursor stays zoom-in — existing zoom overlay still works */
-    cursor: zoom-in;
-  }
-
-  /* Flip container fills the image section */
-  .modal-img-section .modal-flip-container {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    overflow: hidden;
-  }
-
-  .modal-img-section .modal-flip-inner {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* Images: fill the section without overflowing */
-  .modal-img-section .modal-flip-front img,
-  .modal-img-section .modal-flip-back img {
-    max-height: calc(42vh - 52px);   /* leave room for flip button */
-    max-width: 100%;
-    width: auto;
-  }
-
-  .modal-img-placeholder-lg {
-    height: calc(42vh - 52px);
-    min-height: 0;
-  }
-
-  /* Flip button: tighter */
-  .modal-flip-btn {
-    flex-shrink: 0;
-    margin-top: 5px;
-    font-size: 0.7rem;
-    padding: 6px 12px;
-  }
-
-  /* ── BOTTOM HALF: scrollable content ── */
-  .modal-body {
-    flex: 1;
-    overflow-y: auto;
-    min-height: 0;
-    padding: 14px 16px 32px;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  /* Give qty controls a bit more breathing room */
-  .modal-qty-controls {
-    margin-bottom: 12px;
-  }
-
-  /* Trait badges — keep them visible over the image */
-  .modal-trait-badges {
-    bottom: 4px;
-  }
+  .modal-img-section { flex: 0 0 42vh; height: 42vh; padding: 8px 14px 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 1px solid var(--border); overflow: hidden; cursor: zoom-in; }
+  .modal-img-section .modal-flip-container { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; overflow: hidden; }
+  .modal-img-section .modal-flip-inner { display: flex; align-items: center; justify-content: center; }
+  .modal-img-section .modal-flip-front img, .modal-img-section .modal-flip-back img { max-height: calc(42vh - 52px); max-width: 100%; width: auto; }
+  .modal-img-placeholder-lg { height: calc(42vh - 52px); min-height: 0; }
+  .modal-flip-btn { flex-shrink: 0; margin-top: 5px; font-size: 0.7rem; padding: 6px 12px; }
+  .modal-body { flex: 1; overflow-y: auto; min-height: 0; padding: 14px 16px 32px; -webkit-overflow-scrolling: touch; }
+  .modal-qty-controls { margin-bottom: 12px; }
+  .modal-trait-badges { bottom: 4px; }
 }
+
 @media (min-width: 768px) {
   .card-grid { grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); }
   .header-title { font-size: 1.9rem; }
   #headerProfileIndicator { display: block; }
 }
-.digital-redemption-panel {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 16px;
-  margin-bottom: 20px;
-}
 
-.tab-action-btn {
-  padding: 11px 18px;
-  border-radius: var(--radius);
-  border: none;
-  font-family: 'Nunito Sans', sans-serif;
-  font-weight: 700;
-  font-size: 0.82rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
+.digital-redemption-panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 20px; }
+.tab-action-btn { padding: 11px 18px; border-radius: var(--radius); border: none; font-family: 'Nunito Sans', sans-serif; font-weight: 700; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+.tab-action-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(180,77,223,0.3); }
+.tab-action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+#redemption-message.success { background: rgba(61,184,108,0.1); border: 1px solid rgba(61,184,108,0.3); color: var(--success); }
+#redemption-message.error { background: rgba(224,72,72,0.1); border: 1px solid rgba(224,72,72,0.3); color: var(--danger); }
 
-.tab-action-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(180, 77, 223, 0.3);
-}
-
-.tab-action-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-#redemption-message.success {
-  background: rgba(61, 184, 108, 0.1);
-  border: 1px solid rgba(61, 184, 108, 0.3);
-  color: var(--success);
-}
-
-#redemption-message.error {
-  background: rgba(224, 72, 72, 0.1);
-  border: 1px solid rgba(224, 72, 72, 0.3);
-  color: var(--danger);
-}
-/* ── Friend card: prevent button overlap on narrow screens ── */
-.friend-card {
-  flex-wrap: wrap;
-}
-.friend-card .friend-info {
-  min-width: 0;
-  flex: 1 1 120px;
-}
-.friend-card .friend-actions {
-  flex-wrap: wrap;
-  gap: 5px;
-  justify-content: flex-end;
-}
+.friend-card { flex-wrap: wrap; }
+.friend-card .friend-info { min-width: 0; flex: 1 1 120px; }
+.friend-card .friend-actions { flex-wrap: wrap; gap: 5px; justify-content: flex-end; }
 @media (max-width: 400px) {
-  .friend-card .friend-actions {
-    width: 100%;
-    justify-content: flex-start;
-    padding-top: 2px;
-  }
-  .friend-btn {
-    font-size: 0.65rem;
-    padding: 4px 9px;
-  }
+  .friend-card .friend-actions { width: 100%; justify-content: flex-start; padding-top: 2px; }
+  .friend-btn { font-size: 0.65rem; padding: 4px 9px; }
 }
 	</style>
 </head>
@@ -1638,17 +1680,15 @@ body {
     <div class="image-container" style="position: relative; display: inline-block;"><img alt="Avatar Quick Strike" src="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/Current-Development/SMLOGO.png" style="width: 33%; height: auto;" crossorigin="anonymous"></div>
     <div class="image-container" style="position: relative; display: inline-block;"><img alt="Avatar Quick Strike" src="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/Current-Development/LGLOGO.png" style="width: 33%; height: auto; filter: drop-shadow(0 0 8px white);" crossorigin="anonymous"></div>
   </div>
-    <!-- PERSISTENT PROFILE INDICATOR (upper right) -->
   <div id="headerProfileIndicator" style="position: absolute; top: 14px; right: 16px; z-index: 100; padding: 8px 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; display: none; min-width: 0; max-width: 220px;"></div>
-
 </header>
 
-<!-- TAB NAVIGATION (main tabs) -->
+<!-- TAB NAVIGATION -->
 <div class="tab-nav">
   <button class="tab-btn active" data-tab="home"><i class="fas fa-clone" style="transform: scale(.75,1.175)"></i> Card Collection</button>
   <button class="tab-btn" data-tab="portfolio"><i class="fas fa-chart-line"></i> Physical Portfolio</button>
   <button class="tab-btn" data-tab="digital-collection"><i class="fas fa-cloud-download-alt"></i> Digital Collection</button>
-  <button class="tab-btn" data-tab="howtoplay"><i class="fas fa-book"></i> How to Play</button>
+  <button class="tab-btn" data-tab="media"><i class="fas fa-film"></i> Media</button>
   <button class="tab-btn" data-tab="wayback"><i class="fas fa-globe"></i> Wayback Websites</button>
   <button class="tab-btn" data-tab="profile"><i class="fas fa-user"></i> Together</button>
 </div>
@@ -1730,42 +1770,74 @@ body {
 <div class="empty-state" id="emptyState" style="display:none;"><p>No cards match your search</p></div>
 </div>
 
-<!-- HOW TO PLAY TAB -->
-<div class="tab-content" id="tab-howtoplay">
-  <div class="tab-nav-nested">
-    <button class="tab-btn-nested active" data-nested-tab="how-to-video">Interactive Demo &amp; Videos</button>
-    <button class="tab-btn-nested" data-nested-tab="rulebook">Rulebook</button>
-    <button class="tab-btn-nested" data-nested-tab="avatar-wiki">Avatar Wiki</button>
+<!-- MEDIA TAB -->
+<div class="tab-content" id="tab-media">
+
+  <!-- CATEGORY NAVIGATION -->
+  <div class="media-cat-nav" id="mediaCatNav">
+    <button class="media-cat-btn active" data-panel="how-to-play">
+      <i class="fas fa-gamepad"></i>
+      <span>How to Play</span>
+    </button>
+    <button class="media-cat-btn" data-panel="rulebook">
+      <i class="fas fa-book-open"></i>
+      <span>Rulebook</span>
+    </button>
+    <button class="media-cat-btn" data-panel="master-sets">
+      <i class="fas fa-trophy"></i>
+      <span>Master Sets</span>
+    </button>
+    <button class="media-cat-btn" data-panel="pack-rips">
+      <i class="fas fa-box-open"></i>
+      <span>Pack Rips</span>
+    </button>
+    <button class="media-cat-btn" data-panel="music">
+      <i class="fas fa-music"></i>
+      <span>Music</span>
+    </button>
   </div>
 
-  <div id="nested-how-to-video" class="nested-tab-content active">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
-      <i class="fas fa-video" style="font-size: 3rem; color: var(--zen); margin-bottom: 16px;"></i>
-      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">How to Play Videos</h3>
-      <p style="color: var(--text-secondary); margin-bottom: 16px;">Learn the basics of Avatar Quick Strike TCG</p>
-      <div class="player-shell" id="playerShell"></div>
-      <div class="toolbar-actions">
-        <button class="toolbar-btn" id="btnReload" title="Reload"><i class="fas fa-redo-alt"></i></button>
-      </div>
-      <div class="player-area" id="playerArea">
-        <div class="loading-overlay" id="loadingOverlay">
-          <div class="loader-ring"></div>
-          <div class="loading-text">Loading Flash...</div>
-          <div class="loading-sub">Initializing Ruffle emulator</div>
+  <!-- ══════════════════════════════════════
+       HOW TO PLAY PANEL
+  ══════════════════════════════════════ -->
+  <div class="media-panel" id="mediapanel-how-to-play">
+
+    <!-- Interactive Demo -->
+    <div class="media-card-wrap">
+      <div class="media-section-hdr">
+        <div class="media-section-icon" style="background:rgba(180,77,223,0.13);color:var(--zen);">
+          <i class="fas fa-dice-d20"></i>
         </div>
-        <div class="error-state" id="errorState">
-          <i class="fas fa-exclamation-triangle"></i>
-          <h3>Playback Error</h3>
-          <p id="errorMessage">Something went wrong while loading the Flash content.</p>
-          <button class="retry-btn" id="btnRetry"><i class="fas fa-redo-alt"></i> Try Again</button>
+        <div>
+          <div class="media-section-title">Interactive Demo</div>
+          <div class="media-section-sub">Playable Flash tutorial — powered by Ruffle emulator</div>
         </div>
       </div>
-      <div class="player-status">
-        <div class="status-indicator">
-          <div class="status-dot loading" id="statusDot"></div>
-          <span id="statusText">Initializing...</span>
+      <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border);">
+          <span style="font-size:0.68rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:0.1em;">Avatar Quick Strike Demo</span>
+          <button class="toolbar-btn" id="btnReload" title="Reload"><i class="fas fa-redo-alt"></i></button>
         </div>
-        <span id="engineInfo">Ruffle Flash Emulator</span>
+        <div class="player-area" id="playerArea" style="aspect-ratio:4/3;">
+          <div class="loading-overlay" id="loadingOverlay">
+            <div class="loader-ring"></div>
+            <div class="loading-text">Loading Flash...</div>
+            <div class="loading-sub">Initializing Ruffle emulator</div>
+          </div>
+          <div class="error-state" id="errorState">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3>Playback Error</h3>
+            <p id="errorMessage">Something went wrong while loading the Flash content.</p>
+            <button class="retry-btn" id="btnRetry"><i class="fas fa-redo-alt"></i> Try Again</button>
+          </div>
+        </div>
+        <div class="player-status">
+          <div class="status-indicator">
+            <div class="status-dot loading" id="statusDot"></div>
+            <span id="statusText">Initializing...</span>
+          </div>
+          <span id="engineInfo">Ruffle Flash Emulator</span>
+        </div>
       </div>
       <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
       <script>
@@ -1780,72 +1852,264 @@ body {
         var btnReload = document.getElementById("btnReload");
         var btnRetry = document.getElementById("btnRetry");
         var currentPlayer = null;
-
-        function setStatus(s, t) { statusDot.className = "status-dot " + s; statusText.textContent = t; }
-        function showError(m) { loadingOverlay.classList.add("hidden"); errorState.classList.add("visible"); errorMessage.textContent = m; setStatus("error", "Error"); }
-        function hideError() { errorState.classList.remove("visible"); }
-
+        function setStatus(s, t) { if(statusDot) statusDot.className = "status-dot " + s; if(statusText) statusText.textContent = t; }
+        function showError(m) { if(loadingOverlay) loadingOverlay.classList.add("hidden"); if(errorState) errorState.classList.add("visible"); if(errorMessage) errorMessage.textContent = m; setStatus("error", "Error"); }
+        function hideError() { if(errorState) errorState.classList.remove("visible"); }
         function loadSWF() {
           hideError();
-          loadingOverlay.classList.remove("hidden");
+          if(loadingOverlay) loadingOverlay.classList.remove("hidden");
           setStatus("loading", "Loading...");
           if (currentPlayer) { try { currentPlayer.remove(); } catch(e) {} currentPlayer = null; }
           try {
             var ruffle = window.RufflePlayer.newest();
             var player = ruffle.createPlayer();
-            player.style.width = "100%";
-            player.style.height = "100%";
-            playerArea.appendChild(player);
+            player.style.width = "100%"; player.style.height = "100%";
+            if(playerArea) playerArea.appendChild(player);
             currentPlayer = player;
             player.load(SWF_URL).then(function() {
-              loadingOverlay.classList.add("hidden");
+              if(loadingOverlay) loadingOverlay.classList.add("hidden");
               setStatus("active", "Playing");
-            }).catch(function(err) {
-              showError("Failed to load the SWF file: " + (err.message || err));
-            });
-          } catch(err) {
-            showError("Ruffle emulator failed to initialize. " + (err.message || "Please try reloading."));
-          }
+            }).catch(function(err) { showError("Failed to load: " + (err.message || err)); });
+          } catch(err) { showError("Ruffle failed to initialize. " + (err.message || "Please reload.")); }
         }
-
-        function waitForRuffle(attempts) {
-          if (attempts <= 0) { showError("Ruffle emulator could not be loaded."); return; }
+        function waitForRuffle(n) {
+          if (n <= 0) { showError("Ruffle emulator could not be loaded."); return; }
           if (typeof window.RufflePlayer !== "undefined") { loadSWF(); }
-          else { setTimeout(function() { waitForRuffle(attempts - 1); }, 300); }
+          else { setTimeout(function() { waitForRuffle(n - 1); }, 300); }
         }
-
         waitForRuffle(30);
-        btnReload.addEventListener("click", loadSWF);
-        btnRetry.addEventListener("click", loadSWF);
+        if(btnReload) btnReload.addEventListener("click", loadSWF);
+        if(btnRetry) btnRetry.addEventListener("click", loadSWF);
       })();
       </script>
-      <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; margin-top: 16px;">
-        <iframe src="https://www.youtube.com/embed/TNPI9iAmMZI" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 12px; border: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+
+    <!-- How to Play Video -->
+    <div class="media-card-wrap">
+      <div class="media-section-hdr">
+        <div class="media-section-icon" style="background:rgba(232,83,46,0.13);color:var(--fire);">
+          <i class="fab fa-youtube"></i>
+        </div>
+        <div>
+          <div class="media-section-title">How to Play — Video Tutorial</div>
+          <div class="media-section-sub">Official walkthrough video</div>
+        </div>
       </div>
-      <p style="color: var(--text-secondary); margin-top: 16px;">
-        Can't see the video? <a href="https://www.youtube.com/watch?v=TNPI9iAmMZI" target="_blank" style="color: var(--zen);">Watch on YouTube</a>
+      <div class="media-video-grid">
+        <div class="media-video-card">
+          <div class="media-video-embed">
+            <iframe src="https://www.youtube.com/embed/TNPI9iAmMZI" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Avatar Quick Strike How to Play"></iframe>
+          </div>
+          <div class="media-video-info">
+            <div class="media-video-title">Avatar Quick Strike — How to Play</div>
+            <div class="media-video-meta"><i class="fab fa-youtube" style="color:var(--fire);"></i> Official Tutorial</div>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:0.75rem;color:var(--text-muted);margin-top:12px;">
+        Can't see the video? <a href="https://www.youtube.com/watch?v=TNPI9iAmMZI" target="_blank" style="color:var(--zen);">Watch on YouTube ↗</a>
       </p>
     </div>
-  </div>
 
-  <div id="nested-rulebook" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
-      <i class="fas fa-book" style="font-size: 3rem; color: var(--accent); margin-bottom: 16px;"></i>
-      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Official Rulebook</h3>
-      <p style="color: var(--text-secondary); margin-bottom: 16px;">Complete rulebook in PDF format</p>
-      <a href="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/ee860bbdec2054309b89bfc4055ab57b9fbb8f5e/avatar_rulebook.pdf" target="_blank" style="display: inline-block; padding: 10px 20px; background: var(--accent); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600;">Download PDF</a>
-    </div>
-  </div>
+    <!-- Avatar Wiki -->
+    <a href="https://avatar.fandom.com/wiki/Avatar:_The_Last_Airbender_Trading_Card_Game" target="_blank" class="media-link-card">
+      <div class="media-link-icon" style="background:rgba(46,140,232,0.13);color:var(--water);">
+        <i class="fas fa-globe"></i>
+      </div>
+      <div class="media-link-text">
+        <div class="media-link-title">Avatar Wiki — Trading Card Game</div>
+        <div class="media-link-sub">Fandom wiki with card listings, rules, and lore · avatar.fandom.com</div>
+      </div>
+      <i class="fas fa-external-link-alt media-link-arrow"></i>
+    </a>
 
-  <div id="nested-avatar-wiki" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
-      <i class="fas fa-globe" style="font-size: 3rem; color: var(--water); margin-bottom: 16px;"></i>
-      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Avatar Wiki</h3>
-      <p style="color: var(--text-secondary); margin-bottom: 16px;">Learn about the QuickStrike Avatar TCG</p>
-      <a href="https://avatar.fandom.com/wiki/Avatar:_The_Last_Airbender_Trading_Card_Game" target="_blank" style="display: inline-block; padding: 10px 20px; background: var(--water); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600;">Visit Wiki</a>
+  </div><!-- /how-to-play panel -->
+
+  <!-- ══════════════════════════════════════
+       RULEBOOK PANEL
+  ══════════════════════════════════════ -->
+  <div class="media-panel" id="mediapanel-rulebook" style="display:none;">
+
+    <!-- Header + download -->
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+      <div>
+        <div style="font-family:'Cinzel',serif;font-weight:700;font-size:1.05rem;color:var(--text-primary);">Official Rulebook</div>
+        <div style="font-size:0.72rem;color:var(--text-muted);margin-top:3px;">Browse the complete rules in-browser, or download the PDF</div>
+      </div>
+      <a href="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/ee860bbdec2054309b89bfc4055ab57b9fbb8f5e/avatar_rulebook.pdf"
+         target="_blank"
+         style="flex-shrink:0;display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:var(--accent);color:#fff;border-radius:var(--radius);font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:0.82rem;text-decoration:none;transition:opacity 0.2s;white-space:nowrap;"
+         onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+        <i class="fas fa-download"></i> Download PDF
+      </a>
     </div>
-  </div>
-</div>
+
+    <!-- PDF iframe viewer -->
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;">
+      <div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;">
+        <i class="fas fa-file-pdf" style="color:var(--fire);font-size:0.9rem;"></i>
+        <span style="font-size:0.7rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;">avatar_rulebook.pdf</span>
+      </div>
+      <iframe
+        src="https://docs.google.com/viewer?url=https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/ee860bbdec2054309b89bfc4055ab57b9fbb8f5e/avatar_rulebook.pdf&embedded=true"
+        class="pdf-viewer-frame"
+        title="Avatar TCG Rulebook"
+        loading="lazy"></iframe>
+    </div>
+    <p style="font-size:0.7rem;color:var(--text-muted);margin-top:8px;text-align:center;">
+      PDF not loading? <a href="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/ee860bbdec2054309b89bfc4055ab57b9fbb8f5e/avatar_rulebook.pdf" target="_blank" style="color:var(--zen);">Open directly ↗</a>
+    </p>
+
+  </div><!-- /rulebook panel -->
+
+  <!-- ══════════════════════════════════════
+       MASTER SETS & COLLECTIONS PANEL
+  ══════════════════════════════════════ -->
+  <div class="media-panel" id="mediapanel-master-sets" style="display:none;">
+
+    <div class="media-card-wrap">
+      <div class="media-section-hdr">
+        <div class="media-section-icon" style="background:rgba(232,182,50,0.13);color:var(--promo);">
+          <i class="fas fa-trophy"></i>
+        </div>
+        <div>
+          <div class="media-section-title">Master Sets &amp; Collections</div>
+          <div class="media-section-sub">Community showcase — complete sets, rare pulls, and collection tours</div>
+        </div>
+      </div>
+
+      <div class="media-video-grid" id="masterSetsGrid">
+        <!-- Placeholder slots — replace src with real video IDs when available -->
+        <div class="media-placeholder-card">
+          <i class="fab fa-youtube" style="font-size:2.2rem;color:var(--fire);opacity:0.45;"></i>
+          <div style="font-weight:700;font-size:0.8rem;color:var(--text-secondary);">Community Video</div>
+          <div style="font-size:0.68rem;color:var(--text-muted);text-align:center;line-height:1.6;max-width:180px;">Master set showcase videos will appear here as they're added</div>
+        </div>
+        <div class="media-placeholder-card">
+          <i class="fab fa-youtube" style="font-size:2.2rem;color:var(--fire);opacity:0.45;"></i>
+          <div style="font-weight:700;font-size:0.8rem;color:var(--text-secondary);">Community Video</div>
+          <div style="font-size:0.68rem;color:var(--text-muted);text-align:center;line-height:1.6;max-width:180px;">Master set showcase videos will appear here as they're added</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- YouTube search link -->
+    <a href="https://www.youtube.com/results?search_query=avatar+last+airbender+trading+card+game+master+set+collection" target="_blank" class="media-link-card">
+      <div class="media-link-icon" style="background:rgba(232,83,46,0.13);color:var(--fire);">
+        <i class="fab fa-youtube"></i>
+      </div>
+      <div class="media-link-text">
+        <div class="media-link-title">Search YouTube for Master Set Videos</div>
+        <div class="media-link-sub">Find community collection showcases on YouTube</div>
+      </div>
+      <i class="fas fa-external-link-alt media-link-arrow"></i>
+    </a>
+
+  </div><!-- /master-sets panel -->
+
+  <!-- ══════════════════════════════════════
+       PACK RIPS PANEL
+  ══════════════════════════════════════ -->
+  <div class="media-panel" id="mediapanel-pack-rips" style="display:none;">
+
+    <div class="media-card-wrap">
+      <div class="media-section-hdr">
+        <div class="media-section-icon" style="background:rgba(92,184,92,0.13);color:var(--earth);">
+          <i class="fas fa-box-open"></i>
+        </div>
+        <div>
+          <div class="media-section-title">Pack Rips</div>
+          <div class="media-section-sub">Community pack opening videos — booster pulls and reactions</div>
+        </div>
+      </div>
+
+      <div class="media-video-grid" id="packRipsGrid">
+        <div class="media-placeholder-card">
+          <i class="fab fa-youtube" style="font-size:2.2rem;color:var(--fire);opacity:0.45;"></i>
+          <div style="font-weight:700;font-size:0.8rem;color:var(--text-secondary);">Community Video</div>
+          <div style="font-size:0.68rem;color:var(--text-muted);text-align:center;line-height:1.6;max-width:180px;">Pack opening videos will appear here as they're added</div>
+        </div>
+        <div class="media-placeholder-card">
+          <i class="fab fa-youtube" style="font-size:2.2rem;color:var(--fire);opacity:0.45;"></i>
+          <div style="font-weight:700;font-size:0.8rem;color:var(--text-secondary);">Community Video</div>
+          <div style="font-size:0.68rem;color:var(--text-muted);text-align:center;line-height:1.6;max-width:180px;">Pack opening videos will appear here as they're added</div>
+        </div>
+      </div>
+    </div>
+
+    <a href="https://www.youtube.com/results?search_query=avatar+last+airbender+quickstrike+trading+card+game+pack+opening" target="_blank" class="media-link-card">
+      <div class="media-link-icon" style="background:rgba(232,83,46,0.13);color:var(--fire);">
+        <i class="fab fa-youtube"></i>
+      </div>
+      <div class="media-link-text">
+        <div class="media-link-title">Search YouTube for Pack Rip Videos</div>
+        <div class="media-link-sub">Find community pack opening videos on YouTube</div>
+      </div>
+      <i class="fas fa-external-link-alt media-link-arrow"></i>
+    </a>
+
+  </div><!-- /pack-rips panel -->
+
+  <!-- ══════════════════════════════════════
+       MUSIC PANEL
+  ══════════════════════════════════════ -->
+  <div class="media-panel" id="mediapanel-music" style="display:none;">
+
+    <!-- Playlist embed -->
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:14px;">
+      <div style="padding:18px 20px 14px;border-bottom:1px solid var(--border);">
+        <div class="media-section-hdr" style="margin-bottom:0;">
+          <div class="media-section-icon" style="background:rgba(240,201,70,0.13);color:var(--air);">
+            <i class="fas fa-music"></i>
+          </div>
+          <div>
+            <div class="media-section-title">Avatar: The Last Airbender — Soundtrack</div>
+            <div class="media-section-sub">Official music playlist · Jeremy Zuckerman &amp; The Track Team</div>
+          </div>
+        </div>
+      </div>
+      <div class="music-playlist-wrap">
+        <iframe
+          src="https://www.youtube.com/embed/yBXbGHfs0kE?list=PLVdzXINk9vjd3uCgmwiTej4NfN-4U1ZRp&rel=0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          title="Avatar The Last Airbender Music Playlist"
+          loading="lazy"></iframe>
+      </div>
+    </div>
+
+    <a href="https://www.youtube.com/watch?v=yBXbGHfs0kE&list=PLVdzXINk9vjd3uCgmwiTej4NfN-4U1ZRp" target="_blank" class="media-link-card">
+      <div class="media-link-icon" style="background:rgba(232,83,46,0.13);color:var(--fire);">
+        <i class="fab fa-youtube"></i>
+      </div>
+      <div class="media-link-text">
+        <div class="media-link-title">Open Full Playlist on YouTube</div>
+        <div class="media-link-sub">Avatar: The Last Airbender — Complete Soundtrack Playlist</div>
+      </div>
+      <i class="fas fa-external-link-alt media-link-arrow"></i>
+    </a>
+
+  </div><!-- /music panel -->
+
+  <!-- Media tab navigation script -->
+  <script>
+  (function() {
+    var nav = document.getElementById('mediaCatNav');
+    if (!nav) return;
+    nav.addEventListener('click', function(e) {
+      var btn = e.target.closest('[data-panel]');
+      if (!btn) return;
+      nav.querySelectorAll('.media-cat-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var panel = btn.getAttribute('data-panel');
+      document.querySelectorAll('#tab-media .media-panel').forEach(function(p) { p.style.display = 'none'; });
+      var el = document.getElementById('mediapanel-' + panel);
+      if (el) el.style.display = 'block';
+    });
+  })();
+  </script>
+
+</div><!-- /tab-media -->
 
 <!-- WAYBACK WEBSITES TAB -->
 <div class="tab-content" id="tab-wayback">
@@ -1870,10 +2134,9 @@ body {
     <button class="tab-btn-nested" data-nested-tab="common-calc">Common</button>
     <button class="tab-btn-nested" data-nested-tab="graph">Graph</button>
     <button class="tab-btn-nested" data-nested-tab="card-values">Card Values</button>
-        <button class="tab-btn-nested" data-nested-tab="save-code-portfolio">Save Code</button>
+    <button class="tab-btn-nested" data-nested-tab="save-code-portfolio">Save Code</button>
   </div>
 
-  <!-- SAVE CODE -->
   <div id="nested-save-code-portfolio" class="nested-tab-content" style="display:none;">
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px;">
       <div class="save-code-header"><span class="save-code-label">Current Save Code:</span></div>
@@ -1882,7 +2145,6 @@ body {
     </div>
   </div>
 
-  <!-- ZENEMENTAL PACK CALCULATOR -->
   <div id="nested-zen-calc" class="nested-tab-content active">
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
       <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
@@ -1892,15 +2154,10 @@ body {
           <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-in-6 pull rate &middot; Core cards only</div>
         </div>
       </div>
-      <div id="zenPackWidget">
-        <div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;">
-          <i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;
-        </div>
-      </div>
+      <div id="zenPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
     </div>
   </div>
 
-  <!-- CHAMBER PACK CALCULATOR -->
   <div id="nested-chamber-calc" class="nested-tab-content" style="display:none;">
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
       <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
@@ -1910,15 +2167,10 @@ body {
           <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-per-pack &middot; Core cards only</div>
         </div>
       </div>
-      <div id="chamberPackWidget">
-        <div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;">
-          <i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;
-        </div>
-      </div>
+      <div id="chamberPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
     </div>
   </div>
 
-  <!-- RARE PACK CALCULATOR -->
   <div id="nested-rare-calc" class="nested-tab-content" style="display:none;">
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
       <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
@@ -1928,15 +2180,10 @@ body {
           <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-per-pack &middot; Core cards only</div>
         </div>
       </div>
-      <div id="rarePackWidget">
-        <div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;">
-          <i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;
-        </div>
-      </div>
+      <div id="rarePackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
     </div>
   </div>
 
-  <!-- UNCOMMON PACK CALCULATOR -->
   <div id="nested-uncommon-calc" class="nested-tab-content" style="display:none;">
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
       <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
@@ -1946,15 +2193,10 @@ body {
           <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">3-per-pack &middot; Core cards only</div>
         </div>
       </div>
-      <div id="uncommonPackWidget">
-        <div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;">
-          <i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;
-        </div>
-      </div>
+      <div id="uncommonPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
     </div>
   </div>
 
-  <!-- COMMON PACK CALCULATOR -->
   <div id="nested-common-calc" class="nested-tab-content" style="display:none;">
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
       <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
@@ -1964,15 +2206,10 @@ body {
           <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">5-per-pack &middot; Core cards only</div>
         </div>
       </div>
-      <div id="commonPackWidget">
-        <div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;">
-          <i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;
-        </div>
-      </div>
+      <div id="commonPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
     </div>
   </div>
 
-  <!-- GRAPH TAB -->
   <div id="nested-graph" class="nested-tab-content" style="display:none;">
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
       <i class="fas fa-chart-line" style="font-size: 2.5rem; color: var(--earth); margin-bottom: 14px;"></i>
@@ -1981,7 +2218,6 @@ body {
     </div>
   </div>
 
-  <!-- CARD VALUES TAB -->
   <div id="nested-card-values" class="nested-tab-content" style="display:none;">
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
       <i class="fas fa-coins" style="font-size: 3rem; color: var(--promo); margin-bottom: 16px;"></i>
@@ -1991,19 +2227,16 @@ body {
     </div>
   </div>
 </div>
+
 <!-- DIGITAL TAB -->
 <div id="tab-digital-collection" class="tab-content">
-  
-  <!-- NESTED TAB NAVIGATION -->
   <div class="tab-nav-nested">
     <button class="tab-btn-nested active" data-nested-tab="digital-main">Collection</button>
     <button class="tab-btn-nested" data-nested-tab="digital-redeem">Redeem</button>
     <button class="tab-btn-nested" data-nested-tab="digital-deckbuilder">Deck Builder</button>
   </div>
 
-  <!-- DIGITAL MAIN TAB -->
   <div id="nested-digital-main" class="nested-tab-content active">
-    <!-- Stats Bar (collapsible) -->
     <div style="margin-bottom: 18px;">
       <button id="digitalStatsToggleBtn" onclick="(function(){
         var body = document.getElementById('digitalStatsCollapsible');
@@ -2026,20 +2259,12 @@ body {
       </div>
     </div>
 
-    <!-- Digital Collection Controls -->
     <div class="export-row" id="digital-controls">
-      <button class="export-btn" id="btn-digital-export-json" title="Export as JSON backup">
-        <i class="fas fa-download"></i> Export JSON
-      </button>
-      <button class="import-btn" id="btn-digital-import-json" title="Import from JSON backup">
-        <i class="fas fa-upload"></i> Import JSON
-      </button>
-      <button class="clear-btn" id="btn-digital-clear" title="Clear all digital cards">
-        <i class="fas fa-trash"></i> Clear All
-      </button>
+      <button class="export-btn" id="btn-digital-export-json" title="Export as JSON backup"><i class="fas fa-download"></i> Export JSON</button>
+      <button class="import-btn" id="btn-digital-import-json" title="Import from JSON backup"><i class="fas fa-upload"></i> Import JSON</button>
+      <button class="clear-btn" id="btn-digital-clear" title="Clear all digital cards"><i class="fas fa-trash"></i> Clear All</button>
     </div>
 
-    <!-- Search & Filter -->
     <div class="controls-section" style="position: static; background: transparent; padding: 10px 0; margin-bottom: 8px;">
       <div class="search-row">
         <div class="search-box">
@@ -2048,7 +2273,6 @@ body {
           <button class="search-clear-btn" id="digital-search-clear"><i class="fas fa-times"></i></button>
         </div>
       </div>
-
       <div class="filter-row" id="digital-filters">
         <button class="filter-pill active" data-filter="all">All</button>
         <button class="filter-pill" data-filter="common">Common</button>
@@ -2058,7 +2282,6 @@ body {
       </div>
     </div>
 
-    <!-- Cards Display -->
     <div class="sort-row">
       <div class="results-count" id="digital-results-count">0 cards</div>
       <div class="sort-controls">
@@ -2072,17 +2295,13 @@ body {
     </div>
 
     <div class="card-grid" id="digital-cards-display"></div>
-
-    <!-- Empty State -->
     <div class="empty-state" id="digital-empty-state" style="display: none;">
       <i class="fas fa-inbox"></i>
       <p>No digital cards yet. Redeem codes from the Booster app to get started!</p>
     </div>
   </div>
 
-  <!-- DIGITAL REDEEM TAB -->
   <div id="nested-digital-redeem" class="nested-tab-content" style="display: none;">
-    <!-- Redemption Section -->
     <div class="digital-redemption-panel">
       <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
         <i class="fas fa-ticket-alt" style="font-size: 1.5rem; color: var(--zen);"></i>
@@ -2091,23 +2310,15 @@ body {
           <p style="font-size: 0.75rem; color: var(--text-muted);">Paste One-Time Redemption codes from the Booster App to Add Cards to Your Digital Collection.</p>
         </div>
       </div>
-
-      <textarea 
-        id="redemption-code-input" placeholder="Paste Redmption Code Here..." style="width:100%;min-height:80px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;color:var(--text-primary);font-family:'VT323',monospace;font-size:0.85rem;resize:vertical;margin-bottom:12px;"></textarea>
-
+      <textarea id="redemption-code-input" placeholder="Paste Redmption Code Here..." style="width:100%;min-height:80px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;color:var(--text-primary);font-family:'VT323',monospace;font-size:0.85rem;resize:vertical;margin-bottom:12px;"></textarea>
       <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-        <button id="btn-redeem" class="tab-action-btn" style="flex: 1; background: var(--zen); color: #fff;">
-          <i class="fas fa-check-circle"></i> Redeem Code
-        </button>
-        <button id="btn-redeem-clear" class="tab-action-btn" style="flex: 1; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary);">
-          <i class="fas fa-times"></i> Clear
-        </button>
+        <button id="btn-redeem" class="tab-action-btn" style="flex: 1; background: var(--zen); color: #fff;"><i class="fas fa-check-circle"></i> Redeem Code</button>
+        <button id="btn-redeem-clear" class="tab-action-btn" style="flex: 1; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary);"><i class="fas fa-times"></i> Clear</button>
       </div>
-
       <div id="redemption-message" style="min-height: 24px; font-size: 0.85rem; border-radius: 6px; padding: 8px 12px; margin-bottom: 16px; display: none;"></div>
     </div>
   </div>
-  <!-- DECK BUILDER TAB -->
+
   <div id="nested-digital-deckbuilder" class="nested-tab-content" style="display:none;">
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
       <i class="fas fa-align-justify" style="font-size: 3rem; color: var(--promo); margin-bottom: 16px;"></i>
@@ -2116,49 +2327,44 @@ body {
       <p style="color: var(--text-secondary);">Coming Soon...</p>
     </div>
   </div>
-
 </div>
+
 <!-- PROFILE TAB -->
 <div class="tab-content" id="tab-profile">
-
-  <!-- AUTH PANEL — always visible at top of Profile tab -->
   <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:18px;">
     <div id="auth-logged-out">
       <div style="font-family:'Cinzel',serif;font-weight:700;font-size:1rem;margin-bottom:4px;">Sign In / Create Account</div>
       <div style="font-size:0.74rem;color:var(--text-muted);margin-bottom:14px;">Sync your collection across any device.</div>
       <div style="display:flex;flex-direction:column;gap:9px;">
-        <input id="auth-email" type="email"    placeholder="Email address"                    style="width:100%;padding:11px 13px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.85rem;font-family:'Nunito Sans',sans-serif;outline:none;box-sizing:border-box;">
-        <input id="auth-pass"  type="password" placeholder="Password"                        style="width:100%;padding:11px 13px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.85rem;font-family:'Nunito Sans',sans-serif;outline:none;box-sizing:border-box;">
+        <input id="auth-email" type="email" placeholder="Email address" style="width:100%;padding:11px 13px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.85rem;font-family:'Nunito Sans',sans-serif;outline:none;box-sizing:border-box;">
+        <input id="auth-pass" type="password" placeholder="Password" style="width:100%;padding:11px 13px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.85rem;font-family:'Nunito Sans',sans-serif;outline:none;box-sizing:border-box;">
         <input id="auth-pass2" type="password" placeholder="Confirm password (sign up only)" style="width:100%;padding:11px 13px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.85rem;font-family:'Nunito Sans',sans-serif;outline:none;box-sizing:border-box;">
-        <div id="auth-err"    style="display:none;font-size:0.76rem;color:var(--danger);padding:8px 12px;background:rgba(224,72,72,0.08);border-radius:6px;border:1px solid rgba(224,72,72,0.2);"></div>
+        <div id="auth-err" style="display:none;font-size:0.76rem;color:var(--danger);padding:8px 12px;background:rgba(224,72,72,0.08);border-radius:6px;border:1px solid rgba(224,72,72,0.2);"></div>
         <div id="auth-status" style="font-size:0.74rem;color:var(--text-muted);min-height:16px;"></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <button id="auth-login-btn"  style="padding:12px;border-radius:var(--radius);border:none;background:var(--zen);color:#fff;font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;">Log In</button>
+          <button id="auth-login-btn" style="padding:12px;border-radius:var(--radius);border:none;background:var(--zen);color:#fff;font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;">Log In</button>
           <button id="auth-signup-btn" style="padding:12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-card);color:var(--text-primary);font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;">Sign Up</button>
         </div>
         <button id="auth-reset-btn" style="background:none;border:none;color:var(--text-muted);font-size:0.7rem;cursor:pointer;font-family:'Nunito Sans',sans-serif;padding:2px 0;text-align:left;">Forgot password?</button>
       </div>
     </div>
-
     <div id="auth-logged-in" style="display:none;">
-     <div style="display:flex;align-items:center;gap:10px;">
-       <div style="width:32px;height:32px;border-radius:50%;background:var(--zen);display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;">👤</div>
-       <div style="flex:1;min-width:0;">
-        <div id="auth-user-email" style="font-weight:700;font-size:0.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-primary);"></div>
-        <div id="auth-sync-dot" style="font-size:0.65rem;margin-top:1px;color:var(--text-muted);">Not synced</div>
-       </div>
-       <button id="auth-push-btn" title="Sync Now" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--zen);font-size:0.72rem;font-family:'Nunito Sans',sans-serif;font-weight:700;cursor:pointer;white-space:nowrap;">Sync to Cloud☁️</button>
-       <button id="auth-pull-btn" title="Load Cloud" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--water);font-size:0.72rem;font-family:'Nunito Sans',sans-serif;font-weight:700;cursor:pointer;white-space:nowrap;">Load from Cloud⬇️</button>
-       <button id="auth-logout-btn" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary);color:var(--text-muted);font-size:0.72rem;font-family:'Nunito Sans',sans-serif;font-weight:600;cursor:pointer;white-space:nowrap;">Log Out</button>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--zen);display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;">👤</div>
+        <div style="flex:1;min-width:0;">
+          <div id="auth-user-email" style="font-weight:700;font-size:0.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-primary);"></div>
+          <div id="auth-sync-dot" style="font-size:0.65rem;margin-top:1px;color:var(--text-muted);">Not synced</div>
+        </div>
+        <button id="auth-push-btn" title="Sync Now" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--zen);font-size:0.72rem;font-family:'Nunito Sans',sans-serif;font-weight:700;cursor:pointer;white-space:nowrap;">Sync to Cloud☁️</button>
+        <button id="auth-pull-btn" title="Load Cloud" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--water);font-size:0.72rem;font-family:'Nunito Sans',sans-serif;font-weight:700;cursor:pointer;white-space:nowrap;">Load from Cloud⬇️</button>
+        <button id="auth-logout-btn" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary);color:var(--text-muted);font-size:0.72rem;font-family:'Nunito Sans',sans-serif;font-weight:600;cursor:pointer;white-space:nowrap;">Log Out</button>
       </div>
     </div>
-
     <div id="auth-no-config" style="display:none;font-size:0.8rem;color:var(--text-muted);text-align:center;padding:6px 0;">
       ⚙️ Cloud sync not configured — edit <code>scripts/supabase-config.js</code>
     </div>
   </div>
 
-  <!-- MERGE CONFLICT DIALOG (shown once per session) -->
   <div id="auth-merge-dlg" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:300;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);">
     <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;max-width:360px;width:100%;">
       <div style="font-family:'Cinzel',serif;font-weight:700;font-size:1rem;margin-bottom:5px;">Collection Conflict</div>
@@ -2175,7 +2381,7 @@ body {
       </div>
     </div>
   </div>
-<!-- USERNAME SETUP (shown when logged in but no profile yet) -->
+
   <div id="socialSetup" style="display:none;">
     <div class="social-setup-panel">
       <div class="social-setup-title">Choose a Username</div>
@@ -2186,9 +2392,7 @@ body {
     </div>
   </div>
 
-  <!-- SOCIAL SECTION (shown when logged in + profile exists) -->
   <div id="socialSection">
-    <!-- NESTED TAB NAVIGATION -->
     <div class="tab-nav-nested">
       <button class="tab-btn-nested active" data-nested-tab="edit-profile"><i class="fas fa-edit"></i> Edit Profile</button>
       <button class="tab-btn-nested" data-nested-tab="friends"><i class="fas fa-user-friends"></i> Friends</button>
@@ -2198,19 +2402,14 @@ body {
       <button class="tab-btn-nested" data-nested-tab="leaderboard"><i class="fas fa-trophy"></i> Leaderboard</button>
     </div>
 
-    <!-- EDIT PROFILE PANE -->
     <div id="social-edit-profile" class="social-pane">
-      <div id="profileDisplayCard"
-           style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 18px;">
-        <!-- Populated by refreshProfileDisplay() in social.js once user is logged in -->
-        <div style="display:flex;align-items:center;justify-content:center;padding:24px 0;
-                    color:var(--text-muted);font-size:0.8rem;">
+      <div id="profileDisplayCard" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 18px;">
+        <div style="display:flex;align-items:center;justify-content:center;padding:24px 0;color:var(--text-muted);font-size:0.8rem;">
           <i class="fas fa-circle-notch fa-spin" style="margin-right:8px;"></i>Loading profile…
         </div>
       </div>
     </div>
 
-    <!-- FRIENDS -->
     <div id="social-friends" class="social-pane" style="display:none;">
       <div class="friends-search-row">
         <input class="search-input" id="friendSearchInput" placeholder="Search by username…" type="text" style="font-size:0.88rem;">
@@ -2225,7 +2424,6 @@ body {
       <div id="friendList"><div class="empty-state" style="padding:30px 0;"><p>No friends yet — search above!</p></div></div>
     </div>
 
-    <!-- CHAT -->
     <div id="social-chat" class="social-pane" style="display:none;">
       <div class="chat-layout">
         <div class="chat-sidebar" id="chatSidebar">
@@ -2243,7 +2441,6 @@ body {
       </div>
     </div>
 
-    <!-- TRADES -->
     <div id="social-trades" class="social-pane" style="display:none;">
       <div class="tab-nav-nested" style="margin-bottom:14px;">
         <button class="tab-btn-nested active" data-trade-tab="incoming">Incoming</button>
@@ -2256,7 +2453,6 @@ body {
       <div id="tradeHistory" style="display:none;"></div>
     </div>
 
-    <!-- FORUM -->
     <div id="social-forum" class="social-pane" style="display:none;">
       <div class="forum-cat-row" id="forumCatRow">
         <button class="forum-cat-pill active" data-cat="all">All</button>
@@ -2270,23 +2466,17 @@ body {
       <div id="forumPostList"><div class="empty-state" style="padding:30px 0;"><p>Loading posts…</p></div></div>
     </div>
 
-    <!-- LEADERBOARD -->
     <div id="social-leaderboard" class="social-pane" style="display:none;">
       <div style="margin-bottom:14px;">
-        <div style="font-family:'Cinzel',serif;font-weight:700;font-size:1rem;color:var(--text-primary);margin-bottom:4px;">
-          <i class="fas fa-trophy" style="color:var(--promo);margin-right:8px;"></i>Set Completion Leaderboard
-        </div>
+        <div style="font-family:'Cinzel',serif;font-weight:700;font-size:1rem;color:var(--text-primary);margin-bottom:4px;"><i class="fas fa-trophy" style="color:var(--promo);margin-right:8px;"></i>Set Completion Leaderboard</div>
         <div style="font-size:0.72rem;color:var(--text-muted);">See who's closest to completing the core set.</div>
       </div>
       <div id="leaderboardContent">
-        <div style="text-align:center;padding:40px 0;color:var(--text-muted);font-size:0.8rem;">
-          <i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading leaderboard…
-        </div>
+        <div style="text-align:center;padding:40px 0;color:var(--text-muted);font-size:0.8rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading leaderboard…</div>
       </div>
     </div>
-
-  </div><!-- /#socialSection -->
-</div><!-- /#tab-profile -->
+  </div>
+</div>
 
 </div><!-- /.app-container -->
 
