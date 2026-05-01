@@ -1,24 +1,10 @@
-/*  deck-builder.js  —  Avatar Quick Strike TCG  Deck Builder
- *  Standalone module; no hard dependencies except the globals
- *  already set by the main index.html:
- *    allCards        (array)   full card database
- *    collection      (object)  physical collection { cardNum: qty }
- *  Optional globals (set by digital-collection.js):
- *    window.digitalCollectionData  { cardNum: qty }
- *  ----------------------------------------------------------------
- *  Fix the typo in index.html  <script scr=…>  →  <script src=…>
- *  and call  initDeckBuilderTab()  anywhere after DOMContentLoaded.
- *  The easiest hook:  attach it to the nested-tab click in initTabs.
- * ---------------------------------------------------------------- */
+/*  deck-builder.js  —  Avatar Quick Strike TCG  Deck Builder  */
 (function (global) {
   'use strict';
 
-  /* ═══════════════════════════════════════════════════════════════
-     CONSTANTS
-  ═══════════════════════════════════════════════════════════════ */
   var EXCLUDED_TYPES = ['sealed', 'other', 'print', 'unreleased', 'promo-sealed', 'promo sealed'];
   var CHAMBER_TYPE   = 'chamber';
-  var STANDARD_TYPES = ['strike', 'advantage', 'ally']; // non-chamber standard types
+  var STANDARD_TYPES = ['strike', 'advantage', 'ally'];
 
   var STRENGTHS = [
     { value: 'random',   label: 'Random',         icon: '🎲', desc: 'Anything goes'              },
@@ -38,19 +24,14 @@
   };
 
   var STORAGE_KEY    = 'aqst_decks';
-  var MAX_COPIES     = 4;      // max copies of one card per deck
+  var MAX_COPIES     = 4;
   var RARITY_ORDER   = { common: 0, uncommon: 1, rare: 2, zenemental: 3, promo: 4 };
 
-  /* ═══════════════════════════════════════════════════════════════
-     STATE
-  ═══════════════════════════════════════════════════════════════ */
   var S = {
-    view:   'list',   // list | randomize | build | stats | export
-    pool:   'all',    // all | physical | digital
+    view:   'list',
+    pool:   'all',
     decks:  [],
     viewingDeck: null,
-
-    // randomize form
     rng: {
       name:            '',
       strength:        'balanced',
@@ -59,19 +40,15 @@
       selfPickChamber: false,
       chosenChamber:   null
     },
-
-    // build form
     build: {
       name:       '',
       deckSize:   'full',
       customSize: 60,
       chamber:    null,
-      cards:      {},   // { cardNumber: qty }
+      cards:      {},
       typeFilter: 'all',
       search:     ''
     },
-
-    // export checklist
     exportSortMode:  'number',
     exportChecked:   {}
   };
@@ -79,7 +56,6 @@
   /* ═══════════════════════════════════════════════════════════════
      CARD FILTERING
   ═══════════════════════════════════════════════════════════════ */
-
   function isValidForDeck(card) {
     var t = (card.type || '').toLowerCase().trim();
     for (var i = 0; i < EXCLUDED_TYPES.length; i++) {
@@ -111,10 +87,8 @@
       var dc = getDigitalCollection();
       return base.filter(function (c) { return (dc[c.number] || 0) > 0; });
     }
-    return base;  // 'all'
+    return base;
   }
-
-  /* ── TRAIT HELPERS ─────────────────────────────────────────── */
 
   function parseTraits(str) {
     if (!str || !str.trim()) return [];
@@ -130,9 +104,9 @@
   function isCompatibleWithChamber(card, chamberCard) {
     if (!chamberCard) return true;
     var cardTraits = parseTraits(card.traits);
-    if (cardTraits.length === 0) return true;          // no-trait card: always ok
+    if (cardTraits.length === 0) return true;
     var ct = getChamberTraits(chamberCard);
-    if (ct.length === 0) return true;                  // chamber has no traits: all ok
+    if (ct.length === 0) return true;
     for (var i = 0; i < cardTraits.length; i++) {
       if (ct.indexOf(cardTraits[i]) !== -1) return true;
     }
@@ -146,12 +120,10 @@
     return pool.filter(function (c) { return c.type === CHAMBER_TYPE; });
   }
 
-  /* ── POOL AVAILABILITY ───────────────────────────────────── */
-
   function availableQty(cardNumber) {
     if (S.pool === 'physical') return (global.collection || {})[cardNumber] || 0;
     if (S.pool === 'digital')  return (getDigitalCollection()[cardNumber] || 0);
-    return 99; // 'all': unlimited
+    return 99;
   }
 
   function maxCopiesForCard(cardNumber) {
@@ -161,7 +133,6 @@
   /* ═══════════════════════════════════════════════════════════════
      DECK SCORING
   ═══════════════════════════════════════════════════════════════ */
-
   function cardScore(card, strength) {
     var force     = parseFloat(card.force)        || 0;
     var intercept = parseFloat(card.intercept)    || 0;
@@ -171,7 +142,7 @@
     var E   = gE + yE + rE;
     var hasRules = ((card.rulesText || '').trim().length > 8);
     var t   = (card.type || '').toLowerCase();
-    var noise = Math.random() * 0.5;  // tiny jitter to break ties
+    var noise = Math.random() * 0.5;
     switch (strength) {
       case 'attack':   return force * 3 + intercept * 0.5 + noise;
       case 'defense':  return intercept * 3 + force * 0.5 + noise;
@@ -180,7 +151,7 @@
       case 'wild':     return (hasRules ? (4 + force + intercept) : noise);
       case 'support':  return (t === 'ally' ? 5 : t === 'advantage' ? 2 : 1) + noise;
       case 'balanced': return (force + intercept + (hasRules ? 1 : 0)) + noise;
-      default:         return Math.random() * 10;   // random
+      default:         return Math.random() * 10;
     }
   }
 
@@ -233,7 +204,6 @@
   /* ═══════════════════════════════════════════════════════════════
      ENCODE / DECODE
   ═══════════════════════════════════════════════════════════════ */
-
   function encodeDeck(deck) {
     var cardPairs = Object.keys(deck.cards || {})
       .map(function (n) { return n + ':' + deck.cards[n]; }).join(',');
@@ -273,7 +243,6 @@
   /* ═══════════════════════════════════════════════════════════════
      PERSISTENCE
   ═══════════════════════════════════════════════════════════════ */
-
   function saveDecks() {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(S.decks)); } catch (_) {}
   }
@@ -302,7 +271,6 @@
   /* ═══════════════════════════════════════════════════════════════
      RANDOMIZER ENGINE
   ═══════════════════════════════════════════════════════════════ */
-
   function pickBestChamber(pool, strength) {
     var chambers = getChamberCards(pool);
     if (chambers.length === 0) return null;
@@ -330,7 +298,6 @@
     var selectedCards = {};
     var totalAdded    = 0;
 
-    // First pass: distribute copies using scored ranking
     var topTier   = Math.ceil(standard.length * 0.3);
     var midTier   = Math.ceil(standard.length * 0.6);
     for (var i = 0; i < standard.length && totalAdded < target; i++) {
@@ -344,7 +311,6 @@
       if (maxC > 0) { selectedCards[c.number] = maxC; totalAdded += maxC; }
     }
 
-    // Second pass: fill deficit by incrementing best cards
     if (totalAdded < target) {
       var pass2 = 0;
       while (totalAdded < target && pass2 < standard.length * MAX_COPIES) {
@@ -373,7 +339,6 @@
   /* ═══════════════════════════════════════════════════════════════
      EXPORT HELPERS
   ═══════════════════════════════════════════════════════════════ */
-
   function buildExportEntries(deck, sortMode) {
     var allC    = global.allCards || [];
     var entries = [];
@@ -389,7 +354,6 @@
 
     sortMode = sortMode || 'number';
     entries.sort(function (a, b) {
-      // Chamber always first
       if (a.isChamber !== b.isChamber) return a.isChamber ? -1 : 1;
       if (sortMode === 'type-number') {
         var tc = (a.card.type || '').localeCompare(b.card.type || '');
@@ -401,7 +365,6 @@
         var rb = RARITY_ORDER[b.card.rarity] || 0;
         if (ra !== rb) return ra - rb;
       }
-      // Number fallback
       var nA = parseInt(a.card.number, 10), nB = parseInt(b.card.number, 10);
       if (!isNaN(nA) && !isNaN(nB)) return nA - nB;
       return a.card.number.localeCompare(b.card.number);
@@ -412,7 +375,6 @@
   /* ═══════════════════════════════════════════════════════════════
      RENDERING UTILITIES
   ═══════════════════════════════════════════════════════════════ */
-
   function esc(s) {
     return String(s || '')
       .replace(/&/g,'&amp;').replace(/</g,'&lt;')
@@ -431,7 +393,15 @@
     return s ? s.icon + ' ' + s.label : val;
   }
 
-  /* ── SVG Radar / Spider Chart ────────────────────────────── */
+  var RARITY_COLORS = {
+    common:     'var(--text-secondary)',
+    uncommon:   'var(--earth)',
+    rare:       'var(--water)',
+    zenemental: 'var(--zen)',
+    promo:      'var(--promo)'
+  };
+
+  /* ── SVG Radar Chart ────────────────────────────────────────── */
   function svgRadar(attack, defense, support) {
     var cx = 80, cy = 82, r = 58;
     var angles = { atk: -90, def: 30, sup: 150 };
@@ -448,7 +418,6 @@
 
     var da = pt(angles.atk, attack),  dd = pt(angles.def, defense), ds = pt(angles.sup, support);
     var dataPath = 'M'+da[0]+','+da[1]+' L'+dd[0]+','+dd[1]+' L'+ds[0]+','+ds[1]+' Z';
-
     var oa = pt(angles.atk, 115), od = pt(angles.def, 116), os = pt(angles.sup, 116);
 
     var gridLines = [25,50,75,100].map(function(pct) {
@@ -471,7 +440,7 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════
-     INJECT CSS  (once only)
+     INJECT CSS
   ═══════════════════════════════════════════════════════════════ */
   function injectCSS() {
     if (document.getElementById('aqst-db-styles')) return;
@@ -537,9 +506,7 @@
 }
 .db-deck-qty { font-size:0.58rem; color:rgba(255,255,255,.55); margin-top:1px; }
 .db-deck-footer { padding:6px 8px; }
-.db-deck-miniscores {
-  display:flex; justify-content:space-between; margin-bottom:5px;
-}
+.db-deck-miniscores { display:flex; justify-content:space-between; margin-bottom:5px; }
 .db-deck-actions { display:flex; gap:4px; justify-content:flex-end; }
 
 /* Mini buttons */
@@ -554,9 +521,7 @@
 .db-export-btn:hover { border-color:var(--earth)!important; color:var(--earth)!important; }
 
 /* Back bar */
-.db-back-row {
-  display:flex; align-items:center; gap:10px; margin-bottom:16px;
-}
+.db-back-row { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
 .db-back-btn {
   background:var(--bg-card); border:1px solid var(--border); border-radius:8px;
   padding:8px 14px; color:var(--text-secondary); font-family:'Nunito Sans',sans-serif;
@@ -649,7 +614,7 @@
   border-radius:var(--radius); padding:10px 12px; margin-bottom:6px;
 }
 
-/* Build card picker */
+/* ── BUILD CARD PICKER: matches main card grid exactly ─────── */
 .db-pick-controls {
   display:flex; gap:7px; margin-bottom:10px; flex-wrap:wrap; align-items:center;
 }
@@ -675,49 +640,58 @@
 .db-progress-label { font-size:0.72rem; color:var(--text-secondary); font-weight:600; }
 .db-progress-count { font-family:'Cinzel',serif; font-size:0.82rem; font-weight:700; }
 
-.db-cards-scroll { max-height:50vh; overflow-y:auto; padding-right:2px; }
+.db-cards-scroll { max-height:60vh; overflow-y:auto; padding-right:2px; }
 .db-cards-scroll::-webkit-scrollbar { width:4px; }
 .db-cards-scroll::-webkit-scrollbar-thumb { background:var(--border-light); border-radius:2px; }
 
-.db-card-grid {
-  display:grid; grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); gap:7px;
-  margin-bottom:12px;
+/* Build card: reuse .card-item but add deck-specific overlays */
+.db-build-card { cursor:pointer; }
+.db-build-card.db-selected {
+  border-color:var(--zen) !important;
+  background:linear-gradient(135deg,var(--bg-card) 80%,rgba(180,77,223,.12)) !important;
+  filter:drop-shadow(0 0 7px var(--zen)) !important;
 }
-.db-card-chip {
-  background:var(--bg-card); border:1px solid var(--border); border-radius:8px;
-  overflow:hidden; text-align:center; transition:all .18s; position:relative;
-  cursor:pointer;
+.db-build-card.db-maxed {
+  border-color:var(--promo) !important;
+  filter:drop-shadow(0 0 5px var(--promo)) !important;
 }
-.db-card-chip:hover { border-color:var(--zen-glow); }
-.db-card-chip.selected { border-color:var(--zen); background:rgba(180,77,223,.08); }
-.db-card-chip.maxed { border-color:var(--promo); }
-.db-card-chip-img { width:100%; aspect-ratio:3/4; background:var(--bg-primary); overflow:hidden; }
-.db-card-chip-img img { width:100%; height:100%; object-fit:cover; display:block; }
-.db-card-chip-name { font-size:0.58rem; font-weight:700; color:var(--text-primary); padding:3px 3px 0; line-height:1.25; word-break:break-word; }
-.db-card-chip-num { font-size:0.54rem; color:var(--text-muted); padding-bottom:3px; }
 
-.db-qty-ctrl {
-  display:flex; align-items:center; justify-content:center; gap:3px;
-  padding:3px 4px; background:rgba(180,77,223,.12);
+/* Qty overlay — shown on selected cards */
+.db-build-qty-overlay {
+  position:absolute; bottom:0; left:0; right:0;
+  background:linear-gradient(transparent,rgba(0,0,0,.88));
+  padding:28px 8px 9px;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  z-index:5;
 }
-.db-chip-minus,.db-chip-plus {
-  width:18px; height:18px; border-radius:4px; border:none;
-  background:rgba(180,77,223,.2); color:var(--zen); font-size:.58rem;
+.db-build-qty-minus, .db-build-qty-plus {
+  width:26px; height:26px; border-radius:6px; border:none;
+  background:rgba(180,77,223,.85); color:#fff; font-size:.88rem;
   cursor:pointer; display:flex; align-items:center; justify-content:center;
-  transition:background .13s; flex-shrink:0;
+  transition:background .13s; flex-shrink:0; font-family:'Nunito Sans',sans-serif;
 }
-.db-chip-minus:hover,.db-chip-plus:hover { background:var(--zen); color:#fff; }
-.db-chip-minus:disabled,.db-chip-plus:disabled { opacity:.28; cursor:not-allowed; }
-.db-chip-qty { font-size:.65rem; font-weight:700; color:var(--zen); min-width:14px; text-align:center; }
+.db-build-qty-minus:hover, .db-build-qty-plus:hover { background:var(--zen); }
+.db-build-qty-minus:disabled, .db-build-qty-plus:disabled { opacity:.3; cursor:not-allowed; }
+.db-build-qty-num {
+  font-size:.9rem; font-weight:700; color:#fff;
+  min-width:18px; text-align:center; text-shadow:0 1px 3px rgba(0,0,0,.8);
+}
 
-.db-chip-add {
-  width:100%; padding:4px 0; font-size:.6rem; font-weight:700;
-  background:transparent; border:none; border-top:1px solid var(--border);
-  color:var(--text-muted); cursor:pointer; font-family:'Nunito Sans',sans-serif;
-  transition:all .13s;
+/* Add overlay — visible on hover for unselected cards */
+.db-build-add-overlay {
+  position:absolute; bottom:8px; left:0; right:0;
+  display:flex; align-items:center; justify-content:center;
+  z-index:5; opacity:0; transition:opacity .18s; pointer-events:none;
 }
-.db-chip-add:hover:not(:disabled) { background:rgba(180,77,223,.1); color:var(--zen); }
-.db-chip-add:disabled { opacity:.3; cursor:not-allowed; }
+.db-build-card:hover .db-build-add-overlay { opacity:1; pointer-events:auto; }
+.db-build-add-btn {
+  background:rgba(180,77,223,.9); color:#fff; border:none; border-radius:8px;
+  padding:6px 18px; font-size:.74rem; font-weight:700;
+  font-family:'Nunito Sans',sans-serif; cursor:pointer; transition:background .15s;
+  backdrop-filter:blur(4px);
+}
+.db-build-add-btn:hover { background:var(--zen); }
+.db-build-add-btn:disabled { opacity:.35; cursor:not-allowed; pointer-events:none; }
 
 /* Stats view */
 .db-stat-pill {
@@ -741,11 +715,10 @@
 }
 .db-checklist-item.is-checked .db-check-box { background:rgba(61,184,108,.15); border-color:var(--success); }
 
-@media (max-width:420px) {
+@media (max-width:480px) {
   .db-deck-grid { grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:9px; }
   .db-strength-grid { grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); }
   .db-chamber-grid  { grid-template-columns:repeat(auto-fill,minmax(80px,1fr)); }
-  .db-card-grid     { grid-template-columns:repeat(auto-fill,minmax(78px,1fr)); }
 }
     `;
     document.head.appendChild(s);
@@ -754,7 +727,6 @@
   /* ═══════════════════════════════════════════════════════════════
      VIEWS
   ═══════════════════════════════════════════════════════════════ */
-
   function getEl() { return document.getElementById('nested-digital-deckbuilder'); }
 
   function render() {
@@ -769,7 +741,7 @@
     wire();
   }
 
-  /* ── POOL BAR (reused across views) ─────────────────────── */
+  /* ── POOL BAR ─────────────────────────────────────────────── */
   function poolBar() {
     return ['all','physical','digital'].map(function (p) {
       var lbl = { all:'🗃 All', physical:'📦 Physical', digital:'☁️ Digital' }[p];
@@ -777,7 +749,7 @@
     }).join('');
   }
 
-  /* ── LIST VIEW ──────────────────────────────────────────── */
+  /* ── LIST VIEW ──────────────────────────────────────────────── */
   function vList() {
     var allC = global.allCards || [];
     var deckCards = S.decks.map(function (deck) {
@@ -827,7 +799,7 @@
     +'</div>';
   }
 
-  /* ── RANDOMIZE VIEW ─────────────────────────────────────── */
+  /* ── RANDOMIZE VIEW ─────────────────────────────────────────── */
   function vRandomize() {
     var pool     = getPoolCards();
     var chambers = getChamberCards(pool);
@@ -876,7 +848,7 @@
     +'</div>';
   }
 
-  /* ── BUILD VIEW ─────────────────────────────────────────── */
+  /* ── BUILD VIEW ─────────────────────────────────────────────── */
   function vBuild() {
     var pool      = getPoolCards();
     var chambers  = getChamberCards(pool);
@@ -897,7 +869,7 @@
     var body = '';
 
     if (!chamberCard) {
-      // Step: pick chamber
+      /* ── Step 1: pick chamber ── */
       var chipHtml = chambers.map(function(c){
         return '<div class="db-chamber-chip" data-chamber="'+esc(c.number)+'">'
           +'<img src="'+esc(cardImg(c))+'" alt="'+esc(c.name)+'" loading="lazy" onerror="this.style.display=\'none\'">'
@@ -910,12 +882,11 @@
         +'<div class="db-chamber-grid">'+chipHtml+'</div>'
       +'</div>';
     } else {
-      // Step: pick standard cards
+      /* ── Step 2: pick standard cards — uses main card-grid style ── */
       var compatible = getStandardCards(pool).filter(function(c){
         return isCompatibleWithChamber(c, chamberCard);
       });
 
-      // Search + type filter
       var searchVal = (b.search||'').toLowerCase();
       var typeOpts  = ['all'].concat(
         compatible.map(function(c){return c.type;}).filter(function(t,i,a){return a.indexOf(t)===i;}).sort()
@@ -929,7 +900,6 @@
         return true;
       });
 
-      // Sort by number
       filtered.sort(function(a,b2){
         var nA=parseInt(a.number,10),nB=parseInt(b2.number,10);
         if(!isNaN(nA)&&!isNaN(nB)) return nA-nB;
@@ -940,30 +910,70 @@
         return '<button class="db-type-pill'+(b.typeFilter===t?' active':'')+'" data-type="'+esc(t)+'">'+esc(t==='all'?'All Types':t)+'</button>';
       }).join('');
 
+      /* Build card HTML — same structure as main renderCards() */
       var cardHtml = filtered.map(function(c){
-        var qty    = b.cards[c.number]||0;
-        var maxCp  = maxCopiesForCard(c.number);
-        var poolQ  = availableQty(c.number);
-        var sel    = qty>0;
-        var maxed  = qty>=maxCp;
-        return '<div class="db-card-chip'+(sel?' selected':'')+(maxed?' maxed':'')+'" data-card="'+esc(c.number)+'">'
-          +'<div class="db-card-chip-img"><img src="'+esc(cardImg(c))+'" alt="'+esc(c.name)+'" loading="lazy" onerror="this.style.display=\'none\'"></div>'
-          +'<div class="db-card-chip-name">'+esc(c.name)+'</div>'
-          +'<div class="db-card-chip-num">#'+esc(c.number)+(S.pool!=='all'?' ('+poolQ+')':'')+'</div>'
-          +(sel
-            ?'<div class="db-qty-ctrl">'
-              +'<button class="db-chip-minus" data-card="'+esc(c.number)+'"'+(qty<=0?' disabled':'')+'>−</button>'
-              +'<span class="db-chip-qty">'+qty+'</span>'
-              +'<button class="db-chip-plus" data-card="'+esc(c.number)+'"'+(maxed||remaining<=0?' disabled':'')+'>+</button>'
+        var qty   = b.cards[c.number] || 0;
+        var maxCp = maxCopiesForCard(c.number);
+        var poolQ = availableQty(c.number);
+        var sel   = qty > 0;
+        var maxed = qty >= maxCp;
+        var rc    = RARITY_COLORS[c.rarity] || 'var(--text-secondary)';
+        var backImg = c.backImageLink || '';
+
+        /* Flip inner */
+        var flipHtml =
+          '<div class="card-flip-container">'
+            +'<div class="card-flip-inner" data-flip-id="db-'+esc(c.number)+'">'
+              +'<div class="card-flip-front">'
+                +'<img src="'+esc(cardImg(c))+'" alt="'+esc(c.name)+'" loading="lazy" onerror="this.style.display=\'none\'">'
+              +'</div>'
+              +'<div class="card-flip-back">'
+                +(backImg
+                  ?'<img src="'+esc(backImg)+'" alt="'+esc(c.name)+' back" loading="lazy" onerror="this.style.display=\'none\'">'
+                  :'<div class="card-img-placeholder"><i class="fas fa-hat-wizard"></i></div>')
+              +'</div>'
             +'</div>'
-            :'<button class="db-chip-add" data-card="'+esc(c.number)+'"'+(remaining<=0?' disabled':'')+'>+ Add</button>'
-          )
+          +'</div>';
+
+        /* Qty overlay (shown when selected) */
+        var qtyOverlayHtml = sel
+          ? '<div class="db-build-qty-overlay">'
+              +'<button class="db-build-qty-minus" data-card="'+esc(c.number)+'"'+(qty<=1?' disabled':'')+'>−</button>'
+              +'<span class="db-build-qty-num">'+qty+'</span>'
+              +'<button class="db-build-qty-plus" data-card="'+esc(c.number)+'"'+(maxed||remaining<=0?' disabled':'')+'>+</button>'
+            +'</div>'
+          : '';
+
+        /* Add overlay (shown on hover when not selected) */
+        var addOverlayHtml = !sel
+          ? '<div class="db-build-add-overlay">'
+              +'<button class="db-build-add-btn" data-card="'+esc(c.number)+'"'+(remaining<=0?' disabled':'')+'>+ Add</button>'
+            +'</div>'
+          : '';
+
+        return '<div class="card-item db-build-card'+(sel?' db-selected':'')+(maxed?' db-maxed':'')+'" data-card="'+esc(c.number)+'" style="--rarity-color:'+rc+'">'
+          +'<div class="card-img-wrap" style="position:relative;">'
+            +flipHtml
+            +'<span class="card-number-badge">#'+esc(c.number)+(S.pool!=='all'?' ('+poolQ+')':'')+'</span>'
+            +(sel?'<span class="card-qty-badge">x'+qty+'</span>':'')
+            +(maxed?'<span class="card-owned-badge" style="background:var(--promo);" title="Max copies"><i class="fas fa-lock"></i></span>':'')
+            +'<button class="card-flip-btn db-build-flip-btn" data-flip-target="db-'+esc(c.number)+'" title="Flip View"><i class="fas fa-rotate"></i></button>'
+            +qtyOverlayHtml
+            +addOverlayHtml
+          +'</div>'
+          +'<div class="card-info">'
+            +'<div class="card-name" title="'+esc(c.name)+'">'+esc(c.name)+'</div>'
+            +'<div class="card-meta">'
+              +'<span class="card-type-tag tag-'+esc(c.type)+'">'+esc(c.type)+'</span>'
+              +'<span class="card-rarity-dot dot-'+esc(c.rarity)+'"></span>'
+              +'<span class="card-rarity-label rarity-'+esc(c.rarity)+'">'+esc(c.rarity)+'</span>'
+            +'</div>'
+          +'</div>'
         +'</div>';
       }).join('');
 
       var progressColor = remaining<0?'var(--danger)':remaining===0?'var(--success)':'var(--zen)';
       var progressText  = remaining===0?'✓ Complete':remaining<0?'Over by '+Math.abs(remaining):remaining+' more';
-
       var chamberTraitList = getChamberTraits(chamberCard);
 
       body = ''
@@ -982,9 +992,9 @@
         +'<div class="db-section">'
           +'<div class="db-progress-bar">'
             +'<span class="db-progress-label">Cards selected</span>'
-            +'<span class="db-progress-count" style="color:'+progressColor+'">'+totalSelected+' / '+targetSize+' '+progressText+'</span>'
+            +'<span class="db-progress-count" style="color:'+progressColor+'">'+totalSelected+' / '+targetSize+'  '+progressText+'</span>'
           +'</div>'
-          +'<div style="height:4px;background:var(--bg-primary);border-radius:99px;overflow:hidden;margin-bottom:10px;">'
+          +'<div style="height:4px;background:var(--bg-primary);border-radius:99px;overflow:hidden;margin-bottom:12px;">'
             +'<div style="height:100%;width:'+pctFull+'%;background:'+progressColor+';border-radius:99px;transition:width .3s;"></div>'
           +'</div>'
 
@@ -997,7 +1007,10 @@
           +'</div>'
 
           +'<div class="db-cards-scroll">'
-            +(filtered.length===0?'<div style="color:var(--text-muted);font-size:.8rem;padding:14px 0;">No cards match filter.</div>':cardHtml)
+            +(filtered.length===0
+              ?'<div style="color:var(--text-muted);font-size:.8rem;padding:14px 0;">No cards match filter.</div>'
+              :'<div class="card-grid" style="padding-bottom:8px;">'+cardHtml+'</div>'
+            )
           +'</div>'
         +'</div>'
 
@@ -1021,7 +1034,7 @@
     +'</div>';
   }
 
-  /* ── STATS VIEW ─────────────────────────────────────────── */
+  /* ── STATS VIEW ─────────────────────────────────────────────── */
   function vStats() {
     var deck = S.viewingDeck; if (!deck) { S.view='list'; return vList(); }
     var allC = global.allCards||[];
@@ -1033,7 +1046,6 @@
     var st       = computeDeckStats(entries);
     var totalStd = Object.values(deck.cards||{}).reduce(function(a,v){return a+v;},0);
 
-    // Type composition
     var typeCount = {};
     entries.forEach(function(e){
       var t=(e.card.type||'other'); typeCount[t]=(typeCount[t]||0)+e.qty;
@@ -1047,7 +1059,6 @@
       +'</div>';
     }).join('');
 
-    // Card list
     var sortedEntries = entries.slice().sort(function(a,b2){
       if((a.card.type===CHAMBER_TYPE)!==(b2.card.type===CHAMBER_TYPE)) return a.card.type===CHAMBER_TYPE?-1:1;
       var nA=parseInt(a.card.number,10),nB=parseInt(b2.card.number,10);
@@ -1077,8 +1088,6 @@
         +'<button class="db-back-btn" id="dbBack"><i class="fas fa-arrow-left"></i> Back</button>'
         +'<button class="db-mini-btn db-export-btn" data-deck-id="'+esc(deck.id)+'" style="margin-left:auto;"><i class="fas fa-file-export"></i> Export</button>'
       +'</div>'
-
-      // Deck header card
       +'<div style="display:flex;gap:12px;align-items:flex-start;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;margin-bottom:14px;">'
         +(ch?'<img src="'+esc(cardImg(ch))+'" alt="" style="width:56px;height:74px;object-fit:cover;border-radius:6px;flex-shrink:0;" loading="lazy">':'')
         +'<div style="flex:1;min-width:0;">'
@@ -1094,8 +1103,6 @@
           +'</div>'
         +'</div>'
       +'</div>'
-
-      // Radar + avg stats
       +'<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">'
         +'<div style="flex-shrink:0;">'+svgRadar(st.attackScore,st.defenseScore,st.supportScore)+'</div>'
         +'<div style="flex:1;min-width:110px;">'
@@ -1106,16 +1113,12 @@
           +'<div style="font-size:.78rem;"><span style="color:var(--zen);font-weight:700;">Rules Text:</span> <span style="color:var(--text-primary);">'+st.rulesC+' cards</span></div>'
         +'</div>'
       +'</div>'
-
-      // Composition
       +'<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px;">'
         +'<div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);font-weight:700;margin-bottom:12px;">Card Composition</div>'
         +typeRows
       +'</div>'
-
-      // Full card list
       +'<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;">'
-        +'<div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);font-weight:700;margin-bottom:8px;">Full Card List ('+( totalStd+1 )+' total)</div>'
+        +'<div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);font-weight:700;margin-bottom:8px;">Full Card List ('+(totalStd+1)+' total)</div>'
         +cardListHtml
       +'</div>'
     +'</div>';
@@ -1159,26 +1162,21 @@
         +'<button class="db-back-btn" id="dbBack"><i class="fas fa-arrow-left"></i> Back</button>'
         +'<span style="font-family:\'Cinzel\',serif;font-weight:700;font-size:.82rem;">'+esc(deck.name)+' — Checklist</span>'
       +'</div>'
-
       +'<div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:11px;">'
         +'<select class="db-select" id="exportSortSelect" style="font-size:.76rem;flex:1;min-width:140px;">'+sortOpts+'</select>'
         +'<button class="db-mini-btn" id="exportClearChecks">Clear All</button>'
         +'<button class="db-mini-btn" id="exportCopyCode" style="border-color:var(--zen);color:var(--zen);"><i class="fas fa-copy"></i> Copy Code</button>'
         +'<button class="db-mini-btn" id="exportCSV" style="border-color:var(--accent);color:var(--accent);"><i class="fas fa-file-csv"></i> CSV</button>'
       +'</div>'
-
       +'<div style="font-size:.7rem;color:var(--text-muted);margin-bottom:8px;">'+checkedCount+' / '+total+' collected</div>'
       +'<div style="height:4px;background:var(--bg-primary);border-radius:99px;overflow:hidden;margin-bottom:12px;">'
         +'<div style="height:100%;width:'+pct+'%;background:var(--success);border-radius:99px;transition:width .3s;"></div>'
       +'</div>'
-
-      // Deck code (selectable, for manual copy)
       +'<div style="font-size:.58rem;color:var(--text-muted);margin-bottom:4px;display:flex;justify-content:space-between;">'
         +'<span>Deck Code <span style="opacity:.6;">(select to copy manually)</span></span>'
         +'<span style="color:var(--zen);font-size:.58rem;">AQSD1 format</span>'
       +'</div>'
       +'<div id="exportCodeDisplay" style="font-family:monospace;font-size:.6rem;color:var(--zen);word-break:break-all;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:8px 10px;margin-bottom:14px;cursor:text;user-select:all;-webkit-user-select:all;">'+esc(code)+'</div>'
-
       +'<div id="dbChecklistContainer">'+items+'</div>'
     +'</div>';
   }
@@ -1186,16 +1184,15 @@
   /* ═══════════════════════════════════════════════════════════════
      EVENT WIRING
   ═══════════════════════════════════════════════════════════════ */
-
   function wire() {
     var el = getEl(); if (!el) return;
 
-    // Pool buttons (all views)
+    /* Pool buttons */
     el.querySelectorAll('.db-pool-btn').forEach(function(btn){
       btn.addEventListener('click', function(){ S.pool=this.dataset.pool; render(); });
     });
 
-    // ── LIST ──────────────────────────────────────────────────
+    /* ── LIST ──────────────────────────────────────────────── */
     var bOwn = document.getElementById('dbBuildOwnBtn');
     if (bOwn) bOwn.addEventListener('click', function(){
       S.view='build';
@@ -1233,7 +1230,7 @@
       });
     });
 
-    // ── BACK ──────────────────────────────────────────────────
+    /* ── BACK ─────────────────────────────────────────────── */
     var backBtn=document.getElementById('dbBack');
     if (backBtn) backBtn.addEventListener('click', function(){
       if (S.view==='export'){ S.view='stats'; }
@@ -1241,7 +1238,7 @@
       render();
     });
 
-    // ── RANDOMIZE ─────────────────────────────────────────────
+    /* ── RANDOMIZE ────────────────────────────────────────── */
     var rngName=document.getElementById('rngName');
     if (rngName) rngName.addEventListener('input',function(){ S.rng.name=this.value; });
 
@@ -1281,7 +1278,7 @@
       toast('Deck randomized & saved!'); render();
     });
 
-    // ── BUILD ─────────────────────────────────────────────────
+    /* ── BUILD ───────────────────────────────────────────── */
     var bName=document.getElementById('buildName');
     if (bName) bName.addEventListener('input',function(){ S.build.name=this.value; });
 
@@ -1312,8 +1309,20 @@
       pill.addEventListener('click',function(){ S.build.typeFilter=this.dataset.type; render(); });
     });
 
-    // card chip add/plus/minus
-    el.querySelectorAll('.db-chip-add').forEach(function(btn){
+    /* ── BUILD CARD INTERACTIONS ────────────────────────── */
+
+    /* Flip buttons in the build grid */
+    el.querySelectorAll('.db-build-flip-btn').forEach(function(btn){
+      btn.addEventListener('click',function(e){
+        e.stopPropagation();
+        var target=this.dataset.flipTarget;
+        var inner=el.querySelector('.card-flip-inner[data-flip-id="'+target+'"]');
+        if (inner){ inner.classList.toggle('flipped'); this.classList.toggle('is-flipped'); }
+      });
+    });
+
+    /* + button (qty increase on selected cards) */
+    el.querySelectorAll('.db-build-qty-plus').forEach(function(btn){
       btn.addEventListener('click',function(e){
         e.stopPropagation();
         var n=this.dataset.card;
@@ -1321,15 +1330,9 @@
         render();
       });
     });
-    el.querySelectorAll('.db-chip-plus').forEach(function(btn){
-      btn.addEventListener('click',function(e){
-        e.stopPropagation();
-        var n=this.dataset.card;
-        S.build.cards[n]=(S.build.cards[n]||0)+1;
-        render();
-      });
-    });
-    el.querySelectorAll('.db-chip-minus').forEach(function(btn){
+
+    /* − button (qty decrease on selected cards) */
+    el.querySelectorAll('.db-build-qty-minus').forEach(function(btn){
       btn.addEventListener('click',function(e){
         e.stopPropagation();
         var n=this.dataset.card;
@@ -1339,17 +1342,25 @@
       });
     });
 
-    // clicking the card chip itself (not on a button) toggles add
-    el.querySelectorAll('.db-card-chip').forEach(function(chip){
+    /* Add button (hover overlay on unselected cards) */
+    el.querySelectorAll('.db-build-add-btn').forEach(function(btn){
+      btn.addEventListener('click',function(e){
+        e.stopPropagation();
+        var n=this.dataset.card;
+        S.build.cards[n]=(S.build.cards[n]||0)+1;
+        render();
+      });
+    });
+
+    /* Click on card body itself: toggle add/remove */
+    el.querySelectorAll('.db-build-card').forEach(function(chip){
       chip.addEventListener('click',function(e){
         if (e.target.closest('button')) return;
         var n=this.dataset.card;
         var qty=S.build.cards[n]||0;
         if (qty>0){
-          // deselect
           delete S.build.cards[n];
         } else {
-          // add one
           var targetSize=S.build.deckSize==='full'?60:S.build.deckSize==='half'?30:S.build.customSize;
           var total=Object.values(S.build.cards).reduce(function(a,v){return a+v;},0);
           if (total>=targetSize) return;
@@ -1376,7 +1387,7 @@
       toast('Deck saved!'); render();
     });
 
-    // ── EXPORT ────────────────────────────────────────────────
+    /* ── EXPORT ─────────────────────────────────────────── */
     var sortSel=document.getElementById('exportSortSelect');
     if (sortSel) sortSel.addEventListener('change',function(){ S.exportSortMode=this.value; render(); });
 
@@ -1414,7 +1425,6 @@
       toast('Exported as CSV!');
     });
 
-    // checklist toggles
     el.querySelectorAll('.db-checklist-item,.db-check-box').forEach(function(item){
       item.addEventListener('click',function(){
         var id=this.dataset.checkId;
@@ -1430,7 +1440,6 @@
   /* ═══════════════════════════════════════════════════════════════
      UTILITIES
   ═══════════════════════════════════════════════════════════════ */
-
   function toast(msg) {
     if (global.showToast) { global.showToast(msg); return; }
     var t=document.getElementById('toast'); if (!t) return;
@@ -1449,7 +1458,6 @@
   /* ═══════════════════════════════════════════════════════════════
      PUBLIC API + INIT
   ═══════════════════════════════════════════════════════════════ */
-
   function init() {
     injectCSS();
     loadDecks();
@@ -1458,12 +1466,6 @@
 
   global.DeckBuilder = { init:init, render:render, encodeDeck:encodeDeck, decodeDeck:decodeDeck };
 
-  /** Call this from HTML after allCards is ready, e.g.:
-   *    <script>
-   *      if (typeof initDeckBuilderTab === 'function') initDeckBuilderTab();
-   *    </script>
-   *  Or hook it into the nested-tab button click for 'digital-deckbuilder'.
-   */
   global.initDeckBuilderTab = function () {
     if (global.allCards && global.allCards.length > 0) {
       init(); return;
@@ -1477,14 +1479,13 @@
     }, 250);
   };
 
-  /* Auto-hook: if the nested tab button for deckbuilder is clicked, init lazily */
   document.addEventListener('DOMContentLoaded', function () {
     var trigger = document.querySelector('[data-nested-tab="digital-deckbuilder"]');
     if (!trigger) return;
     var initialized = false;
     trigger.addEventListener('click', function () {
       if (!initialized) { initialized = true; global.initDeckBuilderTab(); }
-      else { render(); }  // re-render in case pool data changed
+      else { render(); }
     });
   });
 
