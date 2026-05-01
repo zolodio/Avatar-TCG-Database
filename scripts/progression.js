@@ -398,16 +398,25 @@
   // ══════════════════════════════════════════════════════════════
   //  5. SCARCITY INDEX
   // ══════════════════════════════════════════════════════════════
-  async function loadScarcityData() {
+async function loadScarcityData() {
     if (_scarcityReady || !sb()) return;
     try {
-      var [scRes, countRes] = await Promise.all([
-        sb().from('card_scarcity').select('card_number, owner_count'),
+      var [ucRes, countRes] = await Promise.all([
+        sb().from('user_cards').select('card_number, user_id').gt('quantity', 0),
         sb().from('profiles').select('user_id', { count: 'exact' })
       ]);
-      if (!scRes.error && scRes.data) {
-        scRes.data.forEach(function (r) { _scarcityMap[r.card_number] = r.owner_count; });
+
+      if (!ucRes.error && ucRes.data) {
+        var ownerSets = {};
+        ucRes.data.forEach(function (r) {
+          if (!ownerSets[r.card_number]) ownerSets[r.card_number] = {};
+          ownerSets[r.card_number][r.user_id] = true;
+        });
+        Object.keys(ownerSets).forEach(function (num) {
+          _scarcityMap[num] = Object.keys(ownerSets[num]).length;
+        });
       }
+
       _totalUsers = Math.max(1, countRes.count || 1);
       _scarcityReady = true;
     } catch (e) { /* non-fatal */ }
