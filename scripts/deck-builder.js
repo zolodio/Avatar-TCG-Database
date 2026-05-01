@@ -1,924 +1,1491 @@
-/* ============================================================
-   Avatar Quick Strike TCG — Deck Builder
-   Place at:  scripts/deck-builder.js
-   Add to HTML before </body>:
-     <script src="scripts/deck-builder.js"></script>
-   ============================================================ */
-(function () {
+/*  deck-builder.js  —  Avatar Quick Strike TCG  Deck Builder
+ *  Standalone module; no hard dependencies except the globals
+ *  already set by the main index.html:
+ *    allCards        (array)   full card database
+ *    collection      (object)  physical collection { cardNum: qty }
+ *  Optional globals (set by digital-collection.js):
+ *    window.digitalCollectionData  { cardNum: qty }
+ *  ----------------------------------------------------------------
+ *  Fix the typo in index.html  <script scr=…>  →  <script src=…>
+ *  and call  initDeckBuilderTab()  anywhere after DOMContentLoaded.
+ *  The easiest hook:  attach it to the nested-tab click in initTabs.
+ * ---------------------------------------------------------------- */
+(function (global) {
   'use strict';
 
-  /* ── CONSTANTS ─────────────────────────────────────────────── */
-  var STORAGE_KEY = 'aqst_decks_v1';
-  var MAX_CARDS   = 60;
-  var MAX_COPIES  = 4;
+  /* ═══════════════════════════════════════════════════════════════
+     CONSTANTS
+  ═══════════════════════════════════════════════════════════════ */
+  var EXCLUDED_TYPES = ['sealed', 'other', 'print', 'unreleased', 'promo-sealed', 'promo sealed'];
+  var CHAMBER_TYPE   = 'chamber';
+  var STANDARD_TYPES = ['strike', 'advantage', 'ally']; // non-chamber standard types
 
-  /* ── STATE ──────────────────────────────────────────────────── */
-  var S = {
-    ready      : false,
-    decks      : [],
-    editing    : null,   // { id, name, chamber, cards:[] }
-    editingIdx : -1,
-    search     : '',
-    filterRarity: 'all',
-    showIncompat: false,
-    isDirty    : false
+  var STRENGTHS = [
+    { value: 'random',   label: 'Random',         icon: '🎲', desc: 'Anything goes'              },
+    { value: 'attack',   label: 'Attack',          icon: '⚔️', desc: 'Max Force / Strike heavy'   },
+    { value: 'defense',  label: 'Defense',         icon: '🛡️', desc: 'Max Intercept heavy'        },
+    { value: 'balanced', label: 'Balanced',        icon: '⚖️', desc: 'Mix of everything'          },
+    { value: 'energy',   label: 'Energy Saver',    icon: '⚡', desc: 'Low energy cost cards'      },
+    { value: 'chamber',  label: 'Chamber Charger', icon: '🪟', desc: 'Advantage / chamber synergy'},
+    { value: 'wild',     label: 'Wild Card',       icon: '🃏', desc: 'Focus on rules-text cards'  },
+    { value: 'support',  label: 'Support',         icon: '🤝', desc: 'Ally heavy'                 }
+  ];
+
+  var DECK_SIZES = {
+    full:   { standard: 60,  label: 'Full (60 + 1)' },
+    half:   { standard: 30,  label: 'Half (30 + 1)' },
+    custom: { standard: null, label: 'Custom'        }
   };
 
-  /* ── STORAGE ─────────────────────────────────────────────────── */
-  function loadDecks() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
-    catch (_) { return []; }
+  var STORAGE_KEY    = 'aqst_decks';
+  var MAX_COPIES     = 4;      // max copies of one card per deck
+  var RARITY_ORDER   = { common: 0, uncommon: 1, rare: 2, zenemental: 3, promo: 4 };
+
+  /* ═══════════════════════════════════════════════════════════════
+     STATE
+  ═══════════════════════════════════════════════════════════════ */
+  var S = {
+    view:   'list',   // list | randomize | build | stats | export
+    pool:   'all',    // all | physical | digital
+    decks:  [],
+    viewingDeck: null,
+
+    // randomize form
+    rng: {
+      name:            '',
+      strength:        'balanced',
+      deckSize:        'full',
+      customSize:      60,
+      selfPickChamber: false,
+      chosenChamber:   null
+    },
+
+    // build form
+    build: {
+      name:       '',
+      deckSize:   'full',
+      customSize: 60,
+      chamber:    null,
+      cards:      {},   // { cardNumber: qty }
+      typeFilter: 'all',
+      search:     ''
+    },
+
+    // export checklist
+    exportSortMode:  'number',
+    exportChecked:   {}
+  };
+
+  /* ═══════════════════════════════════════════════════════════════
+     CARD FILTERING
+  ═══════════════════════════════════════════════════════════════ */
+
+  function isValidForDeck(card) {
+    var t = (card.type || '').toLowerCase().trim();
+    for (var i = 0; i < EXCLUDED_TYPES.length; i++) {
+      if (t === EXCLUDED_TYPES[i]) return false;
+    }
+    if (t === CHAMBER_TYPE) return true;
+    return STANDARD_TYPES.indexOf(t) !== -1;
   }
-  function persistDecks() {
+
+  function getDigitalCollection() {
+    if (global.digitalCollectionData && typeof global.digitalCollectionData === 'object') {
+      return global.digitalCollectionData;
+    }
+    try {
+      var raw = localStorage.getItem('aqst_digital_col') ||
+                localStorage.getItem('avatarDigitalCollection');
+      if (raw) return JSON.parse(raw);
+    } catch (_) {}
+    return {};
+  }
+
+  function getPoolCards() {
+    var base = (global.allCards || []).filter(isValidForDeck);
+    if (S.pool === 'physical') {
+      var col = global.collection || {};
+      return base.filter(function (c) { return (col[c.number] || 0) > 0; });
+    }
+    if (S.pool === 'digital') {
+      var dc = getDigitalCollection();
+      return base.filter(function (c) { return (dc[c.number] || 0) > 0; });
+    }
+    return base;  // 'all'
+  }
+
+  /* ── TRAIT HELPERS ─────────────────────────────────────────── */
+
+  function parseTraits(str) {
+    if (!str || !str.trim()) return [];
+    return str.split(/[,;\s]+/)
+      .map(function (t) { return t.trim().toLowerCase(); })
+      .filter(function (t) { return t.length > 0; });
+  }
+
+  function getChamberTraits(chamberCard) {
+    return parseTraits(chamberCard.traits || '');
+  }
+
+  function isCompatibleWithChamber(card, chamberCard) {
+    if (!chamberCard) return true;
+    var cardTraits = parseTraits(card.traits);
+    if (cardTraits.length === 0) return true;          // no-trait card: always ok
+    var ct = getChamberTraits(chamberCard);
+    if (ct.length === 0) return true;                  // chamber has no traits: all ok
+    for (var i = 0; i < cardTraits.length; i++) {
+      if (ct.indexOf(cardTraits[i]) !== -1) return true;
+    }
+    return false;
+  }
+
+  function getStandardCards(pool) {
+    return pool.filter(function (c) { return c.type !== CHAMBER_TYPE; });
+  }
+  function getChamberCards(pool) {
+    return pool.filter(function (c) { return c.type === CHAMBER_TYPE; });
+  }
+
+  /* ── POOL AVAILABILITY ───────────────────────────────────── */
+
+  function availableQty(cardNumber) {
+    if (S.pool === 'physical') return (global.collection || {})[cardNumber] || 0;
+    if (S.pool === 'digital')  return (getDigitalCollection()[cardNumber] || 0);
+    return 99; // 'all': unlimited
+  }
+
+  function maxCopiesForCard(cardNumber) {
+    return S.pool === 'all' ? MAX_COPIES : Math.min(MAX_COPIES, availableQty(cardNumber));
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     DECK SCORING
+  ═══════════════════════════════════════════════════════════════ */
+
+  function cardScore(card, strength) {
+    var force     = parseFloat(card.force)        || 0;
+    var intercept = parseFloat(card.intercept)    || 0;
+    var gE  = parseFloat(card.greenEnergy)   || 0;
+    var yE  = parseFloat(card.yellowEnergy)  || 0;
+    var rE  = parseFloat(card.redEnergy)     || 0;
+    var E   = gE + yE + rE;
+    var hasRules = ((card.rulesText || '').trim().length > 8);
+    var t   = (card.type || '').toLowerCase();
+    var noise = Math.random() * 0.5;  // tiny jitter to break ties
+    switch (strength) {
+      case 'attack':   return force * 3 + intercept * 0.5 + noise;
+      case 'defense':  return intercept * 3 + force * 0.5 + noise;
+      case 'energy':   return (E > 0 ? (12 / E) : 6) + noise;
+      case 'chamber':  return (t === 'advantage' ? 5 : t === 'strike' ? 2 : 1) + noise;
+      case 'wild':     return (hasRules ? (4 + force + intercept) : noise);
+      case 'support':  return (t === 'ally' ? 5 : t === 'advantage' ? 2 : 1) + noise;
+      case 'balanced': return (force + intercept + (hasRules ? 1 : 0)) + noise;
+      default:         return Math.random() * 10;   // random
+    }
+  }
+
+  function chamberScore(chamber, strength) {
+    var fI = parseFloat(chamber.chamberFrontI) || 0;
+    var fF = parseFloat(chamber.chamberFrontF) || 0;
+    var bI = parseFloat(chamber.chamberBackI)  || 0;
+    var bF = parseFloat(chamber.chamberBackF)  || 0;
+    var fE = (parseFloat(chamber.chamberFrontR)||0)+(parseFloat(chamber.chamberFrontY)||0)+(parseFloat(chamber.chamberFrontG)||0);
+    var bE = (parseFloat(chamber.chamberBackR) ||0)+(parseFloat(chamber.chamberBackY) ||0)+(parseFloat(chamber.chamberBackG) ||0);
+    var noise = Math.random() * 0.5;
+    switch (strength) {
+      case 'attack':  return (fF + bF) * 3 + (fI + bI) + noise;
+      case 'defense': return (fI + bI) * 3 + (fF + bF) + noise;
+      case 'energy':  var E = fE + bE; return (E > 0 ? 20 / E : 10) + noise;
+      default:        return (fF + bF + fI + bI) + noise;
+    }
+  }
+
+  function computeDeckStats(entries) {
+    var totalForce = 0, totalIntercept = 0, totalEnergy = 0;
+    var strikeC = 0, advantageC = 0, allyC = 0, chamberC = 0, rulesC = 0, totalCards = 0;
+    entries.forEach(function (e) {
+      var c = e.card; if (!c) return;
+      var qty = e.qty || 1;
+      totalCards += qty;
+      totalForce     += (parseFloat(c.force)        || 0) * qty;
+      totalIntercept += (parseFloat(c.intercept)    || 0) * qty;
+      var E = ((parseFloat(c.greenEnergy)||0)+(parseFloat(c.yellowEnergy)||0)+(parseFloat(c.redEnergy)||0));
+      totalEnergy += E * qty;
+      var t = (c.type || '').toLowerCase();
+      if (t === 'strike')    strikeC    += qty;
+      if (t === 'advantage') advantageC += qty;
+      if (t === 'ally')      allyC      += qty;
+      if (t === CHAMBER_TYPE) chamberC  += qty;
+      if ((c.rulesText || '').trim().length > 8) rulesC += qty;
+    });
+    var n = totalCards || 1;
+    var avgF = totalForce / n, avgI = totalIntercept / n, avgE = totalEnergy / n;
+    var attackScore  = Math.min(100, Math.round((avgF / 8)  * 100));
+    var defenseScore = Math.min(100, Math.round((avgI / 8)  * 100));
+    var supportScore = Math.min(100, Math.round(((allyC + advantageC) / n) * 100));
+    return {
+      totalCards, strikeC, advantageC, allyC, chamberC, rulesC,
+      avgForce: avgF.toFixed(2), avgIntercept: avgI.toFixed(2), avgEnergy: avgE.toFixed(2),
+      attackScore, defenseScore, supportScore
+    };
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     ENCODE / DECODE
+  ═══════════════════════════════════════════════════════════════ */
+
+  function encodeDeck(deck) {
+    var cardPairs = Object.keys(deck.cards || {})
+      .map(function (n) { return n + ':' + deck.cards[n]; }).join(',');
+    var raw = [
+      (deck.name       || 'Unnamed').replace(/\|/g, ' '),
+      (deck.chamber    || ''),
+      cardPairs,
+      (deck.deckSize   || 'full'),
+      (deck.customSize || 60),
+      (deck.strength   || '')
+    ].join('|');
+    try { return 'AQSD1' + btoa(unescape(encodeURIComponent(raw))); } catch (e) { return ''; }
+  }
+
+  function decodeDeck(code) {
+    try {
+      code = (code || '').trim();
+      if (code.substring(0, 5) !== 'AQSD1') return null;
+      var raw = decodeURIComponent(escape(atob(code.substring(5))));
+      var parts = raw.split('|');
+      if (parts.length < 4) return null;
+      var cards = {};
+      if (parts[2]) {
+        parts[2].split(',').forEach(function (pair) {
+          var p = pair.split(':');
+          if (p.length === 2) { var q = parseInt(p[1], 10); if (q > 0) cards[p[0]] = q; }
+        });
+      }
+      return {
+        name: parts[0] || 'Unnamed', chamber: parts[1] || null,
+        cards: cards, deckSize: parts[3] || 'full',
+        customSize: parseInt(parts[4], 10) || 60, strength: parts[5] || ''
+      };
+    } catch (e) { return null; }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     PERSISTENCE
+  ═══════════════════════════════════════════════════════════════ */
+
+  function saveDecks() {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(S.decks)); } catch (_) {}
   }
 
-  /* ── ENCODE (for external play site) ─────────────────────────── */
-  // Format:  DECK1 + base64( chamberNumber + "|" + card1,card2,… )
-  function encodeDeck(deck) {
+  function loadDecks() {
     try {
-      var payload = (deck.chamber || '') + '|' + (deck.cards || []).join(',');
-      return 'DECK1' + btoa(unescape(encodeURIComponent(payload)));
-    } catch (_) { return null; }
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) S.decks = JSON.parse(raw);
+    } catch (_) { S.decks = []; }
   }
 
-  /* ── UTILITIES ───────────────────────────────────────────────── */
-  function uid() {
-    return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  function persistDeck(deck) {
+    deck.id      = deck.id      || ('deck_' + Date.now());
+    deck.created = deck.created || Date.now();
+    deck.encoded = encodeDeck(deck);
+    var idx = S.decks.findIndex(function (d) { return d.id === deck.id; });
+    if (idx >= 0) S.decks[idx] = deck; else S.decks.unshift(deck);
+    saveDecks();
   }
+
+  function removeDeck(id) {
+    S.decks = S.decks.filter(function (d) { return d.id !== id; });
+    saveDecks();
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     RANDOMIZER ENGINE
+  ═══════════════════════════════════════════════════════════════ */
+
+  function pickBestChamber(pool, strength) {
+    var chambers = getChamberCards(pool);
+    if (chambers.length === 0) return null;
+    chambers.sort(function (a, b) { return chamberScore(b, strength) - chamberScore(a, strength); });
+    var top = chambers.slice(0, Math.min(3, chambers.length));
+    return top[Math.floor(Math.random() * top.length)];
+  }
+
+  function buildRandomDeck(opts) {
+    var pool       = getPoolCards();
+    var strength   = opts.strength   || 'random';
+    var deckSize   = opts.deckSize   || 'full';
+    var customSize = opts.customSize || 60;
+    var target     = deckSize === 'full' ? 60 : deckSize === 'half' ? 30 : customSize;
+    var chamber    = opts.chamber || pickBestChamber(pool, strength);
+    if (!chamber) return null;
+
+    var standard = getStandardCards(pool).filter(function (c) {
+      return isCompatibleWithChamber(c, chamber);
+    });
+    if (standard.length === 0) return null;
+
+    standard.sort(function (a, b) { return cardScore(b, strength) - cardScore(a, strength); });
+
+    var selectedCards = {};
+    var totalAdded    = 0;
+
+    // First pass: distribute copies using scored ranking
+    var topTier   = Math.ceil(standard.length * 0.3);
+    var midTier   = Math.ceil(standard.length * 0.6);
+    for (var i = 0; i < standard.length && totalAdded < target; i++) {
+      var c    = standard[i];
+      var maxC = Math.min(
+        strength === 'random' ? (1 + Math.floor(Math.random() * MAX_COPIES)) :
+          i < topTier ? 4 : i < midTier ? 2 : 1,
+        maxCopiesForCard(c.number),
+        target - totalAdded
+      );
+      if (maxC > 0) { selectedCards[c.number] = maxC; totalAdded += maxC; }
+    }
+
+    // Second pass: fill deficit by incrementing best cards
+    if (totalAdded < target) {
+      var pass2 = 0;
+      while (totalAdded < target && pass2 < standard.length * MAX_COPIES) {
+        var card2 = standard[pass2 % standard.length];
+        var cur   = selectedCards[card2.number] || 0;
+        var mx    = maxCopiesForCard(card2.number);
+        if (cur < mx) { selectedCards[card2.number] = cur + 1; totalAdded++; }
+        pass2++;
+        if (pass2 > standard.length * MAX_COPIES) break;
+      }
+    }
+
+    return {
+      id:         'deck_' + Date.now(),
+      name:       opts.name || 'Randomized Deck',
+      chamber:    chamber.number,
+      cards:      selectedCards,
+      deckSize:   deckSize,
+      customSize: customSize,
+      strength:   strength,
+      pool:       S.pool,
+      created:    Date.now()
+    };
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     EXPORT HELPERS
+  ═══════════════════════════════════════════════════════════════ */
+
+  function buildExportEntries(deck, sortMode) {
+    var allC    = global.allCards || [];
+    var entries = [];
+
+    if (deck.chamber) {
+      var ch = allC.find(function (c) { return c.number === deck.chamber; });
+      if (ch) entries.push({ card: ch, qty: 1, isChamber: true });
+    }
+    Object.keys(deck.cards || {}).forEach(function (num) {
+      var card = allC.find(function (c) { return c.number === num; });
+      if (card) entries.push({ card: card, qty: deck.cards[num], isChamber: false });
+    });
+
+    sortMode = sortMode || 'number';
+    entries.sort(function (a, b) {
+      // Chamber always first
+      if (a.isChamber !== b.isChamber) return a.isChamber ? -1 : 1;
+      if (sortMode === 'type-number') {
+        var tc = (a.card.type || '').localeCompare(b.card.type || '');
+        if (tc !== 0) return tc;
+      } else if (sortMode === 'name') {
+        return a.card.name.localeCompare(b.card.name);
+      } else if (sortMode === 'rarity') {
+        var ra = RARITY_ORDER[a.card.rarity] || 0;
+        var rb = RARITY_ORDER[b.card.rarity] || 0;
+        if (ra !== rb) return ra - rb;
+      }
+      // Number fallback
+      var nA = parseInt(a.card.number, 10), nB = parseInt(b.card.number, 10);
+      if (!isNaN(nA) && !isNaN(nB)) return nA - nB;
+      return a.card.number.localeCompare(b.card.number);
+    });
+    return entries;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     RENDERING UTILITIES
+  ═══════════════════════════════════════════════════════════════ */
+
   function esc(s) {
     return String(s || '')
       .replace(/&/g,'&amp;').replace(/</g,'&lt;')
       .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
-  function toast(msg) {
-    if (typeof window.showToast === 'function') { window.showToast(msg); return; }
-    var t = document.getElementById('toast');
-    if (t) { t.textContent = msg; t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 2200); }
-  }
-  function allCards()  { return window.allCards  || []; }
-  function traitIcons(){ return window.traitIconMap || {}; }
 
-  /* ── TRAIT / COMPATIBILITY ───────────────────────────────────── */
-  function parseTraits(s) {
-    if (!s || !s.trim()) return [];
-    return s.split(/[\s,;]+/).map(function(t){ return t.trim().toLowerCase(); }).filter(Boolean);
-  }
-  function chamberCards() {
-    return allCards().filter(function(c){ return c.type === 'chamber'; });
-  }
-  function isCompatible(card, chamberNum) {
-    if (!chamberNum || card.type === 'chamber') return false;
-    var ch = allCards().find(function(c){ return c.number === chamberNum; });
-    if (!ch) return false;
-    var ct  = parseTraits(card.traits);
-    if (ct.length === 0) return true;             // no traits = universal
-    var cht = parseTraits(ch.traits);
-    return ct.some(function(t){ return cht.indexOf(t) !== -1; });
-  }
-  function compatList(chamberNum) {
-    return allCards().filter(function(c){ return isCompatible(c, chamberNum); });
+  function cardImg(card) { return (card && card.imageLink) ? card.imageLink : ''; }
+
+  function dotColor(rarity) {
+    var m = { common:'var(--text-secondary)', uncommon:'var(--earth)', rare:'var(--water)', zenemental:'var(--zen)', promo:'var(--promo)' };
+    return m[rarity] || 'var(--text-muted)';
   }
 
-  /* ── DECK HELPERS ────────────────────────────────────────────── */
-  function deckSize(deck) { return (deck.cards || []).length; }
-  function copyCount(deck, num) {
-    return (deck.cards || []).filter(function(n){ return n === num; }).length;
-  }
-  function rarityClr(r) {
-    return ({common:'var(--text-secondary)',uncommon:'var(--earth)',
-             rare:'var(--water)',zenemental:'var(--zen)',promo:'var(--promo)'})[r]
-           || 'var(--text-secondary)';
+  function strengthLabel(val) {
+    var s = STRENGTHS.find(function (x) { return x.value === val; });
+    return s ? s.icon + ' ' + s.label : val;
   }
 
-  /* ══════════════════════════════════════════════════════════════
-     CARD STACK VISUAL
-     Layers of card backs appear behind the chamber face card.
-     The stack grows as more cards are added.
+  /* ── SVG Radar / Spider Chart ────────────────────────────── */
+  function svgRadar(attack, defense, support) {
+    var cx = 80, cy = 82, r = 58;
+    var angles = { atk: -90, def: 30, sup: 150 };
+
+    function pt(angleDeg, pct) {
+      var rad = angleDeg * Math.PI / 180;
+      var d   = r * (pct / 100);
+      return [+(cx + d * Math.cos(rad)).toFixed(2), +(cy + d * Math.sin(rad)).toFixed(2)];
+    }
+    function poly(pct) {
+      var pa = pt(angles.atk, pct), pd = pt(angles.def, pct), ps = pt(angles.sup, pct);
+      return pa[0]+','+pa[1]+' '+pd[0]+','+pd[1]+' '+ps[0]+','+ps[1];
+    }
+
+    var da = pt(angles.atk, attack),  dd = pt(angles.def, defense), ds = pt(angles.sup, support);
+    var dataPath = 'M'+da[0]+','+da[1]+' L'+dd[0]+','+dd[1]+' L'+ds[0]+','+ds[1]+' Z';
+
+    var oa = pt(angles.atk, 115), od = pt(angles.def, 116), os = pt(angles.sup, 116);
+
+    var gridLines = [25,50,75,100].map(function(pct) {
+      return '<polygon points="'+poly(pct)+'" fill="none" stroke="var(--border)" stroke-width="1"/>';
+    }).join('');
+
+    var axisLines = Object.values(angles).map(function(a) {
+      var ep = pt(a, 100);
+      return '<line x1="'+cx+'" y1="'+cy+'" x2="'+ep[0]+'" y2="'+ep[1]+'" stroke="var(--border-light)" stroke-width="1"/>';
+    }).join('');
+
+    return '<svg viewBox="0 0 160 160" width="160" height="160" style="display:block;">'
+      + gridLines + axisLines
+      + '<path d="'+dataPath+'" fill="rgba(180,77,223,0.22)" stroke="var(--zen)" stroke-width="2" stroke-linejoin="round"/>'
+      + [da,dd,ds].map(function(p){ return '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="4.5" fill="var(--zen)" stroke="var(--bg-secondary)" stroke-width="2"/>'; }).join('')
+      + '<text x="'+oa[0]+'" y="'+(oa[1]+3)+'" text-anchor="middle" font-size="9" fill="var(--fire)" font-family="Nunito Sans,sans-serif" font-weight="700">ATK</text>'
+      + '<text x="'+od[0]+'" y="'+(od[1]+3)+'" text-anchor="middle" font-size="9" fill="var(--water)" font-family="Nunito Sans,sans-serif" font-weight="700">DEF</text>'
+      + '<text x="'+os[0]+'" y="'+(os[1]+3)+'" text-anchor="middle" font-size="9" fill="var(--earth)" font-family="Nunito Sans,sans-serif" font-weight="700">SUP</text>'
+      + '</svg>';
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     INJECT CSS  (once only)
   ═══════════════════════════════════════════════════════════════ */
-  function stackLayers(count) {
-    if (count === 0) return 0;
-    if (count <= 10) return 1;
-    if (count <= 20) return 2;
-    if (count <= 30) return 3;
-    if (count <= 42) return 4;
-    if (count <= 54) return 5;
-    return 6;
-  }
-
-  function renderStack(deck, opts) {
-    opts = opts || {};
-    var W      = opts.W      || 130;
-    var H      = Math.round(W * 1.395);           // standard card 2.5×3.5 ratio
-    var OFF    = opts.offset || Math.max(4, Math.round(W * 0.04));
-    var badge  = opts.badge  !== false;
-
-    var count  = deckSize(deck);
-    var layers = stackLayers(count);
-    var full   = count >= MAX_CARDS;
-    var ch     = deck.chamber
-      ? allCards().find(function(c){ return c.number === deck.chamber; })
-      : null;
-
-    /* outer container sized to fit all layers */
-    var CW = W + layers * OFF + OFF + 2;
-    var CH = H + Math.round(layers * OFF * 0.65) + (badge ? 22 : 4);
-    var BR = Math.round(W * 0.07);
-
-    var html = '<div style="position:relative;width:' + CW + 'px;height:' + CH + 'px;flex-shrink:0;">';
-
-    /* ─ Background card layers (card backs) ─ */
-    for (var i = layers; i >= 1; i--) {
-      var dx  = i * OFF;
-      var dy  = Math.round(i * OFF * 0.6);
-      /* alternate rotation: odd layers go right, even go left */
-      var deg = (i % 2 === 0 ? 1 : -1) * (0.8 + (layers - i) * 0.7);
-      var lum = 0.22 + (i / (layers + 1)) * 0.2;
-
-      html +=
-        '<div style="position:absolute;left:' + dx + 'px;top:' + dy + 'px;' +
-          'width:' + W + 'px;height:' + H + 'px;border-radius:' + BR + 'px;' +
-          'background:' +
-            'radial-gradient(ellipse at 30% 28%, rgba(180,77,223,' + lum + ') 0%, transparent 58%),' +
-            'radial-gradient(ellipse at 72% 74%, rgba(46,140,232,' + (lum * 0.55) + ') 0%, transparent 52%),' +
-            'linear-gradient(148deg, rgba(28,35,60,0.97), rgba(10,13,26,0.99));' +
-          'border:1px solid rgba(255,255,255,0.06);' +
-          'transform:rotate(' + deg + 'deg);' +
-          'box-shadow:0 3px 12px rgba(0,0,0,0.55);' +
-        '"></div>';
-    }
-
-    /* ─ Chamber card face (front, on top) ─ */
-    html +=
-      '<div style="position:absolute;left:0;top:0;width:' + W + 'px;height:' + H + 'px;' +
-        'border-radius:' + BR + 'px;overflow:hidden;z-index:10;' +
-        'border:1.5px solid rgba(255,255,255,' + (ch ? '0.2' : '0.07') + ');' +
-        'box-shadow:0 8px 30px rgba(0,0,0,0.78),0 0 0 1px rgba(0,0,0,0.5)' +
-        (full ? ',0 0 20px rgba(61,184,108,0.5)' : '') + ';' +
-      '">';
-    if (ch && ch.imageLink) {
-      html +=
-        '<img src="' + esc(ch.imageLink) + '" style="width:100%;height:100%;object-fit:cover;" loading="lazy" ' +
-        'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
-        '<div style="display:none;width:100%;height:100%;background:linear-gradient(135deg,var(--zen),var(--water));' +
-          'align-items:center;justify-content:center;">' +
-          '<i class="fas fa-window-maximize" style="font-size:' + Math.round(W*0.22) + 'px;color:rgba(255,255,255,0.35);"></i>' +
-        '</div>';
-    } else {
-      html +=
-        '<div style="width:100%;height:100%;background:linear-gradient(148deg,var(--bg-surface),var(--bg-card));' +
-          'display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;">' +
-          '<i class="fas fa-window-maximize" style="color:var(--zen);font-size:' + Math.round(W*0.22) + 'px;opacity:0.35;"></i>' +
-          '<span style="font-size:' + Math.round(W*0.053) + 'px;color:var(--text-muted);opacity:0.5;text-align:center;padding:0 8px;line-height:1.3;">Choose<br>Chamber</span>' +
-        '</div>';
-    }
-    html += '</div>';
-
-    /* ─ Card count badge ─ */
-    if (badge) {
-      var bg  = full ? 'var(--success)' : count > MAX_CARDS * 0.75 ? 'var(--air)' : 'rgba(8,10,20,0.9)';
-      var clr = (full || count > MAX_CARDS * 0.75) ? '#000' : '#fff';
-      html +=
-        '<div style="position:absolute;bottom:3px;left:50%;transform:translateX(-50%);z-index:20;' +
-          'background:' + bg + ';color:' + clr + ';' +
-          'font-size:' + Math.round(W * 0.073) + 'px;font-weight:700;font-family:\'Cinzel\',serif;' +
-          'padding:2px 10px;border-radius:99px;white-space:nowrap;' +
-          'box-shadow:0 2px 8px rgba(0,0,0,0.65);border:1px solid rgba(255,255,255,0.12);' +
-        '">' + count + '/' + MAX_CARDS + '</div>';
-    }
-
-    html += '</div>';
-    return html;
-  }
-
-  /* ── SHARED STYLE HELPERS ────────────────────────────────────── */
-  function traitPill(t, small) {
-    var fs = small ? '0.5rem'  : '0.55rem';
-    var p  = small ? '1px 5px' : '2px 7px';
-    var iconUrl = traitIcons()[t];
-    var inner   = iconUrl
-      ? '<img src="' + esc(iconUrl) + '" style="width:10px;height:10px;object-fit:contain;vertical-align:middle;margin-right:3px;" loading="lazy">' + esc(t)
-      : esc(t);
-    return '<span style="font-size:' + fs + ';font-weight:700;text-transform:capitalize;' +
-      'padding:' + p + ';border-radius:4px;background:rgba(180,77,223,0.1);color:var(--zen);' +
-      'border:1px solid rgba(180,77,223,0.2);display:inline-flex;align-items:center;">' + inner + '</span>';
-  }
-  function actionBtn(bg, clr) {
-    clr = clr || '#fff';
-    return 'padding:9px 16px;border-radius:var(--radius);border:none;background:' + bg + ';color:' + clr + ';' +
-      'font-family:\'Nunito Sans\',sans-serif;font-weight:700;font-size:0.82rem;cursor:pointer;' +
-      'display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:opacity 0.2s;';
-  }
-  function ghostBtn(extra) {
-    return 'background:none;border:1px solid var(--border);border-radius:8px;padding:8px 12px;' +
-      'color:var(--text-secondary);cursor:pointer;font-size:0.78rem;' +
-      'font-family:\'Nunito Sans\',sans-serif;font-weight:700;transition:all 0.18s;' + (extra||'');
-  }
-  function miniBtn() {
-    return 'padding:6px 11px;border-radius:7px;border:1px solid var(--border);background:var(--bg-card);' +
-      'color:var(--text-secondary);font-size:0.7rem;font-family:\'Nunito Sans\',sans-serif;' +
-      'font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:4px;transition:all 0.18s;';
-  }
-  function incBtn(disabled) {
-    return 'width:21px;height:21px;border-radius:5px;border:1px solid var(--border);' +
-      'background:var(--bg-primary);color:' + (disabled ? 'var(--text-muted)' : 'var(--text-primary)') + ';' +
-      'font-size:0.9rem;cursor:' + (disabled ? 'default' : 'pointer') + ';' +
-      'display:flex;align-items:center;justify-content:center;line-height:1;padding:0;' +
-      'font-family:\'Nunito Sans\',sans-serif;transition:all 0.15s;';
-  }
-  function rarPill(active) {
-    return 'padding:5px 10px;border-radius:99px;font-size:0.65rem;font-weight:700;cursor:pointer;' +
-      'font-family:\'Nunito Sans\',sans-serif;white-space:nowrap;transition:all 0.18s;text-transform:capitalize;' +
-      'border:1px solid ' + (active ? 'white' : 'var(--border)') + ';' +
-      'background:' + (active ? 'var(--zen)' : 'var(--bg-card)') + ';' +
-      'color:' + (active ? '#fff' : 'var(--text-secondary)') + ';';
-  }
-
-  /* ── INJECT CSS (hover states, transitions) ─────────────────── */
-  function injectStyles() {
-    if (document.getElementById('db-css')) return;
+  function injectCSS() {
+    if (document.getElementById('aqst-db-styles')) return;
     var s = document.createElement('style');
-    s.id = 'db-css';
-    s.textContent = [
-      '.db-deck-tile { transition: border-color 0.22s, transform 0.22s, box-shadow 0.22s; }',
-      '.db-deck-tile:hover { border-color: var(--border-light) !important; transform: translateY(-3px); box-shadow: var(--shadow-md); }',
-      '.db-ch-pick { transition: border-color 0.22s, transform 0.22s, filter 0.22s; }',
-      '.db-ch-pick:hover { border-color: var(--zen) !important; transform: translateY(-2px); filter: drop-shadow(0 0 7px var(--zen)); }',
-      '.db-bc { transition: border-color 0.18s, transform 0.18s, opacity 0.18s; }',
-      '.db-bc:hover { border-color: var(--border-light) !important; transform: translateY(-1px); }',
-      '.db-bc.in-deck { border-color: rgba(180,77,223,0.45) !important; }',
-      '.db-incbtn:hover:not(:disabled) { border-color: var(--zen) !important; color: var(--zen) !important; }',
-      '.db-plusbtn:hover:not(:disabled) { background: rgba(180,77,223,0.12) !important; border-color: var(--zen) !important; color: var(--zen) !important; }',
-      '.db-minusbtn:hover:not(:disabled) { background: rgba(224,72,72,0.1) !important; border-color: var(--danger) !important; color: var(--danger) !important; }',
-      '.db-edit-btn:hover { border-color: var(--zen) !important; color: var(--zen) !important; }',
-      '.db-copy-btn:hover { border-color: var(--water) !important; color: var(--water) !important; }',
-      '.db-del-btn:hover  { border-color: var(--danger) !important; color: var(--danger) !important; }',
-      '.db-ghost-btn:hover { border-color: var(--border-light) !important; color: var(--text-primary) !important; }',
-    ].join('\n');
+    s.id  = 'aqst-db-styles';
+    s.textContent = `
+/* ── Deck Builder Shell ───────────────────────────────────── */
+.db-wrap { padding-bottom:48px; }
+
+.db-top-bar {
+  display:flex; align-items:center; justify-content:space-between;
+  flex-wrap:wrap; gap:10px; margin-bottom:16px;
+}
+.db-heading {
+  font-family:'Cinzel',serif; font-size:1rem; font-weight:700; color:var(--text-primary);
+  display:flex; align-items:center; gap:8px;
+}
+
+/* Pool toggle */
+.db-pool-row { display:flex; gap:6px; }
+.db-pool-btn {
+  background:var(--bg-card); border:1px solid var(--border); border-radius:8px;
+  padding:7px 12px; font-family:'Nunito Sans',sans-serif; font-size:0.72rem;
+  font-weight:700; color:var(--text-secondary); cursor:pointer; transition:all .2s;
+  white-space:nowrap;
+}
+.db-pool-btn:hover { border-color:var(--border-light); }
+.db-pool-btn.active { background:rgba(180,77,223,.12); color:var(--zen); border-color:rgba(180,77,223,.4); }
+
+/* Mode cards */
+.db-mode-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+.db-mode-card {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:8px; background:var(--bg-card); border:1px solid var(--border);
+  border-radius:var(--radius-lg); padding:22px 10px; cursor:pointer;
+  font-family:'Nunito Sans',sans-serif; font-size:0.82rem; font-weight:700;
+  color:var(--text-secondary); transition:all .22s; text-align:center;
+}
+.db-mode-card .db-mode-icon { font-size:1.8rem; }
+.db-mode-card:hover { border-color:var(--promo); color:var(--text-primary); transform:translateY(-2px); box-shadow:var(--shadow-md); }
+
+/* Saved decks grid */
+.db-deck-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(138px,1fr)); gap:12px;
+}
+.db-deck-card {
+  background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius);
+  overflow:hidden; cursor:pointer; transition:all .22s;
+}
+.db-deck-card:hover { border-color:var(--zen); transform:translateY(-2px); box-shadow:var(--shadow-md); filter:drop-shadow(0 0 6px var(--zen)); }
+.db-deck-thumb {
+  width:100%; aspect-ratio:3/4; background:var(--bg-primary) center/cover no-repeat;
+  position:relative;
+}
+.db-deck-overlay {
+  position:absolute; bottom:0; left:0; right:0;
+  background:linear-gradient(transparent,rgba(0,0,0,.88));
+  padding:22px 8px 8px;
+}
+.db-deck-name {
+  font-family:'Cinzel',serif; font-size:0.7rem; font-weight:700; color:#fff;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.db-deck-qty { font-size:0.58rem; color:rgba(255,255,255,.55); margin-top:1px; }
+.db-deck-footer { padding:6px 8px; }
+.db-deck-miniscores {
+  display:flex; justify-content:space-between; margin-bottom:5px;
+}
+.db-deck-actions { display:flex; gap:4px; justify-content:flex-end; }
+
+/* Mini buttons */
+.db-mini-btn {
+  background:var(--bg-card); border:1px solid var(--border); border-radius:6px;
+  padding:5px 9px; font-size:0.68rem; color:var(--text-secondary);
+  cursor:pointer; font-family:'Nunito Sans',sans-serif; font-weight:700;
+  transition:all .18s; display:inline-flex; align-items:center; gap:4px;
+}
+.db-mini-btn:hover { border-color:var(--accent); color:var(--accent); }
+.db-delete-btn:hover { border-color:var(--danger)!important; color:var(--danger)!important; }
+.db-export-btn:hover { border-color:var(--earth)!important; color:var(--earth)!important; }
+
+/* Back bar */
+.db-back-row {
+  display:flex; align-items:center; gap:10px; margin-bottom:16px;
+}
+.db-back-btn {
+  background:var(--bg-card); border:1px solid var(--border); border-radius:8px;
+  padding:8px 14px; color:var(--text-secondary); font-family:'Nunito Sans',sans-serif;
+  font-size:0.78rem; font-weight:700; cursor:pointer; transition:all .2s;
+  display:flex; align-items:center; gap:6px;
+}
+.db-back-btn:hover { border-color:var(--border-light); color:var(--text-primary); }
+
+/* Form pieces */
+.db-section { margin-bottom:18px; }
+.db-label {
+  display:block; font-size:0.66rem; text-transform:uppercase; letter-spacing:.1em;
+  color:var(--text-muted); font-weight:700; margin-bottom:8px;
+}
+.db-input {
+  width:100%; background:var(--bg-card); border:1px solid var(--border);
+  border-radius:8px; padding:11px 13px; color:var(--text-primary);
+  font-size:.88rem; font-family:'Nunito Sans',sans-serif; outline:none;
+  transition:border-color .2s; box-sizing:border-box;
+}
+.db-input:focus { border-color:var(--zen); }
+.db-select {
+  width:100%; background:var(--bg-card); border:1px solid var(--border);
+  border-radius:8px; padding:10px 12px; color:var(--text-primary);
+  font-family:'Nunito Sans',sans-serif; font-size:.85rem; outline:none; cursor:pointer;
+}
+
+/* Strength grid */
+.db-strength-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(108px,1fr)); gap:7px;
+}
+.db-strength-btn {
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius);
+  padding:10px 6px; font-family:'Nunito Sans',sans-serif; font-size:0.7rem;
+  font-weight:700; color:var(--text-secondary); cursor:pointer; transition:all .2s; text-align:center;
+}
+.db-strength-btn .db-s-icon { font-size:1.35rem; }
+.db-strength-btn .db-s-desc { font-size:0.58rem; color:var(--text-muted); font-weight:400; }
+.db-strength-btn:hover { border-color:var(--border-light); color:var(--text-primary); }
+.db-strength-btn.active { background:rgba(180,77,223,.12); border-color:var(--zen); color:var(--zen); }
+
+/* Size buttons */
+.db-size-row { display:flex; gap:7px; flex-wrap:wrap; }
+.db-size-btn {
+  flex:1; min-width:80px; background:var(--bg-card); border:1px solid var(--border);
+  border-radius:8px; padding:9px 8px; font-family:'Nunito Sans',sans-serif;
+  font-size:0.74rem; font-weight:700; color:var(--text-secondary); cursor:pointer;
+  transition:all .2s; white-space:nowrap; text-align:center;
+}
+.db-size-btn:hover { border-color:var(--border-light); }
+.db-size-btn.active { background:rgba(74,125,255,.1); border-color:var(--accent); color:var(--accent); }
+
+/* Radio rows */
+.db-radio-row {
+  display:flex; align-items:center; gap:10px; padding:10px 13px;
+  border:1px solid var(--border); border-radius:8px; background:var(--bg-card);
+  cursor:pointer; transition:border-color .18s; font-size:.85rem; color:var(--text-primary);
+}
+.db-radio-row:hover { border-color:var(--border-light); }
+
+/* Primary CTA */
+.db-primary-btn {
+  width:100%; padding:13px; border-radius:var(--radius); border:none;
+  background:var(--zen); color:#fff; font-family:'Nunito Sans',sans-serif;
+  font-size:.9rem; font-weight:700; cursor:pointer; transition:all .2s;
+  display:flex; align-items:center; justify-content:center; gap:8px; letter-spacing:.03em;
+}
+.db-primary-btn:hover:not(:disabled) { opacity:.88; transform:translateY(-1px); }
+.db-primary-btn:disabled { opacity:.4; cursor:not-allowed; }
+
+/* Chamber picker grid */
+.db-chamber-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(92px,1fr));
+  gap:8px; max-height:340px; overflow-y:auto; padding:2px;
+}
+.db-chamber-chip {
+  background:var(--bg-card); border:1px solid var(--border); border-radius:8px;
+  overflow:hidden; cursor:pointer; text-align:center; transition:all .2s; padding-bottom:6px;
+}
+.db-chamber-chip:hover { border-color:var(--air); transform:translateY(-2px); box-shadow:var(--shadow-md); }
+.db-chamber-chip img { width:100%; aspect-ratio:3/4; object-fit:cover; display:block; }
+.db-chamber-chip-name { font-size:0.6rem; font-weight:700; color:var(--text-primary); padding:4px 3px 0; line-height:1.2; word-break:break-word; }
+.db-chamber-chip-num { font-size:0.54rem; color:var(--text-muted); }
+
+/* Selected chamber bar */
+.db-selected-chamber {
+  display:flex; align-items:center; gap:10px;
+  background:rgba(240,201,70,.05); border:1px solid rgba(240,201,70,.25);
+  border-radius:var(--radius); padding:10px 12px; margin-bottom:6px;
+}
+
+/* Build card picker */
+.db-pick-controls {
+  display:flex; gap:7px; margin-bottom:10px; flex-wrap:wrap; align-items:center;
+}
+.db-pick-search {
+  flex:1; min-width:130px; background:var(--bg-card); border:1px solid var(--border);
+  border-radius:8px; padding:9px 12px; color:var(--text-primary);
+  font-size:.82rem; font-family:'Nunito Sans',sans-serif; outline:none; transition:border-color .2s;
+}
+.db-pick-search:focus { border-color:var(--zen); }
+.db-type-pill {
+  background:var(--bg-card); border:1px solid var(--border); border-radius:99px;
+  padding:6px 13px; font-size:0.72rem; font-weight:700; color:var(--text-secondary);
+  cursor:pointer; font-family:'Nunito Sans',sans-serif; transition:all .18s; white-space:nowrap;
+}
+.db-type-pill:hover { border-color:var(--border-light); }
+.db-type-pill.active { background:var(--zen); color:#fff; border-color:var(--zen); }
+
+.db-progress-bar {
+  display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;
+  background:var(--bg-card); border:1px solid var(--border); border-radius:8px;
+  padding:8px 12px; position:sticky; top:0; z-index:5;
+}
+.db-progress-label { font-size:0.72rem; color:var(--text-secondary); font-weight:600; }
+.db-progress-count { font-family:'Cinzel',serif; font-size:0.82rem; font-weight:700; }
+
+.db-cards-scroll { max-height:50vh; overflow-y:auto; padding-right:2px; }
+.db-cards-scroll::-webkit-scrollbar { width:4px; }
+.db-cards-scroll::-webkit-scrollbar-thumb { background:var(--border-light); border-radius:2px; }
+
+.db-card-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); gap:7px;
+  margin-bottom:12px;
+}
+.db-card-chip {
+  background:var(--bg-card); border:1px solid var(--border); border-radius:8px;
+  overflow:hidden; text-align:center; transition:all .18s; position:relative;
+  cursor:pointer;
+}
+.db-card-chip:hover { border-color:var(--zen-glow); }
+.db-card-chip.selected { border-color:var(--zen); background:rgba(180,77,223,.08); }
+.db-card-chip.maxed { border-color:var(--promo); }
+.db-card-chip-img { width:100%; aspect-ratio:3/4; background:var(--bg-primary); overflow:hidden; }
+.db-card-chip-img img { width:100%; height:100%; object-fit:cover; display:block; }
+.db-card-chip-name { font-size:0.58rem; font-weight:700; color:var(--text-primary); padding:3px 3px 0; line-height:1.25; word-break:break-word; }
+.db-card-chip-num { font-size:0.54rem; color:var(--text-muted); padding-bottom:3px; }
+
+.db-qty-ctrl {
+  display:flex; align-items:center; justify-content:center; gap:3px;
+  padding:3px 4px; background:rgba(180,77,223,.12);
+}
+.db-chip-minus,.db-chip-plus {
+  width:18px; height:18px; border-radius:4px; border:none;
+  background:rgba(180,77,223,.2); color:var(--zen); font-size:.58rem;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:background .13s; flex-shrink:0;
+}
+.db-chip-minus:hover,.db-chip-plus:hover { background:var(--zen); color:#fff; }
+.db-chip-minus:disabled,.db-chip-plus:disabled { opacity:.28; cursor:not-allowed; }
+.db-chip-qty { font-size:.65rem; font-weight:700; color:var(--zen); min-width:14px; text-align:center; }
+
+.db-chip-add {
+  width:100%; padding:4px 0; font-size:.6rem; font-weight:700;
+  background:transparent; border:none; border-top:1px solid var(--border);
+  color:var(--text-muted); cursor:pointer; font-family:'Nunito Sans',sans-serif;
+  transition:all .13s;
+}
+.db-chip-add:hover:not(:disabled) { background:rgba(180,77,223,.1); color:var(--zen); }
+.db-chip-add:disabled { opacity:.3; cursor:not-allowed; }
+
+/* Stats view */
+.db-stat-pill {
+  font-size:.63rem; padding:2px 9px; border-radius:99px;
+  border:1px solid; font-weight:700; white-space:nowrap; display:inline-block;
+}
+
+/* Checklist */
+.db-checklist-item {
+  display:flex; align-items:center; gap:9px;
+  padding:8px 10px; border-bottom:1px solid var(--border);
+  cursor:pointer; transition:background .13s; border-radius:6px;
+}
+.db-checklist-item:hover { background:var(--bg-card-hover); }
+.db-checklist-item.is-chamber { background:rgba(240,201,70,.04); }
+.db-checklist-item.is-checked { opacity:.48; }
+.db-check-box {
+  width:20px; height:20px; border-radius:5px; border:2px solid var(--border-light);
+  flex-shrink:0; display:flex; align-items:center; justify-content:center;
+  font-size:.65rem; color:var(--success); background:transparent; transition:all .13s;
+}
+.db-checklist-item.is-checked .db-check-box { background:rgba(61,184,108,.15); border-color:var(--success); }
+
+@media (max-width:420px) {
+  .db-deck-grid { grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:9px; }
+  .db-strength-grid { grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); }
+  .db-chamber-grid  { grid-template-columns:repeat(auto-fill,minmax(80px,1fr)); }
+  .db-card-grid     { grid-template-columns:repeat(auto-fill,minmax(78px,1fr)); }
+}
+    `;
     document.head.appendChild(s);
   }
 
-  /* ══════════════════════════════════════════════════════════════
-     CONTAINER HELPER
+  /* ═══════════════════════════════════════════════════════════════
+     VIEWS
   ═══════════════════════════════════════════════════════════════ */
-  function $c() { return document.getElementById('nested-digital-deckbuilder'); }
 
-  /* ══════════════════════════════════════════════════════════════
-     VIEW: LIST
-  ═══════════════════════════════════════════════════════════════ */
-  function showList() {
-    S.decks    = loadDecks();
-    S.editing  = null;
-    S.isDirty  = false;
-    var el = $c(); if (!el) return;
+  function getEl() { return document.getElementById('nested-digital-deckbuilder'); }
 
-    var html =
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">' +
-        '<div>' +
-          '<div style="font-family:\'Cinzel\',serif;font-weight:700;font-size:1rem;color:var(--text-primary);">My Decks</div>' +
-          '<div style="font-size:0.68rem;color:var(--text-muted);margin-top:2px;">' + S.decks.length + ' deck' + (S.decks.length !== 1 ? 's' : '') + ' saved</div>' +
-        '</div>' +
-        '<button id="db-new" style="' + actionBtn('var(--zen)') + '">' +
-          '<i class="fas fa-plus"></i> New Deck' +
-        '</button>' +
-      '</div>';
+  function render() {
+    var el = getEl(); if (!el) return;
+    switch (S.view) {
+      case 'list':      el.innerHTML = vList();      break;
+      case 'randomize': el.innerHTML = vRandomize(); break;
+      case 'build':     el.innerHTML = vBuild();     break;
+      case 'stats':     el.innerHTML = vStats();     break;
+      case 'export':    el.innerHTML = vExport();    break;
+    }
+    wire();
+  }
 
-    if (S.decks.length === 0) {
-      html +=
-        '<div style="text-align:center;padding:60px 20px;color:var(--text-muted);">' +
-          '<i class="fas fa-layer-group" style="font-size:3rem;opacity:0.2;margin-bottom:14px;display:block;"></i>' +
-          '<p style="font-size:0.85rem;line-height:1.7;">No decks yet.<br>Build your first deck to get started!</p>' +
-        '</div>';
+  /* ── POOL BAR (reused across views) ─────────────────────── */
+  function poolBar() {
+    return ['all','physical','digital'].map(function (p) {
+      var lbl = { all:'🗃 All', physical:'📦 Physical', digital:'☁️ Digital' }[p];
+      return '<button class="db-pool-btn'+(S.pool===p?' active':'')+'" data-pool="'+p+'">'+lbl+'</button>';
+    }).join('');
+  }
+
+  /* ── LIST VIEW ──────────────────────────────────────────── */
+  function vList() {
+    var allC = global.allCards || [];
+    var deckCards = S.decks.map(function (deck) {
+      var ch = allC.find(function (c) { return c.number === deck.chamber; });
+      var totalStd = Object.values(deck.cards || {}).reduce(function(a,b){return a+b;},0);
+      var img = ch ? cardImg(ch) : '';
+      var entries = Object.keys(deck.cards||{}).map(function(n){
+        var c=allC.find(function(x){return x.number===n;}); return c?{card:c,qty:deck.cards[n]}:null;
+      }).filter(Boolean);
+      if (ch) entries.unshift({card:ch,qty:1});
+      var st = computeDeckStats(entries);
+      return '<div class="db-deck-card" data-deck-id="'+esc(deck.id)+'">'
+        +'<div class="db-deck-thumb" style="'+(img?'background-image:url('+esc(img)+')':'background:var(--bg-primary)')+'">'
+          +'<div class="db-deck-overlay">'
+            +'<div class="db-deck-name">'+esc(deck.name)+'</div>'
+            +'<div class="db-deck-qty">'+totalStd+' cards + Chamber</div>'
+          +'</div>'
+        +'</div>'
+        +'<div class="db-deck-footer">'
+          +'<div class="db-deck-miniscores">'
+            +'<span style="font-size:.58rem;color:var(--fire);">ATK '+st.attackScore+'%</span>'
+            +'<span style="font-size:.58rem;color:var(--water);">DEF '+st.defenseScore+'%</span>'
+            +'<span style="font-size:.58rem;color:var(--earth);">SUP '+st.supportScore+'%</span>'
+          +'</div>'
+          +'<div class="db-deck-actions">'
+            +'<button class="db-mini-btn db-export-btn" data-deck-id="'+esc(deck.id)+'" title="Export"><i class="fas fa-file-export"></i></button>'
+            +'<button class="db-mini-btn db-delete-btn" data-deck-id="'+esc(deck.id)+'" title="Delete"><i class="fas fa-trash"></i></button>'
+          +'</div>'
+        +'</div>'
+      +'</div>';
+    }).join('');
+
+    return '<div class="db-wrap">'
+      +'<div class="db-top-bar">'
+        +'<div class="db-heading"><i class="fas fa-layer-group" style="color:var(--promo)"></i> Deck Builder</div>'
+        +'<div class="db-pool-row">'+poolBar()+'</div>'
+      +'</div>'
+      +'<div class="db-mode-grid">'
+        +'<button class="db-mode-card" id="dbBuildOwnBtn"><span class="db-mode-icon">🔨</span><span>Build Your Own</span></button>'
+        +'<button class="db-mode-card" id="dbRandomizeBtn"><span class="db-mode-icon">🎲</span><span>Randomize</span></button>'
+      +'</div>'
+      +(S.decks.length===0
+        ?'<div class="empty-state" style="padding:50px 20px;"><i class="fas fa-layer-group" style="font-size:2rem;opacity:.2;display:block;margin-bottom:10px;"></i><p>No saved decks yet.<br>Build or randomize your first deck!</p></div>'
+        :'<div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);font-weight:700;margin-bottom:10px;"><i class="fas fa-bookmark" style="margin-right:5px;"></i>Saved Decks ('+S.decks.length+')</div>'
+          +'<div class="db-deck-grid">'+deckCards+'</div>'
+      )
+    +'</div>';
+  }
+
+  /* ── RANDOMIZE VIEW ─────────────────────────────────────── */
+  function vRandomize() {
+    var pool     = getPoolCards();
+    var chambers = getChamberCards(pool);
+    var r        = S.rng;
+
+    var strengthBtns = STRENGTHS.map(function (s) {
+      return '<button class="db-strength-btn'+(r.strength===s.value?' active':'')+'" data-strength="'+s.value+'">'
+        +'<span class="db-s-icon">'+s.icon+'</span>'
+        +'<span>'+esc(s.label)+'</span>'
+        +'<span class="db-s-desc">'+esc(s.desc)+'</span>'
+      +'</button>';
+    }).join('');
+
+    var sizeBtns = ['full','half','custom'].map(function(sz){
+      return '<button class="db-size-btn'+(r.deckSize===sz?' active':'')+'" data-size="'+sz+'" data-ctx="rng">'
+        +{full:'Full (60+1)',half:'Half (30+1)',custom:'Custom'}[sz]+'</button>';
+    }).join('');
+
+    var chamberOpts = '<option value="">— randomizer picks best —</option>'
+      + chambers.map(function(c){
+        return '<option value="'+esc(c.number)+'"'+(r.chosenChamber===c.number?' selected':'')+'>'+esc(c.name)+' (#'+esc(c.number)+')</option>';
+      }).join('');
+
+    return '<div class="db-wrap">'
+      +'<div class="db-back-row"><button class="db-back-btn" id="dbBack"><i class="fas fa-arrow-left"></i> Back</button>'
+        +'<span style="font-family:\'Cinzel\',serif;font-weight:700;font-size:.92rem;">Randomize Deck</span>'
+        +'<div style="margin-left:auto;"><div class="db-pool-row">'+poolBar()+'</div></div>'
+      +'</div>'
+      +'<div class="db-section"><label class="db-label">Deck Name</label>'
+        +'<input class="db-input" id="rngName" type="text" placeholder="My Randomized Deck" value="'+esc(r.name)+'" maxlength="40">'
+      +'</div>'
+      +'<div class="db-section"><label class="db-label">Deck Strength</label><div class="db-strength-grid">'+strengthBtns+'</div></div>'
+      +'<div class="db-section"><label class="db-label">Deck Size</label>'
+        +'<div class="db-size-row">'+sizeBtns+'</div>'
+        +(r.deckSize==='custom'?'<div style="margin-top:9px;display:flex;align-items:center;gap:9px;"><span style="font-size:.78rem;color:var(--text-secondary);">Standard cards:</span><input class="db-input" id="rngCustomSize" type="number" min="10" max="127" value="'+r.customSize+'" style="width:88px;"></div>':'')
+      +'</div>'
+      +'<div class="db-section"><label class="db-label">Chamber Card</label>'
+        +'<div style="display:flex;flex-direction:column;gap:7px;">'
+          +'<label class="db-radio-row" style="font-size:.82rem;"><input type="radio" name="chamberPick" value="auto" '+(r.selfPickChamber?'':'checked')+' style="margin-right:8px;"> Randomizer picks the best chamber for this strength</label>'
+          +'<label class="db-radio-row" style="font-size:.82rem;"><input type="radio" name="chamberPick" value="self" '+(r.selfPickChamber?'checked':'')+' style="margin-right:8px;"> I\'ll choose my own</label>'
+        +'</div>'
+        +(r.selfPickChamber?'<select class="db-select" id="rngChamberSelect" style="margin-top:9px;">'+chamberOpts+'</select>':'')
+        +(chambers.length===0?'<div style="color:var(--danger);font-size:.74rem;margin-top:6px;"><i class="fas fa-exclamation-circle"></i> No chamber cards in this pool.</div>':'')
+      +'</div>'
+      +'<button class="db-primary-btn" id="dbRandomizeGo"><i class="fas fa-dice-d20"></i> Randomize!</button>'
+    +'</div>';
+  }
+
+  /* ── BUILD VIEW ─────────────────────────────────────────── */
+  function vBuild() {
+    var pool      = getPoolCards();
+    var chambers  = getChamberCards(pool);
+    var b         = S.build;
+    var chamberCard = b.chamber ? (global.allCards||[]).find(function(c){return c.number===b.chamber;}) : null;
+    if (b.chamber && !chamberCard) chamberCard = pool.find(function(c){return c.number===b.chamber;});
+
+    var sizeBtns = ['full','half','custom'].map(function(sz){
+      return '<button class="db-size-btn'+(b.deckSize===sz?' active':'')+'" data-size="'+sz+'" data-ctx="build">'
+        +{full:'Full (60+1)',half:'Half (30+1)',custom:'Custom'}[sz]+'</button>';
+    }).join('');
+
+    var targetSize = b.deckSize==='full'?60:b.deckSize==='half'?30:b.customSize;
+    var totalSelected = Object.values(b.cards).reduce(function(a,v){return a+v;},0);
+    var remaining     = targetSize - totalSelected;
+    var pctFull       = Math.min(100, Math.round((totalSelected/targetSize)*100));
+
+    var body = '';
+
+    if (!chamberCard) {
+      // Step: pick chamber
+      var chipHtml = chambers.map(function(c){
+        return '<div class="db-chamber-chip" data-chamber="'+esc(c.number)+'">'
+          +'<img src="'+esc(cardImg(c))+'" alt="'+esc(c.name)+'" loading="lazy" onerror="this.style.display=\'none\'">'
+          +'<div class="db-chamber-chip-name">'+esc(c.name)+'</div>'
+          +'<div class="db-chamber-chip-num">#'+esc(c.number)+'</div>'
+        +'</div>';
+      }).join('');
+      body = '<div class="db-section"><label class="db-label">Choose Chamber Card</label>'
+        +(chambers.length===0?'<div style="color:var(--danger);font-size:.8rem;">No chamber cards available in this pool.</div>':'')
+        +'<div class="db-chamber-grid">'+chipHtml+'</div>'
+      +'</div>';
     } else {
-      html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:14px;">';
-      S.decks.forEach(function(deck, idx) {
-        var ch = deck.chamber ? allCards().find(function(c){ return c.number===deck.chamber; }) : null;
-        var chTraits = ch ? parseTraits(ch.traits) : [];
-        var size = deckSize(deck);
-
-        html +=
-          '<div class="db-deck-tile" data-idx="' + idx + '" style="' +
-            'background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);' +
-            'padding:16px 14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:11px;">' +
-
-          '<div style="margin-top:6px;">' + renderStack(deck, { W: 102, offset: 4 }) + '</div>' +
-
-          '<div style="text-align:center;width:100%;">' +
-            '<div style="font-weight:700;font-size:0.85rem;color:var(--text-primary);' +
-              'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;">' + esc(deck.name || 'Unnamed Deck') + '</div>' +
-            '<div style="font-size:0.63rem;color:var(--text-muted);">' + esc(ch ? ch.name : 'No Chamber') + '</div>' +
-          '</div>';
-
-        if (chTraits.length > 0) {
-          html += '<div style="display:flex;gap:3px;flex-wrap:wrap;justify-content:center;">';
-          chTraits.forEach(function(t){ html += traitPill(t, true); });
-          html += '</div>';
-        }
-
-        html +=
-          '<div style="display:flex;gap:5px;width:100%;" onclick="event.stopPropagation()">' +
-            '<button class="db-edit-btn" data-idx="' + idx + '" style="' + miniBtn() + ';flex:1;">' +
-              '<i class="fas fa-pen"></i> Edit</button>' +
-            '<button class="db-copy-btn" data-idx="' + idx + '" title="Copy deck code for play site" style="' + miniBtn() + ';width:34px;padding:6px;">' +
-              '<i class="fas fa-share-nodes"></i></button>' +
-            '<button class="db-del-btn" data-idx="' + idx + '" title="Delete deck" style="' + miniBtn() + ';width:34px;padding:6px;">' +
-              '<i class="fas fa-trash-alt"></i></button>' +
-          '</div>' +
-        '</div>';
+      // Step: pick standard cards
+      var compatible = getStandardCards(pool).filter(function(c){
+        return isCompatibleWithChamber(c, chamberCard);
       });
-      html += '</div>';
+
+      // Search + type filter
+      var searchVal = (b.search||'').toLowerCase();
+      var typeOpts  = ['all'].concat(
+        compatible.map(function(c){return c.type;}).filter(function(t,i,a){return a.indexOf(t)===i;}).sort()
+      );
+      var filtered  = compatible.filter(function(c){
+        if (b.typeFilter !== 'all' && c.type !== b.typeFilter) return false;
+        if (searchVal) {
+          return c.name.toLowerCase().indexOf(searchVal)!==-1
+            || c.number.toLowerCase().indexOf(searchVal)!==-1;
+        }
+        return true;
+      });
+
+      // Sort by number
+      filtered.sort(function(a,b2){
+        var nA=parseInt(a.number,10),nB=parseInt(b2.number,10);
+        if(!isNaN(nA)&&!isNaN(nB)) return nA-nB;
+        return a.number.localeCompare(b2.number);
+      });
+
+      var typePills = typeOpts.map(function(t){
+        return '<button class="db-type-pill'+(b.typeFilter===t?' active':'')+'" data-type="'+esc(t)+'">'+esc(t==='all'?'All Types':t)+'</button>';
+      }).join('');
+
+      var cardHtml = filtered.map(function(c){
+        var qty    = b.cards[c.number]||0;
+        var maxCp  = maxCopiesForCard(c.number);
+        var poolQ  = availableQty(c.number);
+        var sel    = qty>0;
+        var maxed  = qty>=maxCp;
+        return '<div class="db-card-chip'+(sel?' selected':'')+(maxed?' maxed':'')+'" data-card="'+esc(c.number)+'">'
+          +'<div class="db-card-chip-img"><img src="'+esc(cardImg(c))+'" alt="'+esc(c.name)+'" loading="lazy" onerror="this.style.display=\'none\'"></div>'
+          +'<div class="db-card-chip-name">'+esc(c.name)+'</div>'
+          +'<div class="db-card-chip-num">#'+esc(c.number)+(S.pool!=='all'?' ('+poolQ+')':'')+'</div>'
+          +(sel
+            ?'<div class="db-qty-ctrl">'
+              +'<button class="db-chip-minus" data-card="'+esc(c.number)+'"'+(qty<=0?' disabled':'')+'>−</button>'
+              +'<span class="db-chip-qty">'+qty+'</span>'
+              +'<button class="db-chip-plus" data-card="'+esc(c.number)+'"'+(maxed||remaining<=0?' disabled':'')+'>+</button>'
+            +'</div>'
+            :'<button class="db-chip-add" data-card="'+esc(c.number)+'"'+(remaining<=0?' disabled':'')+'>+ Add</button>'
+          )
+        +'</div>';
+      }).join('');
+
+      var progressColor = remaining<0?'var(--danger)':remaining===0?'var(--success)':'var(--zen)';
+      var progressText  = remaining===0?'✓ Complete':remaining<0?'Over by '+Math.abs(remaining):remaining+' more';
+
+      var chamberTraitList = getChamberTraits(chamberCard);
+
+      body = ''
+        +'<div class="db-section"><label class="db-label">Chamber Card</label>'
+          +'<div class="db-selected-chamber">'
+            +'<img src="'+esc(cardImg(chamberCard))+'" alt="" style="width:48px;height:64px;object-fit:cover;border-radius:6px;" loading="lazy">'
+            +'<div style="flex:1;min-width:0;">'
+              +'<div style="font-weight:700;font-size:.85rem;">'+esc(chamberCard.name)+'</div>'
+              +'<div style="font-size:.65rem;color:var(--text-muted);">#'+esc(chamberCard.number)+'</div>'
+              +(chamberTraitList.length>0?'<div style="font-size:.64rem;color:var(--air);margin-top:2px;">Traits: '+esc(chamberTraitList.join(', '))+'</div>':'')
+            +'</div>'
+            +'<button class="db-mini-btn" id="dbChangeChamber">↩ Change</button>'
+          +'</div>'
+        +'</div>'
+
+        +'<div class="db-section">'
+          +'<div class="db-progress-bar">'
+            +'<span class="db-progress-label">Cards selected</span>'
+            +'<span class="db-progress-count" style="color:'+progressColor+'">'+totalSelected+' / '+targetSize+' '+progressText+'</span>'
+          +'</div>'
+          +'<div style="height:4px;background:var(--bg-primary);border-radius:99px;overflow:hidden;margin-bottom:10px;">'
+            +'<div style="height:100%;width:'+pctFull+'%;background:'+progressColor+';border-radius:99px;transition:width .3s;"></div>'
+          +'</div>'
+
+          +'<label class="db-label">Compatible Standard Cards ('+compatible.length+')'
+            +(chamberTraitList.length>0?' — matching: <span style="color:var(--air);">'+esc(chamberTraitList.join(', '))+'</span>':'')+'</label>'
+
+          +'<div class="db-pick-controls">'
+            +'<input class="db-pick-search" id="buildSearch" type="text" placeholder="Search…" value="'+esc(b.search||'')+'">'
+            +typePills
+          +'</div>'
+
+          +'<div class="db-cards-scroll">'
+            +(filtered.length===0?'<div style="color:var(--text-muted);font-size:.8rem;padding:14px 0;">No cards match filter.</div>':cardHtml)
+          +'</div>'
+        +'</div>'
+
+        +'<button class="db-primary-btn" id="dbSaveDeckBtn" '+(totalSelected===0?'disabled':'')+' style="'+(totalSelected===0?'opacity:.4;cursor:not-allowed':'')+'"><i class="fas fa-save"></i> Save Deck</button>';
     }
 
-    el.innerHTML = html;
+    return '<div class="db-wrap">'
+      +'<div class="db-back-row">'
+        +'<button class="db-back-btn" id="dbBack"><i class="fas fa-arrow-left"></i> Back</button>'
+        +'<span style="font-family:\'Cinzel\',serif;font-weight:700;font-size:.92rem;">Build Your Own</span>'
+        +'<div style="margin-left:auto;"><div class="db-pool-row">'+poolBar()+'</div></div>'
+      +'</div>'
+      +'<div class="db-section"><label class="db-label">Deck Name</label>'
+        +'<input class="db-input" id="buildName" type="text" placeholder="My Deck" value="'+esc(b.name)+'" maxlength="40">'
+      +'</div>'
+      +'<div class="db-section"><label class="db-label">Deck Size</label>'
+        +'<div class="db-size-row">'+sizeBtns+'</div>'
+        +(b.deckSize==='custom'?'<div style="margin-top:9px;display:flex;align-items:center;gap:9px;"><span style="font-size:.78rem;color:var(--text-secondary);">Standard cards:</span><input class="db-input" id="buildCustomSize" type="number" min="10" max="127" value="'+b.customSize+'" style="width:88px;"></div>':'')
+      +'</div>'
+      +body
+    +'</div>';
+  }
 
-    /* events */
-    el.querySelector('#db-new').addEventListener('click', function(){ showChamberSelect(null); });
+  /* ── STATS VIEW ─────────────────────────────────────────── */
+  function vStats() {
+    var deck = S.viewingDeck; if (!deck) { S.view='list'; return vList(); }
+    var allC = global.allCards||[];
+    var ch   = allC.find(function(c){return c.number===deck.chamber;});
+    var entries = Object.keys(deck.cards||{}).map(function(n){
+      var c=allC.find(function(x){return x.number===n;}); return c?{card:c,qty:deck.cards[n]}:null;
+    }).filter(Boolean);
+    if (ch) entries.unshift({card:ch,qty:1});
+    var st       = computeDeckStats(entries);
+    var totalStd = Object.values(deck.cards||{}).reduce(function(a,v){return a+v;},0);
 
-    el.querySelectorAll('.db-deck-tile').forEach(function(t){
-      t.addEventListener('click', function(){
-        startEdit(S.decks[+this.dataset.idx], +this.dataset.idx);
+    // Type composition
+    var typeCount = {};
+    entries.forEach(function(e){
+      var t=(e.card.type||'other'); typeCount[t]=(typeCount[t]||0)+e.qty;
+    });
+    var typeRows = Object.keys(typeCount).sort().map(function(t){
+      var pct=Math.round((typeCount[t]/(totalStd+1))*100);
+      return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">'
+        +'<span style="font-size:.74rem;color:var(--text-secondary);text-transform:capitalize;min-width:80px;">'+esc(t)+'</span>'
+        +'<div style="flex:1;height:5px;background:var(--bg-primary);border-radius:99px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:var(--zen);border-radius:99px;"></div></div>'
+        +'<span style="font-size:.68rem;color:var(--text-muted);min-width:56px;text-align:right;">'+typeCount[t]+' ('+pct+'%)</span>'
+      +'</div>';
+    }).join('');
+
+    // Card list
+    var sortedEntries = entries.slice().sort(function(a,b2){
+      if((a.card.type===CHAMBER_TYPE)!==(b2.card.type===CHAMBER_TYPE)) return a.card.type===CHAMBER_TYPE?-1:1;
+      var nA=parseInt(a.card.number,10),nB=parseInt(b2.card.number,10);
+      if(!isNaN(nA)&&!isNaN(nB)) return nA-nB;
+      return a.card.number.localeCompare(b2.card.number);
+    });
+
+    var cardListHtml = sortedEntries.map(function(e){
+      var rd=dotColor(e.card.rarity);
+      return '<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);">'
+        +'<img src="'+esc(cardImg(e.card))+'" alt="" style="width:30px;height:40px;object-fit:cover;border-radius:4px;flex-shrink:0;" loading="lazy">'
+        +'<div style="flex:1;min-width:0;">'
+          +'<div style="font-size:.76rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+esc(e.card.name)+'</div>'
+          +'<div style="display:flex;align-items:center;gap:5px;margin-top:2px;">'
+            +'<span style="width:6px;height:6px;border-radius:50%;background:'+rd+';display:inline-block;flex-shrink:0;"></span>'
+            +'<span style="font-size:.6rem;color:var(--text-muted);text-transform:capitalize;">'+esc(e.card.type)+'</span>'
+            +'<span style="font-size:.58rem;color:var(--text-muted);">#'+esc(e.card.number)+'</span>'
+            +(e.card.type===CHAMBER_TYPE?'<span class="db-stat-pill" style="color:var(--air);border-color:rgba(240,201,70,.25);background:rgba(240,201,70,.1);font-size:.56rem;">CHAMBER</span>':'')
+          +'</div>'
+        +'</div>'
+        +(e.card.type!==CHAMBER_TYPE?'<span style="font-family:\'Cinzel\',serif;font-size:.76rem;font-weight:700;color:var(--text-primary);">x'+e.qty+'</span>':'')
+      +'</div>';
+    }).join('');
+
+    return '<div class="db-wrap">'
+      +'<div class="db-back-row">'
+        +'<button class="db-back-btn" id="dbBack"><i class="fas fa-arrow-left"></i> Back</button>'
+        +'<button class="db-mini-btn db-export-btn" data-deck-id="'+esc(deck.id)+'" style="margin-left:auto;"><i class="fas fa-file-export"></i> Export</button>'
+      +'</div>'
+
+      // Deck header card
+      +'<div style="display:flex;gap:12px;align-items:flex-start;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;margin-bottom:14px;">'
+        +(ch?'<img src="'+esc(cardImg(ch))+'" alt="" style="width:56px;height:74px;object-fit:cover;border-radius:6px;flex-shrink:0;" loading="lazy">':'')
+        +'<div style="flex:1;min-width:0;">'
+          +'<div style="font-family:\'Cinzel\',serif;font-weight:700;font-size:.98rem;margin-bottom:4px;">'+esc(deck.name)+'</div>'
+          +'<div style="font-size:.68rem;color:var(--text-muted);margin-bottom:7px;">'
+            +(ch?esc(ch.name)+' &bull; ':'')+(totalStd)+' standard cards'
+            +(deck.strength?' &bull; '+esc(strengthLabel(deck.strength)):'')
+          +'</div>'
+          +'<div style="display:flex;gap:6px;flex-wrap:wrap;">'
+            +'<span class="db-stat-pill" style="color:var(--fire);border-color:rgba(232,83,46,.25);background:rgba(232,83,46,.08);">ATK '+st.attackScore+'%</span>'
+            +'<span class="db-stat-pill" style="color:var(--water);border-color:rgba(46,140,232,.25);background:rgba(46,140,232,.08);">DEF '+st.defenseScore+'%</span>'
+            +'<span class="db-stat-pill" style="color:var(--earth);border-color:rgba(92,184,92,.25);background:rgba(92,184,92,.08);">SUP '+st.supportScore+'%</span>'
+          +'</div>'
+        +'</div>'
+      +'</div>'
+
+      // Radar + avg stats
+      +'<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">'
+        +'<div style="flex-shrink:0;">'+svgRadar(st.attackScore,st.defenseScore,st.supportScore)+'</div>'
+        +'<div style="flex:1;min-width:110px;">'
+          +'<div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);font-weight:700;margin-bottom:10px;">Average Stats</div>'
+          +'<div style="font-size:.78rem;margin-bottom:5px;"><span style="color:var(--fire);font-weight:700;">Force:</span> <span style="color:var(--text-primary);">'+st.avgForce+'</span></div>'
+          +'<div style="font-size:.78rem;margin-bottom:5px;"><span style="color:var(--water);font-weight:700;">Intercept:</span> <span style="color:var(--text-primary);">'+st.avgIntercept+'</span></div>'
+          +'<div style="font-size:.78rem;margin-bottom:5px;"><span style="color:var(--earth);font-weight:700;">Avg Energy:</span> <span style="color:var(--text-primary);">'+st.avgEnergy+'</span></div>'
+          +'<div style="font-size:.78rem;"><span style="color:var(--zen);font-weight:700;">Rules Text:</span> <span style="color:var(--text-primary);">'+st.rulesC+' cards</span></div>'
+        +'</div>'
+      +'</div>'
+
+      // Composition
+      +'<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px;">'
+        +'<div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);font-weight:700;margin-bottom:12px;">Card Composition</div>'
+        +typeRows
+      +'</div>'
+
+      // Full card list
+      +'<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;">'
+        +'<div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);font-weight:700;margin-bottom:8px;">Full Card List ('+( totalStd+1 )+' total)</div>'
+        +cardListHtml
+      +'</div>'
+    +'</div>';
+  }
+
+  /* ── EXPORT / CHECKLIST VIEW ─────────────────────────────── */
+  function vExport() {
+    var deck = S.viewingDeck; if (!deck) { S.view='list'; return vList(); }
+    var entries     = buildExportEntries(deck, S.exportSortMode||'number');
+    var checked     = S.exportChecked||{};
+    var checkedCount= Object.values(checked).filter(Boolean).length;
+    var total       = entries.length;
+    var pct         = total>0?Math.round((checkedCount/total)*100):0;
+    var code        = deck.encoded || encodeDeck(deck);
+
+    var sortOpts = [
+      {v:'number',l:'Card Number'},
+      {v:'type-number',l:'Type → Number'},
+      {v:'name',l:'Name A–Z'},
+      {v:'rarity',l:'Rarity'}
+    ].map(function(o){
+      return '<option value="'+o.v+'"'+(S.exportSortMode===o.v?' selected':'')+'>'+o.l+'</option>';
+    }).join('');
+
+    var items = entries.map(function(e){
+      var id      = e.card.number+(e.isChamber?'_ch':'');
+      var isCheck = checked[id]||false;
+      return '<div class="db-checklist-item'+(isCheck?' is-checked':'')+(e.isChamber?' is-chamber':'')+'" data-check-id="'+esc(id)+'">'
+        +'<div class="db-check-box" data-check-id="'+esc(id)+'">'+(isCheck?'<i class="fas fa-check"></i>':'')+'</div>'
+        +'<img src="'+esc(cardImg(e.card))+'" alt="" style="width:28px;height:37px;object-fit:cover;border-radius:4px;flex-shrink:0;" loading="lazy">'
+        +'<div style="flex:1;min-width:0;">'
+          +'<div style="font-size:.76rem;font-weight:700;'+(isCheck?'text-decoration:line-through;':'')+'">'+esc(e.card.name)+'</div>'
+          +'<div style="font-size:.6rem;color:var(--text-muted);">#'+esc(e.card.number)+' &bull; '+esc(e.card.type)+' &bull; '+esc(e.card.rarity)+(e.isChamber?' &bull; <span style="color:var(--air);">CHAMBER</span>':'')+'</div>'
+        +'</div>'
+        +(!e.isChamber?'<span style="font-size:.72rem;font-weight:700;color:var(--text-secondary);flex-shrink:0;">x'+e.qty+'</span>':'')
+      +'</div>';
+    }).join('');
+
+    return '<div class="db-wrap">'
+      +'<div class="db-back-row">'
+        +'<button class="db-back-btn" id="dbBack"><i class="fas fa-arrow-left"></i> Back</button>'
+        +'<span style="font-family:\'Cinzel\',serif;font-weight:700;font-size:.82rem;">'+esc(deck.name)+' — Checklist</span>'
+      +'</div>'
+
+      +'<div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:11px;">'
+        +'<select class="db-select" id="exportSortSelect" style="font-size:.76rem;flex:1;min-width:140px;">'+sortOpts+'</select>'
+        +'<button class="db-mini-btn" id="exportClearChecks">Clear All</button>'
+        +'<button class="db-mini-btn" id="exportCopyCode" style="border-color:var(--zen);color:var(--zen);"><i class="fas fa-copy"></i> Copy Code</button>'
+        +'<button class="db-mini-btn" id="exportCSV" style="border-color:var(--accent);color:var(--accent);"><i class="fas fa-file-csv"></i> CSV</button>'
+      +'</div>'
+
+      +'<div style="font-size:.7rem;color:var(--text-muted);margin-bottom:8px;">'+checkedCount+' / '+total+' collected</div>'
+      +'<div style="height:4px;background:var(--bg-primary);border-radius:99px;overflow:hidden;margin-bottom:12px;">'
+        +'<div style="height:100%;width:'+pct+'%;background:var(--success);border-radius:99px;transition:width .3s;"></div>'
+      +'</div>'
+
+      // Deck code (selectable, for manual copy)
+      +'<div style="font-size:.58rem;color:var(--text-muted);margin-bottom:4px;display:flex;justify-content:space-between;">'
+        +'<span>Deck Code <span style="opacity:.6;">(select to copy manually)</span></span>'
+        +'<span style="color:var(--zen);font-size:.58rem;">AQSD1 format</span>'
+      +'</div>'
+      +'<div id="exportCodeDisplay" style="font-family:monospace;font-size:.6rem;color:var(--zen);word-break:break-all;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:8px 10px;margin-bottom:14px;cursor:text;user-select:all;-webkit-user-select:all;">'+esc(code)+'</div>'
+
+      +'<div id="dbChecklistContainer">'+items+'</div>'
+    +'</div>';
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     EVENT WIRING
+  ═══════════════════════════════════════════════════════════════ */
+
+  function wire() {
+    var el = getEl(); if (!el) return;
+
+    // Pool buttons (all views)
+    el.querySelectorAll('.db-pool-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){ S.pool=this.dataset.pool; render(); });
+    });
+
+    // ── LIST ──────────────────────────────────────────────────
+    var bOwn = document.getElementById('dbBuildOwnBtn');
+    if (bOwn) bOwn.addEventListener('click', function(){
+      S.view='build';
+      S.build={name:'',deckSize:'full',customSize:60,chamber:null,cards:{},typeFilter:'all',search:''};
+      render();
+    });
+    var bRng = document.getElementById('dbRandomizeBtn');
+    if (bRng) bRng.addEventListener('click', function(){ S.view='randomize'; render(); });
+
+    el.querySelectorAll('.db-deck-card').forEach(function(card){
+      card.addEventListener('click', function(e){
+        if (e.target.closest('.db-mini-btn')) return;
+        var d=S.decks.find(function(x){return x.id===this.dataset.deckId;}.bind(this));
+        if (d) { S.viewingDeck=d; S.view='stats'; render(); }
       });
     });
-    el.querySelectorAll('.db-edit-btn').forEach(function(b){
-      b.addEventListener('click', function(e){
+
+    el.querySelectorAll('.db-export-btn').forEach(function(btn){
+      btn.addEventListener('click', function(e){
         e.stopPropagation();
-        startEdit(S.decks[+this.dataset.idx], +this.dataset.idx);
+        var id=this.dataset.deckId||(S.viewingDeck&&S.viewingDeck.id);
+        var d=S.decks.find(function(x){return x.id===id;});
+        if (d){ S.viewingDeck=d; S.view='export'; S.exportChecked={}; S.exportSortMode='number'; render(); }
       });
     });
-    el.querySelectorAll('.db-copy-btn').forEach(function(b){
-      b.addEventListener('click', function(e){
+
+    el.querySelectorAll('.db-delete-btn').forEach(function(btn){
+      btn.addEventListener('click', function(e){
         e.stopPropagation();
-        var deck = S.decks[+this.dataset.idx];
-        var code = encodeDeck(deck);
-        if (!code) { toast('Could not encode deck'); return; }
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(code).then(function(){ toast('\u2713 Deck code copied to clipboard!'); });
+        var id=this.dataset.deckId;
+        if (!confirm('Delete this deck? This cannot be undone.')) return;
+        removeDeck(id);
+        if (S.viewingDeck && S.viewingDeck.id===id){ S.viewingDeck=null; S.view='list'; }
+        render(); toast('Deck deleted.');
+      });
+    });
+
+    // ── BACK ──────────────────────────────────────────────────
+    var backBtn=document.getElementById('dbBack');
+    if (backBtn) backBtn.addEventListener('click', function(){
+      if (S.view==='export'){ S.view='stats'; }
+      else { S.view='list'; S.exportChecked={}; }
+      render();
+    });
+
+    // ── RANDOMIZE ─────────────────────────────────────────────
+    var rngName=document.getElementById('rngName');
+    if (rngName) rngName.addEventListener('input',function(){ S.rng.name=this.value; });
+
+    var rngCS=document.getElementById('rngCustomSize');
+    if (rngCS) rngCS.addEventListener('change',function(){ S.rng.customSize=Math.max(10,Math.min(127,parseInt(this.value,10)||60)); });
+
+    el.querySelectorAll('.db-strength-btn').forEach(function(btn){
+      btn.addEventListener('click',function(){ S.rng.strength=this.dataset.strength; render(); });
+    });
+
+    el.querySelectorAll('[name="chamberPick"]').forEach(function(radio){
+      radio.addEventListener('change',function(){
+        S.rng.selfPickChamber=(this.value==='self'); render();
+      });
+    });
+
+    var rngCS2=document.getElementById('rngChamberSelect');
+    if (rngCS2) rngCS2.addEventListener('change',function(){ S.rng.chosenChamber=this.value||null; });
+
+    var goBtn=document.getElementById('dbRandomizeGo');
+    if (goBtn) goBtn.addEventListener('click', function(){
+      var r=S.rng;
+      var pool=getPoolCards();
+      var chambers=getChamberCards(pool);
+      var chosenChamber=null;
+      if (r.selfPickChamber){
+        if (!r.chosenChamber){ toast('Please select a chamber card.'); return; }
+        chosenChamber=pool.find(function(c){return c.number===r.chosenChamber;});
+        if (!chosenChamber){ toast('Selected chamber not available in this pool.'); return; }
+      }
+      if (chambers.length===0&&!chosenChamber){ toast('No chamber cards available in this pool.'); return; }
+      var name=(r.name.trim()||('Randomized Deck '+(S.decks.length+1)));
+      var deck=buildRandomDeck({name:name,strength:r.strength,deckSize:r.deckSize,customSize:r.customSize,chamber:chosenChamber});
+      if (!deck){ toast('Not enough compatible cards to fill deck.'); return; }
+      persistDeck(deck);
+      S.viewingDeck=deck; S.view='stats';
+      toast('Deck randomized & saved!'); render();
+    });
+
+    // ── BUILD ─────────────────────────────────────────────────
+    var bName=document.getElementById('buildName');
+    if (bName) bName.addEventListener('input',function(){ S.build.name=this.value; });
+
+    var bCS=document.getElementById('buildCustomSize');
+    if (bCS) bCS.addEventListener('change',function(){ S.build.customSize=Math.max(10,Math.min(127,parseInt(this.value,10)||60)); });
+
+    el.querySelectorAll('.db-size-btn').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var sz=this.dataset.size;
+        if (this.dataset.ctx==='build') S.build.deckSize=sz; else S.rng.deckSize=sz;
+        render();
+      });
+    });
+
+    el.querySelectorAll('.db-chamber-chip').forEach(function(chip){
+      chip.addEventListener('click',function(){
+        S.build.chamber=this.dataset.chamber; S.build.cards={}; render();
+      });
+    });
+
+    var changeCh=document.getElementById('dbChangeChamber');
+    if (changeCh) changeCh.addEventListener('click',function(){ S.build.chamber=null; S.build.cards={}; render(); });
+
+    var bSearch=document.getElementById('buildSearch');
+    if (bSearch) bSearch.addEventListener('input',function(){ S.build.search=this.value; render(); });
+
+    el.querySelectorAll('.db-type-pill').forEach(function(pill){
+      pill.addEventListener('click',function(){ S.build.typeFilter=this.dataset.type; render(); });
+    });
+
+    // card chip add/plus/minus
+    el.querySelectorAll('.db-chip-add').forEach(function(btn){
+      btn.addEventListener('click',function(e){
+        e.stopPropagation();
+        var n=this.dataset.card;
+        S.build.cards[n]=(S.build.cards[n]||0)+1;
+        render();
+      });
+    });
+    el.querySelectorAll('.db-chip-plus').forEach(function(btn){
+      btn.addEventListener('click',function(e){
+        e.stopPropagation();
+        var n=this.dataset.card;
+        S.build.cards[n]=(S.build.cards[n]||0)+1;
+        render();
+      });
+    });
+    el.querySelectorAll('.db-chip-minus').forEach(function(btn){
+      btn.addEventListener('click',function(e){
+        e.stopPropagation();
+        var n=this.dataset.card;
+        var cur=S.build.cards[n]||0;
+        if (cur<=1) delete S.build.cards[n]; else S.build.cards[n]=cur-1;
+        render();
+      });
+    });
+
+    // clicking the card chip itself (not on a button) toggles add
+    el.querySelectorAll('.db-card-chip').forEach(function(chip){
+      chip.addEventListener('click',function(e){
+        if (e.target.closest('button')) return;
+        var n=this.dataset.card;
+        var qty=S.build.cards[n]||0;
+        if (qty>0){
+          // deselect
+          delete S.build.cards[n];
         } else {
-          /* fallback: prompt */
-          window.prompt('Copy this deck code:', code);
+          // add one
+          var targetSize=S.build.deckSize==='full'?60:S.build.deckSize==='half'?30:S.build.customSize;
+          var total=Object.values(S.build.cards).reduce(function(a,v){return a+v;},0);
+          if (total>=targetSize) return;
+          S.build.cards[n]=1;
         }
+        render();
       });
     });
-    el.querySelectorAll('.db-del-btn').forEach(function(b){
-      b.addEventListener('click', function(e){
-        e.stopPropagation();
-        var idx  = +this.dataset.idx;
-        var name = S.decks[idx].name || 'this deck';
-        if (!window.confirm('Delete "' + name + '"? This cannot be undone.')) return;
-        S.decks.splice(idx, 1);
-        persistDecks();
-        showList();
-        toast('Deck deleted');
+
+    var saveBtn=document.getElementById('dbSaveDeckBtn');
+    if (saveBtn) saveBtn.addEventListener('click',function(){
+      var b=S.build;
+      if (!b.chamber){ toast('Please pick a chamber card.'); return; }
+      var total=Object.values(b.cards).reduce(function(a,v){return a+v;},0);
+      if (total===0){ toast('Add some standard cards first.'); return; }
+      var name=b.name.trim()||('My Deck '+(S.decks.length+1));
+      var deck={
+        id:'deck_'+Date.now(), name:name, chamber:b.chamber,
+        cards:Object.assign({},b.cards), deckSize:b.deckSize,
+        customSize:b.customSize, pool:S.pool, created:Date.now()
+      };
+      persistDeck(deck);
+      S.viewingDeck=deck; S.view='stats';
+      toast('Deck saved!'); render();
+    });
+
+    // ── EXPORT ────────────────────────────────────────────────
+    var sortSel=document.getElementById('exportSortSelect');
+    if (sortSel) sortSel.addEventListener('change',function(){ S.exportSortMode=this.value; render(); });
+
+    var clearChecks=document.getElementById('exportClearChecks');
+    if (clearChecks) clearChecks.addEventListener('click',function(){ S.exportChecked={}; render(); });
+
+    var copyCode=document.getElementById('exportCopyCode');
+    if (copyCode) copyCode.addEventListener('click',function(){
+      var code=(S.viewingDeck&&(S.viewingDeck.encoded||encodeDeck(S.viewingDeck)))||'';
+      if (!code) return;
+      if (navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(code)
+          .then(function(){ toast('Deck code copied!'); })
+          .catch(function(){ selectAll(document.getElementById('exportCodeDisplay')); toast('Select the code box above to copy manually'); });
+      } else {
+        selectAll(document.getElementById('exportCodeDisplay'));
+        toast('Select the code box above to copy manually');
+      }
+    });
+
+    var csvBtn=document.getElementById('exportCSV');
+    if (csvBtn) csvBtn.addEventListener('click',function(){
+      var deck=S.viewingDeck; if (!deck) return;
+      var entries=buildExportEntries(deck,S.exportSortMode||'number');
+      var csv='Number,Name,Type,Rarity,Quantity,Chamber\n';
+      entries.forEach(function(e){
+        csv+=[e.card.number,'"'+e.card.name.replace(/"/g,'""')+'"',e.card.type,e.card.rarity,e.isChamber?1:e.qty,e.isChamber?'Yes':'No'].join(',')+'\n';
+      });
+      var blob=new Blob([csv],{type:'text/csv'});
+      var url=URL.createObjectURL(blob);
+      var a=document.createElement('a');
+      a.href=url; a.download=(deck.name||'deck').replace(/[^a-z0-9]/gi,'_')+'_decklist.csv';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); },3000);
+      toast('Exported as CSV!');
+    });
+
+    // checklist toggles
+    el.querySelectorAll('.db-checklist-item,.db-check-box').forEach(function(item){
+      item.addEventListener('click',function(){
+        var id=this.dataset.checkId;
+        if (!id&&this.closest('[data-check-id]')) id=this.closest('[data-check-id]').dataset.checkId;
+        if (!id) return;
+        S.exportChecked=S.exportChecked||{};
+        S.exportChecked[id]=!S.exportChecked[id];
+        render();
       });
     });
   }
 
-  /* ══════════════════════════════════════════════════════════════
-     VIEW: CHAMBER SELECT
+  /* ═══════════════════════════════════════════════════════════════
+     UTILITIES
   ═══════════════════════════════════════════════════════════════ */
-  function showChamberSelect(forDeck) {
-    var el = $c(); if (!el) return;
-    var chambers = chamberCards();
 
-    var html =
-      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">' +
-        '<button id="db-ch-back" class="db-ghost-btn" style="' + ghostBtn() + '">' +
-          '<i class="fas fa-chevron-left"></i> Back</button>' +
-        '<div>' +
-          '<div style="font-family:\'Cinzel\',serif;font-weight:700;font-size:1rem;color:var(--text-primary);">Choose Chamber Card</div>' +
-          '<div style="font-size:0.68rem;color:var(--text-muted);margin-top:2px;">Your chamber defines which cards are compatible with your deck</div>' +
-        '</div>' +
-      '</div>';
-
-    if (chambers.length === 0) {
-      html += '<p style="color:var(--text-muted);text-align:center;padding:40px;">No chamber cards found in the database.</p>';
-    } else {
-      html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:10px;">';
-      chambers.forEach(function(ch){
-        var traits = parseTraits(ch.traits);
-        var compatCount = allCards().filter(function(c){ return isCompatible(c, ch.number); }).length;
-        html +=
-          '<div class="db-ch-pick" data-num="' + esc(ch.number) + '" style="' +
-            'background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;">' +
-            '<div style="position:relative;aspect-ratio:3/4;background:var(--bg-primary);">' +
-              '<img src="' + esc(ch.imageLink) + '" style="width:100%;height:100%;object-fit:cover;" loading="lazy" onerror="this.style.display=\'none\'">' +
-              '<span style="position:absolute;top:5px;left:5px;background:rgba(0,0,0,0.74);color:#fff;font-size:0.56rem;font-weight:700;padding:1px 6px;border-radius:99px;">#' + esc(ch.number) + '</span>' +
-              '<span style="position:absolute;bottom:5px;right:5px;background:rgba(46,140,232,0.85);color:#fff;font-size:0.52rem;font-weight:700;padding:1px 6px;border-radius:99px;">' + compatCount + ' cards</span>' +
-            '</div>' +
-            '<div style="padding:8px 9px 10px;">' +
-              '<div style="font-weight:700;font-size:0.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px;">' + esc(ch.name) + '</div>' +
-              '<div style="display:flex;gap:3px;flex-wrap:wrap;">' +
-              traits.map(function(t){ return traitPill(t, true); }).join('') +
-              '</div>' +
-            '</div>' +
-          '</div>';
-      });
-      html += '</div>';
-    }
-
-    el.innerHTML = html;
-
-    el.querySelector('#db-ch-back').addEventListener('click', function(){
-      if (forDeck) startEdit(forDeck, S.editingIdx);
-      else showList();
-    });
-
-    el.querySelectorAll('.db-ch-pick').forEach(function(pick){
-      pick.addEventListener('click', function(){
-        var num = this.dataset.num;
-        if (forDeck) {
-          /* changing chamber: strip incompatible cards */
-          forDeck.chamber = num;
-          forDeck.cards = (forDeck.cards || []).filter(function(n){
-            var card = allCards().find(function(c){ return c.number === n; });
-            return card && isCompatible(card, num);
-          });
-          startEdit(forDeck, S.editingIdx);
-          toast('Chamber changed — incompatible cards removed');
-        } else {
-          startEdit({ id: uid(), name: '', chamber: num, cards: [] }, -1);
-        }
-      });
-    });
+  function toast(msg) {
+    if (global.showToast) { global.showToast(msg); return; }
+    var t=document.getElementById('toast'); if (!t) return;
+    t.textContent=msg; t.classList.add('show');
+    setTimeout(function(){ t.classList.remove('show'); },2200);
   }
 
-  /* ══════════════════════════════════════════════════════════════
-     VIEW: DECK EDITOR
+  function selectAll(el) {
+    if (!el) return;
+    try {
+      var r=document.createRange(); r.selectNodeContents(el);
+      var s=window.getSelection(); s.removeAllRanges(); s.addRange(r);
+    } catch(_){}
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     PUBLIC API + INIT
   ═══════════════════════════════════════════════════════════════ */
-  function startEdit(deck, savedIdx) {
-    S.editing    = JSON.parse(JSON.stringify(deck));
-    S.editingIdx = savedIdx;
-    S.search     = '';
-    S.filterRarity = 'all';
-    S.showIncompat = false;
-    S.isDirty    = (savedIdx === -1);
-    showEditor();
-  }
 
-  function showEditor(opts) {
-    opts = opts || {};
-    var el = $c(); if (!el) return;
-    var deck  = S.editing;
-
-    var ch      = deck.chamber ? allCards().find(function(c){ return c.number===deck.chamber; }) : null;
-    var chTraits = ch ? parseTraits(ch.traits) : [];
-
-    /* ─ build display pool ─ */
-    var pool = S.showIncompat
-      ? allCards().filter(function(c){ return c.type !== 'chamber'; })
-      : compatList(deck.chamber);
-
-    if (S.search) {
-      var q = S.search.toLowerCase();
-      pool = pool.filter(function(c){
-        return c.name.toLowerCase().indexOf(q) !== -1 || c.number.toLowerCase().indexOf(q) !== -1;
-      });
-    }
-    if (S.filterRarity !== 'all') {
-      pool = pool.filter(function(c){ return c.rarity === S.filterRarity; });
-    }
-
-    var size   = deckSize(deck);
-    var full   = size >= MAX_CARDS;
-    var pct    = Math.round((size / MAX_CARDS) * 100);
-    var barClr = full ? 'var(--success)' : size > 45 ? 'var(--air)' : 'linear-gradient(90deg,var(--water),var(--zen))';
-
-    /* ─ rarity counts ─ */
-    var rarCount = {};
-    (deck.cards || []).forEach(function(num){
-      var card = allCards().find(function(c){ return c.number===num; });
-      if (card) rarCount[card.rarity] = (rarCount[card.rarity] || 0) + 1;
-    });
-
-    /* ── HTML ── */
-    var html = '';
-
-    /* top bar */
-    html +=
-      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;">' +
-        '<button id="db-ed-back" class="db-ghost-btn" style="' + ghostBtn() + '">' +
-          '<i class="fas fa-chevron-left"></i></button>' +
-        '<input id="db-deck-name" type="text" maxlength="40" placeholder="Name your deck\u2026" value="' + esc(deck.name || '') + '" ' +
-          'style="flex:1;min-width:110px;background:var(--bg-primary);border:1px solid var(--border);' +
-          'border-radius:8px;padding:9px 12px;color:var(--text-primary);font-size:0.88rem;' +
-          'font-family:\'Nunito Sans\',sans-serif;outline:none;transition:border-color 0.2s;">' +
-        '<button id="db-save-btn" style="' + actionBtn('var(--zen)') + '">' +
-          '<i class="fas fa-floppy-disk"></i> Save</button>' +
-      '</div>';
-
-    /* main flex layout */
-    html += '<div id="db-ed-layout" style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;">';
-
-    /* ─ LEFT: deck preview panel ─ */
-    html +=
-      '<div id="db-preview-panel" style="' +
-        'flex-shrink:0;width:170px;display:flex;flex-direction:column;align-items:center;gap:10px;' +
-        'background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;">';
-
-    html += '<div id="db-stack-wrap" style="margin-top:6px;">' + renderStack(deck, { W: 126, offset: 6 }) + '</div>';
-
-    /* chamber info */
-    if (ch) {
-      html +=
-        '<div style="text-align:center;width:100%;">' +
-          '<div style="font-size:0.57rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);font-weight:700;margin-bottom:4px;">Chamber</div>' +
-          '<div style="font-size:0.75rem;font-weight:700;color:var(--text-primary);line-height:1.3;">' + esc(ch.name) + '</div>';
-      if (chTraits.length > 0) {
-        html += '<div style="display:flex;gap:3px;flex-wrap:wrap;justify-content:center;margin-top:6px;">';
-        chTraits.forEach(function(t){ html += traitPill(t, true); });
-        html += '</div>';
-      }
-      html += '</div>';
-    }
-
-    /* progress bar */
-    html +=
-      '<div style="width:100%;">' +
-        '<div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--text-muted);margin-bottom:4px;">' +
-          '<span>Cards in deck</span>' +
-          '<span style="font-weight:700;color:' + (full ? 'var(--success)' : size > 45 ? 'var(--air)' : 'var(--text-primary)') + ';">' + size + '/' + MAX_CARDS + '</span>' +
-        '</div>' +
-        '<div style="height:6px;background:var(--bg-primary);border-radius:99px;overflow:hidden;">' +
-          '<div id="db-prog-fill" style="height:100%;width:' + pct + '%;border-radius:99px;background:' + barClr + ';transition:width 0.3s;"></div>' +
-        '</div>' +
-      '</div>';
-
-    /* rarity breakdown */
-    var rarOrder = ['common','uncommon','rare','zenemental','promo'];
-    var hasRar = rarOrder.some(function(r){ return rarCount[r]; });
-    if (hasRar) {
-      html += '<div style="width:100%;border-top:1px solid var(--border);padding-top:8px;">';
-      rarOrder.forEach(function(r){
-        if (!rarCount[r]) return;
-        html +=
-          '<div style="display:flex;justify-content:space-between;align-items:center;padding:2px 0;">' +
-            '<span style="font-size:0.62rem;color:' + rarityClr(r) + ';text-transform:capitalize;">' + r + '</span>' +
-            '<span style="font-size:0.62rem;font-weight:700;color:var(--text-secondary);">' + rarCount[r] + '</span>' +
-          '</div>';
-      });
-      html += '</div>';
-    }
-
-    /* change chamber + deck code buttons */
-    html +=
-      '<div style="display:flex;flex-direction:column;gap:6px;width:100%;border-top:1px solid var(--border);padding-top:10px;">' +
-        '<button id="db-ch-change" class="db-ghost-btn" style="' + ghostBtn('width:100%;justify-content:center;font-size:0.68rem;padding:7px 10px;') + '">' +
-          '<i class="fas fa-rotate" style="margin-right:5px;font-size:0.7rem;"></i>Change Chamber</button>' +
-        '<button id="db-copy-code" class="db-ghost-btn" style="' + ghostBtn('width:100%;justify-content:center;font-size:0.68rem;padding:7px 10px;color:var(--water);border-color:rgba(46,140,232,0.3);') + '" title="Copy deck code for play site">' +
-          '<i class="fas fa-share-nodes" style="margin-right:5px;font-size:0.7rem;"></i>Copy Deck Code</button>' +
-      '</div>';
-
-    html += '</div>'; /* end preview panel */
-
-    /* ─ RIGHT: card browser ─ */
-    html += '<div style="flex:1;min-width:220px;">';
-
-    /* search */
-    html +=
-      '<div style="position:relative;margin-bottom:8px;">' +
-        '<i class="fas fa-search" style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.8rem;pointer-events:none;"></i>' +
-        '<input id="db-search-inp" type="text" placeholder="Search compatible cards\u2026" value="' + esc(S.search) + '" ' +
-          'style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);' +
-          'padding:9px 9px 9px 33px;color:var(--text-primary);font-size:0.88rem;' +
-          'font-family:\'Nunito Sans\',sans-serif;outline:none;box-sizing:border-box;transition:border-color 0.2s;">' +
-      '</div>';
-
-    /* filter pills */
-    html +=
-      '<div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-bottom:9px;">' +
-      ['all','common','uncommon','rare','zenemental'].map(function(r){
-        return '<button class="db-rfil" data-r="' + r + '" style="' + rarPill(S.filterRarity===r) + '">' +
-          (r==='all' ? 'All' : r.charAt(0).toUpperCase()+r.slice(1)) + '</button>';
-      }).join('') +
-      '<div style="flex:1;min-width:6px;"></div>' +
-      '<label style="display:flex;align-items:center;gap:5px;font-size:0.67rem;color:var(--text-secondary);cursor:pointer;white-space:nowrap;user-select:none;">' +
-        '<input type="checkbox" id="db-show-all" ' + (S.showIncompat?'checked':'') + ' style="accent-color:var(--zen);width:13px;height:13px;">' +
-        'Show all cards' +
-      '</label>' +
-    '</div>';
-
-    /* result count */
-    html +=
-      '<div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:9px;">' +
-        pool.length + ' card' + (pool.length!==1?'s':'') +
-        (full ? ' &nbsp;&middot;&nbsp; <span style="color:var(--success);font-weight:700;">Deck is full!</span>' : '') +
-      '</div>';
-
-    /* card grid */
-    html += '<div id="db-browser" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:7px;">';
-
-    pool.forEach(function(card){
-      var inDeck  = copyCount(deck, card.number);
-      var canAdd  = !full && inDeck < MAX_COPIES;
-      var compat  = isCompatible(card, deck.chamber);
-
-      html +=
-        '<div class="db-bc' + (inDeck > 0 ? ' in-deck' : '') + '" data-num="' + esc(card.number) + '" style="' +
-          'background:var(--bg-card);border:1px solid ' + (inDeck > 0 ? 'rgba(180,77,223,0.42)' : 'var(--border)') + ';' +
-          'border-radius:var(--radius);overflow:hidden;' +
-          'opacity:' + (S.showIncompat && !compat ? '0.38' : '1') + ';' +
-          (inDeck > 0 ? 'box-shadow:0 0 0 1px rgba(180,77,223,0.16);' : '') +
-          '">' +
-
-          '<div style="position:relative;aspect-ratio:3/4;background:var(--bg-primary);">' +
-            '<img src="' + esc(card.imageLink) + '" style="width:100%;height:100%;object-fit:cover;" loading="lazy" onerror="this.style.display=\'none\'">' +
-            '<span style="position:absolute;top:4px;left:4px;background:rgba(0,0,0,0.76);color:#fff;font-size:0.5rem;font-weight:700;padding:1px 5px;border-radius:99px;">#' + esc(card.number) + '</span>' +
-            (inDeck > 0
-              ? '<span style="position:absolute;top:4px;right:4px;background:var(--zen);color:#fff;font-size:0.56rem;font-weight:700;padding:1px 6px;border-radius:99px;">' + inDeck + '</span>'
-              : '') +
-          '</div>' +
-
-          '<div style="padding:5px 6px 7px;">' +
-            '<div style="font-size:0.63rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;' +
-              'color:var(--text-primary);margin-bottom:5px;" title="' + esc(card.name) + '">' + esc(card.name) + '</div>' +
-            '<div style="display:flex;align-items:center;justify-content:space-between;gap:3px;">' +
-              '<div style="display:flex;align-items:center;gap:2px;">' +
-                '<button class="db-incbtn db-minusbtn" data-num="' + esc(card.number) + '" ' + (inDeck===0?'disabled':'') + ' style="' + incBtn(inDeck===0) + '">\u2212</button>' +
-                '<span style="font-family:\'Cinzel\',serif;font-size:0.68rem;font-weight:700;min-width:14px;text-align:center;color:' + (inDeck>0?'var(--zen)':'var(--text-muted)') + ';">' + inDeck + '</span>' +
-                '<button class="db-incbtn db-plusbtn" data-num="' + esc(card.number) + '" ' + (!canAdd?'disabled':'') + ' style="' + incBtn(!canAdd) + '">+</button>' +
-              '</div>' +
-              '<span style="font-size:0.47rem;font-weight:700;text-transform:uppercase;color:' + rarityClr(card.rarity) + ';letter-spacing:0.04em;">' +
-                (card.rarity==='zenemental'?'ZEN':card.rarity==='uncommon'?'UC':card.rarity.slice(0,1).toUpperCase()) +
-              '</span>' +
-            '</div>' +
-          '</div>' +
-        '</div>';
-    });
-
-    html += '</div>'; /* browser grid */
-    html += '</div>'; /* browser panel */
-    html += '</div>'; /* flex layout */
-
-    el.innerHTML = html;
-
-    /* ─ restore search focus + scroll ─ */
-    if (opts.focusSearch) {
-      var sinp = document.getElementById('db-search-inp');
-      if (sinp) { sinp.focus(); sinp.setSelectionRange(sinp.value.length, sinp.value.length); }
-    }
-    if (opts.scrollY !== undefined) window.scrollTo(0, opts.scrollY);
-
-    /* ─ wire events ─ */
-    document.getElementById('db-ed-back').addEventListener('click', function(){
-      if (S.isDirty && !window.confirm('Discard unsaved changes?')) return;
-      showList();
-    });
-
-    var nameInp = document.getElementById('db-deck-name');
-    nameInp.addEventListener('input', function(){ S.editing.name = this.value; S.isDirty = true; });
-    nameInp.addEventListener('focus', function(){ this.style.borderColor='var(--zen)'; });
-    nameInp.addEventListener('blur',  function(){ this.style.borderColor='var(--border)'; });
-
-    document.getElementById('db-save-btn').addEventListener('click', saveDeckAction);
-
-    document.getElementById('db-ch-change').addEventListener('click', function(){
-      showChamberSelect(S.editing);
-    });
-
-    document.getElementById('db-copy-code').addEventListener('click', function(){
-      var code = encodeDeck(S.editing);
-      if (!code) { toast('Save the deck first to generate a code'); return; }
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(code).then(function(){ toast('\u2713 Deck code copied!'); });
-      } else { window.prompt('Copy this deck code:', code); }
-    });
-
-    document.getElementById('db-search-inp').addEventListener('input', function(){
-      S.search = this.value;
-      showEditor({ focusSearch: true, scrollY: window.scrollY });
-    });
-    document.getElementById('db-search-inp').addEventListener('focus', function(){ this.style.borderColor='var(--zen)'; });
-    document.getElementById('db-search-inp').addEventListener('blur',  function(){ this.style.borderColor='var(--border)'; });
-
-    document.getElementById('db-show-all').addEventListener('change', function(){
-      S.showIncompat = this.checked;
-      showEditor({ scrollY: window.scrollY });
-    });
-
-    el.querySelectorAll('.db-rfil').forEach(function(b){
-      b.addEventListener('click', function(){
-        S.filterRarity = this.dataset.r;
-        showEditor({ scrollY: window.scrollY });
-      });
-    });
-
-    /* add / remove cards — partial update for snappy feel */
-    el.querySelectorAll('.db-plusbtn').forEach(function(b){
-      b.addEventListener('click', function(){
-        var num = this.dataset.num;
-        if (deckSize(S.editing) >= MAX_CARDS) { toast('Deck is full (' + MAX_CARDS + ' cards max)'); return; }
-        if (copyCount(S.editing, num) >= MAX_COPIES) { toast('Max ' + MAX_COPIES + ' copies per card'); return; }
-        S.editing.cards.push(num);
-        S.isDirty = true;
-        patchCardTile(num);
-        patchPreview();
-      });
-    });
-
-    el.querySelectorAll('.db-minusbtn').forEach(function(b){
-      b.addEventListener('click', function(){
-        var num = this.dataset.num;
-        var idx = S.editing.cards.lastIndexOf(num);
-        if (idx !== -1) {
-          S.editing.cards.splice(idx, 1);
-          S.isDirty = true;
-          patchCardTile(num);
-          patchPreview();
-        }
-      });
-    });
-  }
-
-  /* ── Partial DOM patch: card tile controls ───────────────────── */
-  function patchCardTile(num) {
-    var el     = $c(); if (!el) return;
-    var deck   = S.editing;
-    var size   = deckSize(deck);
-    var full   = size >= MAX_CARDS;
-    var inDeck = copyCount(deck, num);
-    var canAdd = !full && inDeck < MAX_COPIES;
-
-    var tile   = el.querySelector('.db-bc[data-num="' + num + '"]');
-    if (!tile) return;
-
-    /* border + shadow */
-    tile.style.border = '1px solid ' + (inDeck > 0 ? 'rgba(180,77,223,0.42)' : 'var(--border)');
-    tile.style.boxShadow = inDeck > 0 ? '0 0 0 1px rgba(180,77,223,0.16)' : '';
-    tile.classList.toggle('in-deck', inDeck > 0);
-
-    /* badge inside image wrap */
-    var imgWrap = tile.querySelector('[style*="aspect-ratio"]');
-    if (imgWrap) {
-      var oldBadge = imgWrap.querySelector('span:not(:first-child)');
-      if (oldBadge) oldBadge.remove();
-      if (inDeck > 0) {
-        var badge = document.createElement('span');
-        badge.style.cssText = 'position:absolute;top:4px;right:4px;background:var(--zen);color:#fff;font-size:0.56rem;font-weight:700;padding:1px 6px;border-radius:99px;';
-        badge.textContent = inDeck;
-        imgWrap.appendChild(badge);
-      }
-    }
-
-    /* count span */
-    var cntSpan = tile.querySelector('[style*="font-family:\'Cinzel\'"]');
-    if (cntSpan) {
-      cntSpan.textContent = inDeck;
-      cntSpan.style.color = inDeck > 0 ? 'var(--zen)' : 'var(--text-muted)';
-    }
-
-    /* plus / minus buttons */
-    var plus  = tile.querySelector('.db-plusbtn');
-    var minus = tile.querySelector('.db-minusbtn');
-
-    if (plus) {
-      plus.disabled = !canAdd;
-      plus.style.cssText = incBtn(!canAdd);
-      /* re-attach */
-      var plusClone = plus.cloneNode(true);
-      plus.parentNode.replaceChild(plusClone, plus);
-      plusClone.addEventListener('click', function(){
-        if (deckSize(S.editing) >= MAX_CARDS) { toast('Deck is full'); return; }
-        if (copyCount(S.editing, num) >= MAX_COPIES) { toast('Max ' + MAX_COPIES + ' copies'); return; }
-        S.editing.cards.push(num);
-        S.isDirty = true;
-        patchCardTile(num);
-        patchPreview();
-      });
-    }
-    if (minus) {
-      minus.disabled = inDeck === 0;
-      minus.style.cssText = incBtn(inDeck === 0);
-      var minusClone = minus.cloneNode(true);
-      minus.parentNode.replaceChild(minusClone, minus);
-      minusClone.addEventListener('click', function(){
-        var idx = S.editing.cards.lastIndexOf(num);
-        if (idx !== -1) {
-          S.editing.cards.splice(idx, 1);
-          S.isDirty = true;
-          patchCardTile(num);
-          patchPreview();
-        }
-      });
-    }
-
-    /* update full banner */
-    var el2 = $c();
-    if (el2) {
-      var rcDiv = el2.querySelector('#db-browser');
-      if (rcDiv) {
-        var prevSibling = rcDiv.previousElementSibling;
-        if (prevSibling && prevSibling.textContent.indexOf('card') !== -1) {
-          var pool = S.showIncompat
-            ? allCards().filter(function(c){ return c.type !== 'chamber'; })
-            : compatList(S.editing.chamber);
-          if (S.search) {
-            var q = S.search.toLowerCase();
-            pool = pool.filter(function(c){ return c.name.toLowerCase().indexOf(q)!==-1 || c.number.toLowerCase().indexOf(q)!==-1; });
-          }
-          if (S.filterRarity !== 'all') pool = pool.filter(function(c){ return c.rarity===S.filterRarity; });
-          var fullNow = deckSize(S.editing) >= MAX_CARDS;
-          prevSibling.innerHTML = pool.length + ' card' + (pool.length!==1?'s':'') +
-            (fullNow ? ' &nbsp;&middot;&nbsp; <span style="color:var(--success);font-weight:700;">Deck is full!</span>' : '');
-        }
-      }
-    }
-  }
-
-  /* ── Partial DOM patch: left preview panel ───────────────────── */
-  function patchPreview() {
-    var wrap = document.getElementById('db-stack-wrap');
-    if (wrap) wrap.innerHTML = renderStack(S.editing, { W: 126, offset: 6 });
-
-    var size   = deckSize(S.editing);
-    var full   = size >= MAX_CARDS;
-    var pct    = Math.round((size / MAX_CARDS) * 100);
-    var barClr = full ? 'var(--success)' : size > 45 ? 'var(--air)' : 'linear-gradient(90deg,var(--water),var(--zen))';
-
-    var fill = document.getElementById('db-prog-fill');
-    if (fill) { fill.style.width = pct + '%'; fill.style.background = barClr; }
-
-    /* update count label */
-    var panel = document.getElementById('db-preview-panel');
-    if (panel) {
-      var spans = panel.querySelectorAll('span');
-      spans.forEach(function(sp){
-        if (sp.textContent.indexOf('/60') !== -1) {
-          sp.textContent = size + '/' + MAX_CARDS;
-          sp.style.color = full ? 'var(--success)' : size > 45 ? 'var(--air)' : 'var(--text-primary)';
-        }
-      });
-
-      /* rarity breakdown: re-render the section */
-      var rarCount = {};
-      (S.editing.cards || []).forEach(function(n){
-        var c = allCards().find(function(x){ return x.number===n; });
-        if (c) rarCount[c.rarity] = (rarCount[c.rarity]||0) + 1;
-      });
-      var rarOrder = ['common','uncommon','rare','zenemental','promo'];
-      var rarSect  = panel.querySelector('[style*="border-top:1px"]');
-      if (rarSect) {
-        rarSect.innerHTML = '';
-        rarOrder.forEach(function(r){
-          if (!rarCount[r]) return;
-          var row = document.createElement('div');
-          row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:2px 0;';
-          row.innerHTML =
-            '<span style="font-size:0.62rem;color:'+rarityClr(r)+';text-transform:capitalize;">'+r+'</span>' +
-            '<span style="font-size:0.62rem;font-weight:700;color:var(--text-secondary);">'+rarCount[r]+'</span>';
-          rarSect.appendChild(row);
-        });
-      }
-    }
-  }
-
-  /* ── SAVE DECK ───────────────────────────────────────────────── */
-  function saveDeckAction() {
-    var deck = S.editing;
-    if (!deck.chamber) { toast('Select a chamber card first'); return; }
-    if (!deck.name || !deck.name.trim()) {
-      var ch = allCards().find(function(c){ return c.number===deck.chamber; });
-      deck.name = (ch ? ch.name : 'My') + ' Deck';
-      var ni = document.getElementById('db-deck-name');
-      if (ni) ni.value = deck.name;
-    }
-    S.decks = loadDecks();
-    if (S.editingIdx >= 0 && S.editingIdx < S.decks.length) {
-      S.decks[S.editingIdx] = deck;
-    } else {
-      S.decks.unshift(deck);
-    }
-    persistDecks();
-    S.isDirty = false;
-    toast('\u2713 Deck saved!');
-    showList();
-  }
-
-  /* ══════════════════════════════════════════════════════════════
-     INIT
-  ═══════════════════════════════════════════════════════════════ */
   function init() {
-    /* wait for allCards to load */
-    if (!window.allCards || window.allCards.length === 0) {
-      setTimeout(init, 400);
-      return;
-    }
-    injectStyles();
-    S.decks = loadDecks();
-    showList();
-    S.ready = true;
+    injectCSS();
+    loadDecks();
+    render();
   }
 
-  /* expose so main HTML can call window.initDeckBuilder() if needed */
-  window.initDeckBuilder = init;
+  global.DeckBuilder = { init:init, render:render, encodeDeck:encodeDeck, decodeDeck:decodeDeck };
 
-  /* auto-trigger when the deck builder nested tab is clicked */
-  document.addEventListener('click', function(e) {
-    var btn = e.target.closest && e.target.closest('.tab-btn-nested[data-nested-tab="digital-deckbuilder"]');
-    if (!btn) return;
-    setTimeout(function(){
-      if (!S.ready) { init(); }
-      else          { S.decks = loadDecks(); showList(); }
-    }, 60);
+  /** Call this from HTML after allCards is ready, e.g.:
+   *    <script>
+   *      if (typeof initDeckBuilderTab === 'function') initDeckBuilderTab();
+   *    </script>
+   *  Or hook it into the nested-tab button click for 'digital-deckbuilder'.
+   */
+  global.initDeckBuilderTab = function () {
+    if (global.allCards && global.allCards.length > 0) {
+      init(); return;
+    }
+    var attempts = 0;
+    var timer = setInterval(function () {
+      attempts++;
+      if ((global.allCards && global.allCards.length > 0) || attempts > 60) {
+        clearInterval(timer); init();
+      }
+    }, 250);
+  };
+
+  /* Auto-hook: if the nested tab button for deckbuilder is clicked, init lazily */
+  document.addEventListener('DOMContentLoaded', function () {
+    var trigger = document.querySelector('[data-nested-tab="digital-deckbuilder"]');
+    if (!trigger) return;
+    var initialized = false;
+    trigger.addEventListener('click', function () {
+      if (!initialized) { initialized = true; global.initDeckBuilderTab(); }
+      else { render(); }  // re-render in case pool data changed
+    });
   });
 
-})();
+})(window);
