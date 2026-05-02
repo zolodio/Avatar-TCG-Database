@@ -1790,6 +1790,15 @@ body {
 .epb-sub-play { background: var(--earth); bottom: 192px; transition-delay: 0.12s; }
 .epb-sub-play.visible { transition-delay: 0.12s; }
 .epb-label-play { bottom: 203px; }
+.epb-dm-tick {
+    font-size: 0.58rem;
+    color: var(--text-muted);
+    margin-left: 4px;
+    letter-spacing: -1px;
+    vertical-align: middle;
+    transition: color 0.25s;
+  }
+  .epb-dm-tick--read { color: #4ab3f4; }		
 	</style>
 </head>
 <body>
@@ -5306,6 +5315,8 @@ init();
     profile  : null,
     userId   : null,
     chatSub  : null,
+	dmReadSub: null,
+	dmOtherReadAt: null,  
     seenRooms: { global: true }
   };
 
@@ -5414,14 +5425,50 @@ init();
       roomSel.appendChild(opt);
     });
   }
+  function isDmRoom(room) {
+    return !!(room && room.indexOf('__dm__') !== -1);
+  }
 
+  function dmTickHtml(m) {
+    if (!isDmRoom(state.room)) return '';
+    if (!state.profile || m.username !== state.profile.username) return '';
+    var isRead = !!(
+      state.dmOtherReadAt && m.created_at &&
+      new Date(state.dmOtherReadAt) >= new Date(m.created_at)
+    );
+    return '<span class="epb-dm-tick' + (isRead ? ' epb-dm-tick--read' : '') + '"' +
+      ' data-msg-ts="' + (m.created_at || '') + '">' +
+      (isRead ? '\u2713\u2713' : '\u2713') +
+      '</span>';
+  }
+
+  function refreshEpbDmTicks() {
+    if (!state.dmOtherReadAt) return;
+    var readTime = new Date(state.dmOtherReadAt);
+    msgsEl.querySelectorAll('.epb-dm-tick[data-msg-ts]').forEach(function (span) {
+      var ts = span.getAttribute('data-msg-ts');
+      if (ts && readTime >= new Date(ts)) {
+        span.textContent = '\u2713\u2713';
+        span.classList.add('epb-dm-tick--read');
+      }
+    });
+  }
+
+  async function markEpbDmRead(room) {
+    var sb = window.sb;
+    if (!isDmRoom(room) || !state.userId || !sb) return;
+    await sb.from('dm_reads').upsert(
+      { user_id: state.userId, room: room, last_read_at: new Date().toISOString() },
+      { onConflict: 'user_id,room' }
+    );
+  }
+	
   /* Watch the chat sidebar for newly-added DM room buttons */
   var sidebar = document.getElementById('chatSidebar');
   if (sidebar) {
     new MutationObserver(syncRoomsFromSidebar).observe(sidebar, { childList: true });
   }
-  /* ── Messages ────────────────────────────────────────────────── */
-  async function loadMessages(room) {
+async function loadMessages(room) {
     var sb = window.sb;
     msgsEl.innerHTML =
       '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem;">' +
@@ -5450,6 +5497,19 @@ init();
       state.profile = pRes.data || { username: user.email };
     }
 
+    // Fetch other person's read position for DM rooms
+    if (isDmRoom(room)) {
+      var rRes = await sb.from('dm_reads')
+        .select('last_read_at')
+        .eq('room', room)
+        .neq('user_id', state.userId)
+        .maybeSingle();
+      state.dmOtherReadAt = (rRes.data && rRes.data.last_read_at) || null;
+      markEpbDmRead(room);
+    } else {
+      state.dmOtherReadAt = null;
+    }
+
     inputRow.style.display = '';
     txtEl.placeholder = 'Message as @' + (state.profile.username || '?') + '\u2026';
 
@@ -5461,12 +5521,6 @@ init();
     renderAll(res.data || []);
     subscribeRoom(room);
   }
-
-  function showPrompt(html) {
-    msgsEl.innerHTML = '<div class="epb-prompt">' + html + '</div>';
-    inputRow.style.display = 'none';
-  }
-
   /* ── Rendering ───────────────────────────────────────────────── */
   function esc(s) {
     return String(s || '')
@@ -5474,7 +5528,7 @@ init();
       .replace(/>/g, '&gt;');
   }
 
-  function msgHtml(m) {
+function msgHtml(m) {
     var mine = state.profile && m.username === state.profile.username;
     var init = esc((m.username || '?').charAt(0).toUpperCase());
     var avatarStyle =
@@ -5497,6 +5551,11 @@ init();
             'line-height:1.45;word-break:break-word;">' +
             esc(m.content) +
           '</div>' +
+          '<div style="font-size:0.58rem;color:var(--text-muted);margin-top:2px;' +
+            (mine ? 'text-align:right;' : '') + 'display:flex;align-items:center;' +
+            (mine ? 'justify-content:flex-end;' : '') + 'gap:2px;">' +
+            dmTickHtml(m) +
+          '</div>' +
         '</div>' +
       '</div>'
     );
@@ -5513,26 +5572,42 @@ init();
     msgsEl.scrollTop = msgsEl.scrollHeight;
   }
 
-  function appendMsg(m) {
+function appendMsg(m) {
     var ph = msgsEl.querySelector('.epb-prompt');
     if (ph) ph.remove();
     var noMsg = msgsEl.querySelector('[style*="say hi"]');
     if (noMsg) noMsg.remove();
+    // Mark read if it's the other person's message in a DM
+    var mine = state.profile && m.username === state.profile.username;
+    if (isDmRoom(state.room) && !mine) markEpbDmRead(state.room);
     var div = document.createElement('div');
     div.innerHTML = msgHtml(m);
     msgsEl.appendChild(div.firstChild);
     msgsEl.scrollTop = msgsEl.scrollHeight;
   }
 
-  /* ── Realtime subscription ───────────────────────────────────── */
-  function subscribeRoom(room) {
+function subscribeRoom(room) {
     var sb = window.sb; if (!sb) return;
-    if (state.chatSub) { try { state.chatSub.unsubscribe(); } catch (e) {} state.chatSub = null; }
+    if (state.chatSub)   { try { state.chatSub.unsubscribe();   } catch (e) {} state.chatSub   = null; }
+    if (state.dmReadSub) { try { state.dmReadSub.unsubscribe(); } catch (e) {} state.dmReadSub = null; }
+
     state.chatSub = sb.channel('epb:' + room)
       .on('postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'messages', filter: 'room=eq.' + room },
         function (payload) { appendMsg(payload.new); })
       .subscribe();
+
+    if (isDmRoom(room)) {
+      state.dmReadSub = sb.channel('epb_reads:' + room)
+        .on('postgres_changes',
+          { event: '*', schema: 'public', table: 'dm_reads', filter: 'room=eq.' + room },
+          function (payload) {
+            if (!payload.new || payload.new.user_id === state.userId) return;
+            state.dmOtherReadAt = payload.new.last_read_at;
+            refreshEpbDmTicks();
+          })
+        .subscribe();
+    }
   }
 
   /* ── Send ────────────────────────────────────────────────────── */
