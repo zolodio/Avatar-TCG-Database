@@ -47,7 +47,9 @@
       chamber:    null,
       cards:      {},
       typeFilter: 'all',
-      search:     ''
+      search:     '',
+      sortBy:     'number',
+      sortDir:    'asc'
     },
     exportSortMode:  'number',
     exportChecked:   {}
@@ -632,6 +634,23 @@
 .db-type-pill:hover { border-color:var(--border-light); }
 .db-type-pill.active { background:var(--zen); color:#fff; border-color:var(--zen); }
 
+/* ── Build sort controls ───────────────────────────────────── */
+.db-sort-row {
+  display:flex; gap:7px; align-items:center; margin-bottom:10px; flex-wrap:wrap;
+}
+.db-sort-select {
+  flex:1; min-width:130px; background:var(--bg-card); border:1px solid var(--border);
+  border-radius:8px; padding:8px 10px; color:var(--text-secondary);
+  font-family:'Nunito Sans',sans-serif; font-size:0.74rem; outline:none; cursor:pointer;
+}
+.db-sort-dir-btn {
+  background:var(--bg-card); border:1px solid var(--border); border-radius:8px;
+  color:var(--text-secondary); font-size:0.85rem; padding:7px 11px;
+  cursor:pointer; transition:all 0.2s; display:flex; align-items:center;
+  justify-content:center; line-height:1;
+}
+.db-sort-dir-btn:hover { border-color:var(--accent); color:var(--accent); }
+
 .db-progress-bar {
   display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;
   background:var(--bg-card); border:1px solid var(--border); border-radius:8px;
@@ -900,10 +919,41 @@
         return true;
       });
 
-      filtered.sort(function(a,b2){
-        var nA=parseInt(a.number,10),nB=parseInt(b2.number,10);
-        if(!isNaN(nA)&&!isNaN(nB)) return nA-nB;
-        return a.number.localeCompare(b2.number);
+      /* ── Multi-key sort matching the main card collection page ── */
+      var sortBy  = b.sortBy  || 'number';
+      var sortDir = b.sortDir || 'asc';
+      var _dir = sortDir === 'asc' ? 1 : -1;
+      var _rarityOrd = { common:0, uncommon:1, rare:2, zenemental:3, promo:4 };
+
+      filtered.sort(function(a, b2) {
+        if (sortBy === 'name') return _dir * a.name.localeCompare(b2.name);
+        if (sortBy === 'rarity') return _dir * ((_rarityOrd[a.rarity]||0) - (_rarityOrd[b2.rarity]||0));
+        if (sortBy === 'type')  return _dir * a.type.localeCompare(b2.type);
+        if (sortBy === 'intercept') {
+          var iA = a.type===CHAMBER_TYPE ? Math.max(parseFloat(a.chamberFrontI)||0, parseFloat(a.chamberBackI)||0) : parseFloat(a.intercept)||0;
+          var iB = b2.type===CHAMBER_TYPE ? Math.max(parseFloat(b2.chamberFrontI)||0, parseFloat(b2.chamberBackI)||0) : parseFloat(b2.intercept)||0;
+          return _dir * (iA - iB);
+        }
+        if (sortBy === 'force') {
+          var fA = a.type===CHAMBER_TYPE ? Math.max(parseFloat(a.chamberFrontF)||0, parseFloat(a.chamberBackF)||0) : parseFloat(a.force)||0;
+          var fB = b2.type===CHAMBER_TYPE ? Math.max(parseFloat(b2.chamberFrontF)||0, parseFloat(b2.chamberBackF)||0) : parseFloat(b2.force)||0;
+          return _dir * (fA - fB);
+        }
+        if (sortBy === 'energy') {
+          function sumE(c) {
+            if (c.type===CHAMBER_TYPE) {
+              return Math.max(parseFloat(c.chamberFrontR)||0, parseFloat(c.chamberBackR)||0)
+                   + Math.max(parseFloat(c.chamberFrontY)||0, parseFloat(c.chamberBackY)||0)
+                   + Math.max(parseFloat(c.chamberFrontG)||0, parseFloat(c.chamberBackG)||0);
+            }
+            return (parseFloat(c.redEnergy)||0)+(parseFloat(c.yellowEnergy)||0)+(parseFloat(c.greenEnergy)||0);
+          }
+          return _dir * (sumE(a) - sumE(b2));
+        }
+        /* default: number */
+        var nA=parseInt(a.number,10), nB=parseInt(b2.number,10);
+        if(!isNaN(nA)&&!isNaN(nB)) return _dir * (nA - nB);
+        return _dir * a.number.localeCompare(b2.number);
       });
 
       var typePills = typeOpts.map(function(t){
@@ -1002,8 +1052,22 @@
             +(chamberTraitList.length>0?' — matching: <span style="color:var(--air);">'+esc(chamberTraitList.join(', '))+'</span>':'')+'</label>'
 
           +'<div class="db-pick-controls">'
-            +'<input class="db-pick-search" id="buildSearch" type="text" placeholder="Search…" value="'+esc(b.search||'')+'">'
+            +'<input class="db-pick-search" id="buildSearch" type="text" placeholder="Search\u2026" value="'+esc(b.search||'')+'">'
             +typePills
+          +'</div>'
+          +'<div class="db-sort-row">'
+            +'<select class="db-sort-select" id="buildSortBy">'
+              +'<option value="number"'+(sortBy==='number'?' selected':'')+'>Sort: Number</option>'
+              +'<option value="name"'+(sortBy==='name'?' selected':'')+'>Sort: Name</option>'
+              +'<option value="rarity"'+(sortBy==='rarity'?' selected':'')+'>Sort: Rarity</option>'
+              +'<option value="type"'+(sortBy==='type'?' selected':'')+'>Sort: Type</option>'
+              +'<option value="intercept"'+(sortBy==='intercept'?' selected':'')+'>Sort: Intercept</option>'
+              +'<option value="force"'+(sortBy==='force'?' selected':'')+'>Sort: Force</option>'
+              +'<option value="energy"'+(sortBy==='energy'?' selected':'')+'>Sort: Energy</option>'
+            +'</select>'
+            +'<button class="db-sort-dir-btn" id="buildSortDir" title="'+(sortDir==='asc'?'Ascending \u2014 click to reverse':'Descending \u2014 click to reverse')+'">'
+              +'<i class="fas fa-arrow-'+(sortDir==='asc'?'up-short-wide':'down-wide-short')+'"></i>'
+            +'</button>'
           +'</div>'
 
           +'<div class="db-cards-scroll">'
@@ -1196,7 +1260,7 @@
     var bOwn = document.getElementById('dbBuildOwnBtn');
     if (bOwn) bOwn.addEventListener('click', function(){
       S.view='build';
-      S.build={name:'',deckSize:'full',customSize:60,chamber:null,cards:{},typeFilter:'all',search:''};
+      S.build={name:'',deckSize:'full',customSize:60,chamber:null,cards:{},typeFilter:'all',search:'',sortBy:'number',sortDir:'asc'};
       render();
     });
     var bRng = document.getElementById('dbRandomizeBtn');
@@ -1308,6 +1372,25 @@
     el.querySelectorAll('.db-type-pill').forEach(function(pill){
       pill.addEventListener('click',function(){ S.build.typeFilter=this.dataset.type; render(); });
     });
+
+    /* ── BUILD SORT CONTROLS ─────────────────────────────── */
+    var bSortBy=document.getElementById('buildSortBy');
+    if(bSortBy){
+      bSortBy.addEventListener('change',function(){
+        S.build.sortBy=this.value;
+        /* Default to descending for stat-heavy sorts, ascending for name/type/number */
+        S.build.sortDir=['rarity','intercept','force','energy'].indexOf(this.value)!==-1?'desc':'asc';
+        render();
+      });
+    }
+
+    var bSortDir=document.getElementById('buildSortDir');
+    if(bSortDir){
+      bSortDir.addEventListener('click',function(){
+        S.build.sortDir=S.build.sortDir==='asc'?'desc':'asc';
+        render();
+      });
+    }
 
     /* ── BUILD CARD INTERACTIONS ────────────────────────── */
 
