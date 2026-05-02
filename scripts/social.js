@@ -2010,6 +2010,7 @@
     if ($('socialSection')) $('socialSection').style.display = 'none';
     closeProfileEditor();
   };
+  window.socialPopulateDmSidebar = populateDmSidebar;
 
   // ── Boot ──────────────────────────────────────────────────────
   function boot() {
