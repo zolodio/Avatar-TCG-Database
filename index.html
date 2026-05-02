@@ -5396,7 +5396,14 @@ init();
       });
     }
   });
+ 
+  chatSubBtn.addEventListener('mouseenter', function () { labelChat.classList.add('show'); });
+  chatSubBtn.addEventListener('mouseleave', function () { labelChat.classList.remove('show'); });
 
+  chatClose.addEventListener('click', function () {
+    state.chatOpen = false;
+    chatPanel.classList.remove('active');
+  });
   /* ── Populate EPB room list from Supabase + sidebar ─────────── */
   async function populateEpbRooms() {
     syncRoomsFromSidebar();
@@ -5521,6 +5528,12 @@ async function loadMessages(room) {
     renderAll(res.data || []);
     subscribeRoom(room);
   }
+  
+  function showPrompt(html) {
+    msgsEl.innerHTML = '<div class="epb-prompt">' + html + '</div>';
+    inputRow.style.display = 'none';
+  }
+
   /* ── Rendering ───────────────────────────────────────────────── */
   function esc(s) {
     return String(s || '')
@@ -5636,7 +5649,7 @@ function subscribeRoom(room) {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
   });
 
-  /* ── Auth-change polling (keeps panel in sync with login state) ─ */
+/* ── Auth-change polling (keeps panel in sync with login state) ─ */
   var _lastUid = null;
   setInterval(async function () {
     if (!window.sb) return;
@@ -5646,6 +5659,7 @@ function subscribeRoom(room) {
       _lastUid = uid;
       state.profile = null;
       state.userId  = null;
+      if (uid) populateEpbRooms();
       if (state.chatOpen) loadMessages(state.room);
     }
   }, 4000);
