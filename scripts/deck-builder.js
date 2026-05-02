@@ -375,7 +375,7 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════
-     RENDERING UTILITIES
+     ING UTILITIES
   ═══════════════════════════════════════════════════════════════ */
   function esc(s) {
     return String(s || '')
@@ -748,17 +748,26 @@
   ═══════════════════════════════════════════════════════════════ */
   function getEl() { return document.getElementById('nested-digital-deckbuilder'); }
 
-  function render() {
-    var el = getEl(); if (!el) return;
-    switch (S.view) {
-      case 'list':      el.innerHTML = vList();      break;
-      case 'randomize': el.innerHTML = vRandomize(); break;
-      case 'build':     el.innerHTML = vBuild();     break;
-      case 'stats':     el.innerHTML = vStats();     break;
-      case 'export':    el.innerHTML = vExport();    break;
-    }
-    wire();
+function render() {
+  var el = getEl(); if (!el) return;
+
+  // ── preserve card-picker scroll position across re-renders ──
+  var scrollEl = el.querySelector('.db-cards-scroll');
+  var savedScroll = scrollEl ? scrollEl.scrollTop : 0;
+
+  switch (S.view) {
+    case 'list':      el.innerHTML = vList();      break;
+    case 'randomize': el.innerHTML = vRandomize(); break;
+    case 'build':     el.innerHTML = vBuild();     break;
+    case 'stats':     el.innerHTML = vStats();     break;
+    case 'export':    el.innerHTML = vExport();    break;
   }
+  wire();
+
+  // ── restore scroll after the new DOM is in place ──
+  var newScrollEl = el.querySelector('.db-cards-scroll');
+  if (newScrollEl && savedScroll > 0) newScrollEl.scrollTop = savedScroll;
+}
 
   /* ── POOL BAR ─────────────────────────────────────────────── */
   function poolBar() {
