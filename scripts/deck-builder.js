@@ -875,7 +875,87 @@ function render() {
       +'<button class="db-primary-btn" id="dbRandomizeGo"><i class="fas fa-dice-d20"></i> Randomize!</button>'
     +'</div>';
   }
+/* ── Shared filter+sort used by both vBuild and autoCompleteDeck ── */
+function getBuildFilteredSorted() {
+  var pool        = getPoolCards();
+  var b           = S.build;
+  var chamberCard = b.chamber
+    ? (global.allCards || []).find(function (c) { return c.number === b.chamber; })
+    : null;
+  if (!chamberCard) return [];
 
+  var compatible = getStandardCards(pool).filter(function (c) {
+    return isCompatibleWithChamber(c, chamberCard);
+  });
+
+  var searchVal = (b.search || '').toLowerCase();
+  var filtered  = compatible.filter(function (c) {
+    if (b.typeFilter !== 'all' && c.type !== b.typeFilter) return false;
+    if (searchVal) {
+      return c.name.toLowerCase().indexOf(searchVal) !== -1
+          || c.number.toLowerCase().indexOf(searchVal) !== -1;
+    }
+    return true;
+  });
+
+  var sortBy  = b.sortBy  || 'number';
+  var sortDir = b.sortDir || 'asc';
+  var _dir    = sortDir === 'asc' ? 1 : -1;
+  var _ro     = { common: 0, uncommon: 1, rare: 2, zenemental: 3, promo: 4 };
+
+  filtered.sort(function (a, b2) {
+    if (sortBy === 'name')    return _dir * a.name.localeCompare(b2.name);
+    if (sortBy === 'rarity')  return _dir * ((_ro[a.rarity] || 0) - (_ro[b2.rarity] || 0));
+    if (sortBy === 'type')    return _dir * a.type.localeCompare(b2.type);
+    if (sortBy === 'intercept') {
+      var iA = parseFloat(a.intercept)  || 0;
+      var iB = parseFloat(b2.intercept) || 0;
+      return _dir * (iA - iB);
+    }
+    if (sortBy === 'force') {
+      var fA = parseFloat(a.force)  || 0;
+      var fB = parseFloat(b2.force) || 0;
+      return _dir * (fA - fB);
+    }
+    if (sortBy === 'energy') {
+      function sumE(c) {
+        return (parseFloat(c.redEnergy) || 0)
+             + (parseFloat(c.yellowEnergy) || 0)
+             + (parseFloat(c.greenEnergy) || 0);
+      }
+      return _dir * (sumE(a) - sumE(b2));
+    }
+    var nA = parseInt(a.number, 10), nB = parseInt(b2.number, 10);
+    if (!isNaN(nA) && !isNaN(nB)) return _dir * (nA - nB);
+    return _dir * a.number.localeCompare(b2.number);
+  });
+
+  return filtered;
+}
+function autoCompleteDeck() {
+  var b          = S.build;
+  var targetSize = b.deckSize === 'full' ? 60 : b.deckSize === 'half' ? 30 : b.customSize;
+  var total      = Object.values(b.cards).reduce(function (a, v) { return a + v; }, 0);
+  if (total >= targetSize) { toast('Deck is already full!'); return; }
+
+  var sorted = getBuildFilteredSorted();
+  if (sorted.length === 0) { toast('No compatible cards to fill from.'); return; }
+
+  /* First pass: top up each card to its max, in sorted order */
+  for (var i = 0; i < sorted.length && total < targetSize; i++) {
+    var c   = sorted[i];
+    var cur = b.cards[c.number] || 0;
+    var max = maxCopiesForCard(c.number);
+    var can = Math.min(max - cur, targetSize - total);
+    if (can > 0) {
+      b.cards[c.number] = cur + can;
+      total += can;
+    }
+  }
+
+  render();
+  toast('Deck auto-completed!');
+}
   /* ── BUILD VIEW ─────────────────────────────────────────────── */
   function vBuild() {
     var pool      = getPoolCards();
@@ -1050,9 +1130,12 @@ function render() {
 
         +'<div class="db-section">'
           +'<div class="db-progress-bar">'
-            +'<span class="db-progress-label">Cards selected</span>'
-            +'<span class="db-progress-count" style="color:'+progressColor+'">'+totalSelected+' / '+targetSize+'  '+progressText+'</span>'
-          +'</div>'
+          +'<span class="db-progress-label">Cards selected</span>'
+          +'<span class="db-progress-count" style="color:'+progressColor+'">'+totalSelected+' / '+targetSize+'  '+progressText+'</span>'
+          +(remaining > 0
+            ? '<button class="db-mini-btn" id="dbAutoCompleteBtn" title="Fill remaining slots using current sort order" style="border-color:var(--zen);color:var(--zen);margin-left:8px;white-space:nowrap;"><i class="fas fa-wand-magic-sparkles"></i> Auto-fill</button>'
+            : '')
+        +'</div>'
           +'<div style="height:4px;background:var(--bg-primary);border-radius:99px;overflow:hidden;margin-bottom:12px;">'
             +'<div style="height:100%;width:'+pctFull+'%;background:'+progressColor+';border-radius:99px;transition:width .3s;"></div>'
           +'</div>'
@@ -1357,6 +1440,9 @@ function render() {
 
     var bCS=document.getElementById('buildCustomSize');
     if (bCS) bCS.addEventListener('change',function(){ S.build.customSize=Math.max(10,Math.min(127,parseInt(this.value,10)||60)); });
+
+    var autoFillBtn = document.getElementById('dbAutoCompleteBtn');
+    if (autoFillBtn) autoFillBtn.addEventListener('click', autoCompleteDeck);
 
     el.querySelectorAll('.db-size-btn').forEach(function(btn){
       btn.addEventListener('click',function(){
