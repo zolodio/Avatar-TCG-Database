@@ -1787,6 +1787,9 @@ body {
   .epb-label-help { bottom: 139px; }
   .how-to-popup   { bottom: 186px !important; right: 10px; left: 10px; width: auto; }
 }
+.epb-sub-play { background: var(--earth); bottom: 192px; transition-delay: 0.12s; }
+.epb-sub-play.visible { transition-delay: 0.12s; }
+.epb-label-play { bottom: 203px; }
 	</style>
 </head>
 <body>
@@ -2662,7 +2665,10 @@ body {
   <i class="fas fa-question"></i>
 </button>
 <div class="epb-sub-label epb-label-help" id="epbLabelHelp">How to Use</div>
- 
+<button class="epb-sub-btn epb-sub-play" id="epbPlaySubBtn" title="Play Avatar Quick Strike Online">
+  <i class="fas fa-gamepad"></i>
+</button>
+<div class="epb-sub-label epb-label-play" id="epbLabelPlay">Play Game</div> 
 <!-- Everpresent main button -->
 <button class="epb-main-btn" id="epbMainBtn" title="Avatar Quick Strike Menu">
   <img src="https://zolodio.github.io/Avatar-TCG-Database/favicon-32x32.png" alt="Menu">
@@ -5347,7 +5353,48 @@ init();
   });
   helpSubBtn.addEventListener('mouseenter', function () { labelHelp.classList.add('show'); });
   helpSubBtn.addEventListener('mouseleave', function () { labelHelp.classList.remove('show'); });
+/* ── Play Game sub-button ──────────────────────────────────── */
+var playSubBtn = document.getElementById('epbPlaySubBtn');
+var labelPlay  = document.getElementById('epbLabelPlay');
  
+// Include in open/close menu toggles — add these two lines to openMenu():
+//   playSubBtn.classList.add('visible');
+// and to closeMenu():
+//   playSubBtn.classList.remove('visible');
+//   labelPlay.classList.remove('show');
+//
+// OR: replace your openMenu / closeMenu functions with the versions below.
+ 
+/* ---- Drop-in replacement for openMenu() ---- */
+function openMenu() {
+  state.menuOpen = true;
+  mainBtn.classList.add('open');
+  backdrop.classList.add('active');
+  chatSubBtn.classList.add('visible');
+  helpSubBtn.classList.add('visible');
+  playSubBtn.classList.add('visible');
+  syncRoomsFromSidebar();
+}
+ 
+/* ---- Drop-in replacement for closeMenu() ---- */
+function closeMenu() {
+  state.menuOpen = false;
+  mainBtn.classList.remove('open');
+  backdrop.classList.remove('active');
+  chatSubBtn.classList.remove('visible');
+  helpSubBtn.classList.remove('visible');
+  playSubBtn.classList.remove('visible');
+  labelChat.classList.remove('show');
+  labelHelp.classList.remove('show');
+  labelPlay.classList.remove('show');
+}
+ 
+playSubBtn.addEventListener('click', function () {
+  closeMenu();
+  window.open('https://zolodio.github.io/PlayAvatar/', '_blank', 'noopener,noreferrer');
+});
+playSubBtn.addEventListener('mouseenter', function () { labelPlay.classList.add('show'); });
+playSubBtn.addEventListener('mouseleave', function () { labelPlay.classList.remove('show'); }); 
   /* ── Chat sub-button ─────────────────────────────────────── */
   chatSubBtn.addEventListener('click', function () {
     closeMenu();
