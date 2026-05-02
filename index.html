@@ -5374,23 +5374,26 @@ init();
   playSubBtn.addEventListener('mouseenter', function () { labelPlay.classList.add('show'); });
   playSubBtn.addEventListener('mouseleave', function () { labelPlay.classList.remove('show'); });
 
-  /* ── Chat sub-button ─────────────────────────────────────────── */
+/* ── Chat sub-button ─────────────────────────────────────────── */
   chatSubBtn.addEventListener('click', function () {
     closeMenu();
     state.chatOpen = !state.chatOpen;
     chatPanel.classList.toggle('active', state.chatOpen);
     if (state.chatOpen) {
-      syncRoomsFromSidebar();
-      loadMessages(state.room);
+      populateEpbRooms().then(function () {
+        loadMessages(state.room);
+      });
     }
   });
-  chatSubBtn.addEventListener('mouseenter', function () { labelChat.classList.add('show'); });
-  chatSubBtn.addEventListener('mouseleave', function () { labelChat.classList.remove('show'); });
 
-  chatClose.addEventListener('click', function () {
-    state.chatOpen = false;
-    chatPanel.classList.remove('active');
-  });
+  /* ── Populate EPB room list from Supabase + sidebar ─────────── */
+  async function populateEpbRooms() {
+    syncRoomsFromSidebar();
+    if (typeof window.socialPopulateDmSidebar === 'function') {
+      await window.socialPopulateDmSidebar();
+      syncRoomsFromSidebar();
+    }
+  }
 
   /* ── Room selector ───────────────────────────────────────────── */
   roomSel.addEventListener('change', function () {
@@ -5417,7 +5420,6 @@ init();
   if (sidebar) {
     new MutationObserver(syncRoomsFromSidebar).observe(sidebar, { childList: true });
   }
-
   /* ── Messages ────────────────────────────────────────────────── */
   async function loadMessages(room) {
     var sb = window.sb;
