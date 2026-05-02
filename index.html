@@ -5290,113 +5290,91 @@ init();
 })();
 </script>
 <script>
+/*  epb.js — Everpresent Button (Avatar Quick Strike TCG)
+    Replaces the inline <script> block in the HTML.
+    All three sub-buttons (Chat, Help, Play) are managed by a
+    single openMenu / closeMenu pair — no duplicate declarations.
+*/
 (function () {
   'use strict';
- 
-  /* ── State ───────────────────────────────────────────────── */
+
+  /* ── State ───────────────────────────────────────────────────── */
   var state = {
-    menuOpen:  false,
-    chatOpen:  false,
-    room:      'global',
-    profile:   null,
-    userId:    null,
-    chatSub:   null,
+    menuOpen : false,
+    chatOpen : false,
+    room     : 'global',
+    profile  : null,
+    userId   : null,
+    chatSub  : null,
     seenRooms: { global: true }
   };
- 
-  /* ── Elements ────────────────────────────────────────────── */
-  var backdrop    = document.getElementById('epbBackdrop');
-  var mainBtn     = document.getElementById('epbMainBtn');
-  var chatSubBtn  = document.getElementById('epbChatSubBtn');
-  var helpSubBtn  = document.getElementById('epbHelpSubBtn');
-  var labelChat   = document.getElementById('epbLabelChat');
-  var labelHelp   = document.getElementById('epbLabelHelp');
-  var chatPanel   = document.getElementById('epbChatPanel');
-  var chatClose   = document.getElementById('epbChatClose');
-  var roomSel     = document.getElementById('epbRoomSel');
-  var msgsEl      = document.getElementById('epbMsgs');
-  var inputRow    = document.getElementById('epbInputRow');
-  var txtEl       = document.getElementById('epbTxt');
-  var sendBtn     = document.getElementById('epbSendBtn');
-  var howToPopup  = document.getElementById('howToPopup');
-  var howToBtn    = document.getElementById('howToBtn');   // still wired to old close btn
- 
-  /* ── Menu toggle ─────────────────────────────────────────── */
-  function openMenu()  {
+
+  /* ── Elements ────────────────────────────────────────────────── */
+  var backdrop   = document.getElementById('epbBackdrop');
+  var mainBtn    = document.getElementById('epbMainBtn');
+  var chatSubBtn = document.getElementById('epbChatSubBtn');
+  var helpSubBtn = document.getElementById('epbHelpSubBtn');
+  var playSubBtn = document.getElementById('epbPlaySubBtn');   // declared once, here
+  var labelChat  = document.getElementById('epbLabelChat');
+  var labelHelp  = document.getElementById('epbLabelHelp');
+  var labelPlay  = document.getElementById('epbLabelPlay');   // declared once, here
+  var chatPanel  = document.getElementById('epbChatPanel');
+  var chatClose  = document.getElementById('epbChatClose');
+  var roomSel    = document.getElementById('epbRoomSel');
+  var msgsEl     = document.getElementById('epbMsgs');
+  var inputRow   = document.getElementById('epbInputRow');
+  var txtEl      = document.getElementById('epbTxt');
+  var sendBtn    = document.getElementById('epbSendBtn');
+  var howToPopup = document.getElementById('howToPopup');
+
+  /* ── Single, authoritative open / close ─────────────────────── */
+  function openMenu() {
     state.menuOpen = true;
     mainBtn.classList.add('open');
     backdrop.classList.add('active');
     chatSubBtn.classList.add('visible');
     helpSubBtn.classList.add('visible');
+    playSubBtn.classList.add('visible');
     syncRoomsFromSidebar();
   }
+
   function closeMenu() {
     state.menuOpen = false;
     mainBtn.classList.remove('open');
     backdrop.classList.remove('active');
     chatSubBtn.classList.remove('visible');
     helpSubBtn.classList.remove('visible');
+    playSubBtn.classList.remove('visible');
     labelChat.classList.remove('show');
     labelHelp.classList.remove('show');
+    labelPlay.classList.remove('show');
   }
- 
+
+  /* ── Main button ─────────────────────────────────────────────── */
   mainBtn.addEventListener('click', function () {
     state.menuOpen ? closeMenu() : openMenu();
   });
- 
-  /* Clicking backdrop closes menu (but NOT the chat panel) */
+
+  /* Backdrop closes menu (but NOT the floating chat panel) */
   backdrop.addEventListener('click', closeMenu);
- 
-  /* ── Help sub-button ─────────────────────────────────────── */
+
+  /* ── Help sub-button ─────────────────────────────────────────── */
   helpSubBtn.addEventListener('click', function () {
     closeMenu();
     if (howToPopup) howToPopup.classList.toggle('active');
   });
   helpSubBtn.addEventListener('mouseenter', function () { labelHelp.classList.add('show'); });
   helpSubBtn.addEventListener('mouseleave', function () { labelHelp.classList.remove('show'); });
-/* ── Play Game sub-button ──────────────────────────────────── */
-var playSubBtn = document.getElementById('epbPlaySubBtn');
-var labelPlay  = document.getElementById('epbLabelPlay');
- 
-// Include in open/close menu toggles — add these two lines to openMenu():
-//   playSubBtn.classList.add('visible');
-// and to closeMenu():
-//   playSubBtn.classList.remove('visible');
-//   labelPlay.classList.remove('show');
-//
-// OR: replace your openMenu / closeMenu functions with the versions below.
- 
-/* ---- Drop-in replacement for openMenu() ---- */
-function openMenu() {
-  state.menuOpen = true;
-  mainBtn.classList.add('open');
-  backdrop.classList.add('active');
-  chatSubBtn.classList.add('visible');
-  helpSubBtn.classList.add('visible');
-  playSubBtn.classList.add('visible');
-  syncRoomsFromSidebar();
-}
- 
-/* ---- Drop-in replacement for closeMenu() ---- */
-function closeMenu() {
-  state.menuOpen = false;
-  mainBtn.classList.remove('open');
-  backdrop.classList.remove('active');
-  chatSubBtn.classList.remove('visible');
-  helpSubBtn.classList.remove('visible');
-  playSubBtn.classList.remove('visible');
-  labelChat.classList.remove('show');
-  labelHelp.classList.remove('show');
-  labelPlay.classList.remove('show');
-}
- 
-playSubBtn.addEventListener('click', function () {
-  closeMenu();
-  window.open('https://zolodio.github.io/PlayAvatar/', '_blank', 'noopener,noreferrer');
-});
-playSubBtn.addEventListener('mouseenter', function () { labelPlay.classList.add('show'); });
-playSubBtn.addEventListener('mouseleave', function () { labelPlay.classList.remove('show'); }); 
-  /* ── Chat sub-button ─────────────────────────────────────── */
+
+  /* ── Play Game sub-button ────────────────────────────────────── */
+  playSubBtn.addEventListener('click', function () {
+    closeMenu();
+    window.open('https://zolodio.github.io/PlayAvatar/', '_blank', 'noopener,noreferrer');
+  });
+  playSubBtn.addEventListener('mouseenter', function () { labelPlay.classList.add('show'); });
+  playSubBtn.addEventListener('mouseleave', function () { labelPlay.classList.remove('show'); });
+
+  /* ── Chat sub-button ─────────────────────────────────────────── */
   chatSubBtn.addEventListener('click', function () {
     closeMenu();
     state.chatOpen = !state.chatOpen;
@@ -5408,69 +5386,71 @@ playSubBtn.addEventListener('mouseleave', function () { labelPlay.classList.remo
   });
   chatSubBtn.addEventListener('mouseenter', function () { labelChat.classList.add('show'); });
   chatSubBtn.addEventListener('mouseleave', function () { labelChat.classList.remove('show'); });
- 
+
   chatClose.addEventListener('click', function () {
     state.chatOpen = false;
     chatPanel.classList.remove('active');
   });
- 
-  /* ── Room selector ───────────────────────────────────────── */
+
+  /* ── Room selector ───────────────────────────────────────────── */
   roomSel.addEventListener('change', function () {
     state.room = this.value;
     loadMessages(state.room);
   });
- 
-  /* Pull DM rooms from the main chat sidebar into our select */
+
   function syncRoomsFromSidebar() {
     document.querySelectorAll('#chatSidebar .chat-room-btn[data-room]').forEach(function (btn) {
       var rid = btn.getAttribute('data-room');
       if (state.seenRooms[rid]) return;
       state.seenRooms[rid] = true;
       var raw   = btn.textContent.trim();
-      var label = raw.replace(/^\W+/, '').trim() || rid; // strip leading dot/icon chars
-      if (!label) label = rid;
-      var opt = document.createElement('option');
-      opt.value = rid;
-      opt.textContent = label.indexOf('DM') !== -1 ? '💬 ' + label : '# ' + label;
+      var label = raw.replace(/^\W+/, '').trim() || rid;
+      var opt   = document.createElement('option');
+      opt.value       = rid;
+      opt.textContent = label.indexOf('DM') !== -1 ? '\uD83D\uDCAC ' + label : '# ' + label;
       roomSel.appendChild(opt);
     });
   }
- 
-  /* Watch sidebar for newly-added DM rooms */
+
+  /* Watch the chat sidebar for newly-added DM room buttons */
   var sidebar = document.getElementById('chatSidebar');
   if (sidebar) {
     new MutationObserver(syncRoomsFromSidebar).observe(sidebar, { childList: true });
   }
- 
-  /* ── Chat: load messages ─────────────────────────────────── */
+
+  /* ── Messages ────────────────────────────────────────────────── */
   async function loadMessages(room) {
     var sb = window.sb;
-    msgsEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem;"><i class="fas fa-circle-notch fa-spin"></i></div>';
- 
+    msgsEl.innerHTML =
+      '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem;">' +
+      '<i class="fas fa-circle-notch fa-spin"></i></div>';
+
     if (!sb) { showPrompt('Supabase not configured.'); return; }
- 
+
     var session = await sb.auth.getSession();
     var user    = session && session.data && session.data.session && session.data.session.user;
- 
+
     if (!user) {
-      showPrompt('<i class="fas fa-comments" style="font-size:1.8rem;opacity:0.2;display:block;margin-bottom:8px;"></i>Sign in under the <strong>Together</strong> tab to join the chat');
+      showPrompt(
+        '<i class="fas fa-comments" style="font-size:1.8rem;opacity:0.2;display:block;margin-bottom:8px;"></i>' +
+        'Sign in under the <strong>Together</strong> tab to join the chat'
+      );
       inputRow.style.display = 'none';
       return;
     }
- 
-    /* Fetch or re-use profile */
+
     if (!state.profile || state.userId !== user.id) {
-      state.userId  = user.id;
+      state.userId = user.id;
       var pRes = await sb.from('profiles')
         .select('username,avatar_card_number')
         .eq('user_id', user.id)
         .maybeSingle();
       state.profile = pRes.data || { username: user.email };
     }
- 
+
     inputRow.style.display = '';
-    txtEl.placeholder = 'Message as @' + (state.profile.username || '?') + '…';
- 
+    txtEl.placeholder = 'Message as @' + (state.profile.username || '?') + '\u2026';
+
     var res = await sb.from('messages')
       .select('*')
       .eq('room', room)
@@ -5479,46 +5459,58 @@ playSubBtn.addEventListener('mouseleave', function () { labelPlay.classList.remo
     renderAll(res.data || []);
     subscribeRoom(room);
   }
- 
+
   function showPrompt(html) {
     msgsEl.innerHTML = '<div class="epb-prompt">' + html + '</div>';
     inputRow.style.display = 'none';
   }
- 
-  /* ── Render helpers ──────────────────────────────────────── */
+
+  /* ── Rendering ───────────────────────────────────────────────── */
   function esc(s) {
-    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return String(s || '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
   }
- 
+
   function msgHtml(m) {
     var mine = state.profile && m.username === state.profile.username;
-    var initLetter = esc((m.username || '?').charAt(0).toUpperCase());
-    var avatarStyle = 'width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,' +
+    var init = esc((m.username || '?').charAt(0).toUpperCase());
+    var avatarStyle =
+      'width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,' +
       (mine ? 'var(--zen),var(--fire)' : 'var(--water),var(--zen)') +
-      ');display:flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:700;color:#fff;flex-shrink:0;font-family:Cinzel,serif;';
-    return '<div style="display:flex;flex-direction:' + (mine ? 'row-reverse' : 'row') + ';align-items:flex-start;gap:7px;">' +
-      '<div style="' + avatarStyle + '">' + initLetter + '</div>' +
-      '<div style="max-width:76%;">' +
-        '<div style="font-size:0.58rem;color:var(--text-muted);margin-bottom:2px;' + (mine ? 'text-align:right;' : '') + '">' + esc(m.username || '?') + '</div>' +
-        '<div style="background:' + (mine ? 'rgba(180,77,223,0.15)' : 'var(--bg-surface,#1a2035)') + ';' +
-          'border:1px solid ' + (mine ? 'rgba(180,77,223,0.22)' : 'var(--border)') + ';' +
-          'border-radius:' + (mine ? '12px 12px 3px 12px' : '12px 12px 12px 3px') + ';' +
-          'padding:7px 11px;font-size:0.8rem;color:var(--text-primary);line-height:1.45;word-break:break-word;">' +
-          esc(m.content) +
+      ');display:flex;align-items:center;justify-content:center;' +
+      'font-size:0.55rem;font-weight:700;color:#fff;flex-shrink:0;font-family:Cinzel,serif;';
+
+    return (
+      '<div style="display:flex;flex-direction:' + (mine ? 'row-reverse' : 'row') +
+        ';align-items:flex-start;gap:7px;">' +
+        '<div style="' + avatarStyle + '">' + init + '</div>' +
+        '<div style="max-width:76%;">' +
+          '<div style="font-size:0.58rem;color:var(--text-muted);margin-bottom:2px;' +
+            (mine ? 'text-align:right;' : '') + '">' + esc(m.username || '?') + '</div>' +
+          '<div style="background:' + (mine ? 'rgba(180,77,223,0.15)' : 'var(--bg-surface,#1a2035)') + ';' +
+            'border:1px solid ' + (mine ? 'rgba(180,77,223,0.22)' : 'var(--border)') + ';' +
+            'border-radius:' + (mine ? '12px 12px 3px 12px' : '12px 12px 12px 3px') + ';' +
+            'padding:7px 11px;font-size:0.8rem;color:var(--text-primary);' +
+            'line-height:1.45;word-break:break-word;">' +
+            esc(m.content) +
+          '</div>' +
         '</div>' +
-      '</div>' +
-    '</div>';
+      '</div>'
+    );
   }
- 
+
   function renderAll(msgs) {
     if (!msgs.length) {
-      msgsEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem;">No messages yet — say hi! 👋</div>';
+      msgsEl.innerHTML =
+        '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem;">' +
+        'No messages yet \u2014 say hi! \uD83D\uDC4B</div>';
       return;
     }
     msgsEl.innerHTML = msgs.map(msgHtml).join('');
     msgsEl.scrollTop = msgsEl.scrollHeight;
   }
- 
+
   function appendMsg(m) {
     var ph = msgsEl.querySelector('.epb-prompt');
     if (ph) ph.remove();
@@ -5529,49 +5521,49 @@ playSubBtn.addEventListener('mouseleave', function () { labelPlay.classList.remo
     msgsEl.appendChild(div.firstChild);
     msgsEl.scrollTop = msgsEl.scrollHeight;
   }
- 
-  /* ── Realtime subscription ───────────────────────────────── */
+
+  /* ── Realtime subscription ───────────────────────────────────── */
   function subscribeRoom(room) {
     var sb = window.sb; if (!sb) return;
-    if (state.chatSub) { try { state.chatSub.unsubscribe(); } catch(e){} state.chatSub = null; }
+    if (state.chatSub) { try { state.chatSub.unsubscribe(); } catch (e) {} state.chatSub = null; }
     state.chatSub = sb.channel('epb:' + room)
       .on('postgres_changes',
-          { event: 'INSERT', schema: 'public', table: 'messages', filter: 'room=eq.' + room },
-          function (payload) { appendMsg(payload.new); })
+        { event: 'INSERT', schema: 'public', table: 'messages', filter: 'room=eq.' + room },
+        function (payload) { appendMsg(payload.new); })
       .subscribe();
   }
- 
-  /* ── Send ────────────────────────────────────────────────── */
+
+  /* ── Send ────────────────────────────────────────────────────── */
   async function sendMsg() {
     var sb = window.sb;
     if (!sb || !state.profile || !state.userId) return;
     var content = (txtEl.value || '').trim(); if (!content) return;
     txtEl.value = '';
     await sb.from('messages').insert({
-      room:               state.room,
-      user_id:            state.userId,
-      username:           state.profile.username,
+      room              : state.room,
+      user_id           : state.userId,
+      username          : state.profile.username,
       avatar_card_number: state.profile.avatar_card_number || null,
-      content:            content
+      content           : content
     });
-    /* Keep dm_rooms.last_message_at fresh */
     if (state.room.indexOf('__dm__') !== -1) {
       sb.from('dm_rooms')
         .update({ last_message_at: new Date().toISOString() })
         .eq('room_id', state.room)
-        .then(function(){});
+        .then(function () {});
     }
   }
- 
+
   sendBtn.addEventListener('click', sendMsg);
-  txtEl.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); } });
- 
-  /* ── Reset profile cache on auth change ──────────────────── */
-  /* Poll for auth changes so floating chat stays in sync */
+  txtEl.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+  });
+
+  /* ── Auth-change polling (keeps panel in sync with login state) ─ */
   var _lastUid = null;
   setInterval(async function () {
     if (!window.sb) return;
-    var s = await window.sb.auth.getSession();
+    var s   = await window.sb.auth.getSession();
     var uid = s && s.data && s.data.session && s.data.session.user && s.data.session.user.id;
     if (uid !== _lastUid) {
       _lastUid = uid;
@@ -5580,21 +5572,16 @@ playSubBtn.addEventListener('mouseleave', function () { labelPlay.classList.remo
       if (state.chatOpen) loadMessages(state.room);
     }
   }, 4000);
- 
-  /* ── Expose openDM hook so sidebar DM opens sync to panel ── */
-  var _origOpenDM = window.openDM;
-  /* DMs opened via social.js will add a room btn → MutationObserver picks it up */
- 
-  /* ── Close help popup when its existing close btn is clicked ─ */
+
+  /* ── Sync howToClose button (still rendered in HTML) ─────────── */
   var howToCloseBtn = document.getElementById('howToClose');
   if (howToCloseBtn) {
     howToCloseBtn.addEventListener('click', function () {
       if (howToPopup) howToPopup.classList.remove('active');
     });
   }
-  /* Close on outside click (already handled by existing code) */
- 
-  console.log('[everpresent-btn] loaded ✓');
+
+  console.log('[epb.js] loaded \u2713');
 })();
 </script>
 </body>
