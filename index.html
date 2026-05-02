@@ -1669,6 +1669,124 @@ body {
   .friend-card .friend-actions { width: 100%; justify-content: flex-start; padding-top: 2px; }
   .friend-btn { font-size: 0.65rem; padding: 4px 9px; }
 }
+/* ── EVERPRESENT BUTTON ───────────────────────────────────── */
+.epb-backdrop {
+  position: fixed; inset: 0; z-index: 48;
+  background: rgba(0,0,0,0); backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  pointer-events: none;
+  transition: backdrop-filter 0.28s ease, -webkit-backdrop-filter 0.28s ease, background 0.28s ease;
+}
+.epb-backdrop.active {
+  background: rgba(0,0,0,0.42); backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px); pointer-events: auto;
+}
+.epb-main-btn {
+  position: fixed; bottom: 20px; right: 20px;
+  width: 54px; height: 54px; border-radius: 50%;
+  background: var(--bg-card); border: 2px solid var(--border-light);
+  cursor: pointer; z-index: 51; display: flex; align-items: center;
+  justify-content: center; padding: 0; overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.55);
+  transition: all 0.22s ease;
+}
+.epb-main-btn img { width: 30px; height: 30px; border-radius: 50%; display: block; }
+.epb-main-btn:hover { transform: scale(1.08); border-color: var(--zen); box-shadow: 0 0 0 3px rgba(180,77,223,0.25), 0 6px 24px rgba(0,0,0,0.4); }
+.epb-main-btn.open  { border-color: var(--zen); box-shadow: 0 0 0 4px rgba(180,77,223,0.35); transform: scale(1.06); }
+ 
+.epb-sub-btn {
+  position: fixed; right: 25px;
+  width: 44px; height: 44px; border-radius: 50%; border: none;
+  cursor: pointer; z-index: 51; color: #fff; font-size: 0.95rem;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  opacity: 0; transform: scale(0.35) translateY(30px); pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+}
+.epb-sub-btn.visible { opacity: 1; transform: scale(1) translateY(0); pointer-events: auto; }
+.epb-sub-btn:hover   { transform: scale(1.13) translateY(0) !important; }
+ 
+.epb-sub-chat { background: var(--water); bottom: 84px; transition-delay: 0.07s; }
+.epb-sub-chat.visible { transition-delay: 0.07s; }
+.epb-sub-help { background: var(--zen);   bottom: 138px; transition-delay: 0.02s; }
+.epb-sub-help.visible { transition-delay: 0.02s; }
+ 
+.epb-sub-label {
+  position: fixed; right: 76px; z-index: 51;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 6px; padding: 5px 11px;
+  font-size: 0.68rem; font-family: 'Nunito Sans', sans-serif;
+  font-weight: 700; color: var(--text-primary); white-space: nowrap;
+  pointer-events: none; opacity: 0; transition: opacity 0.15s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+.epb-sub-label.show { opacity: 1; }
+.epb-label-chat { bottom: 95px; }
+.epb-label-help { bottom: 149px; }
+ 
+/* ── FLOATING CHAT PANEL ─────────────────────────────────── */
+.epb-chat-panel {
+  position: fixed; bottom: 82px; right: 78px;
+  width: 320px; max-height: 450px;
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+  z-index: 52; display: none; flex-direction: column; overflow: hidden;
+  animation: slideUp 0.25s ease;
+}
+.epb-chat-panel.active { display: flex; }
+.epb-chat-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px; border-bottom: 1px solid var(--border); flex-shrink: 0; gap: 8px;
+}
+.epb-chat-title { font-family: 'Cinzel', serif; font-weight: 700; font-size: 0.9rem; color: var(--text-primary); }
+.epb-chat-x { background: none; border: none; color: var(--text-muted); font-size: 1rem; cursor: pointer; padding: 2px 6px; border-radius: 4px; transition: color 0.2s; }
+.epb-chat-x:hover { color: var(--text-primary); }
+.epb-room-row { padding: 8px 12px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.epb-room-sel {
+  width: 100%; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 6px; color: var(--text-primary); font-size: 0.78rem;
+  padding: 7px 10px; font-family: 'Nunito Sans', sans-serif; outline: none; cursor: pointer;
+}
+.epb-msgs {
+  flex: 1; overflow-y: auto; padding: 10px 12px;
+  display: flex; flex-direction: column; gap: 8px; min-height: 0;
+}
+.epb-msgs::-webkit-scrollbar { width: 4px; }
+.epb-msgs::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+.epb-input-row {
+  display: flex; gap: 6px; padding: 9px 12px;
+  border-top: 1px solid var(--border); flex-shrink: 0;
+}
+.epb-txt {
+  flex: 1; background: var(--bg-primary); border: 1px solid var(--border);
+  border-radius: 99px; padding: 8px 14px; color: var(--text-primary);
+  font-size: 0.82rem; font-family: 'Nunito Sans', sans-serif; outline: none;
+  transition: border-color 0.2s;
+}
+.epb-txt:focus { border-color: var(--water); }
+.epb-send {
+  width: 34px; height: 34px; border-radius: 50%; border: none;
+  background: var(--water); color: #fff; cursor: pointer; font-size: 0.78rem;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.epb-send:hover { opacity: 0.85; transform: scale(1.08); }
+.epb-prompt {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 10px; padding: 24px; text-align: center;
+  color: var(--text-muted); font-size: 0.8rem; line-height: 1.5;
+}
+ 
+/* Override how-to popup position to clear new button height */
+.how-to-popup { bottom: 192px !important; }
+@media (max-width: 480px) {
+  .epb-chat-panel { right: 8px; left: 8px; width: auto; bottom: 76px; }
+  .epb-sub-chat   { bottom: 76px; }
+  .epb-sub-help   { bottom: 128px; }
+  .epb-label-chat { bottom: 87px; }
+  .epb-label-help { bottom: 139px; }
+  .how-to-popup   { bottom: 186px !important; right: 10px; left: 10px; width: auto; }
+}
 	</style>
 </head>
 <body>
@@ -2530,7 +2648,48 @@ body {
 </div><!-- /.app-container -->
 
 <!-- HOW-TO BUTTON & POPUP -->
-<button class="how-to-btn" id="howToBtn" title="How to use"><i class="fas fa-question"></i></button>
+<!-- Backdrop blur -->
+<div class="epb-backdrop" id="epbBackdrop"></div>
+ 
+<!-- Sub-button: Chat -->
+<button class="epb-sub-btn epb-sub-chat" id="epbChatSubBtn" title="Quick Chat">
+  <i class="fas fa-comment-dots"></i>
+</button>
+<div class="epb-sub-label epb-label-chat" id="epbLabelChat">Quick Chat</div>
+ 
+<!-- Sub-button: Help -->
+<button class="epb-sub-btn epb-sub-help" id="epbHelpSubBtn" title="Help / How to Use">
+  <i class="fas fa-question"></i>
+</button>
+<div class="epb-sub-label epb-label-help" id="epbLabelHelp">How to Use</div>
+ 
+<!-- Everpresent main button -->
+<button class="epb-main-btn" id="epbMainBtn" title="Avatar Quick Strike Menu">
+  <img src="https://zolodio.github.io/Avatar-TCG-Database/favicon-32x32.png" alt="Menu">
+</button>
+ 
+<!-- Floating Chat Panel -->
+<div class="epb-chat-panel" id="epbChatPanel">
+  <div class="epb-chat-hdr">
+    <div class="epb-chat-title">💬 Chat</div>
+    <button class="epb-chat-x" id="epbChatClose" title="Close"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="epb-room-row">
+    <select class="epb-room-sel" id="epbRoomSel">
+      <option value="global"># Global Chat</option>
+    </select>
+  </div>
+  <div class="epb-msgs" id="epbMsgs">
+    <div class="epb-prompt">
+      <i class="fas fa-comments" style="font-size:1.8rem;opacity:0.2;"></i>
+      <span>Sign in under the <strong>Together</strong> tab to join the chat</span>
+    </div>
+  </div>
+  <div class="epb-input-row" id="epbInputRow" style="display:none;">
+    <input class="epb-txt" id="epbTxt" placeholder="Message…" maxlength="500" autocomplete="off">
+    <button class="epb-send" id="epbSendBtn" title="Send"><i class="fas fa-paper-plane"></i></button>
+  </div>
+</div>
 <div class="how-to-popup" id="howToPopup">
   <div class="how-to-header">
     <div class="how-to-title">How to Use</div>
@@ -5121,6 +5280,273 @@ init();
     var popup = document.getElementById('howToPopup');
     if (popup) popup.classList.remove('active');
   }
+})();
+</script>
+<script>
+(function () {
+  'use strict';
+ 
+  /* ── State ───────────────────────────────────────────────── */
+  var state = {
+    menuOpen:  false,
+    chatOpen:  false,
+    room:      'global',
+    profile:   null,
+    userId:    null,
+    chatSub:   null,
+    seenRooms: { global: true }
+  };
+ 
+  /* ── Elements ────────────────────────────────────────────── */
+  var backdrop    = document.getElementById('epbBackdrop');
+  var mainBtn     = document.getElementById('epbMainBtn');
+  var chatSubBtn  = document.getElementById('epbChatSubBtn');
+  var helpSubBtn  = document.getElementById('epbHelpSubBtn');
+  var labelChat   = document.getElementById('epbLabelChat');
+  var labelHelp   = document.getElementById('epbLabelHelp');
+  var chatPanel   = document.getElementById('epbChatPanel');
+  var chatClose   = document.getElementById('epbChatClose');
+  var roomSel     = document.getElementById('epbRoomSel');
+  var msgsEl      = document.getElementById('epbMsgs');
+  var inputRow    = document.getElementById('epbInputRow');
+  var txtEl       = document.getElementById('epbTxt');
+  var sendBtn     = document.getElementById('epbSendBtn');
+  var howToPopup  = document.getElementById('howToPopup');
+  var howToBtn    = document.getElementById('howToBtn');   // still wired to old close btn
+ 
+  /* ── Menu toggle ─────────────────────────────────────────── */
+  function openMenu()  {
+    state.menuOpen = true;
+    mainBtn.classList.add('open');
+    backdrop.classList.add('active');
+    chatSubBtn.classList.add('visible');
+    helpSubBtn.classList.add('visible');
+    syncRoomsFromSidebar();
+  }
+  function closeMenu() {
+    state.menuOpen = false;
+    mainBtn.classList.remove('open');
+    backdrop.classList.remove('active');
+    chatSubBtn.classList.remove('visible');
+    helpSubBtn.classList.remove('visible');
+    labelChat.classList.remove('show');
+    labelHelp.classList.remove('show');
+  }
+ 
+  mainBtn.addEventListener('click', function () {
+    state.menuOpen ? closeMenu() : openMenu();
+  });
+ 
+  /* Clicking backdrop closes menu (but NOT the chat panel) */
+  backdrop.addEventListener('click', closeMenu);
+ 
+  /* ── Help sub-button ─────────────────────────────────────── */
+  helpSubBtn.addEventListener('click', function () {
+    closeMenu();
+    if (howToPopup) howToPopup.classList.toggle('active');
+  });
+  helpSubBtn.addEventListener('mouseenter', function () { labelHelp.classList.add('show'); });
+  helpSubBtn.addEventListener('mouseleave', function () { labelHelp.classList.remove('show'); });
+ 
+  /* ── Chat sub-button ─────────────────────────────────────── */
+  chatSubBtn.addEventListener('click', function () {
+    closeMenu();
+    state.chatOpen = !state.chatOpen;
+    chatPanel.classList.toggle('active', state.chatOpen);
+    if (state.chatOpen) {
+      syncRoomsFromSidebar();
+      loadMessages(state.room);
+    }
+  });
+  chatSubBtn.addEventListener('mouseenter', function () { labelChat.classList.add('show'); });
+  chatSubBtn.addEventListener('mouseleave', function () { labelChat.classList.remove('show'); });
+ 
+  chatClose.addEventListener('click', function () {
+    state.chatOpen = false;
+    chatPanel.classList.remove('active');
+  });
+ 
+  /* ── Room selector ───────────────────────────────────────── */
+  roomSel.addEventListener('change', function () {
+    state.room = this.value;
+    loadMessages(state.room);
+  });
+ 
+  /* Pull DM rooms from the main chat sidebar into our select */
+  function syncRoomsFromSidebar() {
+    document.querySelectorAll('#chatSidebar .chat-room-btn[data-room]').forEach(function (btn) {
+      var rid = btn.getAttribute('data-room');
+      if (state.seenRooms[rid]) return;
+      state.seenRooms[rid] = true;
+      var raw   = btn.textContent.trim();
+      var label = raw.replace(/^\W+/, '').trim() || rid; // strip leading dot/icon chars
+      if (!label) label = rid;
+      var opt = document.createElement('option');
+      opt.value = rid;
+      opt.textContent = label.indexOf('DM') !== -1 ? '💬 ' + label : '# ' + label;
+      roomSel.appendChild(opt);
+    });
+  }
+ 
+  /* Watch sidebar for newly-added DM rooms */
+  var sidebar = document.getElementById('chatSidebar');
+  if (sidebar) {
+    new MutationObserver(syncRoomsFromSidebar).observe(sidebar, { childList: true });
+  }
+ 
+  /* ── Chat: load messages ─────────────────────────────────── */
+  async function loadMessages(room) {
+    var sb = window.sb;
+    msgsEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem;"><i class="fas fa-circle-notch fa-spin"></i></div>';
+ 
+    if (!sb) { showPrompt('Supabase not configured.'); return; }
+ 
+    var session = await sb.auth.getSession();
+    var user    = session && session.data && session.data.session && session.data.session.user;
+ 
+    if (!user) {
+      showPrompt('<i class="fas fa-comments" style="font-size:1.8rem;opacity:0.2;display:block;margin-bottom:8px;"></i>Sign in under the <strong>Together</strong> tab to join the chat');
+      inputRow.style.display = 'none';
+      return;
+    }
+ 
+    /* Fetch or re-use profile */
+    if (!state.profile || state.userId !== user.id) {
+      state.userId  = user.id;
+      var pRes = await sb.from('profiles')
+        .select('username,avatar_card_number')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      state.profile = pRes.data || { username: user.email };
+    }
+ 
+    inputRow.style.display = '';
+    txtEl.placeholder = 'Message as @' + (state.profile.username || '?') + '…';
+ 
+    var res = await sb.from('messages')
+      .select('*')
+      .eq('room', room)
+      .order('created_at', { ascending: true })
+      .limit(80);
+    renderAll(res.data || []);
+    subscribeRoom(room);
+  }
+ 
+  function showPrompt(html) {
+    msgsEl.innerHTML = '<div class="epb-prompt">' + html + '</div>';
+    inputRow.style.display = 'none';
+  }
+ 
+  /* ── Render helpers ──────────────────────────────────────── */
+  function esc(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+ 
+  function msgHtml(m) {
+    var mine = state.profile && m.username === state.profile.username;
+    var initLetter = esc((m.username || '?').charAt(0).toUpperCase());
+    var avatarStyle = 'width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,' +
+      (mine ? 'var(--zen),var(--fire)' : 'var(--water),var(--zen)') +
+      ');display:flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:700;color:#fff;flex-shrink:0;font-family:Cinzel,serif;';
+    return '<div style="display:flex;flex-direction:' + (mine ? 'row-reverse' : 'row') + ';align-items:flex-start;gap:7px;">' +
+      '<div style="' + avatarStyle + '">' + initLetter + '</div>' +
+      '<div style="max-width:76%;">' +
+        '<div style="font-size:0.58rem;color:var(--text-muted);margin-bottom:2px;' + (mine ? 'text-align:right;' : '') + '">' + esc(m.username || '?') + '</div>' +
+        '<div style="background:' + (mine ? 'rgba(180,77,223,0.15)' : 'var(--bg-surface,#1a2035)') + ';' +
+          'border:1px solid ' + (mine ? 'rgba(180,77,223,0.22)' : 'var(--border)') + ';' +
+          'border-radius:' + (mine ? '12px 12px 3px 12px' : '12px 12px 12px 3px') + ';' +
+          'padding:7px 11px;font-size:0.8rem;color:var(--text-primary);line-height:1.45;word-break:break-word;">' +
+          esc(m.content) +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+ 
+  function renderAll(msgs) {
+    if (!msgs.length) {
+      msgsEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem;">No messages yet — say hi! 👋</div>';
+      return;
+    }
+    msgsEl.innerHTML = msgs.map(msgHtml).join('');
+    msgsEl.scrollTop = msgsEl.scrollHeight;
+  }
+ 
+  function appendMsg(m) {
+    var ph = msgsEl.querySelector('.epb-prompt');
+    if (ph) ph.remove();
+    var noMsg = msgsEl.querySelector('[style*="say hi"]');
+    if (noMsg) noMsg.remove();
+    var div = document.createElement('div');
+    div.innerHTML = msgHtml(m);
+    msgsEl.appendChild(div.firstChild);
+    msgsEl.scrollTop = msgsEl.scrollHeight;
+  }
+ 
+  /* ── Realtime subscription ───────────────────────────────── */
+  function subscribeRoom(room) {
+    var sb = window.sb; if (!sb) return;
+    if (state.chatSub) { try { state.chatSub.unsubscribe(); } catch(e){} state.chatSub = null; }
+    state.chatSub = sb.channel('epb:' + room)
+      .on('postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'messages', filter: 'room=eq.' + room },
+          function (payload) { appendMsg(payload.new); })
+      .subscribe();
+  }
+ 
+  /* ── Send ────────────────────────────────────────────────── */
+  async function sendMsg() {
+    var sb = window.sb;
+    if (!sb || !state.profile || !state.userId) return;
+    var content = (txtEl.value || '').trim(); if (!content) return;
+    txtEl.value = '';
+    await sb.from('messages').insert({
+      room:               state.room,
+      user_id:            state.userId,
+      username:           state.profile.username,
+      avatar_card_number: state.profile.avatar_card_number || null,
+      content:            content
+    });
+    /* Keep dm_rooms.last_message_at fresh */
+    if (state.room.indexOf('__dm__') !== -1) {
+      sb.from('dm_rooms')
+        .update({ last_message_at: new Date().toISOString() })
+        .eq('room_id', state.room)
+        .then(function(){});
+    }
+  }
+ 
+  sendBtn.addEventListener('click', sendMsg);
+  txtEl.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); } });
+ 
+  /* ── Reset profile cache on auth change ──────────────────── */
+  /* Poll for auth changes so floating chat stays in sync */
+  var _lastUid = null;
+  setInterval(async function () {
+    if (!window.sb) return;
+    var s = await window.sb.auth.getSession();
+    var uid = s && s.data && s.data.session && s.data.session.user && s.data.session.user.id;
+    if (uid !== _lastUid) {
+      _lastUid = uid;
+      state.profile = null;
+      state.userId  = null;
+      if (state.chatOpen) loadMessages(state.room);
+    }
+  }, 4000);
+ 
+  /* ── Expose openDM hook so sidebar DM opens sync to panel ── */
+  var _origOpenDM = window.openDM;
+  /* DMs opened via social.js will add a room btn → MutationObserver picks it up */
+ 
+  /* ── Close help popup when its existing close btn is clicked ─ */
+  var howToCloseBtn = document.getElementById('howToClose');
+  if (howToCloseBtn) {
+    howToCloseBtn.addEventListener('click', function () {
+      if (howToPopup) howToPopup.classList.remove('active');
+    });
+  }
+  /* Close on outside click (already handled by existing code) */
+ 
+  console.log('[everpresent-btn] loaded ✓');
 })();
 </script>
 </body>
