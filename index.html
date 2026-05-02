@@ -1964,51 +1964,74 @@ body {
 
   </div><!-- /rulebook panel -->
 
-  <!-- ══════════════════════════════════════
-       MASTER SETS & COLLECTIONS PANEL
-  ══════════════════════════════════════ -->
-  <div class="media-panel" id="mediapanel-master-sets" style="display:none;">
+<!-- ══════════════════════════════════════
+     MASTER SETS & COLLECTIONS PANEL
+══════════════════════════════════════ -->
+<div class="media-panel" id="mediapanel-master-sets" style="display:none;">
 
-    <div class="media-card-wrap">
-      <div class="media-section-hdr">
-        <div class="media-section-icon" style="background:rgba(232,182,50,0.13);color:var(--promo);">
-          <i class="fas fa-trophy"></i>
-        </div>
-        <div>
-          <div class="media-section-title">Master Sets &amp; Collections</div>
-          <div class="media-section-sub">Community showcase — complete sets, rare pulls, and collection tours</div>
-        </div>
+  <div class="media-card-wrap">
+    <div class="media-section-hdr">
+      <div class="media-section-icon" style="background:rgba(232,182,50,0.13);color:var(--promo);">
+        <i class="fas fa-trophy"></i>
       </div>
-
-      <div class="media-video-grid" id="masterSetsGrid">
-        <!-- Placeholder slots — replace src with real video IDs when available -->
-        <div class="media-placeholder-card">
-          <i class="fab fa-youtube" style="font-size:2.2rem;color:var(--fire);opacity:0.45;"></i>
-          <div style="font-weight:700;font-size:0.8rem;color:var(--text-secondary);">Community Video</div>
-          <div style="font-size:0.68rem;color:var(--text-muted);text-align:center;line-height:1.6;max-width:180px;">Master set showcase videos will appear here as they're added</div>
-        </div>
-        <div class="media-placeholder-card">
-          <i class="fab fa-youtube" style="font-size:2.2rem;color:var(--fire);opacity:0.45;"></i>
-          <div style="font-weight:700;font-size:0.8rem;color:var(--text-secondary);">Community Video</div>
-          <div style="font-size:0.68rem;color:var(--text-muted);text-align:center;line-height:1.6;max-width:180px;">Master set showcase videos will appear here as they're added</div>
-        </div>
+      <div>
+        <div class="media-section-title">Master Sets &amp; Collections</div>
+        <div class="media-section-sub">Community showcase — complete sets, rare pulls, and collection tours</div>
       </div>
     </div>
 
-    <!-- YouTube search link -->
-    <a href="https://www.youtube.com/results?search_query=avatar+last+airbender+trading+card+game+master+set+collection" target="_blank" class="media-link-card">
-      <div class="media-link-icon" style="background:rgba(232,83,46,0.13);color:var(--fire);">
-        <i class="fab fa-youtube"></i>
-      </div>
-      <div class="media-link-text">
-        <div class="media-link-title">Search YouTube for Master Set Videos</div>
-        <div class="media-link-sub">Find community collection showcases on YouTube</div>
-      </div>
-      <i class="fas fa-external-link-alt media-link-arrow"></i>
-    </a>
+<div class="media-video-grid" id="masterSetsGrid">
 
-  </div><!-- /master-sets panel -->
+  <!-- Video 1 -->
+  <div class="media-video-card">
+    <div class="media-video-embed">
+      <iframe src="https://www.youtube.com/embed/o2UtLzLFzM8"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        title="Master Set by @TheMaskedEarthbender">
+      </iframe>
+    </div>
+    <div class="media-video-info">
+      <div class="media-video-title">Master Set by @TheMaskedEarthbender</div>
+      <div class="media-video-meta">
+        <i class="fab fa-youtube" style="color:var(--fire);"></i> Community Collection
+      </div>
+    </div>
+  </div>
 
+  <!-- Video 2 -->
+  <div class="media-video-card">
+    <div class="media-video-embed">
+      <iframe src="https://www.youtube.com/embed/jTul1-G989U"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        title="Master Set by @TheRainger">
+      </iframe>
+    </div>
+    <div class="media-video-info">
+      <div class="media-video-title">Master Set by @TheRainger</div>
+      <div class="media-video-meta">
+        <i class="fab fa-youtube" style="color:var(--fire);"></i> Community Collection
+      </div>
+    </div>
+  </div>
+
+</div>
+  </div>
+
+  <!-- YouTube search link -->
+  <a href="https://www.youtube.com/results?search_query=avatar+quick+strike+master+set" target="_blank" class="media-link-card">
+    <div class="media-link-icon" style="background:rgba(232,83,46,0.13);color:var(--fire);">
+      <i class="fab fa-youtube"></i>
+    </div>
+    <div class="media-link-text">
+      <div class="media-link-title">Search YouTube for Master Set Videos</div>
+      <div class="media-link-sub">Find community collection showcases on YouTube</div>
+    </div>
+    <i class="fas fa-external-link-alt media-link-arrow"></i>
+  </a>
+
+</div><!-- /master-sets panel -->
   <!-- ══════════════════════════════════════
        PACK RIPS PANEL
   ══════════════════════════════════════ -->
@@ -2026,20 +2049,44 @@ body {
       </div>
 
       <div class="media-video-grid" id="packRipsGrid">
-        <div class="media-placeholder-card">
-          <i class="fab fa-youtube" style="font-size:2.2rem;color:var(--fire);opacity:0.45;"></i>
-          <div style="font-weight:700;font-size:0.8rem;color:var(--text-secondary);">Community Video</div>
-          <div style="font-size:0.68rem;color:var(--text-muted);text-align:center;line-height:1.6;max-width:180px;">Pack opening videos will appear here as they're added</div>
-        </div>
-        <div class="media-placeholder-card">
-          <i class="fab fa-youtube" style="font-size:2.2rem;color:var(--fire);opacity:0.45;"></i>
-          <div style="font-weight:700;font-size:0.8rem;color:var(--text-secondary);">Community Video</div>
-          <div style="font-size:0.68rem;color:var(--text-muted);text-align:center;line-height:1.6;max-width:180px;">Pack opening videos will appear here as they're added</div>
-        </div>
+  <!-- Video 1 -->
+  <div class="media-video-card">
+    <div class="media-video-embed">
+      <iframe src="https://www.youtube.com/embed/KOE9lZpSJS0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        title="6 Boosters by @AirspeedPrime">
+      </iframe>
+    </div>
+    <div class="media-video-info">
+      <div class="media-video-title">6 Boosters by @AirspeedPrime</div>
+      <div class="media-video-meta">
+        <i class="fab fa-youtube" style="color:var(--fire);"></i> Community Collection
+      </div>
+    </div>
+  </div>
+
+  <!-- Video 2 -->
+  <div class="media-video-card">
+    <div class="media-video-embed">
+      <iframe src="https://www.youtube.com/embed/uVlswXAvF8g"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        title="Sealed Starter Set by @TheRainger">
+      </iframe>
+    </div>
+    <div class="media-video-info">
+      <div class="media-video-title">Sealed Starter Set by @TheRainger</div>
+      <div class="media-video-meta">
+        <i class="fab fa-youtube" style="color:var(--fire);"></i> Community Collection
+      </div>
+    </div>
+  </div>
+
       </div>
     </div>
 
-    <a href="https://www.youtube.com/results?search_query=avatar+last+airbender+quickstrike+trading+card+game+pack+opening" target="_blank" class="media-link-card">
+    <a href="https://www.youtube.com/results?search_query=avatar+quick+strike+booster" target="_blank" class="media-link-card">
       <div class="media-link-icon" style="background:rgba(232,83,46,0.13);color:var(--fire);">
         <i class="fab fa-youtube"></i>
       </div>
