@@ -255,20 +255,61 @@
       if (raw) S.decks = JSON.parse(raw);
     } catch (_) { S.decks = []; }
   }
-
-  function persistDeck(deck) {
-    deck.id      = deck.id      || ('deck_' + Date.now());
-    deck.created = deck.created || Date.now();
-    deck.encoded = encodeDeck(deck);
-    var idx = S.decks.findIndex(function (d) { return d.id === deck.id; });
-    if (idx >= 0) S.decks[idx] = deck; else S.decks.unshift(deck);
-    saveDecks();
+/* ═══════════════════════════════════════════════════════════════
+   SUPABASE SYNC
+═══════════════════════════════════════════════════════════════ */
+async function pushDecksToSupabase() {
+  if (!global.supabase) return;
+  try {
+    var { data: { user } } = await global.supabase.auth.getUser();
+    if (!user) return;
+    await global.supabase
+      .from('user_decks')
+      .upsert(
+        { user_id: user.id, decks_json: JSON.stringify(S.decks), updated_at: new Date().toISOString() },
+        { onConflict: 'user_id' }
+      );
+  } catch (e) {
+    console.warn('DeckBuilder: push failed', e);
   }
+}
 
-  function removeDeck(id) {
-    S.decks = S.decks.filter(function (d) { return d.id !== id; });
+async function pullDecksFromSupabase() {
+  if (!global.supabase) return;
+  try {
+    var { data: { user } } = await global.supabase.auth.getUser();
+    if (!user) return;
+    var { data, error } = await global.supabase
+      .from('user_decks')
+      .select('decks_json')
+      .eq('user_id', user.id)
+      .single();
+    if (error || !data) return;
+    var remote = JSON.parse(data.decks_json || '[]');
+    if (!Array.isArray(remote)) return;
+    /* Server is source of truth — replace local entirely then persist locally */
+    S.decks = remote;
     saveDecks();
+  } catch (e) {
+    console.warn('DeckBuilder: pull failed', e);
   }
+}
+
+function persistDeck(deck) {
+  deck.id      = deck.id      || ('deck_' + Date.now());
+  deck.created = deck.created || Date.now();
+  deck.encoded = encodeDeck(deck);
+  var idx = S.decks.findIndex(function (d) { return d.id === deck.id; });
+  if (idx >= 0) S.decks[idx] = deck; else S.decks.unshift(deck);
+  saveDecks();
+  pushDecksToSupabase();   // ← add this
+}
+
+function removeDeck(id) {
+  S.decks = S.decks.filter(function (d) { return d.id !== id; });
+  saveDecks();
+  pushDecksToSupabase();   // ← add this
+}
 
   /* ═══════════════════════════════════════════════════════════════
      RANDOMIZER ENGINE
@@ -780,7 +821,8 @@ function render() {
   /* ── LIST VIEW ──────────────────────────────────────────────── */
   function vList() {
     var allC = global.allCards || [];
-    var deckCards = S.decks.map(function (deck) {
+    var visibleDecks = S.decks.filter(function (d) { return (d.pool || 'all') === S.pool; });
+    var deckCards = visibleDecks.map(function (deck) {
       var ch = allC.find(function (c) { return c.number === deck.chamber; });
       var totalStd = Object.values(deck.cards || {}).reduce(function(a,b){return a+b;},0);
       var img = ch ? cardImg(ch) : '';
@@ -819,10 +861,10 @@ function render() {
         +'<button class="db-mode-card" id="dbBuildOwnBtn"><span class="db-mode-icon">🔨</span><span>Build Your Own</span></button>'
         +'<button class="db-mode-card" id="dbRandomizeBtn"><span class="db-mode-icon">🎲</span><span>Randomize</span></button>'
       +'</div>'
-      +(S.decks.length===0
-        ?'<div class="empty-state" style="padding:50px 20px;"><i class="fas fa-layer-group" style="font-size:2rem;opacity:.2;display:block;margin-bottom:10px;"></i><p>No saved decks yet.<br>Build or randomize your first deck!</p></div>'
-        :'<div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);font-weight:700;margin-bottom:10px;"><i class="fas fa-bookmark" style="margin-right:5px;"></i>Saved Decks ('+S.decks.length+')</div>'
-          +'<div class="db-deck-grid">'+deckCards+'</div>'
+      +(visibleDecks.length === 0
+        ? '<div class="empty-state" style="padding:50px 20px;"><i class="fas fa-layer-group" style="font-size:2rem;opacity:.2;display:block;margin-bottom:10px;"></i><p>No saved decks for this pool yet.<br>Build or randomize your first deck!</p></div>'
+        : '<div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);font-weight:700;margin-bottom:10px;"><i class="fas fa-bookmark" style="margin-right:5px;"></i>Saved Decks (' + visibleDecks.length + ')</div>'
+          + '<div class="db-deck-grid">' + deckCards + '</div>'
       )
     +'</div>';
   }
@@ -1636,11 +1678,13 @@ function autoCompleteDeck() {
   /* ═══════════════════════════════════════════════════════════════
      PUBLIC API + INIT
   ═══════════════════════════════════════════════════════════════ */
-  function init() {
-    injectCSS();
-    loadDecks();
-    render();
-  }
+async function init() {
+  injectCSS();
+  loadDecks();              // load localStorage first so UI isn't blank
+  render();                 // render immediately with local data
+  await pullDecksFromSupabase();  // fetch remote, overwrite if found
+  render();                 // re-render with synced data
+}
 
   global.DeckBuilder = { init:init, render:render, encodeDeck:encodeDeck, decodeDeck:decodeDeck };
 
