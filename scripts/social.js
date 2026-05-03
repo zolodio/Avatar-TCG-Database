@@ -1154,6 +1154,7 @@
           '<button class="fpTab" data-fp-tab="profile"    style="flex:1;padding:11px 0;border:none;background:none;cursor:pointer;font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;color:var(--zen);border-bottom:2px solid var(--zen);transition:all 0.15s;white-space:nowrap;"><i class="fas fa-user" style="margin-right:5px;"></i>Profile</button>' +
           '<button class="fpTab" data-fp-tab="collection" style="flex:1;padding:11px 0;border:none;background:none;cursor:pointer;font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;color:var(--text-muted);border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;"><i class="fas fa-layer-group" style="margin-right:5px;"></i>Collection</button>' +
           '<button class="fpTab" data-fp-tab="friends"    style="flex:1;padding:11px 0;border:none;background:none;cursor:pointer;font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;color:var(--text-muted);border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;"><i class="fas fa-users" style="margin-right:5px;"></i>Friends</button>' +
+          '<button class="fpTab" data-fp-tab="decks" style="flex:1;padding:11px 0;border:none;background:none;cursor:pointer;font-family:\'Nunito Sans\',sans-serif;font-size:0.8rem;font-weight:700;color:var(--text-muted);border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;"><i class="fas fa-layer-group" style="margin-right:5px;"></i>Decks</button>'
         '</div>' +
         '<div id="friendProfilePane" style="padding:16px;min-height:180px;max-height:55vh;overflow-y:auto;"></div>' +
         '<div style="display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:var(--bg-card);">' +
@@ -1221,6 +1222,7 @@
     if (tab === 'profile')    await renderFriendProfile(userId, username);
     if (tab === 'collection') await renderFriendCollection(userId, username);
     if (tab === 'friends')    await renderFriendFriends(userId, username);
+    if (tab === 'decks')      await renderFriendDecks(userId, username);
   }
 
   async function renderFriendProfile(userId, username) {
@@ -2025,5 +2027,95 @@
   else boot();
 
   console.log('[social.js] v6 loaded ✓ (dm_rooms persistence + dm_reads receipts)');
+async function renderFriendDecks(userId, username) {
+  var pane = $('friendProfilePane'); if (!pane) return;
+  if (!sb()) { pane.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);">Not available offline.</div>'; return; }
 
+  pane.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);font-size:0.8rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading decks…</div>';
+
+  try {
+    var result = await sb()
+      .from('user_decks')
+      .select('decks_json')
+      .eq('user_id', userId)
+      .single();
+
+    if (result.error || !result.data) {
+      pane.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--text-muted);font-size:0.82rem;">' +
+        '<i class="fas fa-layer-group" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:10px;"></i>' +
+        esc(username) + ' hasn\'t saved any decks yet.</div>';
+      return;
+    }
+
+    var decks = JSON.parse(result.data.decks_json || '[]');
+    if (!Array.isArray(decks) || !decks.length) {
+      pane.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--text-muted);font-size:0.82rem;">' +
+        '<i class="fas fa-layer-group" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:10px;"></i>' +
+        esc(username) + ' has no saved decks yet.</div>';
+      return;
+    }
+
+    var ac = window.allCards || [];
+
+    var deckHtml = decks.map(function (deck) {
+      var ch = ac.find(function (c) { return c.number === deck.chamber; });
+      var img = ch && ch.imageLink ? ch.imageLink : '';
+      var totalStd = Object.values(deck.cards || {}).reduce(function (a, b) { return a + b; }, 0);
+      var strengthLabels = {
+        attack: '⚔️ Attack', defense: '🛡️ Defense', balanced: '⚖️ Balanced',
+        energy: '⚡ Energy', chamber: '🪟 Chamber', wild: '🃏 Wild',
+        support: '🤝 Support', random: '🎲 Random'
+      };
+      var strengthTag = deck.strength ? (strengthLabels[deck.strength] || deck.strength) : '';
+
+      return '<div style="display:flex;align-items:center;gap:12px;' +
+        'background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);' +
+        'padding:10px 12px;margin-bottom:8px;transition:border-color 0.2s;"' +
+        ' onmouseenter="this.style.borderColor=\'var(--zen)\'"' +
+        ' onmouseleave="this.style.borderColor=\'var(--border)\'">' +
+
+        // Chamber thumbnail
+        '<div style="width:44px;height:58px;border-radius:6px;overflow:hidden;flex-shrink:0;background:var(--bg-primary);">' +
+          (img
+            ? '<img src="' + esc(img) + '" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;">'
+            : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-layer-group" style="color:var(--text-muted);font-size:0.9rem;opacity:0.4;"></i></div>') +
+        '</div>' +
+
+        // Info
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="font-family:\'Cinzel\',serif;font-weight:700;font-size:0.82rem;' +
+            'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-primary);">' +
+            esc(deck.name || 'Unnamed Deck') +
+          '</div>' +
+          '<div style="font-size:0.64rem;color:var(--text-muted);margin-top:2px;">' +
+            totalStd + ' cards' +
+            (ch ? ' · ' + esc(ch.name) : '') +
+          '</div>' +
+          (strengthTag
+            ? '<div style="font-size:0.6rem;color:var(--zen);margin-top:3px;">' + esc(strengthTag) + '</div>'
+            : '') +
+        '</div>' +
+
+        // Pool badge
+        '<div style="flex-shrink:0;">' +
+          '<span style="font-size:0.58rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;' +
+            'padding:2px 8px;border-radius:99px;border:1px solid var(--border);color:var(--text-muted);">' +
+            esc(deck.pool || 'all') +
+          '</span>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    pane.innerHTML =
+      '<div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:10px;">' +
+        '<strong style="color:var(--text-primary);">' + esc(username) + '</strong> has ' +
+        '<strong style="color:var(--zen);">' + decks.length + '</strong> saved deck' + (decks.length !== 1 ? 's' : '') +
+      '</div>' +
+      deckHtml;
+
+  } catch (e) {
+    console.error('[social] renderFriendDecks error:', e);
+    pane.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);font-size:0.8rem;">Could not load decks.</div>';
+  }
+}
 })();
