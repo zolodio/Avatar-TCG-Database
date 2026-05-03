@@ -1669,7 +1669,8 @@ body {
   .friend-card .friend-actions { width: 100%; justify-content: flex-start; padding-top: 2px; }
   .friend-btn { font-size: 0.65rem; padding: 4px 9px; }
 }
-/* ── EVERPRESENT BUTTON ───────────────────────────────────── */
+/* ── EVERPRESENT BUTTON ─────────────────────────────────────────── */
+/* Sub-button positions + actions are configured in EPB_BUTTONS below */
 .epb-backdrop {
   position: fixed; inset: 0; z-index: 48;
   background: rgba(0,0,0,0); backdrop-filter: blur(0px);
@@ -1682,70 +1683,42 @@ body {
   -webkit-backdrop-filter: blur(7px); pointer-events: auto;
 }
 .epb-main-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 54px;
-  height: 54px;
-  border-radius: 50%;
+  position: fixed; bottom: 20px; right: 20px;
+  width: 54px; height: 54px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.1);
+  cursor: pointer; z-index: 51;
+  display: block; padding: 0; overflow: hidden;
   background: var(--common);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  cursor: pointer;
-  z-index: 51;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  overflow: hidden;
-  box-shadow: 0 0px 10px var(--promo);
+  box-shadow: 0 0 10px var(--promo);
   transition: all 0.22s ease;
   backdrop-filter: blur(4px);
-  display: block;
 }
-
-/* Style the image to fit perfectly inside the circle */
-.epb-main-btn img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Ensures the image covers the area without distortion */
-  border-radius: 50%; /* Ensures the image itself is circular */
-}   
-}
-.epb-main-btn img { width: 30px; height: 30px; border-radius: 50%; display: block; }
-/* Softer glow on hover */
+.epb-main-btn img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
 .epb-main-btn:hover {
-  transform: scale(1.06); /* Reduced from 1.08 */
-  border-color: var(--promo);
-  box-shadow: 
-    0 0 0 2px rgba(255, 255, 255, 0.2),
-    0 0 12px var(--promo);
+  transform: scale(1.06); border-color: var(--promo);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.2), 0 0 12px var(--promo);
 }
-.epb-main-btn.open  {  transform: scale(1.06);
-  border-color: var(--promo);
-  box-shadow: 
-    0 0 0 2px rgba(255, 255, 255, 0.25),
-    0 0 14px var(--promo);
+.epb-main-btn.open {
+  transform: scale(1.06); border-color: var(--promo);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.25), 0 0 14px var(--promo);
 }
- 
+/* All sub-buttons share one class — right/bottom/color set via JS from EPB_BUTTONS */
 .epb-sub-btn {
-  position: fixed; right: 25px;
+  position: fixed; z-index: 51;
   width: 44px; height: 44px; border-radius: 50%; border: none;
-  cursor: pointer; z-index: 51; color: #fff; font-size: 0.95rem;
+  cursor: pointer; color: #fff; font-size: 0.95rem;
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-  opacity: 0; transform: scale(0.35) translateY(30px); pointer-events: none;
-  transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+  opacity: 0; pointer-events: none;
+  transform: var(--epb-off-tf, scale(0.35));
+  transition: opacity 0.22s ease,
+              transform 0.28s cubic-bezier(0.34,1.56,0.64,1),
+              box-shadow 0.2s;
 }
-.epb-sub-btn.visible { opacity: 1; transform: scale(1) translateY(0); pointer-events: auto; }
-.epb-sub-btn:hover   { transform: scale(1.13) translateY(0) !important; }
- 
-.epb-sub-chat { background: var(--water); bottom: 84px; transition-delay: 0.07s; }
-.epb-sub-chat.visible { transition-delay: 0.00s; }
-.epb-sub-help { background: var(--zen);   bottom: 138px; transition-delay: 0.02s; }
-.epb-sub-help.visible { transition-delay: 0.00s; }
- 
+.epb-sub-btn.visible { opacity: 1; transform: scale(1); pointer-events: auto; }
+.epb-sub-btn.visible:hover { transform: scale(1.12); }
 .epb-sub-label {
-  position: fixed; right: 76px; z-index: 51;
+  position: fixed; z-index: 51;
   background: var(--bg-card); border: 1px solid var(--border);
   border-radius: 6px; padding: 5px 11px;
   font-size: 0.68rem; font-family: 'Nunito Sans', sans-serif;
@@ -1754,10 +1727,7 @@ body {
   box-shadow: 0 2px 8px rgba(0,0,0,0.25);
 }
 .epb-sub-label.show { opacity: 1; }
-.epb-label-chat { bottom: 95px; }
-.epb-label-help { bottom: 149px; }
- 
-/* ── FLOATING CHAT PANEL ─────────────────────────────────── */
+/* ── Floating Chat Panel ─────────────────────────────────── */
 .epb-chat-panel {
   position: fixed; bottom: 82px; right: 78px;
   width: 320px; max-height: 450px;
@@ -1809,29 +1779,14 @@ body {
   flex-direction: column; gap: 10px; padding: 24px; text-align: center;
   color: var(--text-muted); font-size: 0.8rem; line-height: 1.5;
 }
- 
-/* Override how-to popup position to clear new button height */
+.epb-dm-tick { font-size: 0.58rem; color: var(--text-muted); margin-left: 4px;
+  letter-spacing: -1px; vertical-align: middle; transition: color 0.25s; }
+.epb-dm-tick--read { color: #4ab3f4; }
 .how-to-popup { bottom: 192px !important; }
 @media (max-width: 480px) {
   .epb-chat-panel { right: 8px; left: 8px; width: auto; bottom: 76px; }
-  .epb-sub-chat   { bottom: 76px; }
-  .epb-sub-help   { bottom: 128px; }
-  .epb-label-chat { bottom: 87px; }
-  .epb-label-help { bottom: 139px; }
   .how-to-popup   { bottom: 186px !important; right: 10px; left: 10px; width: auto; }
-}
-.epb-sub-play { background: var(--earth); bottom: 192px; }
-.epb-sub-play.visible { transition-delay: 0.0s; }
-.epb-label-play { bottom: 203px; }
-.epb-dm-tick {
-    font-size: 0.58rem;
-    color: var(--text-muted);
-    margin-left: 4px;
-    letter-spacing: -1px;
-    vertical-align: middle;
-    transition: color 0.25s;
-  }
-  .epb-dm-tick--read { color: #4ab3f4; }		
+}		
 	</style>
 </head>
 <body>
@@ -2695,25 +2650,13 @@ body {
 <!-- HOW-TO BUTTON & POPUP -->
 <!-- Backdrop blur -->
 <div class="epb-backdrop" id="epbBackdrop"></div>
- 
-<!-- Sub-button: Chat -->
-<button class="epb-sub-btn epb-sub-chat" id="epbChatSubBtn" title="Quick Chat">
-  <i class="fas fa-comment-dots"></i>
-</button>
-<div class="epb-sub-label epb-label-chat" id="epbLabelChat">Quick Chat</div>
- 
-<!-- Sub-button: Help -->
-<button class="epb-sub-btn epb-sub-help" id="epbHelpSubBtn" title="Help / How to Use">
-  <i class="fas fa-question"></i>
-</button>
-<div class="epb-sub-label epb-label-help" id="epbLabelHelp">How to Use</div>
-<button class="epb-sub-btn epb-sub-play" id="epbPlaySubBtn" title="Play Avatar Quick Strike Online">
-  <i class="fas fa-gamepad"></i>
-</button>
-<div class="epb-sub-label epb-label-play" id="epbLabelPlay">Play Game</div> 
-<!-- Everpresent main button -->
+
+<!-- Sub-buttons injected radially by JS — edit EPB_BUTTONS in the epb script -->
+
 <button class="epb-main-btn" id="epbMainBtn" title="Avatar Quick Strike Menu">
+
   <img src="https://github.com/zolodio/Avatar-TCG-Database/blob/Current-Development/ATCGicon.png?raw=true" alt="Menu">
+
 </button>
  
 <!-- Floating Chat Panel -->
@@ -5332,36 +5275,109 @@ init();
 })();
 </script>
 <script>
-/*  epb.js — Everpresent Button (Avatar Quick Strike TCG)
-    Replaces the inline <script> block in the HTML.
-    All three sub-buttons (Chat, Help, Play) are managed by a
-    single openMenu / closeMenu pair — no duplicate declarations.
-*/
 (function () {
   'use strict';
 
-  /* ── State ───────────────────────────────────────────────────── */
-  var state = {
-    menuOpen : false,
-    chatOpen : false,
-    room     : 'global',
-    profile  : null,
-    userId   : null,
-    chatSub  : null,
-	dmReadSub: null,
-	dmOtherReadAt: null,  
-    seenRooms: { global: true }
-  };
+  /* ═══════════════════════════════════════════════════════════════════
+     EPB_BUTTONS — the only place you need to edit to add/remove/reorder
+     sub-buttons. Each entry needs:
+       id     – unique string, used for element IDs
+       icon   – FontAwesome class name (without "fa-" prefix... add it below)
+       bg     – CSS color value for the button background
+       label  – tooltip / hover label text
+       angle  – degrees from straight-up, clockwise toward left
+                (0 = directly above main btn, 90 = directly left of it)
+       action – function called on click (closeMenu() is called first if needed)
+  ═══════════════════════════════════════════════════════════════════ */
+  var EPB_BUTTONS = [
+    {
+      id:     'chat',
+      icon:   'fa-comment-dots',
+      bg:     'var(--water)',
+      label:  'Quick Chat',
+      angle:  0,
+      action: function () { toggleChat(); }
+    },
+    {
+      id:     'help',
+      icon:   'fa-question',
+      bg:     'var(--zen)',
+      label:  'How to Use',
+      angle:  45,
+      action: function () { closeMenu(); if (howToPopup) howToPopup.classList.toggle('active'); }
+    },
+    {
+      id:     'play',
+      icon:   'fa-gamepad',
+      bg:     'var(--earth)',
+      label:  'Play Game',
+      angle:  90,
+      action: function () { closeMenu(); window.open('https://zolodio.github.io/PlayAvatar/', '_blank', 'noopener,noreferrer'); }
+    },
+    /* ── add more buttons here ── */
+  ];
 
-  /* ── Elements ────────────────────────────────────────────────── */
+  /* ── Radial layout math ──────────────────────────────────────────
+     Main button: bottom:20px right:20px, 54px diameter → center at (47, 47)
+     from the bottom-right corner of the viewport.
+     Sub-buttons fan out from 0° (straight up) toward 90° (straight left).
+  ─────────────────────────────────────────────────────────────────── */
+  var MAIN_R    = 20;               /* main btn CSS right & bottom      */
+  var MAIN_SIZE = 54;               /* main btn diameter px             */
+  var SUB_SIZE  = 44;               /* sub-btn diameter px              */
+  var RADIUS    = 90;               /* arc radius (main center → sub center) */
+  var mainCX    = MAIN_R + MAIN_SIZE / 2;   /* 47 — from right edge     */
+  var mainCY    = MAIN_R + MAIN_SIZE / 2;   /* 47 — from bottom edge    */
+  var subH      = SUB_SIZE / 2;             /* 22                       */
+
+  EPB_BUTTONS.forEach(function (cfg, i) {
+    var rad = cfg.angle * Math.PI / 180;
+    var cx  = mainCX + Math.sin(rad) * RADIUS;  /* sub center from right  */
+    var cy  = mainCY + Math.cos(rad) * RADIUS;  /* sub center from bottom */
+    var btnRight  = Math.round(cx - subH);
+    var btnBottom = Math.round(cy - subH);
+
+    /* Hidden-state transform: visually place button at main-btn center.
+       translateX(+) = move rightward on screen (toward smaller `right` value).
+       translateY(+) = move downward on screen (toward smaller `bottom` value).
+       Both move the sub-button inward toward the main button. */
+    var tx = Math.round(cx - mainCX);
+    var ty = Math.round(cy - mainCY);
+    cfg._hiddenTf = 'translateX(' + tx + 'px) translateY(' + ty + 'px) scale(0.35)';
+    cfg._delay    = (i * 55) + 'ms';
+
+    /* Button element */
+    var btn = document.createElement('button');
+    btn.id        = 'epbSub-' + cfg.id;
+    btn.className = 'epb-sub-btn';
+    btn.title     = cfg.label;
+    btn.setAttribute('aria-label', cfg.label);
+    btn.style.right      = btnRight  + 'px';
+    btn.style.bottom     = btnBottom + 'px';
+    btn.style.background = cfg.bg;
+    btn.style.setProperty('--epb-off-tf', cfg._hiddenTf);
+    btn.innerHTML = '<i class="fas ' + cfg.icon + '"></i>';
+    document.body.appendChild(btn);
+    cfg._btn = btn;
+
+    /* Label element */
+    var lbl = document.createElement('div');
+    lbl.id        = 'epbLabel-' + cfg.id;
+    lbl.className = 'epb-sub-label';
+    lbl.textContent = cfg.label;
+    lbl.style.right  = (btnRight + SUB_SIZE + 8) + 'px';
+    lbl.style.bottom = (btnBottom + subH - 10)   + 'px';
+    document.body.appendChild(lbl);
+    cfg._label = lbl;
+
+    btn.addEventListener('mouseenter', function () { lbl.classList.add('show'); });
+    btn.addEventListener('mouseleave', function () { lbl.classList.remove('show'); });
+    btn.addEventListener('click',      function () { cfg.action(); });
+  });
+
+  /* ── Core elements ─────────────────────────────────────────────── */
   var backdrop   = document.getElementById('epbBackdrop');
   var mainBtn    = document.getElementById('epbMainBtn');
-  var chatSubBtn = document.getElementById('epbChatSubBtn');
-  var helpSubBtn = document.getElementById('epbHelpSubBtn');
-  var playSubBtn = document.getElementById('epbPlaySubBtn');   // declared once, here
-  var labelChat  = document.getElementById('epbLabelChat');
-  var labelHelp  = document.getElementById('epbLabelHelp');
-  var labelPlay  = document.getElementById('epbLabelPlay');   // declared once, here
   var chatPanel  = document.getElementById('epbChatPanel');
   var chatClose  = document.getElementById('epbChatClose');
   var roomSel    = document.getElementById('epbRoomSel');
@@ -5371,88 +5387,60 @@ init();
   var sendBtn    = document.getElementById('epbSendBtn');
   var howToPopup = document.getElementById('howToPopup');
 
-  /* ── Single, authoritative open / close ─────────────────────── */
-  function openMenu() {
+  /* ── State ─────────────────────────────────────────────────────── */
+  var state = {
+    menuOpen:      false,
+    chatOpen:      false,
+    room:          'global',
+    profile:       null,
+    userId:        null,
+    chatSub:       null,
+    dmReadSub:     null,
+    dmOtherReadAt: null,
+    seenRooms:     { global: true }
+  };
+
+  /* ── Menu open / close ─────────────────────────────────────────── */
+  function openMenu () {
     state.menuOpen = true;
     mainBtn.classList.add('open');
     backdrop.classList.add('active');
-    chatSubBtn.classList.add('visible');
-    helpSubBtn.classList.add('visible');
-    playSubBtn.classList.add('visible');
+    EPB_BUTTONS.forEach(function (cfg) {
+      cfg._btn.style.transitionDelay = cfg._delay;
+      cfg._btn.classList.add('visible');
+    });
     syncRoomsFromSidebar();
   }
 
-  function closeMenu() {
+  function closeMenu () {
     state.menuOpen = false;
     mainBtn.classList.remove('open');
     backdrop.classList.remove('active');
-    chatSubBtn.classList.remove('visible');
-    helpSubBtn.classList.remove('visible');
-    playSubBtn.classList.remove('visible');
-    labelChat.classList.remove('show');
-    labelHelp.classList.remove('show');
-    labelPlay.classList.remove('show');
+    EPB_BUTTONS.forEach(function (cfg) {
+      cfg._btn.style.transitionDelay = '0ms';
+      cfg._btn.classList.remove('visible');
+      cfg._label.classList.remove('show');
+    });
   }
 
-  /* ── Main button ─────────────────────────────────────────────── */
-  mainBtn.addEventListener('click', function () {
-    state.menuOpen ? closeMenu() : openMenu();
-  });
-
-  /* Backdrop closes menu (but NOT the floating chat panel) */
-  backdrop.addEventListener('click', closeMenu);
-
-  /* ── Help sub-button ─────────────────────────────────────────── */
-  helpSubBtn.addEventListener('click', function () {
-    closeMenu();
-    if (howToPopup) howToPopup.classList.toggle('active');
-  });
-  helpSubBtn.addEventListener('mouseenter', function () { labelHelp.classList.add('show'); });
-  helpSubBtn.addEventListener('mouseleave', function () { labelHelp.classList.remove('show'); });
-
-  /* ── Play Game sub-button ────────────────────────────────────── */
-  playSubBtn.addEventListener('click', function () {
-    closeMenu();
-    window.open('https://zolodio.github.io/PlayAvatar/', '_blank', 'noopener,noreferrer');
-  });
-  playSubBtn.addEventListener('mouseenter', function () { labelPlay.classList.add('show'); });
-  playSubBtn.addEventListener('mouseleave', function () { labelPlay.classList.remove('show'); });
-
-/* ── Chat sub-button ─────────────────────────────────────────── */
-  chatSubBtn.addEventListener('click', function () {
+  /* ── Chat toggle ───────────────────────────────────────────────── */
+  function toggleChat () {
     closeMenu();
     state.chatOpen = !state.chatOpen;
     chatPanel.classList.toggle('active', state.chatOpen);
     if (state.chatOpen) {
-      populateEpbRooms().then(function () {
-        loadMessages(state.room);
-      });
-    }
-  });
- 
-  chatSubBtn.addEventListener('mouseenter', function () { labelChat.classList.add('show'); });
-  chatSubBtn.addEventListener('mouseleave', function () { labelChat.classList.remove('show'); });
-
-  chatClose.addEventListener('click', function () {
-    state.chatOpen = false;
-    chatPanel.classList.remove('active');
-  });
-  /* ── Populate EPB room list from Supabase + sidebar ─────────── */
-  async function populateEpbRooms() {
-    syncRoomsFromSidebar();
-    if (typeof window.socialPopulateDmSidebar === 'function') {
-      await window.socialPopulateDmSidebar();
-      syncRoomsFromSidebar();
+      populateEpbRooms().then(function () { loadMessages(state.room); });
     }
   }
 
-  /* ── Room selector ───────────────────────────────────────────── */
-  roomSel.addEventListener('change', function () {
-    state.room = this.value;
-    loadMessages(state.room);
-  });
+  /* ── Wiring ────────────────────────────────────────────────────── */
+  mainBtn.addEventListener('click', function () { state.menuOpen ? closeMenu() : openMenu(); });
+  backdrop.addEventListener('click', closeMenu);
+  chatClose.addEventListener('click', function () { state.chatOpen = false; chatPanel.classList.remove('active'); });
+  roomSel.addEventListener('change', function () { state.room = this.value; loadMessages(state.room); });
 
-  function syncRoomsFromSidebar() {
+  /* ── Room sync ─────────────────────────────────────────────────── */
+  function syncRoomsFromSidebar () {
     document.querySelectorAll('#chatSidebar .chat-room-btn[data-room]').forEach(function (btn) {
       var rid = btn.getAttribute('data-room');
       if (state.seenRooms[rid]) return;
@@ -5465,245 +5453,145 @@ init();
       roomSel.appendChild(opt);
     });
   }
-  function isDmRoom(room) {
-    return !!(room && room.indexOf('__dm__') !== -1);
+
+  var sidebar = document.getElementById('chatSidebar');
+  if (sidebar) { new MutationObserver(syncRoomsFromSidebar).observe(sidebar, { childList: true }); }
+
+  async function populateEpbRooms () {
+    syncRoomsFromSidebar();
+    if (typeof window.socialPopulateDmSidebar === 'function') {
+      await window.socialPopulateDmSidebar();
+      syncRoomsFromSidebar();
+    }
   }
 
-  function dmTickHtml(m) {
+  function isDmRoom (room) { return !!(room && room.indexOf('__dm__') !== -1); }
+
+  function dmTickHtml (m) {
     if (!isDmRoom(state.room)) return '';
     if (!state.profile || m.username !== state.profile.username) return '';
-    var isRead = !!(
-      state.dmOtherReadAt && m.created_at &&
-      new Date(state.dmOtherReadAt) >= new Date(m.created_at)
-    );
-    return '<span class="epb-dm-tick' + (isRead ? ' epb-dm-tick--read' : '') + '"' +
-      ' data-msg-ts="' + (m.created_at || '') + '">' +
-      (isRead ? '\u2713\u2713' : '\u2713') +
-      '</span>';
+    var isRead = !!(state.dmOtherReadAt && m.created_at && new Date(state.dmOtherReadAt) >= new Date(m.created_at));
+    return '<span class="epb-dm-tick' + (isRead ? ' epb-dm-tick--read' : '') + '" data-msg-ts="' + (m.created_at || '') + '">' + (isRead ? '\u2713\u2713' : '\u2713') + '</span>';
   }
 
-  function refreshEpbDmTicks() {
+  function refreshEpbDmTicks () {
     if (!state.dmOtherReadAt) return;
     var readTime = new Date(state.dmOtherReadAt);
     msgsEl.querySelectorAll('.epb-dm-tick[data-msg-ts]').forEach(function (span) {
       var ts = span.getAttribute('data-msg-ts');
-      if (ts && readTime >= new Date(ts)) {
-        span.textContent = '\u2713\u2713';
-        span.classList.add('epb-dm-tick--read');
-      }
+      if (ts && readTime >= new Date(ts)) { span.textContent = '\u2713\u2713'; span.classList.add('epb-dm-tick--read'); }
     });
   }
 
-  async function markEpbDmRead(room) {
+  async function markEpbDmRead (room) {
     var sb = window.sb;
     if (!isDmRoom(room) || !state.userId || !sb) return;
-    await sb.from('dm_reads').upsert(
-      { user_id: state.userId, room: room, last_read_at: new Date().toISOString() },
-      { onConflict: 'user_id,room' }
-    );
+    await sb.from('dm_reads').upsert({ user_id: state.userId, room: room, last_read_at: new Date().toISOString() }, { onConflict: 'user_id,room' });
   }
-	
-  /* Watch the chat sidebar for newly-added DM room buttons */
-  var sidebar = document.getElementById('chatSidebar');
-  if (sidebar) {
-    new MutationObserver(syncRoomsFromSidebar).observe(sidebar, { childList: true });
-  }
-async function loadMessages(room) {
-    var sb = window.sb;
-    msgsEl.innerHTML =
-      '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem;">' +
-      '<i class="fas fa-circle-notch fa-spin"></i></div>';
 
+  /* ── Messages ──────────────────────────────────────────────────── */
+  async function loadMessages (room) {
+    var sb = window.sb;
+    msgsEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem;"><i class="fas fa-circle-notch fa-spin"></i></div>';
     if (!sb) { showPrompt('Supabase not configured.'); return; }
 
     var session = await sb.auth.getSession();
     var user    = session && session.data && session.data.session && session.data.session.user;
-
     if (!user) {
-      showPrompt(
-        '<i class="fas fa-comments" style="font-size:1.8rem;opacity:0.2;display:block;margin-bottom:8px;"></i>' +
-        'Sign in under the <strong>Together</strong> tab to join the chat'
-      );
+      showPrompt('<i class="fas fa-comments" style="font-size:1.8rem;opacity:0.2;display:block;margin-bottom:8px;"></i>Sign in under the <strong>Together</strong> tab to join the chat');
       inputRow.style.display = 'none';
       return;
     }
-
     if (!state.profile || state.userId !== user.id) {
       state.userId = user.id;
-      var pRes = await sb.from('profiles')
-        .select('username,avatar_card_number')
-        .eq('user_id', user.id)
-        .maybeSingle();
+      var pRes = await sb.from('profiles').select('username,avatar_card_number').eq('user_id', user.id).maybeSingle();
       state.profile = pRes.data || { username: user.email };
     }
-
-    // Fetch other person's read position for DM rooms
     if (isDmRoom(room)) {
-      var rRes = await sb.from('dm_reads')
-        .select('last_read_at')
-        .eq('room', room)
-        .neq('user_id', state.userId)
-        .maybeSingle();
+      var rRes = await sb.from('dm_reads').select('last_read_at').eq('room', room).neq('user_id', state.userId).maybeSingle();
       state.dmOtherReadAt = (rRes.data && rRes.data.last_read_at) || null;
       markEpbDmRead(room);
-    } else {
-      state.dmOtherReadAt = null;
-    }
+    } else { state.dmOtherReadAt = null; }
 
     inputRow.style.display = '';
     txtEl.placeholder = 'Message as @' + (state.profile.username || '?') + '\u2026';
-
-    var res = await sb.from('messages')
-      .select('*')
-      .eq('room', room)
-      .order('created_at', { ascending: true })
-      .limit(80);
+    var res = await sb.from('messages').select('*').eq('room', room).order('created_at', { ascending: true }).limit(80);
     renderAll(res.data || []);
     subscribeRoom(room);
   }
-  
-  function showPrompt(html) {
-    msgsEl.innerHTML = '<div class="epb-prompt">' + html + '</div>';
-    inputRow.style.display = 'none';
-  }
 
-  /* ── Rendering ───────────────────────────────────────────────── */
-  function esc(s) {
-    return String(s || '')
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
-  }
+  function showPrompt (html) { msgsEl.innerHTML = '<div class="epb-prompt">' + html + '</div>'; inputRow.style.display = 'none'; }
 
-function msgHtml(m) {
+  function esc (s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+  function msgHtml (m) {
     var mine = state.profile && m.username === state.profile.username;
     var init = esc((m.username || '?').charAt(0).toUpperCase());
-    var avatarStyle =
-      'width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,' +
-      (mine ? 'var(--zen),var(--fire)' : 'var(--water),var(--zen)') +
-      ');display:flex;align-items:center;justify-content:center;' +
-      'font-size:0.55rem;font-weight:700;color:#fff;flex-shrink:0;font-family:Cinzel,serif;';
-
-    return (
-      '<div style="display:flex;flex-direction:' + (mine ? 'row-reverse' : 'row') +
-        ';align-items:flex-start;gap:7px;">' +
-        '<div style="' + avatarStyle + '">' + init + '</div>' +
-        '<div style="max-width:76%;">' +
-          '<div style="font-size:0.58rem;color:var(--text-muted);margin-bottom:2px;' +
-            (mine ? 'text-align:right;' : '') + '">' + esc(m.username || '?') + '</div>' +
-          '<div style="background:' + (mine ? 'rgba(180,77,223,0.15)' : 'var(--bg-surface,#1a2035)') + ';' +
-            'border:1px solid ' + (mine ? 'rgba(180,77,223,0.22)' : 'var(--border)') + ';' +
-            'border-radius:' + (mine ? '12px 12px 3px 12px' : '12px 12px 12px 3px') + ';' +
-            'padding:7px 11px;font-size:0.8rem;color:var(--text-primary);' +
-            'line-height:1.45;word-break:break-word;">' +
-            esc(m.content) +
-          '</div>' +
-          '<div style="font-size:0.58rem;color:var(--text-muted);margin-top:2px;' +
-            (mine ? 'text-align:right;' : '') + 'display:flex;align-items:center;' +
-            (mine ? 'justify-content:flex-end;' : '') + 'gap:2px;">' +
-            dmTickHtml(m) +
-          '</div>' +
-        '</div>' +
-      '</div>'
-    );
+    var av   = 'width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,' + (mine ? 'var(--zen),var(--fire)' : 'var(--water),var(--zen)') + ');display:flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:700;color:#fff;flex-shrink:0;font-family:Cinzel,serif;';
+    return '<div style="display:flex;flex-direction:' + (mine ? 'row-reverse' : 'row') + ';align-items:flex-start;gap:7px;"><div style="' + av + '">' + init + '</div><div style="max-width:76%;"><div style="font-size:0.58rem;color:var(--text-muted);margin-bottom:2px;' + (mine ? 'text-align:right;' : '') + '">' + esc(m.username || '?') + '</div><div style="background:' + (mine ? 'rgba(180,77,223,0.15)' : 'var(--bg-surface,#1a2035)') + ';border:1px solid ' + (mine ? 'rgba(180,77,223,0.22)' : 'var(--border)') + ';border-radius:' + (mine ? '12px 12px 3px 12px' : '12px 12px 12px 3px') + ';padding:7px 11px;font-size:0.8rem;color:var(--text-primary);line-height:1.45;word-break:break-word;">' + esc(m.content) + '</div><div style="font-size:0.58rem;color:var(--text-muted);margin-top:2px;' + (mine ? 'text-align:right;' : '') + 'display:flex;align-items:center;' + (mine ? 'justify-content:flex-end;' : '') + 'gap:2px;">' + dmTickHtml(m) + '</div></div></div>';
   }
 
-  function renderAll(msgs) {
-    if (!msgs.length) {
-      msgsEl.innerHTML =
-        '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem;">' +
-        'No messages yet \u2014 say hi! \uD83D\uDC4B</div>';
-      return;
-    }
+  function renderAll (msgs) {
+    if (!msgs.length) { msgsEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem;">No messages yet \u2014 say hi! \uD83D\uDC4B</div>'; return; }
     msgsEl.innerHTML = msgs.map(msgHtml).join('');
     msgsEl.scrollTop = msgsEl.scrollHeight;
   }
 
-function appendMsg(m) {
-    var ph = msgsEl.querySelector('.epb-prompt');
-    if (ph) ph.remove();
-    var noMsg = msgsEl.querySelector('[style*="say hi"]');
-    if (noMsg) noMsg.remove();
-    // Mark read if it's the other person's message in a DM
-    var mine = state.profile && m.username === state.profile.username;
-    if (isDmRoom(state.room) && !mine) markEpbDmRead(state.room);
+  function appendMsg (m) {
+    var ph = msgsEl.querySelector('.epb-prompt'); if (ph) ph.remove();
+    var nm = msgsEl.querySelector('[style*="say hi"]'); if (nm) nm.remove();
+    if (isDmRoom(state.room) && !(state.profile && m.username === state.profile.username)) markEpbDmRead(state.room);
     var div = document.createElement('div');
     div.innerHTML = msgHtml(m);
     msgsEl.appendChild(div.firstChild);
     msgsEl.scrollTop = msgsEl.scrollHeight;
   }
 
-function subscribeRoom(room) {
+  function subscribeRoom (room) {
     var sb = window.sb; if (!sb) return;
     if (state.chatSub)   { try { state.chatSub.unsubscribe();   } catch (e) {} state.chatSub   = null; }
     if (state.dmReadSub) { try { state.dmReadSub.unsubscribe(); } catch (e) {} state.dmReadSub = null; }
-
     state.chatSub = sb.channel('epb:' + room)
-      .on('postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'messages', filter: 'room=eq.' + room },
-        function (payload) { appendMsg(payload.new); })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: 'room=eq.' + room }, function (p) { appendMsg(p.new); })
       .subscribe();
-
     if (isDmRoom(room)) {
       state.dmReadSub = sb.channel('epb_reads:' + room)
-        .on('postgres_changes',
-          { event: '*', schema: 'public', table: 'dm_reads', filter: 'room=eq.' + room },
-          function (payload) {
-            if (!payload.new || payload.new.user_id === state.userId) return;
-            state.dmOtherReadAt = payload.new.last_read_at;
-            refreshEpbDmTicks();
-          })
-        .subscribe();
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'dm_reads', filter: 'room=eq.' + room }, function (p) {
+          if (!p.new || p.new.user_id === state.userId) return;
+          state.dmOtherReadAt = p.new.last_read_at;
+          refreshEpbDmTicks();
+        }).subscribe();
     }
   }
 
-  /* ── Send ────────────────────────────────────────────────────── */
-  async function sendMsg() {
+  /* ── Send ──────────────────────────────────────────────────────── */
+  async function sendMsg () {
     var sb = window.sb;
     if (!sb || !state.profile || !state.userId) return;
     var content = (txtEl.value || '').trim(); if (!content) return;
     txtEl.value = '';
-    await sb.from('messages').insert({
-      room              : state.room,
-      user_id           : state.userId,
-      username          : state.profile.username,
-      avatar_card_number: state.profile.avatar_card_number || null,
-      content           : content
-    });
-    if (state.room.indexOf('__dm__') !== -1) {
-      sb.from('dm_rooms')
-        .update({ last_message_at: new Date().toISOString() })
-        .eq('room_id', state.room)
-        .then(function () {});
-    }
+    await sb.from('messages').insert({ room: state.room, user_id: state.userId, username: state.profile.username, avatar_card_number: state.profile.avatar_card_number || null, content: content });
+    if (state.room.indexOf('__dm__') !== -1) sb.from('dm_rooms').update({ last_message_at: new Date().toISOString() }).eq('room_id', state.room).then(function () {});
   }
-
   sendBtn.addEventListener('click', sendMsg);
-  txtEl.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
-  });
+  txtEl.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); } });
 
-/* ── Auth-change polling (keeps panel in sync with login state) ─ */
+  /* ── Auth poll ─────────────────────────────────────────────────── */
   var _lastUid = null;
   setInterval(async function () {
     if (!window.sb) return;
-    var s   = await window.sb.auth.getSession();
+    var s = await window.sb.auth.getSession();
     var uid = s && s.data && s.data.session && s.data.session.user && s.data.session.user.id;
     if (uid !== _lastUid) {
-      _lastUid = uid;
-      state.profile = null;
-      state.userId  = null;
+      _lastUid = uid; state.profile = null; state.userId = null;
       if (uid) populateEpbRooms();
       if (state.chatOpen) loadMessages(state.room);
     }
   }, 4000);
 
-  /* ── Sync howToClose button (still rendered in HTML) ─────────── */
+  /* ── howToClose wiring ─────────────────────────────────────────── */
   var howToCloseBtn = document.getElementById('howToClose');
-  if (howToCloseBtn) {
-    howToCloseBtn.addEventListener('click', function () {
-      if (howToPopup) howToPopup.classList.remove('active');
-    });
-  }
+  if (howToCloseBtn) { howToCloseBtn.addEventListener('click', function () { if (howToPopup) howToPopup.classList.remove('active'); }); }
 
   console.log('[epb.js] loaded \u2713');
 })();
