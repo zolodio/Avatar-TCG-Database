@@ -274,7 +274,7 @@ function removeDeck(deckId) {
    SUPABASE SYNC
 ═══════════════════════════════════════════════════════════════ */
 function getSupabaseClient() {
-  return global.supabase || global.sb || null;
+  return global.sb || null;
 }
 
 async function pushDecksToSupabase() {
