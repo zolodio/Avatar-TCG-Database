@@ -1697,9 +1697,10 @@ body {
   justify-content: center;
   padding: 0;
   overflow: hidden;
-  box-shadow: 0 4px 20px var(--promo);
+  box-shadow: 0 0px 10px var(--promo);
   transition: all 0.22s ease;
   backdrop-filter: blur(4px);
+  display: block;
 }
 
 /* Style the image to fit perfectly inside the circle */
@@ -1711,8 +1712,20 @@ body {
 }   
 }
 .epb-main-btn img { width: 30px; height: 30px; border-radius: 50%; display: block; }
-.epb-main-btn:hover { transform: scale(1.08); border-color: var(--promo); box-shadow: 0 0 0 3px var(--promo), 0 6px 24px var(--promo); }
-.epb-main-btn.open  { border-color: var(--promo); box-shadow: 0 0 0 4px var(--promo); transform: scale(1.06); }
+/* Softer glow on hover */
+.epb-main-btn:hover {
+  transform: scale(1.06); /* Reduced from 1.08 */
+  border-color: var(--promo);
+  box-shadow: 
+    0 0 0 2px rgba(255, 255, 255, 0.2),
+    0 0 12px var(--promo);
+}
+.epb-main-btn.open  {  transform: scale(1.06);
+  border-color: var(--promo);
+  box-shadow: 
+    0 0 0 2px rgba(255, 255, 255, 0.25),
+    0 0 14px var(--promo);
+}
  
 .epb-sub-btn {
   position: fixed; right: 25px;
@@ -1727,9 +1740,9 @@ body {
 .epb-sub-btn:hover   { transform: scale(1.13) translateY(0) !important; }
  
 .epb-sub-chat { background: var(--water); bottom: 84px; transition-delay: 0.07s; }
-.epb-sub-chat.visible { transition-delay: 0.07s; }
+.epb-sub-chat.visible { transition-delay: 0.00s; }
 .epb-sub-help { background: var(--zen);   bottom: 138px; transition-delay: 0.02s; }
-.epb-sub-help.visible { transition-delay: 0.02s; }
+.epb-sub-help.visible { transition-delay: 0.00s; }
  
 .epb-sub-label {
   position: fixed; right: 76px; z-index: 51;
@@ -1807,8 +1820,8 @@ body {
   .epb-label-help { bottom: 139px; }
   .how-to-popup   { bottom: 186px !important; right: 10px; left: 10px; width: auto; }
 }
-.epb-sub-play { background: var(--earth); bottom: 192px; transition-delay: 0.12s; }
-.epb-sub-play.visible { transition-delay: 0.12s; }
+.epb-sub-play { background: var(--earth); bottom: 192px; }
+.epb-sub-play.visible { transition-delay: 0.0s; }
 .epb-label-play { bottom: 203px; }
 .epb-dm-tick {
     font-size: 0.58rem;
