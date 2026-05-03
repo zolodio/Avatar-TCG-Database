@@ -243,19 +243,33 @@
     } catch (e) { return null; }
   }
 
-  /* ═══════════════════════════════════════════════════════════════
-     PERSISTENCE
-  ═══════════════════════════════════════════════════════════════ */
-  function saveDecks() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(S.decks)); } catch (_) {}
-  }
+/* ═══════════════════════════════════════════════════════════════
+   PERSISTENCE — define here so these shadow any deck-sync.js versions
+═══════════════════════════════════════════════════════════════ */
+function saveDecks() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(S.decks)); } catch (_) {}
+}
 
-  function loadDecks() {
-    try {
-      var raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) S.decks = JSON.parse(raw);
-    } catch (_) { S.decks = []; }
-  }
+function loadDecks() {
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) S.decks = JSON.parse(raw);
+  } catch (_) { S.decks = []; }
+}
+
+function persistDeck(deck) {
+  var idx = S.decks.findIndex(function(d) { return d.id === deck.id; });
+  if (idx !== -1) { S.decks[idx] = deck; } else { S.decks.push(deck); }
+  saveDecks();
+  pushDecksToSupabase();
+}
+
+function removeDeck(deckId) {
+  S.decks = S.decks.filter(function(d) { return d.id !== deckId; });
+  saveDecks();
+  pushDecksToSupabase();
+}
+
 /* ═══════════════════════════════════════════════════════════════
    SUPABASE SYNC
 ═══════════════════════════════════════════════════════════════ */
@@ -265,11 +279,12 @@ function getSupabaseClient() {
 
 async function pushDecksToSupabase() {
   var client = getSupabaseClient();
-  if (!client) { console.warn('DeckBuilder: no Supabase client found'); return; }
+  if (!client) { console.warn('DeckBuilder: no Supabase client'); return; }
   try {
     var authResp = await client.auth.getUser();
     var user = authResp.data && authResp.data.user;
     if (!user) { console.warn('DeckBuilder: push skipped — not logged in'); return; }
+    console.log('DeckBuilder: pushing', S.decks.length, 'decks…');
     var result = await client
       .from('user_decks')
       .upsert(
@@ -277,35 +292,56 @@ async function pushDecksToSupabase() {
         { onConflict: 'user_id' }
       );
     if (result.error) throw result.error;
+    console.log('DeckBuilder: push OK');
   } catch (e) {
     console.error('DeckBuilder: push failed', e);
-    toast('Sync failed — check console');
+    toast('Deck sync failed — ' + (e.message || 'check console'));
   }
 }
 
 async function pullDecksFromSupabase() {
   var client = getSupabaseClient();
-  if (!client) { console.warn('DeckBuilder: no Supabase client found'); return; }
+  if (!client) { console.warn('DeckBuilder: no Supabase client'); return; }
   try {
     var authResp = await client.auth.getUser();
     var user = authResp.data && authResp.data.user;
     if (!user) { console.warn('DeckBuilder: pull skipped — not logged in'); return; }
+    console.log('DeckBuilder: pulling decks for', user.id, '…');
     var result = await client
       .from('user_decks')
       .select('decks_json')
       .eq('user_id', user.id)
       .single();
     if (result.error) {
-      if (result.error.code !== 'PGRST116') throw result.error;
-      return;
+      if (result.error.code === 'PGRST116') { console.log('DeckBuilder: no remote decks yet'); return; }
+      throw result.error;
     }
     var remote = JSON.parse(result.data.decks_json || '[]');
     if (!Array.isArray(remote)) return;
+    console.log('DeckBuilder: pulled', remote.length, 'decks');
     S.decks = remote;
     saveDecks();
   } catch (e) {
     console.error('DeckBuilder: pull failed', e);
   }
+}
+
+/* Poll for auth readiness then pull — fixes the timing race on init */
+async function pullWhenReady() {
+  var client = getSupabaseClient();
+  if (!client) return;
+  var attempts = 0;
+  var interval = setInterval(async function () {
+    attempts++;
+    var authResp = await client.auth.getUser();
+    var user = authResp.data && authResp.data.user;
+    if (user) {
+      clearInterval(interval);
+      await pullDecksFromSupabase();
+      render();
+    }
+    if (attempts >= 20) clearInterval(interval); // give up after 10 s
+  }, 500);
 }
   /* ═══════════════════════════════════════════════════════════════
      RANDOMIZER ENGINE
@@ -850,6 +886,11 @@ function render() {
 
     return '<div class="db-wrap">'
       +'<div class="db-top-bar">'
+      // At the top of vList(), after the db-top-bar div, add:
+      +'<div style="display:flex;gap:8px;margin-bottom:12px;">'
+      +'<button class="db-mini-btn" id="dbSyncPullBtn" style="border-color:var(--water);color:var(--water);"><i class="fas fa-cloud-download-alt"></i> Load from Cloud</button>'
+      +'<button class="db-mini-btn" id="dbSyncPushBtn" style="border-color:var(--zen);color:var(--zen);"><i class="fas fa-cloud-upload-alt"></i> Sync to Cloud</button>'
+      +'</div>'
         +'<div class="db-heading"><i class="fas fa-layer-group" style="color:var(--promo)"></i> Deck Builder</div>'
         +'<div class="db-pool-row">'+poolBar()+'</div>'
       +'</div>'
@@ -1390,7 +1431,24 @@ function autoCompleteDeck() {
   ═══════════════════════════════════════════════════════════════ */
   function wire() {
     var el = getEl(); if (!el) return;
+    var syncPull = document.getElementById('dbSyncPullBtn');
+    if (syncPull) syncPull.addEventListener('click', async function () {
+     this.disabled = true;
+      toast('Pulling decks…');
+      await pullDecksFromSupabase();
+      render();
+      this.disabled = false;
+      toast('Decks loaded from cloud!');
+    });
 
+var syncPush = document.getElementById('dbSyncPushBtn');
+if (syncPush) syncPush.addEventListener('click', async function () {
+  this.disabled = true;
+  toast('Syncing decks…');
+  await pushDecksToSupabase();
+  this.disabled = false;
+  toast('Decks synced to cloud!');
+});    
     /* Pool buttons */
     el.querySelectorAll('.db-pool-btn').forEach(function(btn){
       btn.addEventListener('click', function(){ S.pool=this.dataset.pool; render(); });
@@ -1671,18 +1729,20 @@ function autoCompleteDeck() {
       if (inp) { inp.focus(); inp.select(); }
     });
 
-    var renameSave = document.getElementById('deckRenameSave');
-    if (renameSave) renameSave.addEventListener('click', function () {
-     var inp = document.getElementById('deckRenameInput');
-     var newName = (inp ? inp.value : '').trim();
-     if (!newName) { toast('Name cannot be empty.'); return; }
+// Inside wire() — replace the existing deckRenameSave listener
+var renameSave = document.getElementById('deckRenameSave');
+if (renameSave) renameSave.addEventListener('click', function () {
+  var inp = document.getElementById('deckRenameInput');
+  var newName = (inp ? inp.value : '').trim();
+  if (!newName) { toast('Name cannot be empty.'); return; }
 
-     // ← FIX: update the entry in S.decks so saveDecks() serialises the new name
-     var idx = S.decks.findIndex(function(d) { return d.id === S.viewingDeck.id; });
-     if (idx !== -1) S.decks[idx].name = newName;
-
+  // Update both the array entry AND the viewingDeck reference
+  var idx = S.decks.findIndex(function(d) { return d.id === S.viewingDeck.id; });
+  if (idx !== -1) S.decks[idx].name = newName;
   S.viewingDeck.name = newName;
-  persistDeck(S.viewingDeck);
+
+  saveDecks();           // → localStorage
+  pushDecksToSupabase(); // → Supabase
   S.renamingDeck = false;
   toast('Deck renamed!'); render();
 });
@@ -1716,10 +1776,9 @@ function autoCompleteDeck() {
   ═══════════════════════════════════════════════════════════════ */
 async function init() {
   injectCSS();
-  loadDecks();              // load localStorage first so UI isn't blank
-  render();                 // render immediately with local data
-  await pullDecksFromSupabase();  // fetch remote, overwrite if found
-  render();                 // re-render with synced data
+  loadDecks();
+  render();
+  pullWhenReady(); // non-blocking, retries until logged in
 }
 
   global.DeckBuilder = { init:init, render:render, encodeDeck:encodeDeck, decodeDeck:decodeDeck };
