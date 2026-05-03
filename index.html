@@ -1682,17 +1682,37 @@ body {
   -webkit-backdrop-filter: blur(7px); pointer-events: auto;
 }
 .epb-main-btn {
-  position: fixed; bottom: 20px; right: 20px;
-  width: 54px; height: 54px; border-radius: 50%;
-  background: var(--bg-card); border: 2px solid var(--border-light);
-  cursor: pointer; z-index: 51; display: flex; align-items: center;
-  justify-content: center; padding: 0; overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.55);
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--common);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  z-index: 51;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 4px 20px var(--promo);
   transition: all 0.22s ease;
+  backdrop-filter: blur(4px);
+}
+
+/* Style the image to fit perfectly inside the circle */
+.epb-main-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures the image covers the area without distortion */
+  border-radius: 50%; /* Ensures the image itself is circular */
+}   
 }
 .epb-main-btn img { width: 30px; height: 30px; border-radius: 50%; display: block; }
-.epb-main-btn:hover { transform: scale(1.08); border-color: var(--zen); box-shadow: 0 0 0 3px rgba(180,77,223,0.25), 0 6px 24px rgba(0,0,0,0.4); }
-.epb-main-btn.open  { border-color: var(--zen); box-shadow: 0 0 0 4px rgba(180,77,223,0.35); transform: scale(1.06); }
+.epb-main-btn:hover { transform: scale(1.08); border-color: var(--promo); box-shadow: 0 0 0 3px var(--promo), 0 6px 24px var(--promo); }
+.epb-main-btn.open  { border-color: var(--promo); box-shadow: 0 0 0 4px var(--promo); transform: scale(1.06); }
  
 .epb-sub-btn {
   position: fixed; right: 25px;
@@ -2680,7 +2700,7 @@ body {
 <div class="epb-sub-label epb-label-play" id="epbLabelPlay">Play Game</div> 
 <!-- Everpresent main button -->
 <button class="epb-main-btn" id="epbMainBtn" title="Avatar Quick Strike Menu">
-  <img src="https://zolodio.github.io/Avatar-TCG-Database/favicon-32x32.png" alt="Menu">
+  <img src="https://github.com/zolodio/Avatar-TCG-Database/blob/Current-Development/ATCGicon.png?raw=true" alt="Menu">
 </button>
  
 <!-- Floating Chat Panel -->
