@@ -257,60 +257,61 @@
     } catch (_) { S.decks = []; }
   }
 /* ═══════════════════════════════════════════════════════════════
-   SUPABASE SYNC
-═══════════════════════════════════════════════════════════════ */
-async function pushDecksToSupabase() {
-  if (!global.supabase) return;
-  try {
-    var { data: { user } } = await global.supabase.auth.getUser();
-    if (!user) return;
-    await global.supabase
-      .from('user_decks')
-      .upsert(
-        { user_id: user.id, decks_json: JSON.stringify(S.decks), updated_at: new Date().toISOString() },
-        { onConflict: 'user_id' }
-      );
-  } catch (e) {
-    console.warn('DeckBuilder: push failed', e);
+     SUPABASE SYNC
+  ═══════════════════════════════════════════════════════════════ */
+  function getSupabaseClient() {
+    // Try the most common variable names used when initializing Supabase
+    return global.supabaseClient
+        || global._supabase
+        || global.sb
+        || (global.supabase && global.supabase.auth ? global.supabase : null);
   }
-}
 
-async function pullDecksFromSupabase() {
-  if (!global.supabase) return;
-  try {
-    var { data: { user } } = await global.supabase.auth.getUser();
-    if (!user) return;
-    var { data, error } = await global.supabase
-      .from('user_decks')
-      .select('decks_json')
-      .eq('user_id', user.id)
-      .single();
-    if (error || !data) return;
-    var remote = JSON.parse(data.decks_json || '[]');
-    if (!Array.isArray(remote)) return;
-    /* Server is source of truth — replace local entirely then persist locally */
-    S.decks = remote;
-    saveDecks();
-  } catch (e) {
-    console.warn('DeckBuilder: pull failed', e);
+  async function pushDecksToSupabase() {
+    var client = getSupabaseClient();
+    if (!client) { console.warn('DeckBuilder: no Supabase client found'); return; }
+    try {
+      var authResp = await client.auth.getUser();
+      var user = authResp.data && authResp.data.user;
+      if (!user) { console.warn('DeckBuilder: push skipped — not logged in'); return; }
+      var result = await client
+        .from('user_decks')
+        .upsert(
+          { user_id: user.id, decks_json: JSON.stringify(S.decks), updated_at: new Date().toISOString() },
+          { onConflict: 'user_id' }
+        );
+      if (result.error) throw result.error;
+    } catch (e) {
+      console.error('DeckBuilder: push failed', e);
+      toast('Sync failed — check console');
+    }
   }
-}
 
-function persistDeck(deck) {
-  deck.id      = deck.id      || ('deck_' + Date.now());
-  deck.created = deck.created || Date.now();
-  deck.encoded = encodeDeck(deck);
-  var idx = S.decks.findIndex(function (d) { return d.id === deck.id; });
-  if (idx >= 0) S.decks[idx] = deck; else S.decks.unshift(deck);
-  saveDecks();
-  pushDecksToSupabase();   // ← add this
-}
-
-function removeDeck(id) {
-  S.decks = S.decks.filter(function (d) { return d.id !== id; });
-  saveDecks();
-  pushDecksToSupabase();   // ← add this
-}
+  async function pullDecksFromSupabase() {
+    var client = getSupabaseClient();
+    if (!client) { console.warn('DeckBuilder: no Supabase client found'); return; }
+    try {
+      var authResp = await client.auth.getUser();
+      var user = authResp.data && authResp.data.user;
+      if (!user) { console.warn('DeckBuilder: pull skipped — not logged in'); return; }
+      var result = await client
+        .from('user_decks')
+        .select('decks_json')
+        .eq('user_id', user.id)
+        .single();
+      if (result.error) {
+        // PGRST116 = no row yet, that's fine for a new user
+        if (result.error.code !== 'PGRST116') throw result.error;
+        return;
+      }
+      var remote = JSON.parse(result.data.decks_json || '[]');
+      if (!Array.isArray(remote)) return;
+      S.decks = remote;
+      saveDecks();
+    } catch (e) {
+      console.error('DeckBuilder: pull failed', e);
+    }
+  }
 
   /* ═══════════════════════════════════════════════════════════════
      RANDOMIZER ENGINE
@@ -1264,29 +1265,7 @@ function autoCompleteDeck() {
       if(!isNaN(nA)&&!isNaN(nB)) return nA-nB;
       return a.card.number.localeCompare(b2.card.number);
     });
-    var renameBtn = document.getElementById('deckRenameBtn');
-    if (renameBtn) renameBtn.addEventListener('click', function () {
-      S.renamingDeck = true; render();
-      /* auto-focus and select all for quick typing */
-      var inp = document.getElementById('deckRenameInput');
-      if (inp) { inp.focus(); inp.select(); }
-    });
 
-    var renameSave = document.getElementById('deckRenameSave');
-    if (renameSave) renameSave.addEventListener('click', function () {
-      var inp = document.getElementById('deckRenameInput');
-      var newName = (inp ? inp.value : '').trim();
-      if (!newName) { toast('Name cannot be empty.'); return; }
-      S.viewingDeck.name = newName;
-      persistDeck(S.viewingDeck);   // updates S.decks, saves locally, pushes to Supabase
-      S.renamingDeck = false;
-      toast('Deck renamed!'); render();
-    });
-
-    var renameCancel = document.getElementById('deckRenameCancel');
-    if (renameCancel) renameCancel.addEventListener('click', function () {
-      S.renamingDeck = false; render();
-    });
     var cardListHtml = sortedEntries.map(function(e){
       var rd=dotColor(e.card.rarity);
       return '<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);">'
@@ -1688,6 +1667,30 @@ function autoCompleteDeck() {
         S.exportChecked[id]=!S.exportChecked[id];
         render();
       });
+    });
+    /* ── STATS: rename ──────────────────────────────────────── */
+    var renameBtn = document.getElementById('deckRenameBtn');
+    if (renameBtn) renameBtn.addEventListener('click', function () {
+      S.renamingDeck = true;
+      render();
+      var inp = document.getElementById('deckRenameInput');
+      if (inp) { inp.focus(); inp.select(); }
+    });
+
+    var renameSave = document.getElementById('deckRenameSave');
+    if (renameSave) renameSave.addEventListener('click', function () {
+      var inp = document.getElementById('deckRenameInput');
+      var newName = (inp ? inp.value : '').trim();
+      if (!newName) { toast('Name cannot be empty.'); return; }
+      S.viewingDeck.name = newName;
+      persistDeck(S.viewingDeck);
+      S.renamingDeck = false;
+      toast('Deck renamed!'); render();
+    });
+
+    var renameCancel = document.getElementById('deckRenameCancel');
+    if (renameCancel) renameCancel.addEventListener('click', function () {
+      S.renamingDeck = false; render();
     });
   }
 
