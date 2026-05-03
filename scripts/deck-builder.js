@@ -259,12 +259,8 @@
 /* ═══════════════════════════════════════════════════════════════
      SUPABASE SYNC
   ═══════════════════════════════════════════════════════════════ */
-  function getSupabaseClient() {
-    // Try the most common variable names used when initializing Supabase
-    return global.supabaseClient
-        || global._supabase
-        || global.sb
-        || (global.supabase && global.supabase.auth ? global.supabase : null);
+function getSupabaseClient() {
+    return global.supabase || null;
   }
 
   async function pushDecksToSupabase() {
@@ -273,7 +269,8 @@
     try {
       var authResp = await client.auth.getUser();
       var user = authResp.data && authResp.data.user;
-      if (!user) { console.warn('DeckBuilder: push skipped — not logged in'); return; }
+      if (!user) { console.warn('DeckBuilder: not logged in, skipping push'); return; }
+      console.log('DeckBuilder: pushing', S.decks.length, 'decks for', user.id);
       var result = await client
         .from('user_decks')
         .upsert(
@@ -281,6 +278,7 @@
           { onConflict: 'user_id' }
         );
       if (result.error) throw result.error;
+      console.log('DeckBuilder: push OK');
     } catch (e) {
       console.error('DeckBuilder: push failed', e);
       toast('Sync failed — check console');
