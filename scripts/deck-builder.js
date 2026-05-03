@@ -52,6 +52,7 @@
       sortDir:    'asc'
     },
     exportSortMode:  'number',
+    renamingDeck: false,
     exportChecked:   {}
   };
 
@@ -1263,7 +1264,29 @@ function autoCompleteDeck() {
       if(!isNaN(nA)&&!isNaN(nB)) return nA-nB;
       return a.card.number.localeCompare(b2.card.number);
     });
+    var renameBtn = document.getElementById('deckRenameBtn');
+    if (renameBtn) renameBtn.addEventListener('click', function () {
+      S.renamingDeck = true; render();
+      /* auto-focus and select all for quick typing */
+      var inp = document.getElementById('deckRenameInput');
+      if (inp) { inp.focus(); inp.select(); }
+    });
 
+    var renameSave = document.getElementById('deckRenameSave');
+    if (renameSave) renameSave.addEventListener('click', function () {
+      var inp = document.getElementById('deckRenameInput');
+      var newName = (inp ? inp.value : '').trim();
+      if (!newName) { toast('Name cannot be empty.'); return; }
+      S.viewingDeck.name = newName;
+      persistDeck(S.viewingDeck);   // updates S.decks, saves locally, pushes to Supabase
+      S.renamingDeck = false;
+      toast('Deck renamed!'); render();
+    });
+
+    var renameCancel = document.getElementById('deckRenameCancel');
+    if (renameCancel) renameCancel.addEventListener('click', function () {
+      S.renamingDeck = false; render();
+    });
     var cardListHtml = sortedEntries.map(function(e){
       var rd=dotColor(e.card.rarity);
       return '<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);">'
@@ -1289,7 +1312,17 @@ function autoCompleteDeck() {
       +'<div style="display:flex;gap:12px;align-items:flex-start;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;margin-bottom:14px;">'
         +(ch?'<img src="'+esc(cardImg(ch))+'" alt="" style="width:56px;height:74px;object-fit:cover;border-radius:6px;flex-shrink:0;" loading="lazy">':'')
         +'<div style="flex:1;min-width:0;">'
-          +'<div style="font-family:\'Cinzel\',serif;font-weight:700;font-size:.98rem;margin-bottom:4px;">'+esc(deck.name)+'</div>'
+          +(S.renamingDeck
+             ? '<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">'
+                +'<input id="deckRenameInput" class="db-input" type="text" value="'+esc(deck.name)+'" maxlength="40" style="font-family:\'Cinzel\',serif;font-size:.88rem;font-weight:700;padding:6px 10px;">'
+                +'<button class="db-mini-btn" id="deckRenameSave" style="border-color:var(--success);color:var(--success);white-space:nowrap;"><i class="fas fa-check"></i> Save</button>'
+                +'<button class="db-mini-btn" id="deckRenameCancel"><i class="fas fa-xmark"></i></button>'
+              +'</div>'
+             : '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">'
+                +'<span style="font-family:\'Cinzel\',serif;font-weight:700;font-size:.98rem;">'+esc(deck.name)+'</span>'
+                +'<button class="db-mini-btn" id="deckRenameBtn" title="Rename deck" style="padding:3px 7px;"><i class="fas fa-pencil"></i></button>'
+              +'</div>'
+            )
           +'<div style="font-size:.68rem;color:var(--text-muted);margin-bottom:7px;">'
             +(ch?esc(ch.name)+' &bull; ':'')+(totalStd)+' standard cards'
             +(deck.strength?' &bull; '+esc(strengthLabel(deck.strength)):'')
@@ -1430,9 +1463,10 @@ function autoCompleteDeck() {
 
     /* ── BACK ─────────────────────────────────────────────── */
     var backBtn=document.getElementById('dbBack');
-    if (backBtn) backBtn.addEventListener('click', function(){
-      if (S.view==='export'){ S.view='stats'; }
-      else { S.view='list'; S.exportChecked={}; }
+    if (backBtn) backBtn.addEventListener('click', function () {
+      S.renamingDeck = false;   // ← add this line
+      if (S.view === 'export') { S.view = 'stats'; }
+      else { S.view = 'list'; S.exportChecked = {}; }
       render();
     });
 
