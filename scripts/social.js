@@ -1225,50 +1225,74 @@
     if (tab === 'decks')      await renderFriendDecks(userId, username);
   }
 
-  async function renderFriendProfile(userId, username) {
-    if (!sb()) return;
-    var res = await sb().from('profiles').select('*').eq('user_id', userId).maybeSingle();
-    var p = res.data;
-    var pane = $('friendProfilePane'), hdr = $('friendProfileHeader');
-    if (!p) {
-      if (pane) pane.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--text-muted);">Profile not found.</div>';
-      return;
-    }
+async function renderFriendProfile(userId, username) {
+  if (!sb()) return;
+  var pane = $('friendProfilePane'), hdr = $('friendProfileHeader');
 
-    if (hdr) {
-      hdr.innerHTML =
-        avatarHtml(p, 52) +
-        '<div style="flex:1;min-width:0;">' +
-          '<div style="font-family:\'Cinzel\',serif;font-size:1rem;font-weight:700;line-height:1.3;">' + esc(p.display_name || p.username) + (p.is_pro ? proBadge() : '') + '</div>' +
-          (p.display_name ? '<div style="font-size:0.68rem;color:var(--text-muted);margin-top:2px;">@' + esc(p.username) + '</div>' : '') +
+  var res = await sb().from('profiles').select('*').eq('user_id', userId).maybeSingle();
+  var p = res.data;
+
+  if (!p) {
+    if (pane) pane.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--text-muted);">Profile not found.</div>';
+    return;
+  }
+
+  if (hdr) {
+    hdr.innerHTML =
+      avatarHtml(p, 52) +
+      '<div style="flex:1;min-width:0;">' +
+        '<div style="font-family:\'Cinzel\',serif;font-size:1rem;font-weight:700;line-height:1.3;">' +
+          esc(p.display_name || p.username) + (p.is_pro ? proBadge() : '') +
         '</div>' +
-        '<button onclick="document.getElementById(\'friendProfileOverlay\').style.display=\'none\'" style="background:none;border:none;color:var(--text-muted);font-size:1.2rem;cursor:pointer;padding:4px 8px;position:absolute;top:12px;right:12px;">&times;</button>';
-    }
+        (p.display_name ? '<div style="font-size:0.68rem;color:var(--text-muted);margin-top:2px;">@' + esc(p.username) + '</div>' : '') +
+      '</div>' +
+      '<button onclick="document.getElementById(\'friendProfileOverlay\').style.display=\'none\'" ' +
+        'style="background:none;border:none;color:var(--text-muted);font-size:1.2rem;cursor:pointer;' +
+        'padding:4px 8px;position:absolute;top:12px;right:12px;">&times;</button>';
+  }
 
-    var tmap = window.traitIconMap || {};
-    var traitsHtml = '';
-    if (p.preferred_traits && p.preferred_traits.length) {
-      traitsHtml = '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:12px;">' +
-        '<span style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:700;">Traits</span>' +
-        p.preferred_traits.map(function(t) {
-          return tmap[t]
-            ? '<div class="modal-trait-badge">' +
-                '<img src="'+esc(tmap[t])+'" title="'+esc(t)+'" style="width:20px;height:20px;" loading="lazy">' +
-              '</div>'
-            : '<span style="font-size:0.72rem;color:var(--text-muted);text-transform:capitalize;">'+esc(t)+'</span>';
-        }).join('') + '</div>';
-    }
+  var tmap = window.traitIconMap || {};
+  var traitsHtml = '';
+  if (p.preferred_traits && p.preferred_traits.length) {
+    traitsHtml = '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:12px;">' +
+      '<span style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:700;">Traits</span>' +
+      p.preferred_traits.map(function (t) {
+        return tmap[t]
+          ? '<div class="modal-trait-badge"><img src="' + esc(tmap[t]) + '" title="' + esc(t) + '" style="width:20px;height:20px;" loading="lazy"></div>'
+          : '<span style="font-size:0.72rem;color:var(--text-muted);text-transform:capitalize;">' + esc(t) + '</span>';
+      }).join('') + '</div>';
+  }
 
-    var statsHtml = '';
-    try {
-      var colData   = await fetchFriendCollectionData(userId);
-      var ac        = allCards();
-      var coreTotal = ac.filter(function(c) { return isCoreCard(c.number); }).length || 248;
-      var coreOwned = ac.filter(function(c) { return isCoreCard(c.number) && (colData.physical[c.number] || 0) > 0; }).length;
-      var digOwned  = Object.keys(colData.digital).filter(function(n) { return (colData.digital[n] || 0) > 0; }).length;
+  // Set content immediately so the pane isn't stuck on Loading…
+  if (pane) {
+    pane.innerHTML =
+      '<div style="font-size:0.85rem;color:var(--text-secondary);line-height:1.65;word-break:break-word;">' +
+        (p.bio ? esc(p.bio) : '<em style="color:var(--text-muted);">No bio yet.</em>') +
+      '</div>' +
+      (p.favorite_chamber
+        ? '<div style="display:flex;align-items:center;gap:6px;margin-top:10px;">' +
+            '<i class="fas fa-window-maximize" style="color:var(--air);font-size:0.7rem;"></i>' +
+            '<span style="font-size:0.78rem;color:var(--air);font-weight:600;">' + esc(p.favorite_chamber) + '</span>' +
+          '</div>'
+        : '') +
+      traitsHtml +
+      '<div id="fp-stats-placeholder" style="margin-top:14px;color:var(--text-muted);font-size:0.72rem;">' +
+        '<i class="fas fa-circle-notch fa-spin" style="margin-right:5px;"></i>Loading stats…' +
+      '</div>';
+  }
 
-      statsHtml =
-        '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;">' +
+  // Load stats async without blocking the pane render
+  try {
+    var colData   = await fetchFriendCollectionData(userId);
+    var ac        = allCards();
+    var coreTotal = ac.filter(function (c) { return isCoreCard(c.number); }).length || 248;
+    var coreOwned = ac.filter(function (c) { return isCoreCard(c.number) && (colData.physical[c.number] || 0) > 0; }).length;
+    var digOwned  = Object.keys(colData.digital).filter(function (n) { return (colData.digital[n] || 0) > 0; }).length;
+
+    var placeholder = document.getElementById('fp-stats-placeholder');
+    if (placeholder) {
+      placeholder.innerHTML =
+        '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">' +
           '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;">' +
             '<div style="font-family:\'Cinzel\',serif;font-size:1.1rem;font-weight:700;color:var(--accent);">' + coreOwned + '</div>' +
             '<div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">Physical</div>' +
@@ -1282,18 +1306,13 @@
             '<div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">Digital</div>' +
           '</div>' +
         '</div>';
-    } catch (e) { /* non-fatal */ }
-
-    if (pane) {
-      pane.innerHTML =
-        '<div style="font-size:0.85rem;color:var(--text-secondary);line-height:1.65;word-break:break-word;">' + (p.bio ? esc(p.bio) : '<em style="color:var(--text-muted);">No bio yet.</em>') + '</div>' +
-        (p.favorite_chamber ? '<div style="display:flex;align-items:center;gap:6px;margin-top:10px;"><i class="fas fa-window-maximize" style="color:var(--air);font-size:0.7rem;"></i><span style="font-size:0.78rem;color:var(--air);font-weight:600;">'+esc(p.favorite_chamber)+'</span></div>' : '') +
-        traitsHtml + statsHtml;
-
-      appendEnhancedStats(pane, userId);
     }
+  } catch (e) {
+    console.warn('[social] stats load failed:', e);
+    var placeholder = document.getElementById('fp-stats-placeholder');
+    if (placeholder) placeholder.remove();
   }
-
+}
   async function renderFriendCollection(userId, username) {
     var pane = $('friendProfilePane'); if (!pane) return;
     if (!sb()) {
