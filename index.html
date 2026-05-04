@@ -1686,7 +1686,7 @@ body {
 }
 .epb-main-btn {
   position: fixed; bottom: 20px; right: 20px;
-  width: 7%; aspect-ratio: 1/1; border-radius: 50%;
+  width: 45px; height: 45px; border-radius: 50%;
   border: 1px solid rgba(255,255,255,0.1);
   cursor: pointer; z-index: 51;
   display: block; padding: 0; overflow: hidden;
@@ -1694,11 +1694,14 @@ body {
   box-shadow: 0 0 10px var(--promo);
   transition: all 0.22s ease;
   backdrop-filter: blur(4px);
+  opacity: 70%;
 }
 .epb-main-btn img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+@media (hover: hover) {
 .epb-main-btn:hover {
   transform: scale(1.06); border-color: var(--promo);
   box-shadow: 0 0 0 2px rgba(255,255,255,0.2), 0 0 12px var(--promo);
+}
 }
 .epb-main-btn.open {
   transform: scale(1.06); border-color: var(--promo);
