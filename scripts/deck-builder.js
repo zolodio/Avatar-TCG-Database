@@ -262,6 +262,7 @@ function persistDeck(deck) {
   if (idx !== -1) { S.decks[idx] = deck; } else { S.decks.push(deck); }
   saveDecks();
   pushDecksToSupabase();
+  syncDeckToPublicTable(deck);
 }
 
 function removeDeck(deckId) {
@@ -360,6 +361,53 @@ async function pullWhenReady() {
       clearInterval(interval);
     }
   }, 500);
+}
+/* ═══════════════════════════════════════════════════════════════
+   PUBLIC DECK SYNC — writes/removes individual rows in `decks`
+   table so social features (friend profiles) can read them.
+═══════════════════════════════════════════════════════════════ */
+async function syncDeckToPublicTable(deck) {
+  var client = window.sb;
+  if (!client || !client.auth) return;
+  try {
+    var authResp = await client.auth.getUser();
+    var user = authResp.data && authResp.data.user;
+    if (!user) return;
+    if (deck.is_public) {
+      await client.from('decks').upsert({
+        id:          deck.id,
+        user_id:     user.id,
+        name:        deck.name,
+        description: deck.description || null,
+        cards:       deck.cards || {},
+        format:      deck.strength  || null,
+        is_public:   true,
+        updated_at:  new Date().toISOString()
+      }, { onConflict: 'id' });
+    } else {
+      await client.from('decks').delete()
+        .eq('id', deck.id)
+        .eq('user_id', user.id);
+    }
+  } catch (e) {
+    console.warn('DeckBuilder: public sync failed', e);
+  }
+}
+
+async function toggleDeckPublic(deckId) {
+  var idx = S.decks.findIndex(function (d) { return d.id === deckId; });
+  if (idx === -1) return;
+  S.decks[idx].is_public = !S.decks[idx].is_public;
+  if (S.viewingDeck && S.viewingDeck.id === deckId) {
+    S.viewingDeck.is_public = S.decks[idx].is_public;
+  }
+  saveDecks();
+  pushDecksToSupabase();
+  await syncDeckToPublicTable(S.decks[idx]);
+  toast(S.decks[idx].is_public
+    ? 'Deck is now public — friends can see it! 🌐'
+    : 'Deck is now private. 🔒');
+  render();
 }
   /* ═══════════════════════════════════════════════════════════════
      RANDOMIZER ENGINE
@@ -883,11 +931,16 @@ function render() {
       var st = computeDeckStats(entries);
       return '<div class="db-deck-card" data-deck-id="'+esc(deck.id)+'">'
         +'<div class="db-deck-thumb" style="'+(img?'background-image:url('+esc(img)+')':'background:var(--bg-primary)')+'">'
-          +'<div class="db-deck-overlay">'
-            +'<div class="db-deck-name">'+esc(deck.name)+'</div>'
-            +'<div class="db-deck-qty">'+totalStd+' cards + Chamber</div>'
-          +'</div>'
-        +'</div>'
+  +(deck.is_public
+    ? '<div style="position:absolute;top:6px;left:6px;z-index:4;background:rgba(61,184,108,0.88);'
+      +'border-radius:99px;padding:2px 8px;font-size:0.5rem;font-weight:700;color:#fff;'
+      +'letter-spacing:0.06em;backdrop-filter:blur(4px);">🌐 PUBLIC</div>'
+    : '')
+  +'<div class="db-deck-overlay">'
+    +'<div class="db-deck-name">'+esc(deck.name)+'</div>'
+    +'<div class="db-deck-qty">'+totalStd+' cards + Chamber</div>'
+  +'</div>'
++'</div>'
         +'<div class="db-deck-footer">'
           +'<div class="db-deck-miniscores">'
             +'<span style="font-size:.58rem;color:var(--fire);">ATK '+st.attackScore+'%</span>'
@@ -1350,10 +1403,17 @@ function autoCompleteDeck() {
                 +'<button class="db-mini-btn" id="deckRenameSave" style="border-color:var(--success);color:var(--success);white-space:nowrap;"><i class="fas fa-check"></i> Save</button>'
                 +'<button class="db-mini-btn" id="deckRenameCancel"><i class="fas fa-xmark"></i></button>'
               +'</div>'
-             : '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">'
-                +'<span style="font-family:\'Cinzel\',serif;font-weight:700;font-size:.98rem;">'+esc(deck.name)+'</span>'
-                +'<button class="db-mini-btn" id="deckRenameBtn" title="Rename deck" style="padding:3px 7px;"><i class="fas fa-pencil"></i></button>'
-              +'</div>'
+             : '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap;">'
+   +'<span style="font-family:\'Cinzel\',serif;font-weight:700;font-size:.98rem;">'+esc(deck.name)+'</span>'
+   +'<button class="db-mini-btn" id="deckRenameBtn" title="Rename deck" style="padding:3px 7px;"><i class="fas fa-pencil"></i></button>'
+   +'<button class="db-mini-btn" id="deckPublicToggleBtn" data-deck-id="'+esc(deck.id)+'" '
+     +'style="border-color:'+(deck.is_public?'var(--success)':'var(--border)')+';'
+     +'color:'+(deck.is_public?'var(--success)':'var(--text-muted)')+';margin-left:auto;">'
+     +(deck.is_public
+       ? '<i class="fas fa-globe" style="margin-right:4px;"></i>Public'
+       : '<i class="fas fa-lock" style="margin-right:4px;"></i>Private')
+   +'</button>'
+ +'</div>'
             )
           +'<div style="font-size:.68rem;color:var(--text-muted);margin-bottom:7px;">'
             +(ch?esc(ch.name)+' &bull; ':'')+(totalStd)+' standard cards'
@@ -1767,7 +1827,10 @@ if (renameSave) renameSave.addEventListener('click', function () {
       S.renamingDeck = false; render();
     });
   }
-
+var pubToggleBtn = document.getElementById('deckPublicToggleBtn');
+if (pubToggleBtn) pubToggleBtn.addEventListener('click', function () {
+  toggleDeckPublic(this.dataset.deckId);
+});
   /* ═══════════════════════════════════════════════════════════════
      UTILITIES
   ═══════════════════════════════════════════════════════════════ */
