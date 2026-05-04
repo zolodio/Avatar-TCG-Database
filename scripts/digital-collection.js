@@ -1,140 +1,126 @@
-/* =============================================================================
-   DIGITAL COLLECTION — digital-collection.js
-   Handles AQS3 redemption codes, IndexedDB storage, and digital card display.
-   Consumed by the main Avatar TCG Database index.html.
-   ============================================================================= */
-
+/* ═══════════════════════════════════════════════════════════════════════
+   digital-collection.js  —  Avatar Quick Strike TCG Database
+   Handles: digital card storage · AQS3 code redemption · URL hash import
+            (#import=AQS3…) · card grid display · JSON backup/restore
+   ════════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
 
-  /* ── CONSTANTS ────────────────────────────────────────────────────────────── */
-  var DC_DB_NAME    = 'AvatarQSDigital';
-  var DC_DB_STORE   = 'digitalCards';
-  var DC_USED_STORE = 'usedCodes';
-  var DC_DB_VER     = 2;
+  /* ─────────────────────────────────────────────────────────────
+     STORAGE KEYS
+  ───────────────────────────────────────────────────────────── */
+  var DC_KEY    = 'aqtcg_digital_v1';
+  var CODES_KEY = 'aqtcg_used_codes_v1';
 
-  /* ── INDEXEDDB HELPERS ───────────────────────────────────────────────────── */
-  function dcOpenDB() {
-    return new Promise(function (resolve, reject) {
-      var req = indexedDB.open(DC_DB_NAME, DC_DB_VER);
-      req.onupgradeneeded = function (e) {
-        var db = e.target.result;
-        if (!db.objectStoreNames.contains(DC_DB_STORE)) {
-          db.createObjectStore(DC_DB_STORE, { keyPath: 'uid' });
-        }
-        if (!db.objectStoreNames.contains(DC_USED_STORE)) {
-          db.createObjectStore(DC_USED_STORE, { keyPath: 'code' });
-        }
-      };
-      req.onsuccess = function () { resolve(req.result); };
-      req.onerror   = function () { reject(req.error); };
-    });
+  /* ─────────────────────────────────────────────────────────────
+     STATE
+  ───────────────────────────────────────────────────────────── */
+  var dc          = {};          // { cardNumber: { qty, lastAcquired } }
+  var dcFilter    = 'all';
+  var dcSearch    = '';
+  var dcSort      = 'acquired';
+  var initialized = false;
+
+  /* ─────────────────────────────────────────────────────────────
+     STORAGE HELPERS
+  ───────────────────────────────────────────────────────────── */
+  function loadDC() {
+    try { dc = JSON.parse(localStorage.getItem(DC_KEY) || '{}'); }
+    catch (e) { dc = {}; }
+  }
+  function saveDC() {
+    try { localStorage.setItem(DC_KEY, JSON.stringify(dc)); }
+    catch (e) {}
+  }
+  function getUsedCodes() {
+    try { return JSON.parse(localStorage.getItem(CODES_KEY) || '[]'); }
+    catch (e) { return []; }
+  }
+  function markCodeUsed(ck) {
+    var used = getUsedCodes();
+    used.push(ck);
+    try { localStorage.setItem(CODES_KEY, JSON.stringify(used)); }
+    catch (e) {}
+  }
+  function isCodeUsed(ck) {
+    return getUsedCodes().indexOf(ck) !== -1;
   }
 
-  function dcGetAll() {
-    return dcOpenDB().then(function (db) {
-      return new Promise(function (resolve, reject) {
-        var tx  = db.transaction(DC_DB_STORE, 'readonly');
-        var req = tx.objectStore(DC_DB_STORE).getAll();
-        req.onsuccess = function () { db.close(); resolve(req.result || []); };
-        req.onerror   = function () { db.close(); reject(req.error); };
-      });
-    });
-  }
-
-  function dcSaveAll(records) {
-    return dcOpenDB().then(function (db) {
-      return new Promise(function (resolve, reject) {
-        var tx    = db.transaction(DC_DB_STORE, 'readwrite');
-        var store = tx.objectStore(DC_DB_STORE);
-        records.forEach(function (r) { store.put(r); });
-        tx.oncomplete = function () { db.close(); resolve(); };
-        tx.onerror    = function () { db.close(); reject(tx.error); };
-      });
-    });
-  }
-
-  function dcClearAll() {
-    return dcOpenDB().then(function (db) {
-      return new Promise(function (resolve, reject) {
-        var tx = db.transaction(DC_DB_STORE, 'readwrite');
-        tx.objectStore(DC_DB_STORE).clear();
-        tx.oncomplete = function () { db.close(); resolve(); };
-        tx.onerror    = function () { db.close(); reject(tx.error); };
-      });
-    });
-  }
-
-  function dcIsCodeUsed(code) {
-    return dcOpenDB().then(function (db) {
-      return new Promise(function (resolve, reject) {
-        var tx  = db.transaction(DC_USED_STORE, 'readonly');
-        var req = tx.objectStore(DC_USED_STORE).get(code);
-        req.onsuccess = function () { db.close(); resolve(!!req.result); };
-        req.onerror   = function () { db.close(); reject(req.error); };
-      });
-    });
-  }
-
-  function dcMarkCodeUsed(code) {
-    return dcOpenDB().then(function (db) {
-      return new Promise(function (resolve, reject) {
-        var tx = db.transaction(DC_USED_STORE, 'readwrite');
-        tx.objectStore(DC_USED_STORE).put({ code: code, usedAt: Date.now() });
-        tx.oncomplete = function () { db.close(); resolve(); };
-        tx.onerror    = function () { db.close(); reject(tx.error); };
-      });
-    });
-  }
-
-  /* ── AQS3 DECODE (mirrors pack-opening site exactly) ────────────────────── */
+  /* ─────────────────────────────────────────────────────────────
+     CHECKSUM  (must stay identical to pack-opener.html)
+  ───────────────────────────────────────────────────────────── */
   function simpleChecksum(str) {
-    var hash = 5381;
+    var h = 5381;
     for (var i = 0; i < str.length; i++) {
-      hash = ((hash << 5) + hash) + str.charCodeAt(i);
-      hash = hash & hash; // keep 32-bit
+      h = ((h << 5) + h) + str.charCodeAt(i);
+      h = h & h; // keep 32-bit
     }
-    return Math.abs(hash).toString(36);
+    return Math.abs(h).toString(36);
   }
 
+  /* ─────────────────────────────────────────────────────────────
+     AQS3 DECODE & VERIFY
+  ───────────────────────────────────────────────────────────── */
   function decodeAQS3(code) {
     try {
-      code = code.trim();
-      if (!code.startsWith('AQS3')) return { ok: false, error: 'Not a valid redemption code. Codes start with AQS3.' };
-      var raw = JSON.parse(decodeURIComponent(escape(atob(code.slice(4)))));
-      if (!raw.v || !raw.p || !Array.isArray(raw.c) || !raw.s || !raw.t || !raw.ck) {
-        return { ok: false, error: 'Code is malformed or corrupted.' };
+      code = (code || '').trim();
+      if (!code.startsWith('AQS3')) {
+        return { error: 'Invalid code — must begin with AQS3.' };
       }
-      var checksumSource = raw.c.join(',') + '|' + raw.t + '|' + raw.p;
-      if (simpleChecksum(checksumSource) !== raw.ck) {
-        return { ok: false, error: 'Code checksum invalid — it may have been modified.' };
+      var o = JSON.parse(decodeURIComponent(escape(atob(code.slice(4)))));
+      if (!o.v || !o.p || !Array.isArray(o.c) || !o.s || !o.t || !o.ck) {
+        return { error: 'Malformed redemption code — missing required fields.' };
       }
-      return { ok: true, payload: raw };
+      // Verify integrity checksum
+      var cksrc = o.c.join(',') + '|' + o.t + '|' + o.p;
+      if (simpleChecksum(cksrc) !== o.ck) {
+        return { error: 'Integrity check failed — code may be corrupted or tampered.' };
+      }
+      if (isCodeUsed(o.ck)) {
+        return { error: 'This redemption code has already been used on this device.' };
+      }
+      return { payload: o };
     } catch (e) {
-      return { ok: false, error: 'Could not decode code. Make sure you pasted the full code.' };
+      return { error: 'Could not decode code: ' + (e.message || 'unknown error') };
     }
   }
 
-  /* ── UI HELPERS ──────────────────────────────────────────────────────────── */
-  function dcEscHtml(str) {
-    return String(str || '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+  /* ─────────────────────────────────────────────────────────────
+     ADD CARDS FROM DECODED PAYLOAD
+  ───────────────────────────────────────────────────────────── */
+  function redeemPayload(payload) {
+    var added = 0;
+    var now   = Date.now();
+    payload.c.forEach(function (num) {
+      if (!dc[num]) dc[num] = { qty: 0, lastAcquired: now };
+      dc[num].qty++;
+      dc[num].lastAcquired = now;
+      added++;
+    });
+    saveDC();
+    markCodeUsed(payload.ck);
+    return added;
   }
 
-  function dcShowMsg(msg, type) {
-    var el = document.getElementById('redemption-message');
-    if (!el) return;
-    el.textContent = msg;
-    el.className   = type || '';
-    el.style.display = msg ? '' : 'none';
+  /* ─────────────────────────────────────────────────────────────
+     PUBLIC: removeDigitalCard  (called from card detail modal)
+  ───────────────────────────────────────────────────────────── */
+  function removeDigitalCard(num) {
+    if (!dc[num]) return;
+    dc[num].qty--;
+    if (dc[num].qty <= 0) delete dc[num];
+    saveDC();
+    renderDigitalCards();
+    updateDigitalStats();
+    showToastDC('Card removed from digital collection');
   }
+  window.removeDigitalCard = removeDigitalCard;
 
-  function dcShowToast(msg) {
-    // Reuse the main site's toast if available, else fallback
-    if (typeof showToast === 'function') { showToast(msg); return; }
+  /* ─────────────────────────────────────────────────────────────
+     TOAST
+  ───────────────────────────────────────────────────────────── */
+  function showToastDC(msg) {
+    if (typeof window.showToast === 'function') { window.showToast(msg); return; }
     var t = document.getElementById('toast');
     if (!t) return;
     t.textContent = msg;
@@ -142,14 +128,51 @@
     setTimeout(function () { t.classList.remove('show'); }, 2400);
   }
 
-  /* ── CLOUD SYNC HELPER ───────────────────────────────────────────────────── */
-  function dcSyncToCloud() {
-    window.aqstDigitalCollection = dcCards;
-    if (typeof window._aqst_cloudSync === 'function') window._aqst_cloudSync();
+  /* ─────────────────────────────────────────────────────────────
+     ESCAPE HTML
+  ───────────────────────────────────────────────────────────── */
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
-  /* ── RARITY / TYPE COLOR MAP ─────────────────────────────────────────────── */
-  var DC_RARITY_COLOR = {
+  /* ─────────────────────────────────────────────────────────────
+     DIGITAL STATS BAR
+  ───────────────────────────────────────────────────────────── */
+  function updateDigitalStats() {
+    var bar = document.getElementById('digital-stats-bar');
+    if (!bar) return;
+
+    var totalUnique = Object.keys(dc).length;
+    var totalCards  = 0;
+    var coreOwned   = 0;
+    Object.keys(dc).forEach(function (num) {
+      totalCards += (dc[num].qty || 0);
+      var n = parseInt(num, 10);
+      if (!isNaN(n) && n >= 1 && n <= 235) coreOwned++;
+    });
+    var pct = Math.round((coreOwned / 248) * 100);
+
+    bar.innerHTML =
+      '<div class="stat-box">' +
+        '<div class="stat-value">' + totalCards + '</div>' +
+        '<div class="stat-label">Total Cards</div>' +
+      '</div>' +
+      '<div class="stat-box">' +
+        '<div class="stat-value">' + totalUnique + '</div>' +
+        '<div class="stat-label">Unique Cards</div>' +
+      '</div>' +
+      '<div class="stat-box">' +
+        '<div class="stat-value">' + pct + '%</div>' +
+        '<div class="stat-label">Core Complete</div>' +
+      '</div>';
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     RENDER DIGITAL CARD GRID
+  ───────────────────────────────────────────────────────────── */
+  var RC_MAP = {
     common:     'var(--text-secondary)',
     uncommon:   'var(--earth)',
     rare:       'var(--water)',
@@ -157,106 +180,85 @@
     promo:      'var(--promo)'
   };
 
-  /* ── STATE ───────────────────────────────────────────────────────────────── */
-  var dcCards          = [];   // raw records from DB
-  var dcFilterRarity   = 'all';
-  var dcSearchQuery    = '';
-  var dcSortBy         = 'acquired';
+  function renderDigitalCards() {
+    var grid  = document.getElementById('digital-cards-display');
+    var empty = document.getElementById('digital-empty-state');
+    var count = document.getElementById('digital-results-count');
+    if (!grid) return;
 
-  /* ── STATS BAR ───────────────────────────────────────────────────────────── */
-  function dcRenderStats() {
-    var bar = document.getElementById('digital-stats-bar');
-    if (!bar) return;
-    var total  = dcCards.length;
-    var unique = new Set(dcCards.map(function (r) { return r.number; })).size;
-    var packs  = new Set(dcCards.map(function (r) { return r.codeKey; })).size;
-    bar.innerHTML =
-      '<div class="stat-box"><div class="stat-value" style="filter:drop-shadow(0 0 8px var(--water))">' + unique + '</div><div class="stat-label">Unique Cards</div></div>' +
-      '<div class="stat-box"><div class="stat-value" style="filter:drop-shadow(0 0 8px var(--zen))">'   + total  + '</div><div class="stat-label">Total Owned</div></div>' +
-      '<div class="stat-box"><div class="stat-value" style="filter:drop-shadow(0 0 8px var(--earth))">' + packs  + '</div><div class="stat-label">Packs Opened</div></div>';
-  }
+    var allCards = window.allCards || [];
+    var q = dcSearch.toLowerCase();
 
-  /* ── CARD GRID ───────────────────────────────────────────────────────────── */
-  function dcGetFiltered() {
-    var q = dcSearchQuery.toLowerCase();
-
-    // Group by number to get quantities
-    var grouped = {};
-    dcCards.forEach(function (r) {
-      if (!grouped[r.number]) {
-        grouped[r.number] = { number: r.number, name: r.name, rarity: r.rarity, type: r.type, imageLink: r.imageLink, qty: 0, acquiredAt: r.acquiredAt };
-      }
-      grouped[r.number].qty++;
+    var cards = allCards.filter(function (c) {
+      if (!dc[c.number] || dc[c.number].qty <= 0) return false;
+      if (dcFilter !== 'all' && c.rarity !== dcFilter) return false;
+      if (q && c.name.toLowerCase().indexOf(q) === -1 &&
+               c.number.toLowerCase().indexOf(q) === -1) return false;
+      return true;
     });
 
-    var cards = Object.values(grouped);
-
-    if (dcFilterRarity !== 'all') {
-      cards = cards.filter(function (c) { return c.rarity === dcFilterRarity || c.type === dcFilterRarity; });
-    }
-
-    if (q) {
-      cards = cards.filter(function (c) {
-        return c.name.toLowerCase().indexOf(q) !== -1 || c.number.toLowerCase().indexOf(q) !== -1;
+    // Sort
+    var ro = { common:0, uncommon:1, rare:2, zenemental:3, promo:4 };
+    if (dcSort === 'acquired') {
+      cards.sort(function (a, b) {
+        return (dc[b.number].lastAcquired || 0) - (dc[a.number].lastAcquired || 0);
       });
-    }
-
-    if (dcSortBy === 'acquired') {
-      cards.sort(function (a, b) { return b.acquiredAt - a.acquiredAt; });
-    } else if (dcSortBy === 'number') {
-      cards.sort(function (a, b) { return parseInt(a.number) - parseInt(b.number); });
-    } else if (dcSortBy === 'name') {
+    } else if (dcSort === 'number') {
+      cards.sort(function (a, b) {
+        return (parseInt(a.number, 10) || 0) - (parseInt(b.number, 10) || 0);
+      });
+    } else if (dcSort === 'name') {
       cards.sort(function (a, b) { return a.name.localeCompare(b.name); });
-    } else if (dcSortBy === 'rarity') {
-      var ro = { common: 0, uncommon: 1, rare: 2, zenemental: 3, promo: 4 };
+    } else if (dcSort === 'rarity') {
       cards.sort(function (a, b) { return (ro[b.rarity] || 0) - (ro[a.rarity] || 0); });
     }
 
-    return cards;
-  }
-
-  function dcRenderCards() {
-    var grid    = document.getElementById('digital-cards-display');
-    var empty   = document.getElementById('digital-empty-state');
-    var counter = document.getElementById('digital-results-count');
-    if (!grid) return;
-
-    var cards = dcGetFiltered();
-    if (counter) counter.textContent = cards.length + ' card' + (cards.length !== 1 ? 's' : '');
+    if (count) {
+      count.textContent = cards.length + ' card' + (cards.length !== 1 ? 's' : '');
+    }
 
     if (cards.length === 0) {
       grid.innerHTML = '';
-      if (empty) empty.style.display = '';
+      if (empty) empty.style.display = 'block';
       return;
     }
     if (empty) empty.style.display = 'none';
 
     var html = '';
     cards.forEach(function (c) {
-      var rc = DC_RARITY_COLOR[c.rarity] || 'var(--text-secondary)';
+      var qty = dc[c.number].qty || 0;
+      var rc  = RC_MAP[c.rarity] || 'var(--text-secondary)';
       html +=
-        '<div class="card-item owned" data-number="' + dcEscHtml(c.number) + '" style="--rarity-color:' + rc + '">' +
+        '<div class="card-item owned" data-number="' + esc(c.number) + '" style="--rarity-color:' + rc + '">' +
+          '<span class="list-card-number">#' + esc(c.number) + '</span>' +
           '<div class="card-img-wrap">' +
             '<div class="card-flip-container">' +
-              '<div class="card-flip-inner">' +
+              '<div class="card-flip-inner" data-flip-id="' + esc(c.number) + '">' +
                 '<div class="card-flip-front">' +
-                  (c.imageLink
-                    ? '<img src="' + dcEscHtml(c.imageLink) + '" alt="' + dcEscHtml(c.name) + '" loading="lazy">'
-                    : '<div class="card-img-placeholder"><i class="fas fa-layer-group"></i><span>#' + dcEscHtml(c.number) + '</span></div>') +
+                  (c.imageLink ? '<img src="' + esc(c.imageLink) + '" alt="' + esc(c.name) + '" loading="lazy" onerror="this.style.display=\'none\'">' : '') +
+                '</div>' +
+                '<div class="card-flip-back">' +
+                  (c.backImageLink ? '<img src="' + esc(c.backImageLink) + '" alt="' + esc(c.name) + ' back" loading="lazy" onerror="this.style.display=\'none\'">' : '<div class="card-img-placeholder"><i class="fas fa-hat-wizard"></i></div>') +
                 '</div>' +
               '</div>' +
             '</div>' +
-            '<span class="card-number-badge">#' + dcEscHtml(c.number) + '</span>' +
-            '<span class="card-owned-badge"><i class="fas fa-check"></i></span>' +
-            (c.qty > 1 ? '<span class="card-qty-badge">x' + c.qty + '</span>' : '') +
+            '<span class="card-number-badge">#' + esc(c.number) + '</span>' +
+            '<span class="card-owned-badge"><i class="fas fa-layer-group"></i></span>' +
+            (qty > 1 ? '<span class="card-qty-badge">x' + qty + '</span>' : '') +
+            '<button class="card-flip-btn" data-flip-target="' + esc(c.number) + '" title="Flip card"><i class="fas fa-rotate"></i></button>' +
           '</div>' +
           '<div class="card-info">' +
-            '<div class="card-name" title="' + dcEscHtml(c.name) + '">' + dcEscHtml(c.name) + '</div>' +
+            '<div class="card-name" title="' + esc(c.name) + '">' + esc(c.name) + '</div>' +
             '<div class="card-meta">' +
-              '<span class="card-type-tag tag-' + dcEscHtml(c.type) + '">' + dcEscHtml(c.type) + '</span>' +
-              '<span class="card-rarity-dot dot-' + dcEscHtml(c.rarity) + '"></span>' +
-              '<span class="card-rarity-label rarity-' + dcEscHtml(c.rarity) + '">' + dcEscHtml(c.rarity) + '</span>' +
+              '<span class="card-type-tag tag-' + esc(c.type) + '">' + esc(c.type) + '</span>' +
+              '<span class="card-rarity-dot dot-' + esc(c.rarity) + '"></span>' +
+              '<span class="card-rarity-label rarity-' + esc(c.rarity) + '">' + esc(c.rarity) + '</span>' +
             '</div>' +
+          '</div>' +
+          '<div class="list-card-right">' +
+            '<span class="list-owned-icon show"><i class="fas fa-check-circle"></i></span>' +
+            (qty > 1 ? '<span class="list-qty show">x' + qty + '</span>' : '') +
+            '<span class="list-card-arrow"><i class="fas fa-chevron-right"></i></span>' +
           '</div>' +
         '</div>';
     });
@@ -264,324 +266,441 @@
     grid.innerHTML = html;
   }
 
-  /* ── FILTER PILLS ────────────────────────────────────────────────────────── */
-  function dcInitFilters() {
-    var row = document.getElementById('digital-filters');
-    if (!row) return;
-    row.querySelectorAll('.filter-pill').forEach(function (pill) {
-      pill.addEventListener('click', function () {
-        row.querySelectorAll('.filter-pill').forEach(function (p) { p.classList.remove('active'); });
-        pill.classList.add('active');
-        dcFilterRarity = pill.dataset.filter;
-        dcRenderCards();
-      });
-    });
-  }
+  /* ─────────────────────────────────────────────────────────────
+     IMPORT CONFIRMATION MODAL
+     Shown when arriving via #import=AQS3… from the pack opener
+  ───────────────────────────────────────────────────────────── */
+  var MODAL_ID = 'dcImportModal';
 
-  /* ── SEARCH ──────────────────────────────────────────────────────────────── */
-  function dcInitSearch() {
-    var inp   = document.getElementById('digital-search');
-    var clear = document.getElementById('digital-search-clear');
-    if (!inp) return;
-    inp.addEventListener('input', function () {
-      dcSearchQuery = this.value;
-      if (clear) clear.classList.toggle('visible', this.value.length > 0);
-      dcRenderCards();
-    });
-    if (clear) {
-      clear.addEventListener('click', function () {
-        inp.value = '';
-        dcSearchQuery = '';
-        this.classList.remove('visible');
-        inp.focus();
-        dcRenderCards();
-      });
-    }
-  }
-
-  /* ── SORT ────────────────────────────────────────────────────────────────── */
-  function dcInitSort() {
-    var sel = document.getElementById('digital-sort-by');
-    if (!sel) return;
-    sel.addEventListener('change', function () {
-      dcSortBy = this.value;
-      dcRenderCards();
-    });
-  }
-
-  /* ── EXPORT / IMPORT ─────────────────────────────────────────────────────── */
-  function dcExportJSON() {
-    if (dcCards.length === 0) { dcShowToast('No digital cards to export'); return; }
-    var blob = new Blob([JSON.stringify(dcCards, null, 2)], { type: 'application/json' });
-    var url  = URL.createObjectURL(blob);
-    var a    = document.createElement('a');
-    a.href = url; a.download = 'avatar_digital_collection.json'; a.click();
-    setTimeout(function () { URL.revokeObjectURL(url); }, 5000);
-    dcShowToast('Digital collection exported!');
-  }
-
-  function dcExportCSV() {
-    if (dcCards.length === 0) { dcShowToast('No digital cards to export'); return; }
-    var grouped = {};
-    dcCards.forEach(function (r) {
-      grouped[r.number] = (grouped[r.number] || 0) + 1;
-    });
-    var csv = 'Number,Name,Type,Rarity,Quantity\n';
-    Object.keys(grouped).forEach(function (num) {
-      var r = dcCards.find(function (c) { return c.number === num; });
-      csv += num + ',"' + (r.name || '').replace(/"/g, '""') + '",' + (r.type || '') + ',' + (r.rarity || '') + ',' + grouped[num] + '\n';
-    });
-    var blob = new Blob([csv], { type: 'text/csv' });
-    var url  = URL.createObjectURL(blob);
-    var a    = document.createElement('a');
-    a.href = url; a.download = 'avatar_digital_collection.csv'; a.click();
-    setTimeout(function () { URL.revokeObjectURL(url); }, 5000);
-    dcShowToast('CSV exported!');
-  }
-
-  function dcImportJSON(file) {
-    var reader = new FileReader();
-    reader.onload = function () {
-      try {
-        var data = JSON.parse(reader.result);
-        if (!Array.isArray(data)) throw new Error('Invalid format');
-        dcSaveAll(data).then(function () {
-          dcCards = data;
-          dcSyncToCloud();
-          dcRenderStats();
-          dcRenderCards();
-          dcShowToast('Digital collection imported — ' + data.length + ' records');
-        });
-      } catch (e) {
-        dcShowToast('Import failed: invalid JSON file');
-      }
-    };
-    reader.readAsText(file);
-  }
-
-  /* ── CLEAR ───────────────────────────────────────────────────────────────── */
-  function dcClearCollection() {
-    if (!confirm('Clear ALL digital cards? This cannot be undone.')) return;
-    dcClearAll().then(function () {
-      dcCards = [];
-      dcSyncToCloud();
-      dcRenderStats();
-      dcRenderCards();
-      dcShowToast('Digital collection cleared');
-    });
-  }
-
-  /* ── REMOVE SINGLE CARD (called from the modal in index.html) ────────────── */
-  window.removeDigitalCard = function (cardNumber) {
-    // Remove ONE instance of this card number from dcCards
-    var idx = dcCards.findIndex(function (r) { return r.number === cardNumber; });
-    if (idx === -1) { dcShowToast('Card not found in digital collection'); return; }
-    var removed = dcCards.splice(idx, 1)[0];
-
-    // Persist: rewrite all remaining records
-    dcSaveAll(dcCards).then(function () {
-      dcSyncToCloud();
-      dcRenderStats();
-      dcRenderCards();
-      dcShowToast('Removed ' + (removed.name || cardNumber) + ' from digital collection');
-    }).catch(function () {
-      dcShowToast('Error removing card — please try again');
-    });
+  var SRC_LABELS = {
+    game_win:   '⚔️  Earned in Battle',
+    tournament: '🏆  Tournament Reward',
+    daily:      '📅  Daily Reward',
+    gift:       '🎁  Gifted Pack',
+    purchase:   '💎  Purchased',
+    demo:       '🔮  Preview Pack',
+    legacy:     '📜  Shared Pack',
+    digital:    '💿  Digital Pack',
+    booster:    '📦  Booster Pack'
   };
 
-  /* ── REDEEM ──────────────────────────────────────────────────────────────── */
-  function dcRedeem() {
-    var inp    = document.getElementById('redemption-code-input');
-    var code   = (inp ? inp.value.trim() : '');
+  var RARITY_HEX = {
+    common:     '#8b8fa8',
+    uncommon:   '#5cb85c',
+    rare:       '#2e8ce8',
+    zenemental: '#b44ddf',
+    promo:      '#e8b632'
+  };
 
-    dcShowMsg('', '');
+  function buildImportModal() {
+    if (document.getElementById(MODAL_ID)) return;
 
-    if (!code) {
-      dcShowMsg('Please paste a redemption code first.', 'error');
-      return;
+    var overlay = document.createElement('div');
+    overlay.id = MODAL_ID;
+    overlay.style.cssText =
+      'position:fixed;inset:0;background:rgba(0,0,0,0.86);z-index:600;' +
+      'display:none;align-items:center;justify-content:center;padding:16px;' +
+      'backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);';
+
+    overlay.innerHTML =
+      '<div id="dcImportBox" style="' +
+        'background:#0f1322;border:1px solid #252a42;border-radius:18px;' +
+        'max-width:460px;width:100%;max-height:88vh;' +
+        'display:flex;flex-direction:column;' +
+        'box-shadow:0 24px 64px rgba(0,0,0,0.7),0 0 0 1px rgba(255,255,255,0.04);' +
+        'animation:modalSlideUp 0.3s ease;">' +
+
+        /* Header */
+        '<div style="padding:20px 20px 14px;border-bottom:1px solid #252a42;flex-shrink:0;">' +
+          '<div style="display:flex;align-items:center;gap:12px;">' +
+            '<div style="width:44px;height:44px;border-radius:12px;flex-shrink:0;' +
+              'background:rgba(61,184,108,0.12);border:1px solid rgba(61,184,108,0.28);' +
+              'display:flex;align-items:center;justify-content:center;">' +
+              '<i class="fas fa-layer-group" style="color:#3db86c;font-size:1.15rem;"></i>' +
+            '</div>' +
+            '<div>' +
+              '<div id="dcImportTitle" style="font-family:Cinzel,serif;font-weight:700;font-size:1.05rem;color:#e8e6f0;">Import Pack to Collection</div>' +
+              '<div id="dcImportSub" style="font-size:0.7rem;color:#5a5e78;margin-top:3px;"></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        /* Source badge + card list */
+        '<div style="padding:14px 18px 0;flex-shrink:0;" id="dcImportBadgeRow"></div>' +
+        '<div id="dcImportCardList" style="overflow-y:auto;padding:8px 18px 16px;flex:1;min-height:0;display:flex;flex-direction:column;gap:6px;"></div>' +
+
+        /* Footer */
+        '<div style="padding:14px 18px 18px;border-top:1px solid #252a42;display:flex;gap:10px;flex-shrink:0;">' +
+          '<button id="dcImportConfirmBtn" style="' +
+            'flex:1;padding:14px;border-radius:10px;cursor:pointer;transition:all 0.2s;' +
+            'font-family:\'Nunito Sans\',sans-serif;font-weight:700;font-size:0.9rem;' +
+            'background:linear-gradient(135deg,#1e4a12,#338020);color:#6fda80;' +
+            'border:1px solid rgba(61,184,108,0.4);' +
+            'display:flex;align-items:center;justify-content:center;gap:8px;' +
+            'box-shadow:0 4px 18px rgba(61,184,108,0.18);">' +
+            '<i class="fas fa-layer-group"></i> Import to My Collection' +
+          '</button>' +
+          '<button id="dcImportDismissBtn" style="' +
+            'padding:14px 18px;border-radius:10px;cursor:pointer;transition:all 0.2s;' +
+            'font-family:\'Nunito Sans\',sans-serif;font-weight:700;font-size:0.85rem;' +
+            'background:#151a2c;border:1px solid #252a42;color:#8b8fa8;">' +
+            'Dismiss' +
+          '</button>' +
+        '</div>' +
+      '</div>';
+
+    document.body.appendChild(overlay);
+
+    document.getElementById('dcImportConfirmBtn').addEventListener('click', function () {
+      var payload = this._payload;
+      if (!payload) return;
+      var added = redeemPayload(payload);
+      renderDigitalCards();
+      updateDigitalStats();
+      closeImportModal();
+      showToastDC('✓ ' + added + ' card' + (added !== 1 ? 's' : '') + ' added to your digital collection!');
+      // Navigate to Digital Collection → Collection tab
+      if (typeof window.switchTab === 'function') window.switchTab('digital-collection');
+      setTimeout(function () {
+        var btn = document.querySelector('[data-nested-tab="digital-main"]');
+        if (btn) btn.click();
+      }, 200);
+      clearImportHash();
+    });
+
+    document.getElementById('dcImportDismissBtn').addEventListener('click', function () {
+      closeImportModal();
+      clearImportHash();
+    });
+
+    overlay.addEventListener('click', function (e) {
+      if (e.target === this) { closeImportModal(); clearImportHash(); }
+    });
+  }
+
+  function clearImportHash() {
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  }
+
+  function openImportModal(payload) {
+    buildImportModal();
+    var overlay  = document.getElementById(MODAL_ID);
+    var list     = document.getElementById('dcImportCardList');
+    var badge    = document.getElementById('dcImportBadgeRow');
+    var subEl    = document.getElementById('dcImportSub');
+    var confirm  = document.getElementById('dcImportConfirmBtn');
+    if (!overlay || !list || !confirm) return;
+
+    confirm._payload = payload;
+
+    var allCards = window.allCards || [];
+    var cardCount = payload.c.length;
+
+    if (subEl) {
+      subEl.textContent = cardCount + ' card' + (cardCount !== 1 ? 's' : '') +
+        ' will be added to your digital collection';
     }
 
-    // Decode the AQS3 code
-    var result = decodeAQS3(code);
-    if (!result.ok) {
-      dcShowMsg(result.error, 'error');
-      return;
+    // Source badge
+    var srcLabel = SRC_LABELS[payload.s] || '📦  Pack';
+    if (badge) {
+      badge.innerHTML =
+        '<div style="display:inline-flex;align-items:center;gap:6px;' +
+          'padding:5px 14px;border-radius:99px;margin-bottom:10px;' +
+          'background:rgba(74,125,255,0.08);border:1px solid rgba(74,125,255,0.2);' +
+          'font-size:0.68rem;color:#8b8fa8;font-weight:700;letter-spacing:0.06em;">' +
+          esc(srcLabel) +
+        '</div>';
     }
 
-    var payload = result.payload;
+    // Card rows
+    var rows = payload.c.map(function (num) {
+      var card   = allCards.find(function (c) { return c.number === num; });
+      var name   = card ? card.name   : 'Card #' + num;
+      var rarity = card ? card.rarity : 'common';
+      var imgSrc = card ? card.imageLink : '';
+      var dot    = RARITY_HEX[rarity] || '#8b8fa8';
+      var alreadyOwned = dc[num] && dc[num].qty > 0;
 
-    // Check for duplicate redemption
-    dcIsCodeUsed(code).then(function (used) {
-      if (used) {
-        dcShowMsg('This code has already been redeemed!', 'error');
+      return (
+        '<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;' +
+          'background:#151a2c;border:1px solid #252a42;border-radius:8px;">' +
+          (imgSrc
+            ? '<img src="' + esc(imgSrc) + '" loading="lazy" ' +
+              'style="width:34px;height:48px;object-fit:cover;border-radius:4px;flex-shrink:0;" ' +
+              'onerror="this.style.display=\'none\'">'
+            : '<div style="width:34px;height:48px;background:#0a0c14;border-radius:4px;flex-shrink:0;' +
+              'display:flex;align-items:center;justify-content:center;">' +
+              '<i class="fas fa-hat-wizard" style="opacity:0.2;font-size:0.65rem;"></i></div>'
+          ) +
+          '<div style="flex:1;min-width:0;">' +
+            '<div style="font-weight:700;font-size:0.78rem;color:#e8e6f0;' +
+              'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + esc(name) + '</div>' +
+            '<div style="font-size:0.6rem;color:#5a5e78;margin-top:2px;">' +
+              '#' + esc(num) +
+              (alreadyOwned ? ' &nbsp;·&nbsp; <span style="color:#f0c946;">+1 (already own)</span>' : '') +
+            '</div>' +
+          '</div>' +
+          '<div style="width:8px;height:8px;border-radius:50%;background:' + dot + ';flex-shrink:0;"></div>' +
+        '</div>'
+      );
+    }).join('');
+
+    list.innerHTML = rows;
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeImportModal() {
+    var overlay = document.getElementById(MODAL_ID);
+    if (overlay) overlay.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     URL HASH DETECTION  (#import=AQS3…)
+  ───────────────────────────────────────────────────────────── */
+  function checkImportHash() {
+    var hash = location.hash || '';
+    if (!hash || hash.indexOf('AQS3') === -1) return;
+
+    // Support both  #import=AQS3…  and  #AQS3…  from legacy pack links
+    var code = '';
+    if (hash.indexOf('import=') !== -1) {
+      code = hash.replace(/^.*import=/, '');
+    } else if (hash.startsWith('#AQS3')) {
+      code = hash.slice(1);
+    }
+    if (!code.startsWith('AQS3')) return;
+
+    function tryDecode() {
+      var result = decodeAQS3(code);
+      if (result.error) {
+        // Show error toast and clear hash
+        showToastDC('Import failed: ' + result.error);
+        clearImportHash();
         return;
       }
+      openImportModal(result.payload);
+    }
 
-      // Resolve card numbers to full card objects via the main site's allCards array
-      var resolvedCards = [];
-      payload.c.forEach(function (num) {
-        var cardNum = String(num);
-        // Try to look up from main site's allCards (global)
-        var found = null;
-        if (typeof allCards !== 'undefined' && Array.isArray(allCards)) {
-          found = allCards.find(function (c) { return c.number === cardNum; });
+    // Wait for allCards to be populated (CSV fetch may still be in flight)
+    if (window.allCards && window.allCards.length > 0) {
+      tryDecode();
+    } else {
+      var attempts = 0;
+      var poll = setInterval(function () {
+        attempts++;
+        if ((window.allCards && window.allCards.length > 0) || attempts > 40) {
+          clearInterval(poll);
+          tryDecode();
         }
-        // Also try cardDatabase wrapper if present
-        if (!found && typeof cardDatabase !== 'undefined' && cardDatabase.findCard) {
-          found = cardDatabase.findCard(cardNum);
+      }, 250);
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     WIRE REDEEM TAB
+  ───────────────────────────────────────────────────────────── */
+  function wireRedeemTab() {
+    var inp    = document.getElementById('redemption-code-input');
+    var btnRdm = document.getElementById('btn-redeem');
+    var btnClr = document.getElementById('btn-redeem-clear');
+    var msgEl  = document.getElementById('redemption-message');
+
+    if (!inp || !btnRdm) return;
+
+    function showMsg(text, type) {
+      if (!msgEl) return;
+      // Clear old classes, set new
+      msgEl.className = '';
+      if (type) msgEl.classList.add(type);
+      msgEl.textContent = text;
+      msgEl.style.display = text ? '' : 'none';
+    }
+
+    function doRedeem() {
+      var code = (inp.value || '').trim();
+      if (!code) {
+        showMsg('Please paste a redemption code first.', 'error');
+        return;
+      }
+      showMsg('Verifying code…', '');
+
+      // Short delay so the "Verifying…" message is visible
+      setTimeout(function () {
+        var result = decodeAQS3(code);
+        if (result.error) {
+          showMsg('✗  ' + result.error, 'error');
+          return;
         }
-
-        if (found) {
-          resolvedCards.push({
-            uid:        cardNum + '_' + Date.now() + '_' + Math.random().toString(36).slice(2),
-            number:     found.number,
-            name:       found.name,
-            type:       found.type,
-            rarity:     found.rarity,
-            imageLink:  found.imageLink  || '',
-            set:        found.set        || '',
-            codeKey:    code.slice(0, 32), // store prefix to group by pack
-            acquiredAt: payload.t || Date.now()
-          });
-        } else {
-          // Card not in database — store with minimal info
-          resolvedCards.push({
-            uid:        cardNum + '_' + Date.now() + '_' + Math.random().toString(36).slice(2),
-            number:     cardNum,
-            name:       'Card #' + cardNum,
-            type:       'unknown',
-            rarity:     'common',
-            imageLink:  '',
-            set:        '',
-            codeKey:    code.slice(0, 32),
-            acquiredAt: payload.t || Date.now()
-          });
-        }
-      });
-
-      // Save cards and mark code used
-      Promise.all([
-        dcSaveAll(resolvedCards),
-        dcMarkCodeUsed(code)
-      ]).then(function () {
-        dcCards = dcCards.concat(resolvedCards);
-        dcSyncToCloud();
-        dcRenderStats();
-        dcRenderCards();
-
-        if (inp) inp.value = '';
-        dcShowMsg(
-          '✓ Redeemed ' + resolvedCards.length + ' card' + (resolvedCards.length !== 1 ? 's' : '') + ' from pack ' + (payload.p || '') + '!',
+        var added = redeemPayload(result.payload);
+        renderDigitalCards();
+        updateDigitalStats();
+        inp.value = '';
+        showMsg(
+          '✓  Success! ' + added + ' card' + (added !== 1 ? 's' : '') +
+          ' added to your digital collection.',
           'success'
         );
-        dcShowToast('Added ' + resolvedCards.length + ' cards to digital collection!');
+        // Switch to the collection view after 1.8 s
+        setTimeout(function () {
+          var btn = document.querySelector('[data-nested-tab="digital-main"]');
+          if (btn) btn.click();
+        }, 1800);
+      }, 180);
+    }
 
-        // Switch to the Collection sub-tab so user sees the cards
-        var collectionBtn = document.querySelector('#tab-digital-collection .tab-btn-nested[data-nested-tab="digital-main"]');
-        if (collectionBtn) collectionBtn.click();
-
-      }).catch(function (err) {
-        dcShowMsg('Failed to save cards: ' + (err && err.message ? err.message : err), 'error');
-      });
-
-    }).catch(function () {
-      dcShowMsg('Could not verify code — please try again.', 'error');
+    btnRdm.addEventListener('click', doRedeem);
+    inp.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) doRedeem();
     });
+
+    if (btnClr) {
+      btnClr.addEventListener('click', function () {
+        inp.value = '';
+        showMsg('', '');
+      });
+    }
   }
 
-  /* ── EVENT WIRING ────────────────────────────────────────────────────────── */
-  function dcWireEvents() {
-    // Redeem button
-    var btnRedeem = document.getElementById('btn-redeem');
-    if (btnRedeem) {
-      btnRedeem.addEventListener('click', dcRedeem);
-    }
+  /* ─────────────────────────────────────────────────────────────
+     WIRE EXPORT / IMPORT JSON / CLEAR
+  ───────────────────────────────────────────────────────────── */
+  function wireControlBar() {
+    var expBtn = document.getElementById('btn-digital-export-json');
+    var impBtn = document.getElementById('btn-digital-import-json');
+    var clrBtn = document.getElementById('btn-digital-clear');
 
-    // Redeem textarea — Enter key submits (Shift+Enter = newline)
-    var redeemInp = document.getElementById('redemption-code-input');
-    if (redeemInp) {
-      redeemInp.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); dcRedeem(); }
+    if (expBtn) {
+      expBtn.addEventListener('click', function () {
+        var blob = new Blob([JSON.stringify(dc, null, 2)], { type: 'application/json' });
+        var url  = URL.createObjectURL(blob);
+        var a    = document.createElement('a');
+        a.href = url; a.download = 'avatar_digital_collection.json'; a.click();
+        setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+        showToastDC('Digital collection exported!');
       });
     }
 
-    // Clear input button next to redeem
-    var btnRedeemClear = document.getElementById('btn-redeem-clear');
-    if (btnRedeemClear) {
-      btnRedeemClear.addEventListener('click', function () {
-        var inp = document.getElementById('redemption-code-input');
-        if (inp) inp.value = '';
-        dcShowMsg('', '');
+    if (impBtn) {
+      impBtn.addEventListener('click', function () {
+        var input = document.createElement('input');
+        input.type = 'file'; input.accept = '.json,application/json';
+        input.onchange = function (e) {
+          var file = e.target.files[0];
+          if (!file) return;
+          var reader = new FileReader();
+          reader.onload = function () {
+            try {
+              var parsed = JSON.parse(reader.result);
+              if (typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('bad format');
+              dc = parsed; saveDC();
+              renderDigitalCards(); updateDigitalStats();
+              showToastDC('Digital collection imported from JSON!');
+            } catch (err) {
+              showToastDC('Failed to import — file does not look like a valid backup.');
+            }
+          };
+          reader.readAsText(file);
+        };
+        input.click();
       });
     }
 
-    // Export JSON
-    var btnExJ = document.getElementById('btn-digital-export-json');
-    if (btnExJ) btnExJ.addEventListener('click', dcExportJSON);
-
-    // Export CSV (button removed from HTML but handler kept for safety)
-    var btnExC = document.getElementById('btn-digital-export-csv');
-    if (btnExC) btnExC.addEventListener('click', dcExportCSV);
-
-    // Import JSON
-    var btnImJ = document.getElementById('btn-digital-import-json');
-    if (btnImJ) {
-      btnImJ.addEventListener('click', function () {
-        var fi = document.createElement('input');
-        fi.type = 'file'; fi.accept = '.json';
-        fi.addEventListener('change', function (e) {
-          if (e.target.files[0]) dcImportJSON(e.target.files[0]);
-        });
-        fi.click();
+    if (clrBtn) {
+      clrBtn.addEventListener('click', function () {
+        if (!confirm('Clear your entire digital collection?\n\nThis cannot be undone — export a backup first if you want to keep your cards.')) return;
+        dc = {}; saveDC();
+        renderDigitalCards(); updateDigitalStats();
+        showToastDC('Digital collection cleared');
       });
     }
-
-    // Clear all digital cards
-    var btnClear = document.getElementById('btn-digital-clear');
-    if (btnClear) btnClear.addEventListener('click', dcClearCollection);
   }
 
-  /* ── PUBLIC INIT ─────────────────────────────────────────────────────────── */
+  /* ─────────────────────────────────────────────────────────────
+     WIRE SEARCH, FILTERS, SORT
+  ───────────────────────────────────────────────────────────── */
+  function wireSearchFilters() {
+    var searchEl  = document.getElementById('digital-search');
+    var clearEl   = document.getElementById('digital-search-clear');
+    var sortEl    = document.getElementById('digital-sort-by');
+    var filtersEl = document.getElementById('digital-filters');
 
-  // Called during main app init() — loads DB and primes state
-  window.initDigitalCollection = function () {
-    dcGetAll().then(function (records) {
-      dcCards = records || [];
-      window.aqstDigitalCollection = dcCards;
-      dcRenderStats();
-      dcRenderCards();
-    }).catch(function () {
-      dcCards = [];
-      window.aqstDigitalCollection = [];
-    });
+    if (searchEl) {
+      searchEl.addEventListener('input', function () {
+        dcSearch = this.value;
+        if (clearEl) clearEl.classList.toggle('visible', this.value.length > 0);
+        renderDigitalCards();
+      });
+    }
 
-    dcInitFilters();
-    dcInitSearch();
-    dcInitSort();
-    dcWireEvents();
-  };
+    if (clearEl) {
+      clearEl.addEventListener('click', function () {
+        if (searchEl) { searchEl.value = ''; dcSearch = ''; }
+        this.classList.remove('visible');
+        renderDigitalCards();
+      });
+    }
 
-  // Called by auth.js after a cloud pull overwrites window.aqstDigitalCollection
-  window.aqstRefreshDigital = function () {
-    var incoming = window.aqstDigitalCollection;
-    if (!Array.isArray(incoming)) return;
-    dcCards = incoming;
-    // Replace local IndexedDB with the cloud data
-    dcClearAll().then(function () {
-      return dcCards.length ? dcSaveAll(dcCards) : Promise.resolve();
-    }).then(function () {
-      dcRenderStats();
-      dcRenderCards();
-    }).catch(function () {
-      dcRenderStats();
-      dcRenderCards();
-    });
-  };
+    if (sortEl) {
+      sortEl.addEventListener('change', function () {
+        dcSort = this.value;
+        renderDigitalCards();
+      });
+    }
 
-  // Called again after tab switch (idempotent re-render)
+    if (filtersEl) {
+      filtersEl.addEventListener('click', function (e) {
+        var pill = e.target.closest('.filter-pill[data-filter]');
+        if (!pill) return;
+        filtersEl.querySelectorAll('.filter-pill').forEach(function (p) { p.classList.remove('active'); });
+        pill.classList.add('active');
+        dcFilter = pill.getAttribute('data-filter');
+        renderDigitalCards();
+      });
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     PUBLIC INIT  (called by the HTML after all scripts load)
+  ───────────────────────────────────────────────────────────── */
   window.initDigitalCollectionTab = function () {
-    dcRenderStats();
-    dcRenderCards();
+    if (initialized) return;
+    initialized = true;
+
+    loadDC();
+    wireRedeemTab();
+    wireControlBar();
+    wireSearchFilters();
+    renderDigitalCards();
+    updateDigitalStats();
+
+    // Re-render when allCards finishes loading (CSV is async)
+    var dcPollCount = 0;
+    var dcPoll = setInterval(function () {
+      dcPollCount++;
+      if ((window.allCards && window.allCards.length > 0) || dcPollCount > 60) {
+        clearInterval(dcPoll);
+        renderDigitalCards();
+        updateDigitalStats();
+      }
+    }, 300);
+
+    // Check for incoming pack import link
+    setTimeout(checkImportHash, 600);
+  };
+
+  // Also catch hash changes (e.g. user navigates back from pack opener)
+  window.addEventListener('hashchange', function () {
+    checkImportHash();
+  });
+
+  // Expose renderDigitalCards so other scripts can trigger a refresh
+  window.refreshDigitalCards = function () {
+    loadDC();
+    renderDigitalCards();
+    updateDigitalStats();
   };
 
 })();
