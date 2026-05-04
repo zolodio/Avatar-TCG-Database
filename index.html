@@ -218,9 +218,7 @@ body {
 
 .how-to-popup {
   position: fixed;
-  bottom: 160px; right: 20px;
-  width: 320px;
-  max-height: 70vh;
+  inset: 5vw;
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -5139,99 +5137,133 @@ init();
 (function () {
   /* ── Tab-specific how-to content ── */
   var HOW_TO_PAGES = {
-    home: {
-      title: 'Card Collection Help',
-      html: `
-        <h3>Searching & Filtering</h3>
-        <p>Type in the search box to find cards by name, number, type, rarity, rules text, or flavor text. Click <strong>✕</strong> to clear instantly.</p>
-        <h3>Adding Cards</h3>
-        <p>Click any card to open its detail view. Use <strong>+/–</strong> to adjust quantity, then click <em>Add to Collection</em>.</p>
-        <h3>Rarity Filter</h3>
-        <p>Click the colored rarity chips (C / UC / R / ZEN / PR) to filter to that rarity. Click again to clear.</p>
-        <h3>Sorting</h3>
-        <p>Use the sort dropdown and the arrow button to reverse order. Sort by number, name, rarity, type, quantity, stats, or price.</p>
-        <h3>Compare Collections</h3>
-        <p>Click <em>Compare</em>, paste a friend's save code, and their cards show a blue badge. Use the <em>Shared</em> filter to see only cards you both own.</p>
-        <h3>Export / Import</h3>
-        <p>Export saves a CSV + copies your save code. Import accepts a CSV file or a pasted save code. Clear lets you wipe your collection or comparison data.</p>
-        <h3>Card Zoom</h3>
-        <p>In the card detail modal, click the image to open a fullscreen zoom. Click anywhere outside or press Esc to close.</p>`
-    },
-    portfolio: {
-      title: 'Portfolio Help',
-      html: `
-        <h3>Pack Calculators</h3>
-        <p>Each tab (Zenemental, Chamber, Rare, Uncommon, Common) shows how many packs you'd expect to need to complete that subset, using the Coupon Collector formula.</p>
-        <h3>How It Works</h3>
-        <p>The calculator uses your current owned cards to estimate remaining packs. Green chips = owned, grey = missing.</p>
-        <h3>Pull Rates</h3>
-        <ul>
-          <li><strong>Zenemental</strong> — 1-in-6 per pack</li>
-          <li><strong>Chamber</strong> — 1 per pack</li>
-          <li><strong>Rare</strong> — 1 per pack</li>
-          <li><strong>Uncommon</strong> — 3 per pack</li>
-          <li><strong>Common</strong> — 5 per pack</li>
-        </ul>
-        <h3>Save Code</h3>
-        <p>The <em>Save Code</em> tab shows your current code — select it all to copy and back up offline.</p>`
-    },
-    'digital-collection': {
-      title: 'Digital Collection Help',
-      html: `
-        <h3>Redeeming Codes</h3>
-        <p>Go to the <em>Redeem</em> tab and paste a one-time code from the Booster App. Each code can only be used once.</p>
-        <h3>Viewing Your Digital Cards</h3>
-        <p>The <em>Collection</em> tab shows all your redeemed cards. Filter by rarity or search by name/number.</p>
-        <h3>Backup & Restore</h3>
-        <p>Use <em>Export JSON</em> to save a backup file and <em>Import JSON</em> to restore it on another device.</p>
-        <h3>Deck Builder</h3>
-        <p>Coming soon — build and save decks using your digital collection.</p>`
-    },
-    howtoplay: {
-      title: 'How to Play Help',
-      html: `
-        <h3>Interactive Demo</h3>
-        <p>The Flash demo runs via the Ruffle emulator. If it doesn't load, click <em>Try Again</em> or check your connection.</p>
-        <h3>Video Tutorial</h3>
-        <p>A YouTube walkthrough is embedded below the demo. Click <em>Watch on YouTube</em> if it doesn't play inline.</p>
-        <h3>Rulebook</h3>
-        <p>Click the <em>Rulebook</em> tab and download the official PDF for the complete rules.</p>
-        <h3>Avatar Wiki</h3>
-        <p>The <em>Avatar Wiki</em> tab links to the fandom wiki with card and game information.</p>`
-    },
-    wayback: {
-      title: 'Archived Sites',
-      html: `
-        <h3>Wayback Machine Links</h3>
-        <p>These are historical snapshots of Avatar TCG websites preserved via the Internet Archive and other sources.</p>
-        <ul>
-          <li><strong>UDE.com/Avatar</strong> — Upper Deck's original game portal</li>
-          <li><strong>Musogato.com</strong> — community card database</li>
-          <li><strong>Laststicker.ru</strong> — card checklist resource</li>
-        </ul>
-        <p>Links open in a new tab. Some archived pages may load slowly.</p>`
-    },
-    profile: {
-      title: 'Together / Social Help',
-      html: `
-        <h3>Creating an Account</h3>
-        <p>Enter your email and password, then click <em>Sign Up</em>. Once in, choose a username — it can only be set once.</p>
-        <h3>Cloud Sync</h3>
-        <p>Click <em>☁ Sync Now</em> to push your physical collection to the cloud. <em>⬇ Load Cloud</em> pulls it back.</p>
-        <h3>Editing Your Profile</h3>
-        <p>Set a display name, bio, avatar (card artwork), preferred traits, and favourite chamber. Drag the avatar preview to reframe the image.</p>
-        <h3>Friends</h3>
-        <p>Search by username and send a friend request. Accept incoming requests from the <em>Pending</em> section.</p>
-        <h3>Chat</h3>
-        <p>Global chat is open to everyone. Click a friend's <em>Chat</em> button to open a private DM room.</p>
-        <h3>Trades</h3>
-        <p>Click <em>Propose a Trade</em>, select a friend, pick cards to offer and request, then send. They can accept or decline from their Trades tab.</p>
-        <h3>Forum</h3>
-        <p>Post questions, strategies, or trade offers. Filter by category and reply to threads. Press Ctrl+Enter to send a reply.</p>
-        <h3>Compare via Friend Profile</h3>
-        <p>Open a friend's profile, go to their <em>Collection</em> tab, and click <em>Compare</em> to load their physical collection into the Card Collection view.</p>`
-    }
-  };
+  home: {
+    title: 'Card Collection',
+    html: `
+      <h3>Searching</h3>
+      <p>Type in the search box to find cards by <strong>name, number, type, rarity, rules text, flavor text, description,</strong> or <strong>traits</strong>. Click <strong>✕</strong> inside the box to clear instantly.</p>
+      <h3>Filtering</h3>
+      <p>Use the pill row to filter by card type (Strike, Advantage, Ally…). Toggle <strong>Owned</strong> or <strong>Missing</strong> to focus your list. If a friend's code is loaded, the <strong>Shared</strong> filter shows only cards you both own. Click the colored rarity chips (C / UC / R / ZEN / PR) to filter by rarity — click again to clear.</p>
+      <h3>Sorting</h3>
+      <p>Use the dropdown to sort by Number, Name, Rarity, Type, Quantity, Intercept, Force, Energy Cost, or Price. The <strong>↑↓ arrow button</strong> reverses the order.</p>
+      <h3>Grid vs List view</h3>
+      <p>The grid/list toggle is in the top-right of the search row. List view is faster for scanning large sets; grid view shows card art.</p>
+      <h3>Adding &amp; adjusting cards</h3>
+      <p>Click any card to open its detail view. Use <strong>+/–</strong> to set your quantity, or click <strong>Add to Collection</strong> to add one copy. Click <strong>Remove from Collection</strong> to zero it out.</p>
+      <h3>Card flip</h3>
+      <p>Click the <strong>rotate button</strong> (bottom-left of a card in grid view) to flip between front and back art without opening the modal. In the detail modal, click <strong>Flip View</strong> below the image to flip there too.</p>
+      <h3>Card zoom</h3>
+      <p>In the detail modal, click the card image for a <strong>fullscreen zoom</strong>. Click anywhere outside the image, press <kbd>Esc</kbd>, or hit the × button to close.</p>
+      <h3>Navigating between cards</h3>
+      <p>While a card detail is open, use the <strong>← / →</strong> arrow buttons on the image, press <kbd>ArrowLeft</kbd> / <kbd>ArrowRight</kbd>, or <strong>swipe left/right</strong> on touch screens to step through the filtered list.</p>
+      <h3>Market prices</h3>
+      <p>Cards with eBay sold data show a price widget (low / avg / high) in the detail view. Prices refresh automatically from recent sales. The avg price also appears as a green badge in grid view.</p>
+      <h3>Compare collections</h3>
+      <p>Click <strong>Compare</strong>, paste a friend's save code, and their cards show a blue <em>x N</em> badge. The <strong>Shared</strong> filter lets you see cards you both own. Load another code at any time to update the comparison.</p>
+      <h3>Export &amp; Import</h3>
+      <p><strong>Export</strong> saves a CSV and copies your save code to the clipboard at the same time. <strong>Import</strong> accepts either a CSV file or a pasted save code. Use <strong>Clear</strong> to wipe your collection or remove the comparison data.</p>
+      <h3>Save codes</h3>
+      <p>Your save code is generated automatically as you add cards. It is also shown in the Portfolio → Save Code tab. Select all the text to copy it and save it offline.</p>
+    `
+  },
+  portfolio: {
+    title: 'Portfolio',
+    html: `
+      <h3>Pack Calculators</h3>
+      <p>Five tabs cover each in-pack rarity: <strong>Zenemental, Chamber, Rare, Uncommon, Common</strong>. Each uses the Coupon Collector formula to estimate how many more packs you need to finish that subset of core (pack-only) cards.</p>
+      <h3>Pull rates used</h3>
+      <ul>
+        <li><strong>Zenemental</strong> — 1-in-6 chance per pack</li>
+        <li><strong>Chamber</strong> — 1 guaranteed per pack</li>
+        <li><strong>Rare</strong> — 1 guaranteed per pack</li>
+        <li><strong>Uncommon</strong> — 3 per pack</li>
+        <li><strong>Common</strong> — 5 per pack</li>
+      </ul>
+      <h3>Reading the calculator</h3>
+      <p>The three stat boxes show <strong>Expected packs left</strong>, <strong>Cards needed</strong>, and <strong>% complete</strong>. Below them the chip grid shows every card in that subset — green = owned, grey = missing. The breakdown table shows how many packs each individual new card is expected to cost as your collection grows.</p>
+      <h3>Core cards only</h3>
+      <p>Calculators only count numbered pack cards (1–235). Promos, starter sets, and bonus products are excluded because they are not in booster packs.</p>
+      <h3>Portfolio Graph &amp; Card Values</h3>
+      <p>These tabs are coming soon — they will show your collection value over time and live market prices per card.</p>
+      <h3>Save Code tab</h3>
+      <p>Shows your current save code for the physical collection. Select it all to copy and store it somewhere safe.</p>
+    `
+  },
+  'digital-collection': {
+    title: 'Digital Collection',
+    html: `
+      <h3>Redeeming codes</h3>
+      <p>Go to the <strong>Redeem</strong> tab and paste a one-time redemption code from the Booster App. Each code is single-use. Successful redemptions add the card(s) to your digital collection immediately.</p>
+      <h3>Browsing your digital cards</h3>
+      <p>The <strong>Collection</strong> tab shows all redeemed cards. Search by name or card number. Filter by rarity (Common / Uncommon / Rare / Zenemental) or sort by Recently Added, Card Number, Name, or Rarity.</p>
+      <h3>Card details</h3>
+      <p>Click any digital card to open the detail modal. In digital mode the quantity controls are hidden; use the <strong>Remove from Digital Collection</strong> button to delete a card. A confirmation step prevents accidents.</p>
+      <h3>Export &amp; Import</h3>
+      <p><strong>Export JSON</strong> saves a full backup file of your digital collection. <strong>Import JSON</strong> restores it on any device. Use <strong>Clear All</strong> to wipe the digital collection (physical collection is unaffected).</p>
+      <h3>Stats bar</h3>
+      <p>The collapsible stats bar at the top shows totals across your digital collection — expand or collapse it with the toggle button.</p>
+      <h3>Deck Builder</h3>
+      <p>Coming soon — build and save legal decks using your digital card pool, with compatibility rules for online gameplay.</p>
+    `
+  },
+  media: {
+    title: 'Media',
+    html: `
+      <h3>How to Play</h3>
+      <p>The <strong>Interactive Demo</strong> is a playable Flash tutorial running via the Ruffle emulator. If it stalls, click the <strong>Reload</strong> button in the toolbar. A status dot at the bottom shows Loading / Playing / Error.</p>
+      <p>A community <strong>YouTube tutorial</strong> is embedded below the demo. Click <em>Watch on YouTube</em> if it doesn't play inline (common on iOS).</p>
+      <p>The <strong>Avatar Wiki</strong> link leads to the fandom wiki with card listings, rules, and lore.</p>
+      <h3>Rulebook</h3>
+      <p>Browses the official PDF in-browser via Google Docs viewer. Use the <strong>Download PDF</strong> button in the top-right to save a local copy. If the viewer doesn't render, click <em>Open directly</em>.</p>
+      <h3>Master Sets</h3>
+      <p>Community showcase videos of complete set builds. More videos can be found via the <em>Search YouTube</em> link at the bottom of the panel.</p>
+      <h3>Pack Rips</h3>
+      <p>Community booster pack opening videos. Use the <em>Search YouTube</em> link to find more.</p>
+      <h3>Music</h3>
+      <p>Streams the Avatar: The Last Airbender soundtrack playlist via YouTube. Click <em>Open Full Playlist on YouTube</em> for the complete list.</p>
+    `
+  },
+  wayback: {
+    title: 'Archived Websites',
+    html: `
+      <h3>What these links are</h3>
+      <p>Historical snapshots of Avatar TCG websites preserved via the Internet Archive (Wayback Machine) and other archival sources.</p>
+      <h3>UDE.com/Avatar</h3>
+      <p>Upper Deck Entertainment's original Avatar Quick Strike game portal, archived from 2008. Includes the original card search interface and game info.</p>
+      <h3>Musogato.com/avatar</h3>
+      <p>A community-built card database from 2012. Contains card scans and set information.</p>
+      <h3>Laststicker.ru</h3>
+      <p>A card checklist and trade resource. Still active — useful for tracking which cards you need.</p>
+      <h3>Loading speed</h3>
+      <p>Wayback Machine snapshots load through the archive servers and can be slow. Give them 10–20 seconds before concluding a page is broken. All links open in a new tab.</p>
+    `
+  },
+  profile: {
+    title: 'Together',
+    html: `
+      <h3>Creating an account</h3>
+      <p>Enter your email and a password (at least 6 characters), then click <strong>Sign Up</strong>. Check your email for a confirmation link if prompted. Once signed in, you'll be asked to choose a <strong>username</strong> — this is shown to friends, in chat, on trades, and on the leaderboard. <em>It can only be set once</em>, so choose carefully.</p>
+      <h3>Cloud sync</h3>
+      <p>Click <strong>☁ Sync to Cloud</strong> to push your physical collection to your account. Click <strong>⬇ Load from Cloud</strong> to pull it back on another device. If both the device and cloud have data, a conflict dialog asks which version to keep.</p>
+      <h3>Editing your profile</h3>
+      <p>Under <strong>Edit Profile</strong> you can set a display name, bio, favorite traits, favorite chamber card, and an avatar (any card's artwork). Drag the avatar image to reframe it. Changes save automatically.</p>
+      <h3>Friends</h3>
+      <p>Search by username in the Friends tab and send a request. Accept incoming requests from the <strong>Pending</strong> section. Once friends, you can open a private DM chat or propose a trade directly from their friend card.</p>
+      <h3>Chat</h3>
+      <p><strong>Global</strong> chat is open to everyone who is signed in. Private DM rooms open automatically when you click a friend's <em>Chat</em> button. The floating <strong>Quick Chat</strong> panel (bottom-right menu) mirrors the same rooms without switching tabs.</p>
+      <h3>Trades</h3>
+      <p>Click <strong>Propose a Trade</strong>, choose a friend, select cards you're offering and cards you want in return, add an optional note, then send. The recipient sees it in their <em>Incoming</em> tab and can accept or decline. Completed trades appear in History.</p>
+      <h3>Forum</h3>
+      <p>Post questions, strategies, trade offers, or news. Filter posts by category (General, Trading, Strategy, Collection, News). Open a post to read replies and add your own — press <kbd>Ctrl</kbd>+<kbd>Enter</kbd> to send a reply quickly.</p>
+      <h3>Leaderboard</h3>
+      <p>Shows set-completion percentage for all users who have synced their collection to the cloud. Updates whenever anyone syncs.</p>
+      <h3>Compare via a friend's profile</h3>
+      <p>Open a friend's profile card, navigate to their <em>Collection</em> tab, and click <strong>Compare</strong> to load their physical collection into the main Card Collection view — the same as pasting their save code manually.</p>
+      <h3>Signing out</h3>
+      <p>Click <strong>Log Out</strong> in the profile bar. Your local collection remains on the device; cloud data stays in your account for next time.</p>
+    `
+  }
+};
 
   var currentHowToTab = 'home';
 
