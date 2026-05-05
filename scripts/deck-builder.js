@@ -448,7 +448,7 @@ async function toggleDeckPublic(deckId) {
     : 'Deck is now private. 🔒');
   render();
 }
-  /* ═══════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════════
      RANDOMIZER ENGINE
   ═══════════════════════════════════════════════════════════════ */
   function pickBestChamber(pool, strength) {
@@ -473,33 +473,107 @@ async function toggleDeckPublic(deckId) {
     });
     if (standard.length === 0) return null;
 
-    standard.sort(function (a, b) { return cardScore(b, strength) - cardScore(a, strength); });
-
     var selectedCards = {};
     var totalAdded    = 0;
 
-    var topTier   = Math.ceil(standard.length * 0.3);
-    var midTier   = Math.ceil(standard.length * 0.6);
-    for (var i = 0; i < standard.length && totalAdded < target; i++) {
-      var c    = standard[i];
-      var maxC = Math.min(
-        strength === 'random' ? (1 + Math.floor(Math.random() * MAX_COPIES)) :
-          i < topTier ? 4 : i < midTier ? 2 : 1,
-        maxCopiesForCard(c.number),
-        target - totalAdded
-      );
-      if (maxC > 0) { selectedCards[c.number] = maxC; totalAdded += maxC; }
-    }
+    /* ── Support strength: enforce type quotas ─────────────────
+       - At least 50% strike cards  (e.g. 30 of 60)
+       - At least 25% ally cards    (e.g. 15 of 60)
+       - At least 5 advantage cards
+       Remaining slots filled with top-scored cards from any type.
+    ────────────────────────────────────────────────────────── */
+    if (strength === 'support') {
+      var minStrikes   = Math.ceil(target * 0.50);
+      var minAllies    = Math.ceil(target * 0.25);
+      var minAdvantage = 5;
 
-    if (totalAdded < target) {
-      var pass2 = 0;
-      while (totalAdded < target && pass2 < standard.length * MAX_COPIES) {
-        var card2 = standard[pass2 % standard.length];
-        var cur   = selectedCards[card2.number] || 0;
-        var mx    = maxCopiesForCard(card2.number);
-        if (cur < mx) { selectedCards[card2.number] = cur + 1; totalAdded++; }
-        pass2++;
-        if (pass2 > standard.length * MAX_COPIES) break;
+      function sortedByScore(cards) {
+        return cards.slice().sort(function (a, b) {
+          return cardScore(b, strength) - cardScore(a, strength);
+        });
+      }
+
+      /* Fill up to `quota` total cards using the provided type pool */
+      function fillQuota(typeCards, quota) {
+        var sorted  = sortedByScore(typeCards);
+        var topTier = Math.ceil(sorted.length * 0.3);
+        var midTier = Math.ceil(sorted.length * 0.6);
+        for (var i = 0; i < sorted.length && totalAdded < quota; i++) {
+          var c      = sorted[i];
+          var cur    = selectedCards[c.number] || 0;
+          var maxC   = Math.min(
+            i < topTier ? 4 : i < midTier ? 2 : 1,
+            maxCopiesForCard(c.number)
+          );
+          var canAdd = Math.min(maxC - cur, quota - totalAdded);
+          if (canAdd > 0) { selectedCards[c.number] = cur + canAdd; totalAdded += canAdd; }
+        }
+      }
+
+      var strikes   = standard.filter(function (c) { return c.type === 'strike';    });
+      var allies    = standard.filter(function (c) { return c.type === 'ally';      });
+      var advantage = standard.filter(function (c) { return c.type === 'advantage'; });
+
+      /* 1. Fill strike quota first (50%) */
+      fillQuota(strikes, Math.min(minStrikes, target));
+
+      /* 2. Fill ally quota (25% on top of what's already in) */
+      fillQuota(allies, Math.min(totalAdded + minAllies, target));
+
+      /* 3. Fill advantage quota (5 cards minimum) */
+      fillQuota(advantage, Math.min(totalAdded + minAdvantage, target));
+
+      /* 4. Fill any remaining slots with top-scored cards from the whole pool */
+      if (totalAdded < target) {
+        var allSorted = sortedByScore(standard);
+        for (var j = 0; j < allSorted.length && totalAdded < target; j++) {
+          var ca   = allSorted[j];
+          var curA = selectedCards[ca.number] || 0;
+          var mxA  = maxCopiesForCard(ca.number);
+          var addA = Math.min(mxA - curA, target - totalAdded);
+          if (addA > 0) { selectedCards[ca.number] = curA + addA; totalAdded += addA; }
+        }
+      }
+
+      /* 5. Safety top-up: cycle through all cards if still short */
+      if (totalAdded < target) {
+        var pass = 0;
+        while (totalAdded < target && pass < standard.length * MAX_COPIES) {
+          var sc  = standard[pass % standard.length];
+          var cur = selectedCards[sc.number] || 0;
+          var mx  = maxCopiesForCard(sc.number);
+          if (cur < mx) { selectedCards[sc.number] = cur + 1; totalAdded++; }
+          pass++;
+        }
+      }
+
+    } else {
+      /* ── All other strengths: original scoring logic ───────── */
+      standard.sort(function (a, b) { return cardScore(b, strength) - cardScore(a, strength); });
+
+      var topTier = Math.ceil(standard.length * 0.3);
+      var midTier = Math.ceil(standard.length * 0.6);
+      for (var i = 0; i < standard.length && totalAdded < target; i++) {
+        var c    = standard[i];
+        var maxC = Math.min(
+          strength === 'random' ? (1 + Math.floor(Math.random() * MAX_COPIES)) :
+            i < topTier ? 4 : i < midTier ? 2 : 1,
+          maxCopiesForCard(c.number),
+          target - totalAdded
+        );
+        if (maxC > 0) { selectedCards[c.number] = maxC; totalAdded += maxC; }
+      }
+
+      if (totalAdded < target) {
+        var pass2 = 0;
+        while (totalAdded < target && pass2 < standard.length * MAX_COPIES) {
+          var card2 = standard[pass2 % standard.length];
+          var cur2  = selectedCards[card2.number] || 0;
+          var mx2   = maxCopiesForCard(card2.number);
+          if (cur2 < mx2) { selectedCards[card2.number] = cur2 + 1; totalAdded++; }
+          pass2++;
+          if (pass2 > standard.length * MAX_COPIES) break;
+        }
       }
     }
 
@@ -515,7 +589,7 @@ async function toggleDeckPublic(deckId) {
       created:    Date.now()
     };
   }
-
+  
   /* ═══════════════════════════════════════════════════════════════
      EXPORT HELPERS
   ═══════════════════════════════════════════════════════════════ */
