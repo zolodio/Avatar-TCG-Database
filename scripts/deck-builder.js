@@ -1826,11 +1826,12 @@ if (renameSave) renameSave.addEventListener('click', function () {
     if (renameCancel) renameCancel.addEventListener('click', function () {
       S.renamingDeck = false; render();
     });
-  }
+
 var pubToggleBtn = document.getElementById('deckPublicToggleBtn');
 if (pubToggleBtn) pubToggleBtn.addEventListener('click', function () {
   toggleDeckPublic(this.dataset.deckId);
-});
+}); 
+}
   /* ═══════════════════════════════════════════════════════════════
      UTILITIES
   ═══════════════════════════════════════════════════════════════ */
