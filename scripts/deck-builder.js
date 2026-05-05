@@ -305,7 +305,46 @@ async function pushDecksToSupabase() {
     toast('Sync failed — ' + (e.message || 'check console'));
   }
 }
+async function syncDeckToPublicTable(deck) {
+  var client = window.sb;
+  if (!client || !client.auth) return;
+  try {
+    var authResp = await client.auth.getUser();
+    var user = authResp.data && authResp.data.user;
+    if (!user) return;
+    if (deck.is_public) {
+      await client.from('decks').upsert({
+        id:         deck.id,
+        user_id:    user.id,
+        name:       deck.name,
+        description: deck.description || null,
+        cards:      deck.cards || {},
+        format:     deck.strength || null,
+        is_public:  true,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'id' });
+    } else {
+      await client.from('decks').delete()
+        .eq('id', deck.id).eq('user_id', user.id);
+    }
+  } catch (e) { console.warn('DeckBuilder: public sync failed', e); }
+}
 
+async function toggleDeckPublic(deckId) {
+  var idx = S.decks.findIndex(function (d) { return d.id === deckId; });
+  if (idx === -1) return;
+  S.decks[idx].is_public = !S.decks[idx].is_public;
+  if (S.viewingDeck && S.viewingDeck.id === deckId) {
+    S.viewingDeck.is_public = S.decks[idx].is_public;
+  }
+  saveDecks();
+  pushDecksToSupabase();
+  await syncDeckToPublicTable(S.decks[idx]);
+  toast(S.decks[idx].is_public
+    ? 'Deck is now public — friends can see it! 🌐'
+    : 'Deck is now private. 🔒');
+  render();
+}
 async function pullDecksFromSupabase() {
   var client = window.sb;
   if (!client || !client.auth) {
@@ -1805,11 +1844,11 @@ if (syncPush) syncPush.addEventListener('click', async function () {
     });
 
 // Inside wire() — replace the existing deckRenameSave listener
-var renameSave = document.getElementById('deckRenameSave');
-if (renameSave) renameSave.addEventListener('click', function () {
-  var inp = document.getElementById('deckRenameInput');
-  var newName = (inp ? inp.value : '').trim();
-  if (!newName) { toast('Name cannot be empty.'); return; }
+    var renameSave = document.getElementById('deckRenameSave');
+    if (renameSave) renameSave.addEventListener('click', function () {
+     var inp = document.getElementById('deckRenameInput');
+     var newName = (inp ? inp.value : '').trim();
+     if (!newName) { toast('Name cannot be empty.'); return; }
 
   // Update both the array entry AND the viewingDeck reference
   var idx = S.decks.findIndex(function(d) { return d.id === S.viewingDeck.id; });
@@ -1827,10 +1866,10 @@ if (renameSave) renameSave.addEventListener('click', function () {
       S.renamingDeck = false; render();
     });
 
-var pubToggleBtn = document.getElementById('deckPublicToggleBtn');
-if (pubToggleBtn) pubToggleBtn.addEventListener('click', function () {
-  toggleDeckPublic(this.dataset.deckId);
-}); 
+    var pubToggleBtn = document.getElementById('deckPublicToggleBtn');
+    if (pubToggleBtn) pubToggleBtn.addEventListener('click', function () {
+     toggleDeckPublic(this.dataset.deckId);
+    }); 
 }
   /* ═══════════════════════════════════════════════════════════════
      UTILITIES
