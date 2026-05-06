@@ -146,7 +146,7 @@
     var rE  = parseFloat(card.redEnergy)     || 0;
     var E   = gE + yE + rE;
     var hasRules = ((card.rulesText || '').trim().length > 8);
-    var noise = Math.random() * 3.1;
+    var noise = Math.random() * 15;
     switch (strength) {
       case 'attack':   return force * 3 + intercept * 0.5 + noise;
       case 'defense':  return intercept * 3 + force * 0.5 + noise;
