@@ -462,243 +462,320 @@ async function toggleDeckPublic(deckId) {
   /* φ = golden ratio — used for balanced deck type distribution */
   var PHI = 1.6180339887;
 
-  function buildRandomDeck(opts) {
-    var pool       = getPoolCards();
-    var strength   = opts.strength   || 'random';
-    var deckSize   = opts.deckSize   || 'full';
-    var customSize = opts.customSize || 60;
-    var target     = deckSize === 'full' ? 60 : deckSize === 'half' ? 30 : customSize;
-    var chamber    = opts.chamber || pickBestChamber(pool, strength);
-    if (!chamber) return null;
+function buildRandomDeck(opts) {
+  var pool       = getPoolCards();
+  var strength   = opts.strength   || 'random';
+  var deckSize   = opts.deckSize   || 'full';
+  var customSize = opts.customSize || 60;
+  var target     = deckSize === 'full' ? 60 : deckSize === 'half' ? 30 : customSize;
+  var chamber    = opts.chamber || pickBestChamber(pool, strength);
+  if (!chamber) return null;
 
-    var standard = getStandardCards(pool).filter(function (c) {
-      return isCompatibleWithChamber(c, chamber);
-    });
-    if (standard.length === 0) return null;
-
-    var selectedCards = {};
-    var totalAdded    = 0;
-
-    /* ── Shared helpers ──────────────────────────────────────── */
-
-    /* Sort a card array by cardScore for the current strength */
-    function sortedByScore(cards) {
-      return cards.slice().sort(function (a, b) {
-        return cardScore(b, strength) - cardScore(a, strength);
-      });
-    }
-
-/* Fill up to `quota` total cards from `typeCards`, greedy by score.
-   Top 30% of pool → max 3 copies, mid 30% → 2, tail → 1.          */
-function fillQuota(typeCards, quota) {
-  var sorted = sortedByScore(typeCards);
-  var topTier = Math.ceil(sorted.length * 0.3);
-  var midTier = Math.ceil(sorted.length * 0.6);
-  for (var i = 0; i < sorted.length && totalAdded < quota; i++) {
-    var c   = sorted[i];
-    var cur = selectedCards[c.number] || 0;
-    var maxC = Math.min(
-      i < topTier ? 3 : i < midTier ? 2 : 1,
-      maxCopiesForCard(c.number)
-    );
-    var canAdd = Math.min(maxC - cur, quota - totalAdded);
-    if (canAdd > 0) { selectedCards[c.number] = cur + canAdd; totalAdded += canAdd; }
-  }
-}
-
-/* Fill remaining slots using weighted random selection by card type.
-   typeWeights = { strike: N, advantage: N, ally: N }
-   rulesBoost  = true → cards with rules text get 3× weight          */
-function fillRemainder(typeWeights, rulesBoost) {
-  if (totalAdded >= target) return;
-  typeWeights = typeWeights || { strike: 1, advantage: 1, ally: 1 };
-
-  var pool = standard.filter(function (c) {
-    return (selectedCards[c.number] || 0) < maxCopiesForCard(c.number);
+  var standard = getStandardCards(pool).filter(function (c) {
+    return isCompatibleWithChamber(c, chamber);
   });
+  if (standard.length === 0) return null;
 
-  var maxAttempts = (target - totalAdded) * 20;
-  var attempts    = 0;
+  /* ─────────────────────────────────────────────────────────────
+     STATE
+  ───────────────────────────────────────────────────────────── */
+  var selected   = {};   // cardNumber → qty in deck
+  var totalAdded = 0;
 
-  while (totalAdded < target && pool.length > 0 && attempts++ < maxAttempts) {
-    var weights = pool.map(function (c) {
-      var t = (c.type || '').toLowerCase();
-      var w = typeWeights[t] || 1;
-      if (rulesBoost && (c.rulesText || '').trim().length > 8) w *= 3;
-      return Math.max(0.1, w + Math.random() * 0.5);
-    });
-    var totalW = weights.reduce(function (s, w) { return s + w; }, 0);
-    var rand   = Math.random() * totalW;
-    var chosen = pool[pool.length - 1];
-    for (var i = 0; i < pool.length; i++) {
+  /* ─────────────────────────────────────────────────────────────
+     PRIMITIVE HELPERS
+  ───────────────────────────────────────────────────────────── */
+  function qty(c)      { return selected[c.number] || 0; }
+  function cap(c)      { return maxCopiesForCard(c.number); }
+  function hasRoom(c)  { return qty(c) < cap(c); }
+  function isFull()    { return totalAdded >= target; }
+
+  function addOne(c) {
+    if (!hasRoom(c) || isFull()) return false;
+    selected[c.number] = qty(c) + 1;
+    totalAdded++;
+    return true;
+  }
+
+  function removeOne(c) {
+    if (qty(c) <= 0) return false;
+    selected[c.number] = qty(c) - 1;
+    if (selected[c.number] === 0) delete selected[c.number];
+    totalAdded--;
+    return true;
+  }
+
+  function countType(type) {
+    return standard.reduce(function (sum, c) {
+      return c.type === type ? sum + qty(c) : sum;
+    }, 0);
+  }
+
+  function available(pool) {
+    return pool.filter(hasRoom);
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     SCORING  — noise scaled to 3 so it's meaningful vs stat range
+  ───────────────────────────────────────────────────────────── */
+  function scoreCard(c, str) {
+    var F  = parseFloat(c.force)        || 0;
+    var I  = parseFloat(c.intercept)    || 0;
+    var E  = (parseFloat(c.greenEnergy)  || 0)
+           + (parseFloat(c.yellowEnergy) || 0)
+           + (parseFloat(c.redEnergy)    || 0);
+    var hasRules = (c.rulesText || '').trim().length > 8;
+    var t        = (c.type || '').toLowerCase();
+    var noise    = Math.random() * 3;
+    switch (str) {
+      case 'attack':   return F * 3 + I * 0.5 + noise;
+      case 'defense':  return I * 3 + F * 0.5 + noise;
+      case 'energy':   return (E > 0 ? 12 / E : 6) + noise;
+      case 'wild':     return (hasRules ? 6 : 0) + (F + I) * 0.5 + noise;
+      case 'balanced': return F + I + (hasRules ? 1 : 0) + noise;
+      default:         return Math.random() * 10;
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     WEIGHTED RANDOM PICK — pick one card from a list by weight
+  ───────────────────────────────────────────────────────────── */
+  function weightedPick(candidates, weightFn) {
+    if (candidates.length === 0) return null;
+    var weights    = candidates.map(weightFn);
+    var totalW     = weights.reduce(function (s, w) { return s + w; }, 0);
+    var rand       = Math.random() * totalW;
+    for (var i = 0; i < candidates.length; i++) {
       rand -= weights[i];
-      if (rand <= 0) { chosen = pool[i]; break; }
+      if (rand <= 0) return candidates[i];
     }
-
-    var cur = selectedCards[chosen.number] || 0;
-    var mx  = maxCopiesForCard(chosen.number);
-    if (cur < mx) { selectedCards[chosen.number] = cur + 1; totalAdded++; }
-
-    if ((selectedCards[chosen.number] || 0) >= maxCopiesForCard(chosen.number)) {
-      pool = pool.filter(function (c) { return c.number !== chosen.number; });
-    }
+    return candidates[candidates.length - 1];
   }
 
-  /* Safety top-up — only reached if pool runs dry before target */
-  var pass = 0;
-  while (totalAdded < target && pass < standard.length * MAX_COPIES) {
-    var sc   = standard[pass % standard.length];
-    var cur2 = selectedCards[sc.number] || 0;
-    var mx2  = maxCopiesForCard(sc.number);
-    if (cur2 < mx2) { selectedCards[sc.number] = cur2 + 1; totalAdded++; }
-    pass++;
-  }
-}
+  /* ─────────────────────────────────────────────────────────────
+     FILL FUNCTIONS
+  ───────────────────────────────────────────────────────────── */
 
-/* Universal post-fill: every deck must have at least 15 strike cards.
-   Swaps out lowest-qty non-strike cards to make room.               */
-function enforceStrikeMinimum() {
-  var MIN_STRIKES  = 15;
-  var strikeCards  = standard.filter(function (c) { return c.type === 'strike'; });
-  if (strikeCards.length === 0) return;
-
-  var currentStrikes = 0;
-  strikeCards.forEach(function (c) { currentStrikes += selectedCards[c.number] || 0; });
-  if (currentStrikes >= MIN_STRIKES) return;
-
-  var needed = MIN_STRIKES - currentStrikes;
-
-  /* Non-strikes sorted by lowest qty first (safest to trim) */
-  var nonStrikes = standard
-    .filter(function (c) { return c.type !== 'strike' && (selectedCards[c.number] || 0) > 0; })
-    .sort(function (a, b) { return (selectedCards[a.number] || 0) - (selectedCards[b.number] || 0); });
-
-  var ni = 0;
-  while (needed > 0 && ni < nonStrikes.length) {
-    var ns    = nonStrikes[ni++];
-    var nsQty = selectedCards[ns.number] || 0;
-    if (nsQty < 1) continue;
-
-    var available = strikeCards.filter(function (c) {
-      return (selectedCards[c.number] || 0) < maxCopiesForCard(c.number);
+  /*
+   * fillGreedy — fills up to `count` more cards from `pool`.
+   * Sorts by score, applies tier copy limits: top 30% → 3, mid → 2, tail → 1.
+   * Use this for quota phases where you want the best cards of a type.
+   */
+  function fillGreedy(pool, count) {
+    if (count <= 0 || isFull()) return;
+    var sorted  = pool.slice().sort(function (a, b) {
+      return scoreCard(b, strength) - scoreCard(a, strength);
     });
-    if (available.length === 0) break;
+    var topTier = Math.ceil(sorted.length * 0.3);
+    var midTier = Math.ceil(sorted.length * 0.6);
+    var added   = 0;
 
-    /* Remove one non-strike, add one strike */
-    selectedCards[ns.number] = nsQty - 1;
-    if (selectedCards[ns.number] === 0) delete selectedCards[ns.number];
-
-    var pick = available[Math.floor(Math.random() * available.length)];
-    selectedCards[pick.number] = (selectedCards[pick.number] || 0) + 1;
-    needed--;
+    for (var i = 0; i < sorted.length && added < count && !isFull(); i++) {
+      var c       = sorted[i];
+      var tierMax = i < topTier ? 3 : i < midTier ? 2 : 1;
+      var canAdd  = Math.min(tierMax - qty(c), cap(c) - qty(c), count - added);
+      if (canAdd > 0) {
+        selected[c.number] = qty(c) + canAdd;
+        totalAdded        += canAdd;
+        added             += canAdd;
+      }
+    }
   }
+
+  /*
+   * fillWeighted — fills remaining slots using weighted random by card type.
+   * typeWeights = { strike: N, advantage: N, ally: N }
+   * rulesBoost  = true → cards with rules text get 3x their base weight.
+   * Use this for remainder phases where you want probabilistic variety.
+   */
+  function fillWeighted(typeWeights, rulesBoost) {
+    if (isFull()) return;
+    typeWeights = typeWeights || { strike: 1, advantage: 1, ally: 1 };
+    var pool        = available(standard);
+    var maxAttempts = (target - totalAdded) * 25;
+    var attempts    = 0;
+
+    while (!isFull() && pool.length > 0 && attempts++ < maxAttempts) {
+      var pick = weightedPick(pool, function (c) {
+        var t = (c.type || '').toLowerCase();
+        var w = typeWeights[t] !== undefined ? typeWeights[t] : 1;
+        if (rulesBoost && (c.rulesText || '').trim().length > 8) w *= 3;
+        return Math.max(0.1, w);
+      });
+      if (!pick) break;
+      addOne(pick);
+      if (!hasRoom(pick)) pool = pool.filter(function (c) { return c.number !== pick.number; });
+    }
+  }
+
+  /*
+   * fillByScore — fills remaining slots weighted by score value (for energy/random).
+   * Unlike fillWeighted it doesn't care about type, just raw score.
+   */
+  function fillByScore() {
+    if (isFull()) return;
+    var pool        = available(standard);
+    var maxAttempts = (target - totalAdded) * 25;
+    var attempts    = 0;
+
+    while (!isFull() && pool.length > 0 && attempts++ < maxAttempts) {
+      var pick = weightedPick(pool, function (c) {
+        return Math.max(0.1, scoreCard(c, strength));
+      });
+      if (!pick) break;
+      addOne(pick);
+      if (!hasRoom(pick)) pool = pool.filter(function (c) { return c.number !== pick.number; });
+    }
+  }
+
+  /*
+   * safetyTopUp — last resort if we're still short after everything else.
+   * Cycles through all cards and adds wherever there's room.
+   */
+  function safetyTopUp() {
+    if (isFull()) return;
+    var pass = 0;
+    while (!isFull() && pass < standard.length * MAX_COPIES) {
+      var c = standard[pass % standard.length];
+      if (hasRoom(c)) addOne(c);
+      pass++;
+    }
+  }
+
+  /*
+   * enforceMinimumStrikes — runs dead last, always.
+   * If the deck has fewer than 15 strikes, swaps out cheapest non-strikes
+   * (lowest qty first) and replaces them with random available strikes.
+   */
+  function enforceMinimumStrikes() {
+    var MIN     = 15;
+    var strikes = standard.filter(function (c) { return c.type === 'strike'; });
+    if (strikes.length === 0) return;
+
+    var deficit = MIN - countType('strike');
+    if (deficit <= 0) return;
+
+    var nonStrikes = standard
+      .filter(function (c) { return c.type !== 'strike' && qty(c) > 0; })
+      .sort(function (a, b) { return qty(a) - qty(b); });
+
+    var ni = 0;
+    while (deficit > 0 && ni < nonStrikes.length) {
+      var ns      = nonStrikes[ni++];
+      if (qty(ns) === 0) continue;
+      var openS   = available(strikes);
+      if (openS.length === 0) break;
+      removeOne(ns);
+      addOne(openS[Math.floor(Math.random() * openS.length)]);
+      deficit--;
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     CARD TYPE POOLS (used by multiple strengths)
+  ───────────────────────────────────────────────────────────── */
+  var strikes   = standard.filter(function (c) { return c.type === 'strike';    });
+  var advantage = standard.filter(function (c) { return c.type === 'advantage'; });
+  var allies    = standard.filter(function (c) { return c.type === 'ally';      });
+
+  /* ─────────────────────────────────────────────────────────────
+     PER-STRENGTH BUILD LOGIC
+  ───────────────────────────────────────────────────────────── */
+
+  if (strength === 'attack') {
+    /*
+     * Quota  : fill at least 20 cards from the top-third highest-force cards.
+     * Remainder: ally 4 | adv 3 | strike 1 — the attack quota already loaded
+     *           the heavy hitters so remainder diversifies.
+     */
+    var byForce   = standard.slice().sort(function (a, b) {
+      return (parseFloat(b.force) || 0) - (parseFloat(a.force) || 0);
+    });
+    var highForce = byForce.slice(0, Math.ceil(byForce.length / 3));
+    fillGreedy(highForce, Math.min(20, target));
+    fillWeighted({ strike: 1, advantage: 3, ally: 4 });
+
+  } else if (strength === 'defense') {
+    /*
+     * Quota  : fill at least 20 cards from the top-third highest-intercept cards.
+     * Remainder: ally 4 | adv 3 | strike 1 — same logic as attack.
+     */
+    var byIntercept   = standard.slice().sort(function (a, b) {
+      return (parseFloat(b.intercept) || 0) - (parseFloat(a.intercept) || 0);
+    });
+    var highIntercept = byIntercept.slice(0, Math.ceil(byIntercept.length / 3));
+    fillGreedy(highIntercept, Math.min(20, target));
+    fillWeighted({ strike: 1, advantage: 3, ally: 4 });
+
+  } else if (strength === 'balanced') {
+    /*
+     * Quota  : golden-ratio split  strike ~50% | advantage ~31% | ally ~19%
+     * Remainder: same ratio maintained via weights.
+     */
+    var totalR  = PHI * PHI + PHI + 1;
+    fillGreedy(strikes,   Math.round(target * (PHI * PHI) / totalR));
+    fillGreedy(advantage, Math.round(target * PHI         / totalR));
+    fillGreedy(allies,    Math.round(target * 1           / totalR));
+    fillWeighted({ strike: 3, advantage: 2, ally: 1 });
+
+  } else if (strength === 'support') {
+    /*
+     * Quota  : 50% strikes, 25% allies, 5 advantage.
+     * Remainder: strike 5 | adv 2 | ally 1.
+     */
+    fillGreedy(strikes,   Math.ceil(target * 0.50));
+    fillGreedy(allies,    Math.ceil(target * 0.25));
+    fillGreedy(advantage, Math.min(5, target));
+    fillWeighted({ strike: 5, advantage: 2, ally: 1 });
+
+  } else if (strength === 'chamber') {
+    /*
+     * Quota  : 40% advantage cards (chamber synergy).
+     * Remainder: strike 5 | ally 2 | adv 1.
+     */
+    fillGreedy(advantage, Math.ceil(target * 0.40));
+    fillWeighted({ strike: 5, ally: 2, advantage: 1 });
+
+  } else if (strength === 'wild') {
+    /*
+     * Quota  : same balanced golden-ratio split as balanced.
+     * Remainder: balanced weights but rules-text cards get 3x pull.
+     */
+    var totalRw = PHI * PHI + PHI + 1;
+    fillGreedy(strikes,   Math.round(target * (PHI * PHI) / totalRw));
+    fillGreedy(advantage, Math.round(target * PHI         / totalRw));
+    fillGreedy(allies,    Math.round(target * 1           / totalRw));
+    fillWeighted({ strike: 3, advantage: 2, ally: 1 }, /* rulesBoost */ true);
+
+  } else if (strength === 'energy') {
+    /*
+     * No quota phase — fill entirely by energy score (lowest cost = highest score).
+     */
+    fillByScore();
+
+  } else {
+    /*
+     * random — fill entirely by random score, no type bias at all.
+     */
+    fillByScore();
+  }
+
+  /* Always runs last, in this order */
+  safetyTopUp();
+  enforceMinimumStrikes();
+
+  return {
+    id:         'deck_' + Date.now(),
+    name:       opts.name || 'Randomized Deck',
+    chamber:    chamber.number,
+    cards:      selected,
+    deckSize:   deckSize,
+    customSize: customSize,
+    strength:   strength,
+    pool:       S.pool,
+    created:    Date.now()
+  };
 }
-
-/* ── ATTACK ──────────────────────────────────────────────────────
-   Quota : top-third by force value, minimum 20 cards
-   Remainder : ally-heavy to round out the deck                   */
-if (strength === 'attack') {
-  var byForce       = standard.slice().sort(function (a, b) {
-    return (parseFloat(b.force) || 0) - (parseFloat(a.force) || 0);
-  });
-  var highForceCards = byForce.slice(0, Math.ceil(byForce.length / 3));
-  fillQuota(highForceCards, Math.min(20, target));
-  fillRemainder({ strike: 1, advantage: 3, ally: 4 });
-
-/* ── DEFENSE ─────────────────────────────────────────────────────
-   Quota : top-third by intercept, minimum 20 cards
-   Remainder : ally-heavy to round out                            */
-} else if (strength === 'defense') {
-  var byIntercept       = standard.slice().sort(function (a, b) {
-    return (parseFloat(b.intercept) || 0) - (parseFloat(a.intercept) || 0);
-  });
-  var highInterceptCards = byIntercept.slice(0, Math.ceil(byIntercept.length / 3));
-  fillQuota(highInterceptCards, Math.min(20, target));
-  fillRemainder({ strike: 1, advantage: 3, ally: 4 });
-
-/* ── BALANCED ────────────────────────────────────────────────────
-   Quota : golden-ratio split across all three types
-   Remainder : same ratio, proportional weights                   */
-} else if (strength === 'balanced') {
-  var PHI2       = PHI * PHI;                           /* ≈ 2.618 */
-  var totalRatio = PHI2 + PHI + 1;
-  var minStrikesB   = Math.round(target * (PHI2 / totalRatio));
-  var minAdvantageB = Math.round(target * (PHI  / totalRatio));
-  var minAlliesB    = Math.round(target * (1    / totalRatio));
-
-  fillQuota(standard.filter(function (c) { return c.type === 'strike';    }), Math.min(minStrikesB, target));
-  fillQuota(standard.filter(function (c) { return c.type === 'advantage'; }), Math.min(totalAdded + minAdvantageB, target));
-  fillQuota(standard.filter(function (c) { return c.type === 'ally';      }), Math.min(totalAdded + minAlliesB,    target));
-  fillRemainder({ strike: 3, advantage: 2, ally: 1 });
-
-/* ── SUPPORT ─────────────────────────────────────────────────────
-   Quota : 50% strikes, 25% allies, 5 advantage
-   Remainder : strike-dominant to fill remaining slots            */
-} else if (strength === 'support') {
-  fillQuota(standard.filter(function (c) { return c.type === 'strike';    }), Math.min(Math.ceil(target * 0.50), target));
-  fillQuota(standard.filter(function (c) { return c.type === 'ally';      }), Math.min(totalAdded + Math.ceil(target * 0.25), target));
-  fillQuota(standard.filter(function (c) { return c.type === 'advantage'; }), Math.min(totalAdded + 5, target));
-  fillRemainder({ strike: 5, advantage: 2, ally: 1 });
-
-/* ── CHAMBER CHARGER ─────────────────────────────────────────────
-   Quota : 40% advantage cards (chamber synergy)
-   Remainder : strike-dominant                                    */
-} else if (strength === 'chamber') {
-  fillQuota(standard.filter(function (c) { return c.type === 'advantage'; }), Math.min(Math.ceil(target * 0.40), target));
-  fillRemainder({ strike: 5, ally: 2, advantage: 1 });
-
-/* ── WILD CARD ────────────────────────────────────────────────────
-   Quota : balanced golden-ratio split (same as balanced)
-   Remainder : balanced weights but rules-text cards get 3× pull  */
-} else if (strength === 'wild') {
-  var PHI2w      = PHI * PHI;
-  var totalRatiow = PHI2w + PHI + 1;
-  fillQuota(standard.filter(function (c) { return c.type === 'strike';    }), Math.min(Math.round(target * (PHI2w / totalRatiow)), target));
-  fillQuota(standard.filter(function (c) { return c.type === 'advantage'; }), Math.min(totalAdded + Math.round(target * (PHI  / totalRatiow)), target));
-  fillQuota(standard.filter(function (c) { return c.type === 'ally';      }), Math.min(totalAdded + Math.round(target * (1    / totalRatiow)), target));
-  fillRemainder({ strike: 3, advantage: 2, ally: 1 }, /* rulesBoost */ true);
-
-/* ── ALL OTHER STRENGTHS (random, energy) ────────────────────────
-   Original greedy-score logic, unchanged.                        */
-} else {
-  standard.sort(function (a, b) { return cardScore(b, strength) - cardScore(a, strength); });
-  var topTierE = Math.ceil(standard.length * 0.3);
-  var midTierE = Math.ceil(standard.length * 0.6);
-  for (var i = 0; i < standard.length && totalAdded < target; i++) {
-    var c    = standard[i];
-    var maxC = Math.min(
-      strength === 'random' ? (1 + Math.floor(Math.random() * MAX_COPIES)) :
-      i < topTierE ? 4 : i < midTierE ? 2 : 1,
-      maxCopiesForCard(c.number),
-      target - totalAdded
-    );
-    if (maxC > 0) { selectedCards[c.number] = maxC; totalAdded += maxC; }
-  }
-  var pass2 = 0;
-  while (totalAdded < target && pass2 < standard.length * MAX_COPIES) {
-    var card2 = standard[pass2 % standard.length];
-    var cur2  = selectedCards[card2.number] || 0;
-    var mx2   = maxCopiesForCard(card2.number);
-    if (cur2 < mx2) { selectedCards[card2.number] = cur2 + 1; totalAdded++; }
-    pass2++;
-  }
-}
-
-/* ── Universal minimum: every deck gets at least 15 strikes ───── */
-enforceStrikeMinimum();
-
-    return {
-      id:         'deck_' + Date.now(),
-      name:       opts.name || 'Randomized Deck',
-      chamber:    chamber.number,
-      cards:      selectedCards,
-      deckSize:   deckSize,
-      customSize: customSize,
-      strength:   strength,
-      pool:       S.pool,
-      created:    Date.now()
-    };
-  }
   
   /* ═══════════════════════════════════════════════════════════════
      EXPORT HELPERS
