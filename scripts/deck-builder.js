@@ -93,40 +93,30 @@
     return base;
   }
 
-function parseTraits(str) {
-  if (!str) return [];
-  return str.split(/[,;\s]+/)
-    .map(function (t) { return t.trim().toLowerCase(); })
-    .filter(function (t) {
-      // Must be a real word — at least 2 letters, no placeholder junk
-      return t.length >= 2 && /^[a-z]+$/.test(t);
-    });
-}
+  function parseTraits(str) {
+    if (!str) return [];
+    return str.split(/[,;\s]+/)
+      .map(function (t) { return t.trim().toLowerCase(); })
+      .filter(function (t) {
+        return t.length >= 2 && /^[a-z]+$/.test(t);
+      });
+  }
 
   function getChamberTraits(chamberCard) {
     return parseTraits(chamberCard.traits || '');
   }
 
-function isCompatibleWithChamber(card, chamberCard) {
-  if (!chamberCard) return true;
-
-  var cardTraits = parseTraits(card.traits);
-
-  // No traits on the card → always compatible, no filtering
-  if (cardTraits.length === 0) return true;
-
-  var chamberTraits = parseTraits(chamberCard.traits || '');
-
-  // Chamber has no trait restriction → all cards pass
-  if (chamberTraits.length === 0) return true;
-
-  // Card has traits AND chamber has traits → need at least one overlap
-  // Only excluded if EVERY card trait fails to match
-  for (var i = 0; i < cardTraits.length; i++) {
-    if (chamberTraits.indexOf(cardTraits[i]) !== -1) return true;
+  function isCompatibleWithChamber(card, chamberCard) {
+    if (!chamberCard) return true;
+    var cardTraits = parseTraits(card.traits);
+    if (cardTraits.length === 0) return true;
+    var chamberTraits = parseTraits(chamberCard.traits || '');
+    if (chamberTraits.length === 0) return true;
+    for (var i = 0; i < cardTraits.length; i++) {
+      if (chamberTraits.indexOf(cardTraits[i]) !== -1) return true;
+    }
+    return false;
   }
-  return false;
-}
 
   function getStandardCards(pool) {
     return pool.filter(function (c) { return c.type !== CHAMBER_TYPE; });
@@ -156,15 +146,14 @@ function isCompatibleWithChamber(card, chamberCard) {
     var rE  = parseFloat(card.redEnergy)     || 0;
     var E   = gE + yE + rE;
     var hasRules = ((card.rulesText || '').trim().length > 8);
-    var t   = (card.type || '').toLowerCase();
     var noise = Math.random() * 3.1;
     switch (strength) {
       case 'attack':   return force * 3 + intercept * 0.5 + noise;
       case 'defense':  return intercept * 3 + force * 0.5 + noise;
       case 'energy':   return (E > 0 ? (12 / E) : 6) + noise;
-      case 'chamber':  return (t === 'advantage' ? 5 : t === 'strike' ? 2 : 1) + noise;
+      case 'chamber':  return ((card.type === 'advantage') ? 5 : (card.type === 'strike') ? 2 : 1) + noise;
       case 'wild':     return (hasRules ? (4 + force + intercept) : noise);
-      case 'support':  return (t === 'ally' ? 5 : t === 'advantage' ? 2 : 1) + noise;
+      case 'support':  return ((card.type === 'ally') ? 5 : (card.type === 'advantage') ? 2 : 1) + noise;
       case 'balanced': return (force + intercept + (hasRules ? 1 : 0)) + noise;
       default:         return Math.random() * 10;
     }
@@ -255,212 +244,174 @@ function isCompatibleWithChamber(card, chamberCard) {
     } catch (e) { return null; }
   }
 
-/* ═══════════════════════════════════════════════════════════════
-   PERSISTENCE — define here so these shadow any deck-sync.js versions
-═══════════════════════════════════════════════════════════════ */
-function saveDecks() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(S.decks)); } catch (_) {}
-}
-
-function loadDecks() {
-  try {
-    var raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) S.decks = JSON.parse(raw);
-  } catch (_) { S.decks = []; }
-}
-
-function persistDeck(deck) {
-  var idx = S.decks.findIndex(function(d) { return d.id === deck.id; });
-  if (idx !== -1) { S.decks[idx] = deck; } else { S.decks.push(deck); }
-  saveDecks();
-  pushDecksToSupabase();
-  syncDeckToPublicTable(deck);
-}
-
-function removeDeck(deckId) {
-  S.decks = S.decks.filter(function(d) { return d.id !== deckId; });
-  saveDecks();
-  pushDecksToSupabase();
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   SUPABASE SYNC
-═══════════════════════════════════════════════════════════════ */
-function getSupabaseClient() {
-  var client = window.sb;
-  if (!client || !client.auth) return null;
-  return client;
-}
-
-async function pushDecksToSupabase() {
-  var client = window.sb;
-  if (!client || !client.auth) {
-    console.warn('DeckBuilder: window.sb not ready');
-    return;
+  /* ═══════════════════════════════════════════════════════════════
+     PERSISTENCE
+  ═══════════════════════════════════════════════════════════════ */
+  function saveDecks() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(S.decks)); } catch (_) {}
   }
-  try {
-    var authResp = await client.auth.getUser();
-    var user = authResp.data && authResp.data.user;
-    if (!user) { console.warn('DeckBuilder: push skipped — not logged in'); return; }
-    console.log('DeckBuilder: pushing', S.decks.length, 'decks for', user.id);
-    var result = await client
-      .from('user_decks')
-      .upsert(
-        { user_id: user.id, decks_json: JSON.stringify(S.decks), updated_at: new Date().toISOString() },
-        { onConflict: 'user_id' }
-      );
-    if (result.error) throw result.error;
-    console.log('DeckBuilder: push OK ✓');
-    toast('Synced ' + S.decks.length + ' deck' + (S.decks.length !== 1 ? 's' : '') + ' to cloud ☁️');
-  } catch (e) {
-    console.error('DeckBuilder: push FAILED', e);
-    toast('Sync failed — ' + (e.message || 'check console'));
-  }
-}
-async function syncDeckToPublicTable(deck) {
-  var client = window.sb;
-  if (!client || !client.auth) return;
-  try {
-    var authResp = await client.auth.getUser();
-    var user = authResp.data && authResp.data.user;
-    if (!user) return;
-    if (deck.is_public) {
-      await client.from('decks').upsert({
-        id:         deck.id,
-        user_id:    user.id,
-        name:       deck.name,
-        description: deck.description || null,
-        cards:      deck.cards || {},
-        format:     deck.strength || null,
-        is_public:  true,
-        updated_at: new Date().toISOString()
-      }, { onConflict: 'id' });
-    } else {
-      await client.from('decks').delete()
-        .eq('id', deck.id).eq('user_id', user.id);
-    }
-  } catch (e) { console.warn('DeckBuilder: public sync failed', e); }
-}
 
-async function toggleDeckPublic(deckId) {
-  var idx = S.decks.findIndex(function (d) { return d.id === deckId; });
-  if (idx === -1) return;
-  S.decks[idx].is_public = !S.decks[idx].is_public;
-  if (S.viewingDeck && S.viewingDeck.id === deckId) {
-    S.viewingDeck.is_public = S.decks[idx].is_public;
+  function loadDecks() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) S.decks = JSON.parse(raw);
+    } catch (_) { S.decks = []; }
   }
-  saveDecks();
-  pushDecksToSupabase();
-  await syncDeckToPublicTable(S.decks[idx]);
-  toast(S.decks[idx].is_public
-    ? 'Deck is now public — friends can see it! 🌐'
-    : 'Deck is now private. 🔒');
-  render();
-}
-async function pullDecksFromSupabase() {
-  var client = window.sb;
-  if (!client || !client.auth) {
-    console.warn('DeckBuilder: window.sb not ready');
-    return;
-  }
-  try {
-    var authResp = await client.auth.getUser();
-    var user = authResp.data && authResp.data.user;
-    if (!user) { console.warn('DeckBuilder: pull skipped — not logged in'); return; }
-    console.log('DeckBuilder: pulling for', user.id);
-    var result = await client
-      .from('user_decks')
-      .select('decks_json')
-      .eq('user_id', user.id)
-      .single();
-    if (result.error) {
-      if (result.error.code === 'PGRST116') { console.log('DeckBuilder: no remote row yet'); return; }
-      throw result.error;
-    }
-    var remote = JSON.parse(result.data.decks_json || '[]');
-    if (!Array.isArray(remote)) return;
-    console.log('DeckBuilder: pulled', remote.length, 'decks');
-S.decks = remote;
-saveDecks();
-console.log('DeckBuilder: pull OK ✓');
-toast('Loaded ' + remote.length + ' deck' + (remote.length !== 1 ? 's' : '') + ' from cloud ✓');
-  }
-}
 
-async function pullWhenReady() {
-  var attempts = 0;
-  var interval = setInterval(async function () {
-    attempts++;
+  function persistDeck(deck) {
+    var idx = S.decks.findIndex(function(d) { return d.id === deck.id; });
+    if (idx !== -1) { S.decks[idx] = deck; } else { S.decks.push(deck); }
+    saveDecks();
+    pushDecksToSupabase();
+    syncDeckToPublicTable(deck);
+  }
+
+  function removeDeck(deckId) {
+    S.decks = S.decks.filter(function(d) { return d.id !== deckId; });
+    saveDecks();
+    pushDecksToSupabase();
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     SUPABASE SYNC
+  ═══════════════════════════════════════════════════════════════ */
+  function getSupabaseClient() {
+    var client = window.sb;
+    if (!client || !client.auth) return null;
+    return client;
+  }
+
+  async function pushDecksToSupabase() {
     var client = window.sb;
     if (!client || !client.auth) {
-      if (attempts >= 40) clearInterval(interval);
+      console.warn('DeckBuilder: window.sb not ready');
       return;
     }
     try {
       var authResp = await client.auth.getUser();
       var user = authResp.data && authResp.data.user;
-      if (user) {
-        clearInterval(interval);
-        console.log('DeckBuilder: auth ready, pulling…');
-        await pullDecksFromSupabase();
-        render();
-      } else if (attempts >= 40) {
-        clearInterval(interval);
-        console.log('DeckBuilder: no auth after 20s, giving up');
+      if (!user) { console.warn('DeckBuilder: push skipped — not logged in'); return; }
+      console.log('DeckBuilder: pushing', S.decks.length, 'decks for', user.id);
+      var result = await client
+        .from('user_decks')
+        .upsert(
+          { user_id: user.id, decks_json: JSON.stringify(S.decks), updated_at: new Date().toISOString() },
+          { onConflict: 'user_id' }
+        );
+      if (result.error) throw result.error;
+      console.log('DeckBuilder: push OK ✓');
+      toast('Synced ' + S.decks.length + ' deck' + (S.decks.length !== 1 ? 's' : '') + ' to cloud ☁️');
+    } catch (e) {
+      console.error('DeckBuilder: push FAILED', e);
+      toast('Sync failed — ' + (e.message || 'check console'));
+    }
+  }
+
+  async function syncDeckToPublicTable(deck) {
+    var client = window.sb;
+    if (!client || !client.auth) return;
+    try {
+      var authResp = await client.auth.getUser();
+      var user = authResp.data && authResp.data.user;
+      if (!user) return;
+      if (deck.is_public) {
+        await client.from('decks').upsert({
+          id:          deck.id,
+          user_id:     user.id,
+          name:        deck.name,
+          description: deck.description || null,
+          cards:       deck.cards || {},
+          format:      deck.strength  || null,
+          is_public:   true,
+          updated_at:  new Date().toISOString()
+        }, { onConflict: 'id' });
+      } else {
+        await client.from('decks').delete()
+          .eq('id', deck.id)
+          .eq('user_id', user.id);
       }
     } catch (e) {
-      clearInterval(interval);
+      console.warn('DeckBuilder: public sync failed', e);
     }
-  }, 500);
-}
-/* ═══════════════════════════════════════════════════════════════
-   PUBLIC DECK SYNC — writes/removes individual rows in `decks`
-   table so social features (friend profiles) can read them.
-═══════════════════════════════════════════════════════════════ */
-async function syncDeckToPublicTable(deck) {
-  var client = window.sb;
-  if (!client || !client.auth) return;
-  try {
-    var authResp = await client.auth.getUser();
-    var user = authResp.data && authResp.data.user;
-    if (!user) return;
-    if (deck.is_public) {
-      await client.from('decks').upsert({
-        id:          deck.id,
-        user_id:     user.id,
-        name:        deck.name,
-        description: deck.description || null,
-        cards:       deck.cards || {},
-        format:      deck.strength  || null,
-        is_public:   true,
-        updated_at:  new Date().toISOString()
-      }, { onConflict: 'id' });
-    } else {
-      await client.from('decks').delete()
-        .eq('id', deck.id)
-        .eq('user_id', user.id);
-    }
-  } catch (e) {
-    console.warn('DeckBuilder: public sync failed', e);
   }
-}
 
-async function toggleDeckPublic(deckId) {
-  var idx = S.decks.findIndex(function (d) { return d.id === deckId; });
-  if (idx === -1) return;
-  S.decks[idx].is_public = !S.decks[idx].is_public;
-  if (S.viewingDeck && S.viewingDeck.id === deckId) {
-    S.viewingDeck.is_public = S.decks[idx].is_public;
+  async function toggleDeckPublic(deckId) {
+    var idx = S.decks.findIndex(function (d) { return d.id === deckId; });
+    if (idx === -1) return;
+    S.decks[idx].is_public = !S.decks[idx].is_public;
+    if (S.viewingDeck && S.viewingDeck.id === deckId) {
+      S.viewingDeck.is_public = S.decks[idx].is_public;
+    }
+    saveDecks();
+    pushDecksToSupabase();
+    await syncDeckToPublicTable(S.decks[idx]);
+    toast(S.decks[idx].is_public
+      ? 'Deck is now public — friends can see it! 🌐'
+      : 'Deck is now private. 🔒');
+    render();
   }
-  saveDecks();
-  pushDecksToSupabase();
-  await syncDeckToPublicTable(S.decks[idx]);
-  toast(S.decks[idx].is_public
-    ? 'Deck is now public — friends can see it! 🌐'
-    : 'Deck is now private. 🔒');
-  render();
-}
-/* ═══════════════════════════════════════════════════════════════
+
+  async function pullDecksFromSupabase() {
+    var client = window.sb;
+    if (!client || !client.auth) {
+      console.warn('DeckBuilder: window.sb not ready');
+      return;
+    }
+    try {
+      var authResp = await client.auth.getUser();
+      var user = authResp.data && authResp.data.user;
+      if (!user) { console.warn('DeckBuilder: pull skipped — not logged in'); return; }
+      console.log('DeckBuilder: pulling for', user.id);
+      var result = await client
+        .from('user_decks')
+        .select('decks_json')
+        .eq('user_id', user.id)
+        .single();
+      if (result.error) {
+        if (result.error.code === 'PGRST116') { console.log('DeckBuilder: no remote row yet'); return; }
+        throw result.error;
+      }
+      var remote = JSON.parse(result.data.decks_json || '[]');
+      if (!Array.isArray(remote)) return;
+      console.log('DeckBuilder: pulled', remote.length, 'decks');
+      S.decks = remote;
+      saveDecks();
+      console.log('DeckBuilder: pull OK ✓');
+      toast('Loaded ' + remote.length + ' deck' + (remote.length !== 1 ? 's' : '') + ' from cloud ✓');
+    } catch (e) {
+      console.error('DeckBuilder: pull FAILED', e);
+      toast('Pull failed — ' + (e.message || 'check console'));
+    }
+  }
+
+  async function pullWhenReady() {
+    var attempts = 0;
+    var interval = setInterval(async function () {
+      attempts++;
+      var client = window.sb;
+      if (!client || !client.auth) {
+        if (attempts >= 40) clearInterval(interval);
+        return;
+      }
+      try {
+        var authResp = await client.auth.getUser();
+        var user = authResp.data && authResp.data.user;
+        if (user) {
+          clearInterval(interval);
+          console.log('DeckBuilder: auth ready, pulling…');
+          await pullDecksFromSupabase();
+          render();
+        } else if (attempts >= 40) {
+          clearInterval(interval);
+          console.log('DeckBuilder: no auth after 20s, giving up');
+        }
+      } catch (e) {
+        clearInterval(interval);
+      }
+    }, 500);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
      RANDOMIZER ENGINE
   ═══════════════════════════════════════════════════════════════ */
   function pickBestChamber(pool, strength) {
@@ -471,324 +422,336 @@ async function toggleDeckPublic(deckId) {
     return top[Math.floor(Math.random() * top.length)];
   }
 
-  /* φ = golden ratio — used for balanced deck type distribution */
-  var PHI = 1.6180339887;
-
-function buildRandomDeck(opts) {
-  var pool       = getPoolCards();
-  var strength   = opts.strength   || 'random';
-  var deckSize   = opts.deckSize   || 'full';
-  var customSize = opts.customSize || 60;
-  var target     = deckSize === 'full' ? 60 : deckSize === 'half' ? 30 : customSize;
-  var chamber    = opts.chamber || pickBestChamber(pool, strength);
-  if (!chamber) return null;
-
-  var standard = getStandardCards(pool).filter(function (c) {
-    return isCompatibleWithChamber(c, chamber);
-  });
-  if (standard.length === 0) return null;
-
   /* ─────────────────────────────────────────────────────────────
-     STATE
-  ───────────────────────────────────────────────────────────── */
-  var selected   = {};   // cardNumber → qty in deck
-  var totalAdded = 0;
+     DECK COMPOSITION RULES
+     ─────────────────────────────────────────────────────────────
+     Every randomized deck must satisfy these hard minimums:
+       • Strikes   ≥ 50%   of standard card count  (ceil target × 0.500)
+       • Advantage ≥ 12.5% of standard card count  (ceil target × 0.125)
+       • Allies    ≥ 12.5% of standard card count  (ceil target × 0.125)
+     Combined that guarantees 75% is locked; the remaining 25% (flex)
+     is distributed according to each strength's flavor weights.
 
-  /* ─────────────────────────────────────────────────────────────
-     PRIMITIVE HELPERS
-  ───────────────────────────────────────────────────────────── */
-  function qty(c)      { return selected[c.number] || 0; }
-  function cap(c)      { return maxCopiesForCard(c.number); }
-  function hasRoom(c)  { return qty(c) < cap(c); }
-  function isFull()    { return totalAdded >= target; }
-
-  function addOne(c) {
-    if (!hasRoom(c) || isFull()) return false;
-    selected[c.number] = qty(c) + 1;
-    totalAdded++;
-    return true;
-  }
-
-  function removeOne(c) {
-    if (qty(c) <= 0) return false;
-    selected[c.number] = qty(c) - 1;
-    if (selected[c.number] === 0) delete selected[c.number];
-    totalAdded--;
-    return true;
-  }
-
-  function countType(type) {
-    return standard.reduce(function (sum, c) {
-      return c.type === type ? sum + qty(c) : sum;
-    }, 0);
-  }
-
-  function available(pool) {
-    return pool.filter(hasRoom);
-  }
-
-  /* ─────────────────────────────────────────────────────────────
-     SCORING  — noise scaled to 3 so it's meaningful vs stat range
-  ───────────────────────────────────────────────────────────── */
-  function scoreCard(c, str) {
-    var F  = parseFloat(c.force)        || 0;
-    var I  = parseFloat(c.intercept)    || 0;
-    var E  = (parseFloat(c.greenEnergy)  || 0)
-           + (parseFloat(c.yellowEnergy) || 0)
-           + (parseFloat(c.redEnergy)    || 0);
-    var hasRules = (c.rulesText || '').trim().length > 8;
-    var t        = (c.type || '').toLowerCase();
-    var noise    = Math.random() * 3;
-    switch (str) {
-      case 'attack':   return F * 3 + I * 0.5 + noise;
-      case 'defense':  return I * 3 + F * 0.5 + noise;
-      case 'energy':   return (E > 0 ? 12 / E : 6) + noise;
-      case 'wild':     return (hasRules ? 6 : 0) + (F + I) * 0.5 + noise;
-      case 'balanced': return F + I + (hasRules ? 1 : 0) + noise;
-      default:         return Math.random() * 10;
-    }
-  }
-
-  /* ─────────────────────────────────────────────────────────────
-     WEIGHTED RANDOM PICK — pick one card from a list by weight
-  ───────────────────────────────────────────────────────────── */
-  function weightedPick(candidates, weightFn) {
-    if (candidates.length === 0) return null;
-    var weights    = candidates.map(weightFn);
-    var totalW     = weights.reduce(function (s, w) { return s + w; }, 0);
-    var rand       = Math.random() * totalW;
-    for (var i = 0; i < candidates.length; i++) {
-      rand -= weights[i];
-      if (rand <= 0) return candidates[i];
-    }
-    return candidates[candidates.length - 1];
-  }
-
-  /* ─────────────────────────────────────────────────────────────
-     FILL FUNCTIONS
+     Examples:
+       60-card full deck → strikes ≥ 30, advantage ≥ 8, allies ≥ 8, flex = 14
+       30-card half deck → strikes ≥ 15, advantage ≥ 4, allies ≥ 4, flex = 7
   ───────────────────────────────────────────────────────────── */
 
-  /*
-   * fillGreedy — fills up to `count` more cards from `pool`.
-   * Sorts by score, applies tier copy limits: top 30% → 3, mid → 2, tail → 1.
-   * Use this for quota phases where you want the best cards of a type.
-   */
-  function fillGreedy(pool, count) {
-    if (count <= 0 || isFull()) return;
-    var sorted  = pool.slice().sort(function (a, b) {
-      return scoreCard(b, strength) - scoreCard(a, strength);
+  function buildRandomDeck(opts) {
+    var pool       = getPoolCards();
+    var strength   = opts.strength   || 'random';
+    var deckSize   = opts.deckSize   || 'full';
+    var customSize = opts.customSize || 60;
+    var target     = deckSize === 'full' ? 60 : deckSize === 'half' ? 30 : customSize;
+    var chamber    = opts.chamber || pickBestChamber(pool, strength);
+    if (!chamber) return null;
+
+    var standard = getStandardCards(pool).filter(function (c) {
+      return isCompatibleWithChamber(c, chamber);
     });
-    var topTier = Math.ceil(sorted.length * 0.3);
-    var midTier = Math.ceil(sorted.length * 0.6);
-    var added   = 0;
+    if (standard.length === 0) return null;
 
-    for (var i = 0; i < sorted.length && added < count && !isFull(); i++) {
-      var c       = sorted[i];
-      var tierMax = i < topTier ? 3 : i < midTier ? 2 : 1;
-      var canAdd  = Math.min(tierMax - qty(c), cap(c) - qty(c), count - added);
-      if (canAdd > 0) {
-        selected[c.number] = qty(c) + canAdd;
-        totalAdded        += canAdd;
-        added             += canAdd;
+    /* ── Hard minimum counts ── */
+    var MIN_STRIKES = Math.ceil(target * 0.500);  // ≥ 50%
+    var MIN_ADV     = Math.ceil(target * 0.125);  // ≥ 12.5%
+    var MIN_ALLY    = Math.ceil(target * 0.125);  // ≥ 12.5%
+    /* flex = remaining 25% after minimums are filled */
+
+    /* ── State ── */
+    var selected   = {};
+    var totalAdded = 0;
+
+    /* ── Primitives ── */
+    function qty(c)     { return selected[c.number] || 0; }
+    function cap(c)     { return maxCopiesForCard(c.number); }
+    function hasRoom(c) { return qty(c) < cap(c); }
+    function isFull()   { return totalAdded >= target; }
+
+    function addOne(c) {
+      if (!hasRoom(c) || isFull()) return false;
+      selected[c.number] = qty(c) + 1;
+      totalAdded++;
+      return true;
+    }
+
+    function removeOne(c) {
+      if (qty(c) <= 0) return false;
+      selected[c.number] = qty(c) - 1;
+      if (selected[c.number] === 0) delete selected[c.number];
+      totalAdded--;
+      return true;
+    }
+
+    function countType(type) {
+      return standard.reduce(function (sum, c) {
+        return c.type === type ? sum + qty(c) : sum;
+      }, 0);
+    }
+
+    function availableFrom(pool) {
+      return pool.filter(hasRoom);
+    }
+
+    /* ── Scoring ── */
+    function scoreCard(c, str) {
+      var F        = parseFloat(c.force)        || 0;
+      var I        = parseFloat(c.intercept)    || 0;
+      var E        = (parseFloat(c.greenEnergy)  || 0)
+                   + (parseFloat(c.yellowEnergy) || 0)
+                   + (parseFloat(c.redEnergy)    || 0);
+      var hasRules = (c.rulesText || '').trim().length > 8;
+      var noise    = Math.random() * 3;
+      switch (str) {
+        case 'attack':   return F * 3 + I * 0.5 + noise;
+        case 'defense':  return I * 3 + F * 0.5 + noise;
+        case 'energy':   return (E > 0 ? 12 / E : 6) + noise;
+        case 'wild':     return (hasRules ? 6 : 0) + (F + I) * 0.5 + noise;
+        case 'balanced': return F + I + (hasRules ? 1 : 0) + noise;
+        default:         return Math.random() * 10;
       }
     }
-  }
 
-  /*
-   * fillWeighted — fills remaining slots using weighted random by card type.
-   * typeWeights = { strike: N, advantage: N, ally: N }
-   * rulesBoost  = true → cards with rules text get 3x their base weight.
-   * Use this for remainder phases where you want probabilistic variety.
-   */
-  function fillWeighted(typeWeights, rulesBoost) {
-    if (isFull()) return;
-    typeWeights = typeWeights || { strike: 1, advantage: 1, ally: 1 };
-    var pool        = available(standard);
-    var maxAttempts = (target - totalAdded) * 25;
-    var attempts    = 0;
+    /* ── Weighted random pick ── */
+    function weightedPick(candidates, weightFn) {
+      if (candidates.length === 0) return null;
+      var weights = candidates.map(weightFn);
+      var totalW  = weights.reduce(function (s, w) { return s + w; }, 0);
+      var rand    = Math.random() * totalW;
+      for (var i = 0; i < candidates.length; i++) {
+        rand -= weights[i];
+        if (rand <= 0) return candidates[i];
+      }
+      return candidates[candidates.length - 1];
+    }
 
-    while (!isFull() && pool.length > 0 && attempts++ < maxAttempts) {
-      var pick = weightedPick(pool, function (c) {
-        var t = (c.type || '').toLowerCase();
-        var w = typeWeights[t] !== undefined ? typeWeights[t] : 1;
-        if (rulesBoost && (c.rulesText || '').trim().length > 8) w *= 3;
-        return Math.max(0.1, w);
+    /* ── fillGreedy ──────────────────────────────────────────────
+       Fills up to `count` cards from `pool`, sorted by score.
+       Tier copy limits: top 30% → 3, mid 30% → 2, tail → 1.
+       Use for deterministic minimum-fill phases.
+    ── */
+    function fillGreedy(pool, count) {
+      if (count <= 0 || isFull()) return;
+      var sorted  = pool.slice().sort(function (a, b) {
+        return scoreCard(b, strength) - scoreCard(a, strength);
       });
-      if (!pick) break;
-      addOne(pick);
-      if (!hasRoom(pick)) pool = pool.filter(function (c) { return c.number !== pick.number; });
+      var topTier = Math.ceil(sorted.length * 0.3);
+      var midTier = Math.ceil(sorted.length * 0.6);
+      var added   = 0;
+
+      for (var i = 0; i < sorted.length && added < count && !isFull(); i++) {
+        var c       = sorted[i];
+        var tierMax = i < topTier ? 3 : i < midTier ? 2 : 1;
+        var canAdd  = Math.min(tierMax - qty(c), cap(c) - qty(c), count - added);
+        if (canAdd > 0) {
+          selected[c.number] = qty(c) + canAdd;
+          totalAdded += canAdd;
+          added      += canAdd;
+        }
+      }
     }
-  }
 
-  /*
-   * fillByScore — fills remaining slots weighted by score value (for energy/random).
-   * Unlike fillWeighted it doesn't care about type, just raw score.
-   */
-  function fillByScore() {
-    if (isFull()) return;
-    var pool        = available(standard);
-    var maxAttempts = (target - totalAdded) * 25;
-    var attempts    = 0;
+    /* ── fillWeighted ────────────────────────────────────────────
+       Fills remaining slots using weighted random by card type.
+       typeWeights = { strike: N, advantage: N, ally: N }
+       rulesBoost  = true → cards with rules text get 3× their base weight.
+       Use for flex phases where probabilistic variety is desired.
+    ── */
+    function fillWeighted(typeWeights, rulesBoost) {
+      if (isFull()) return;
+      typeWeights = typeWeights || { strike: 1, advantage: 1, ally: 1 };
+      var pool        = availableFrom(standard);
+      var maxAttempts = (target - totalAdded) * 25;
+      var attempts    = 0;
 
-    while (!isFull() && pool.length > 0 && attempts++ < maxAttempts) {
-      var pick = weightedPick(pool, function (c) {
-        return Math.max(0.1, scoreCard(c, strength));
+      while (!isFull() && pool.length > 0 && attempts++ < maxAttempts) {
+        var pick = weightedPick(pool, function (c) {
+          var t = (c.type || '').toLowerCase();
+          var w = typeWeights[t] !== undefined ? typeWeights[t] : 1;
+          if (rulesBoost && (c.rulesText || '').trim().length > 8) w *= 3;
+          return Math.max(0.1, w);
+        });
+        if (!pick) break;
+        addOne(pick);
+        if (!hasRoom(pick)) pool = pool.filter(function (c) { return c.number !== pick.number; });
+      }
+    }
+
+    /* ── fillByScore ─────────────────────────────────────────────
+       Fills remaining slots weighted by raw score — no type bias.
+       Used for 'energy' and 'random' flex phases.
+    ── */
+    function fillByScore() {
+      if (isFull()) return;
+      var pool        = availableFrom(standard);
+      var maxAttempts = (target - totalAdded) * 25;
+      var attempts    = 0;
+
+      while (!isFull() && pool.length > 0 && attempts++ < maxAttempts) {
+        var pick = weightedPick(pool, function (c) {
+          return Math.max(0.1, scoreCard(c, strength));
+        });
+        if (!pick) break;
+        addOne(pick);
+        if (!hasRoom(pick)) pool = pool.filter(function (c) { return c.number !== pick.number; });
+      }
+    }
+
+    /* ── safetyTopUp ─────────────────────────────────────────────
+       Last-resort filler: cycles through all cards and fills
+       wherever there's still room. Prevents short decks when the
+       pool is sparse.
+    ── */
+    function safetyTopUp() {
+      if (isFull()) return;
+      var pass = 0;
+      while (!isFull() && pass < standard.length * MAX_COPIES) {
+        var c = standard[pass % standard.length];
+        if (hasRoom(c)) addOne(c);
+        pass++;
+      }
+    }
+
+    /* ── enforceMinimums ─────────────────────────────────────────
+       Runs dead last. Guarantees the three hard composition rules:
+         strikes ≥ 50%  (MIN_STRIKES)
+         advantage ≥ 12.5%  (MIN_ADV)
+         allies ≥ 12.5%  (MIN_ALLY)
+
+       For each type in deficit it swaps out cards from types that
+       are above their own minimum, picking the lowest-qty removals
+       first to preserve variety.
+    ── */
+    function enforceMinimums() {
+      var MINS = { strike: MIN_STRIKES, advantage: MIN_ADV, ally: MIN_ALLY };
+
+      ['strike', 'advantage', 'ally'].forEach(function (needType) {
+        var deficit = MINS[needType] - countType(needType);
+        if (deficit <= 0) return;
+
+        var needPool = standard.filter(function (c) { return c.type === needType; });
+        if (needPool.length === 0) return;
+
+        /* Cards eligible to be removed: must be above their own minimum */
+        var removePool = standard
+          .filter(function (c) {
+            if (c.type === needType) return false;
+            var minForType = MINS[c.type] || 0;
+            return qty(c) > 0 && countType(c.type) > minForType;
+          })
+          .sort(function (a, b) { return qty(a) - qty(b); }); /* remove lowest-qty first */
+
+        var ri = 0;
+        while (deficit > 0 && ri < removePool.length) {
+          var rem = removePool[ri++];
+          if (qty(rem) === 0) continue;
+          /* Re-verify type still has surplus (counts shift as we swap) */
+          if (countType(rem.type) <= (MINS[rem.type] || 0)) continue;
+          var openNeed = availableFrom(needPool);
+          if (openNeed.length === 0) break;
+          removeOne(rem);
+          addOne(openNeed[Math.floor(Math.random() * openNeed.length)]);
+          deficit--;
+        }
       });
-      if (!pick) break;
-      addOne(pick);
-      if (!hasRoom(pick)) pool = pool.filter(function (c) { return c.number !== pick.number; });
     }
-  }
 
-  /*
-   * safetyTopUp — last resort if we're still short after everything else.
-   * Cycles through all cards and adds wherever there's room.
-   */
-  function safetyTopUp() {
-    if (isFull()) return;
-    var pass = 0;
-    while (!isFull() && pass < standard.length * MAX_COPIES) {
-      var c = standard[pass % standard.length];
-      if (hasRoom(c)) addOne(c);
-      pass++;
+    /* ── Per-type card pools ── */
+    var strikes   = standard.filter(function (c) { return c.type === 'strike';    });
+    var advantage = standard.filter(function (c) { return c.type === 'advantage'; });
+    var allies    = standard.filter(function (c) { return c.type === 'ally';      });
+
+    /* ── Per-strength build logic ─────────────────────────────────
+       Phase 1 (always): fill the three hard minimums using greedy
+         so the best cards of each required type get first pick.
+       Phase 2: fill the flex slots (remaining 25%) with type weights
+         that reflect each strength's personality.
+       Phase 3: safetyTopUp → enforceMinimums (safety net).
+    ── */
+
+    if (strength === 'attack') {
+      /* Minimum quotas first */
+      fillGreedy(strikes,   MIN_STRIKES);
+      fillGreedy(advantage, MIN_ADV);
+      fillGreedy(allies,    MIN_ALLY);
+      /* Flex: bias toward high-force strikes */
+      var byForce   = strikes.slice().sort(function (a, b) {
+        return (parseFloat(b.force) || 0) - (parseFloat(a.force) || 0);
+      });
+      fillGreedy(byForce.slice(0, Math.ceil(byForce.length / 3)), target);
+      fillWeighted({ strike: 5, advantage: 2, ally: 1 });
+
+    } else if (strength === 'defense') {
+      fillGreedy(strikes,   MIN_STRIKES);
+      fillGreedy(advantage, MIN_ADV);
+      fillGreedy(allies,    MIN_ALLY);
+      /* Flex: bias toward high-intercept strikes */
+      var byIntercept = strikes.slice().sort(function (a, b) {
+        return (parseFloat(b.intercept) || 0) - (parseFloat(a.intercept) || 0);
+      });
+      fillGreedy(byIntercept.slice(0, Math.ceil(byIntercept.length / 3)), target);
+      fillWeighted({ strike: 3, advantage: 3, ally: 3 });
+
+    } else if (strength === 'balanced') {
+      fillGreedy(strikes,   MIN_STRIKES);
+      fillGreedy(advantage, MIN_ADV);
+      fillGreedy(allies,    MIN_ALLY);
+      /* Flex: even distribution */
+      fillWeighted({ strike: 4, advantage: 3, ally: 3 });
+
+    } else if (strength === 'support') {
+      fillGreedy(strikes,   MIN_STRIKES);
+      fillGreedy(allies,    MIN_ALLY);
+      fillGreedy(advantage, MIN_ADV);
+      /* Flex: ally-heavy */
+      fillWeighted({ strike: 2, advantage: 2, ally: 5 });
+
+    } else if (strength === 'chamber') {
+      fillGreedy(strikes,   MIN_STRIKES);
+      fillGreedy(advantage, MIN_ADV);
+      fillGreedy(allies,    MIN_ALLY);
+      /* Flex: advantage-heavy for chamber synergy */
+      fillWeighted({ strike: 3, advantage: 5, ally: 2 });
+
+    } else if (strength === 'wild') {
+      fillGreedy(strikes,   MIN_STRIKES);
+      fillGreedy(advantage, MIN_ADV);
+      fillGreedy(allies,    MIN_ALLY);
+      /* Flex: balanced weights but rules-text cards get 3× pull */
+      fillWeighted({ strike: 3, advantage: 2, ally: 2 }, /* rulesBoost */ true);
+
+    } else if (strength === 'energy') {
+      /* Fill minimums greedily by energy score (lowest cost = best) */
+      fillGreedy(strikes,   MIN_STRIKES);
+      fillGreedy(advantage, MIN_ADV);
+      fillGreedy(allies,    MIN_ALLY);
+      /* Flex: score-driven regardless of type */
+      fillByScore();
+
+    } else {
+      /* random — fill minimums then let score go fully random */
+      fillGreedy(strikes,   MIN_STRIKES);
+      fillGreedy(advantage, MIN_ADV);
+      fillGreedy(allies,    MIN_ALLY);
+      fillByScore();
     }
+
+    /* Always runs last, in this order */
+    safetyTopUp();
+    enforceMinimums();
+
+    return {
+      id:         'deck_' + Date.now(),
+      name:       opts.name || 'Randomized Deck',
+      chamber:    chamber.number,
+      cards:      selected,
+      deckSize:   deckSize,
+      customSize: customSize,
+      strength:   strength,
+      pool:       S.pool,
+      created:    Date.now()
+    };
   }
 
-  /*
-   * enforceMinimumStrikes — runs dead last, always.
-   * If the deck has fewer than 15 strikes, swaps out cheapest non-strikes
-   * (lowest qty first) and replaces them with random available strikes.
-   */
-  function enforceMinimumStrikes() {
-    var MIN     = 15;
-    var strikes = standard.filter(function (c) { return c.type === 'strike'; });
-    if (strikes.length === 0) return;
-
-    var deficit = MIN - countType('strike');
-    if (deficit <= 0) return;
-
-    var nonStrikes = standard
-      .filter(function (c) { return c.type !== 'strike' && qty(c) > 0; })
-      .sort(function (a, b) { return qty(a) - qty(b); });
-
-    var ni = 0;
-    while (deficit > 0 && ni < nonStrikes.length) {
-      var ns      = nonStrikes[ni++];
-      if (qty(ns) === 0) continue;
-      var openS   = available(strikes);
-      if (openS.length === 0) break;
-      removeOne(ns);
-      addOne(openS[Math.floor(Math.random() * openS.length)]);
-      deficit--;
-    }
-  }
-
-  /* ─────────────────────────────────────────────────────────────
-     CARD TYPE POOLS (used by multiple strengths)
-  ───────────────────────────────────────────────────────────── */
-  var strikes   = standard.filter(function (c) { return c.type === 'strike';    });
-  var advantage = standard.filter(function (c) { return c.type === 'advantage'; });
-  var allies    = standard.filter(function (c) { return c.type === 'ally';      });
-
-  /* ─────────────────────────────────────────────────────────────
-     PER-STRENGTH BUILD LOGIC
-  ───────────────────────────────────────────────────────────── */
-
-  if (strength === 'attack') {
-    /*
-     * Quota  : fill at least 20 cards from the top-third highest-force cards.
-     * Remainder: ally 4 | adv 3 | strike 1 — the attack quota already loaded
-     *           the heavy hitters so remainder diversifies.
-     */
-    var byForce   = standard.slice().sort(function (a, b) {
-      return (parseFloat(b.force) || 0) - (parseFloat(a.force) || 0);
-    });
-    var highForce = byForce.slice(0, Math.ceil(byForce.length / 3));
-    fillGreedy(highForce, Math.min(20, target));
-    fillWeighted({ strike: 1, advantage: 3, ally: 4 });
-
-  } else if (strength === 'defense') {
-    /*
-     * Quota  : fill at least 20 cards from the top-third highest-intercept cards.
-     * Remainder: ally 4 | adv 3 | strike 1 — same logic as attack.
-     */
-    var byIntercept   = standard.slice().sort(function (a, b) {
-      return (parseFloat(b.intercept) || 0) - (parseFloat(a.intercept) || 0);
-    });
-    var highIntercept = byIntercept.slice(0, Math.ceil(byIntercept.length / 3));
-    fillGreedy(highIntercept, Math.min(20, target));
-    fillWeighted({ strike: 1, advantage: 3, ally: 4 });
-
-  } else if (strength === 'balanced') {
-    /*
-     * Quota  : golden-ratio split  strike ~50% | advantage ~31% | ally ~19%
-     * Remainder: same ratio maintained via weights.
-     */
-    var totalR  = PHI * PHI + PHI + 1;
-    fillGreedy(strikes,   Math.round(target * (PHI * PHI) / totalR));
-    fillGreedy(advantage, Math.round(target * PHI         / totalR));
-    fillGreedy(allies,    Math.round(target * 1           / totalR));
-    fillWeighted({ strike: 3, advantage: 2, ally: 1 });
-
-  } else if (strength === 'support') {
-    /*
-     * Quota  : 50% strikes, 25% allies, 5 advantage.
-     * Remainder: strike 5 | adv 2 | ally 1.
-     */
-    fillGreedy(strikes,   Math.ceil(target * 0.50));
-    fillGreedy(allies,    Math.ceil(target * 0.25));
-    fillGreedy(advantage, Math.min(5, target));
-    fillWeighted({ strike: 5, advantage: 2, ally: 1 });
-
-  } else if (strength === 'chamber') {
-    /*
-     * Quota  : 40% advantage cards (chamber synergy).
-     * Remainder: strike 5 | ally 2 | adv 1.
-     */
-    fillGreedy(advantage, Math.ceil(target * 0.40));
-    fillWeighted({ strike: 5, ally: 2, advantage: 1 });
-
-  } else if (strength === 'wild') {
-    /*
-     * Quota  : same balanced golden-ratio split as balanced.
-     * Remainder: balanced weights but rules-text cards get 3x pull.
-     */
-    var totalRw = PHI * PHI + PHI + 1;
-    fillGreedy(strikes,   Math.round(target * (PHI * PHI) / totalRw));
-    fillGreedy(advantage, Math.round(target * PHI         / totalRw));
-    fillGreedy(allies,    Math.round(target * 1           / totalRw));
-    fillWeighted({ strike: 3, advantage: 2, ally: 1 }, /* rulesBoost */ true);
-
-  } else if (strength === 'energy') {
-    /*
-     * No quota phase — fill entirely by energy score (lowest cost = highest score).
-     */
-    fillByScore();
-
-  } else {
-    /*
-     * random — fill entirely by random score, no type bias at all.
-     */
-    fillByScore();
-  }
-
-  /* Always runs last, in this order */
-  safetyTopUp();
-  enforceMinimumStrikes();
-
-  return {
-    id:         'deck_' + Date.now(),
-    name:       opts.name || 'Randomized Deck',
-    chamber:    chamber.number,
-    cards:      selected,
-    deckSize:   deckSize,
-    customSize: customSize,
-    strength:   strength,
-    pool:       S.pool,
-    created:    Date.now()
-  };
-}
-  
   /* ═══════════════════════════════════════════════════════════════
      EXPORT HELPERS
   ═══════════════════════════════════════════════════════════════ */
@@ -826,7 +789,7 @@ function buildRandomDeck(opts) {
   }
 
   /* ═══════════════════════════════════════════════════════════════
-     ING UTILITIES
+     RENDERING UTILITIES
   ═══════════════════════════════════════════════════════════════ */
   function esc(s) {
     return String(s || '')
@@ -1067,7 +1030,7 @@ function buildRandomDeck(opts) {
   border-radius:var(--radius); padding:10px 12px; margin-bottom:6px;
 }
 
-/* ── BUILD CARD PICKER: matches main card grid exactly ─────── */
+/* ── BUILD CARD PICKER ─────────────────────────────────────── */
 .db-pick-controls {
   display:flex; gap:7px; margin-bottom:10px; flex-wrap:wrap; align-items:center;
 }
@@ -1114,7 +1077,7 @@ function buildRandomDeck(opts) {
 .db-cards-scroll::-webkit-scrollbar { width:4px; }
 .db-cards-scroll::-webkit-scrollbar-thumb { background:var(--border-light); border-radius:2px; }
 
-/* Build card: reuse .card-item but add deck-specific overlays */
+/* Build card overlays */
 .db-build-card { cursor:pointer; }
 .db-build-card.db-selected {
   border-color:var(--zen) !important;
@@ -1126,7 +1089,6 @@ function buildRandomDeck(opts) {
   filter:drop-shadow(0 0 5px var(--promo)) !important;
 }
 
-/* Qty overlay — shown on selected cards */
 .db-build-qty-overlay {
   position:absolute; bottom:0; left:0; right:0;
   background:linear-gradient(transparent,rgba(0,0,0,.88));
@@ -1147,7 +1109,6 @@ function buildRandomDeck(opts) {
   min-width:18px; text-align:center; text-shadow:0 1px 3px rgba(0,0,0,.8);
 }
 
-/* Add overlay — visible on hover for unselected cards */
 .db-build-add-overlay {
   position:absolute; bottom:8px; left:0; right:0;
   display:flex; align-items:center; justify-content:center;
@@ -1163,7 +1124,7 @@ function buildRandomDeck(opts) {
 .db-build-add-btn:hover { background:var(--zen); }
 .db-build-add-btn:disabled { opacity:.35; cursor:not-allowed; pointer-events:none; }
 
-/* Stats view */
+/* Stats */
 .db-stat-pill {
   font-size:.63rem; padding:2px 9px; border-radius:99px;
   border:1px solid; font-weight:700; white-space:nowrap; display:inline-block;
@@ -1199,26 +1160,24 @@ function buildRandomDeck(opts) {
   ═══════════════════════════════════════════════════════════════ */
   function getEl() { return document.getElementById('nested-digital-deckbuilder'); }
 
-function render() {
-  var el = getEl(); if (!el) return;
+  function render() {
+    var el = getEl(); if (!el) return;
 
-  // ── preserve card-picker scroll position across re-renders ──
-  var scrollEl = el.querySelector('.db-cards-scroll');
-  var savedScroll = scrollEl ? scrollEl.scrollTop : 0;
+    var scrollEl    = el.querySelector('.db-cards-scroll');
+    var savedScroll = scrollEl ? scrollEl.scrollTop : 0;
 
-  switch (S.view) {
-    case 'list':      el.innerHTML = vList();      break;
-    case 'randomize': el.innerHTML = vRandomize(); break;
-    case 'build':     el.innerHTML = vBuild();     break;
-    case 'stats':     el.innerHTML = vStats();     break;
-    case 'export':    el.innerHTML = vExport();    break;
+    switch (S.view) {
+      case 'list':      el.innerHTML = vList();      break;
+      case 'randomize': el.innerHTML = vRandomize(); break;
+      case 'build':     el.innerHTML = vBuild();     break;
+      case 'stats':     el.innerHTML = vStats();     break;
+      case 'export':    el.innerHTML = vExport();    break;
+    }
+    wire();
+
+    var newScrollEl = el.querySelector('.db-cards-scroll');
+    if (newScrollEl && savedScroll > 0) newScrollEl.scrollTop = savedScroll;
   }
-  wire();
-
-  // ── restore scroll after the new DOM is in place ──
-  var newScrollEl = el.querySelector('.db-cards-scroll');
-  if (newScrollEl && savedScroll > 0) newScrollEl.scrollTop = savedScroll;
-}
 
   /* ── POOL BAR ─────────────────────────────────────────────── */
   function poolBar() {
@@ -1243,16 +1202,16 @@ function render() {
       var st = computeDeckStats(entries);
       return '<div class="db-deck-card" data-deck-id="'+esc(deck.id)+'">'
         +'<div class="db-deck-thumb" style="'+(img?'background-image:url('+esc(img)+')':'background:var(--bg-primary)')+'">'
-  +(deck.is_public
-    ? '<div style="position:absolute;top:6px;left:6px;z-index:4;background:rgba(61,184,108,0.88);'
-      +'border-radius:99px;padding:2px 8px;font-size:0.5rem;font-weight:700;color:#fff;'
-      +'letter-spacing:0.06em;backdrop-filter:blur(4px);">🌐 PUBLIC</div>'
-    : '')
-  +'<div class="db-deck-overlay">'
-    +'<div class="db-deck-name">'+esc(deck.name)+'</div>'
-    +'<div class="db-deck-qty">'+totalStd+' cards + Chamber</div>'
-  +'</div>'
-+'</div>'
+        +(deck.is_public
+          ? '<div style="position:absolute;top:6px;left:6px;z-index:4;background:rgba(61,184,108,0.88);'
+            +'border-radius:99px;padding:2px 8px;font-size:0.5rem;font-weight:700;color:#fff;'
+            +'letter-spacing:0.06em;backdrop-filter:blur(4px);">🌐 PUBLIC</div>'
+          : '')
+        +'<div class="db-deck-overlay">'
+          +'<div class="db-deck-name">'+esc(deck.name)+'</div>'
+          +'<div class="db-deck-qty">'+totalStd+' cards + Chamber</div>'
+        +'</div>'
+        +'</div>'
         +'<div class="db-deck-footer">'
           +'<div class="db-deck-miniscores">'
             +'<span style="font-size:.58rem;color:var(--fire);">ATK '+st.attackScore+'%</span>'
@@ -1269,10 +1228,9 @@ function render() {
 
     return '<div class="db-wrap">'
       +'<div class="db-top-bar">'
-      // At the top of vList(), after the db-top-bar div, add:
       +'<div style="display:flex;gap:8px;margin-bottom:12px;">'
-      +'<button class="db-mini-btn" id="dbSyncPullBtn" style="border-color:var(--water);color:var(--water);"><i class="fas fa-cloud-download-alt"></i> Load from Cloud</button>'
-      +'<button class="db-mini-btn" id="dbSyncPushBtn" style="border-color:var(--zen);color:var(--zen);"><i class="fas fa-cloud-upload-alt"></i> Sync to Cloud</button>'
+        +'<button class="db-mini-btn" id="dbSyncPullBtn" style="border-color:var(--water);color:var(--water);"><i class="fas fa-cloud-download-alt"></i> Load from Cloud</button>'
+        +'<button class="db-mini-btn" id="dbSyncPushBtn" style="border-color:var(--zen);color:var(--zen);"><i class="fas fa-cloud-upload-alt"></i> Sync to Cloud</button>'
       +'</div>'
         +'<div class="db-heading"><i class="fas fa-layer-group" style="color:var(--promo)"></i> Deck Builder</div>'
         +'<div class="db-pool-row">'+poolBar()+'</div>'
@@ -1318,6 +1276,13 @@ function render() {
         +'<span style="font-family:\'Cinzel\',serif;font-weight:700;font-size:.92rem;">Randomize Deck</span>'
         +'<div style="margin-left:auto;"><div class="db-pool-row">'+poolBar()+'</div></div>'
       +'</div>'
+      /* Composition rules reminder */
+      +'<div style="background:rgba(180,77,223,.07);border:1px solid rgba(180,77,223,.22);border-radius:var(--radius);padding:10px 13px;margin-bottom:16px;font-size:.72rem;color:var(--text-secondary);line-height:1.6;">'
+        +'<span style="color:var(--zen);font-weight:700;">Deck Rules</span> &nbsp;'
+        +'<span style="color:var(--fire);">⚔️ Strikes ≥ 50%</span> &nbsp;·&nbsp; '
+        +'<span style="color:var(--earth);">🤝 Allies ≥ 12.5%</span> &nbsp;·&nbsp; '
+        +'<span style="color:var(--water);">🪟 Advantage ≥ 12.5%</span>'
+      +'</div>'
       +'<div class="db-section"><label class="db-label">Deck Name</label>'
         +'<input class="db-input" id="rngName" type="text" placeholder="My Randomized Deck" value="'+esc(r.name)+'" maxlength="40">'
       +'</div>'
@@ -1337,87 +1302,89 @@ function render() {
       +'<button class="db-primary-btn" id="dbRandomizeGo"><i class="fas fa-dice-d20"></i> Randomize!</button>'
     +'</div>';
   }
-/* ── Shared filter+sort used by both vBuild and autoCompleteDeck ── */
-function getBuildFilteredSorted() {
-  var pool        = getPoolCards();
-  var b           = S.build;
-  var chamberCard = b.chamber
-    ? (global.allCards || []).find(function (c) { return c.number === b.chamber; })
-    : null;
-  if (!chamberCard) return [];
 
-  var compatible = getStandardCards(pool).filter(function (c) {
-    return isCompatibleWithChamber(c, chamberCard);
-  });
+  /* ── Shared filter+sort used by both vBuild and autoCompleteDeck ── */
+  function getBuildFilteredSorted() {
+    var pool        = getPoolCards();
+    var b           = S.build;
+    var chamberCard = b.chamber
+      ? (global.allCards || []).find(function (c) { return c.number === b.chamber; })
+      : null;
+    if (!chamberCard) return [];
 
-  var searchVal = (b.search || '').toLowerCase();
-  var filtered  = compatible.filter(function (c) {
-    if (b.typeFilter !== 'all' && c.type !== b.typeFilter) return false;
-    if (searchVal) {
-      return c.name.toLowerCase().indexOf(searchVal) !== -1
-          || c.number.toLowerCase().indexOf(searchVal) !== -1;
-    }
-    return true;
-  });
+    var compatible = getStandardCards(pool).filter(function (c) {
+      return isCompatibleWithChamber(c, chamberCard);
+    });
 
-  var sortBy  = b.sortBy  || 'number';
-  var sortDir = b.sortDir || 'asc';
-  var _dir    = sortDir === 'asc' ? 1 : -1;
-  var _ro     = { common: 0, uncommon: 1, rare: 2, zenemental: 3, promo: 4 };
-
-  filtered.sort(function (a, b2) {
-    if (sortBy === 'name')    return _dir * a.name.localeCompare(b2.name);
-    if (sortBy === 'rarity')  return _dir * ((_ro[a.rarity] || 0) - (_ro[b2.rarity] || 0));
-    if (sortBy === 'type')    return _dir * a.type.localeCompare(b2.type);
-    if (sortBy === 'intercept') {
-      var iA = parseFloat(a.intercept)  || 0;
-      var iB = parseFloat(b2.intercept) || 0;
-      return _dir * (iA - iB);
-    }
-    if (sortBy === 'force') {
-      var fA = parseFloat(a.force)  || 0;
-      var fB = parseFloat(b2.force) || 0;
-      return _dir * (fA - fB);
-    }
-    if (sortBy === 'energy') {
-      function sumE(c) {
-        return (parseFloat(c.redEnergy) || 0)
-             + (parseFloat(c.yellowEnergy) || 0)
-             + (parseFloat(c.greenEnergy) || 0);
+    var searchVal = (b.search || '').toLowerCase();
+    var filtered  = compatible.filter(function (c) {
+      if (b.typeFilter !== 'all' && c.type !== b.typeFilter) return false;
+      if (searchVal) {
+        return c.name.toLowerCase().indexOf(searchVal) !== -1
+            || c.number.toLowerCase().indexOf(searchVal) !== -1;
       }
-      return _dir * (sumE(a) - sumE(b2));
-    }
-    var nA = parseInt(a.number, 10), nB = parseInt(b2.number, 10);
-    if (!isNaN(nA) && !isNaN(nB)) return _dir * (nA - nB);
-    return _dir * a.number.localeCompare(b2.number);
-  });
+      return true;
+    });
 
-  return filtered;
-}
-function autoCompleteDeck() {
-  var b          = S.build;
-  var targetSize = b.deckSize === 'full' ? 60 : b.deckSize === 'half' ? 30 : b.customSize;
-  var total      = Object.values(b.cards).reduce(function (a, v) { return a + v; }, 0);
-  if (total >= targetSize) { toast('Deck is already full!'); return; }
+    var sortBy  = b.sortBy  || 'number';
+    var sortDir = b.sortDir || 'asc';
+    var _dir    = sortDir === 'asc' ? 1 : -1;
+    var _ro     = { common: 0, uncommon: 1, rare: 2, zenemental: 3, promo: 4 };
 
-  var sorted = getBuildFilteredSorted();
-  if (sorted.length === 0) { toast('No compatible cards to fill from.'); return; }
+    filtered.sort(function (a, b2) {
+      if (sortBy === 'name')    return _dir * a.name.localeCompare(b2.name);
+      if (sortBy === 'rarity')  return _dir * ((_ro[a.rarity] || 0) - (_ro[b2.rarity] || 0));
+      if (sortBy === 'type')    return _dir * a.type.localeCompare(b2.type);
+      if (sortBy === 'intercept') {
+        var iA = parseFloat(a.intercept)  || 0;
+        var iB = parseFloat(b2.intercept) || 0;
+        return _dir * (iA - iB);
+      }
+      if (sortBy === 'force') {
+        var fA = parseFloat(a.force)  || 0;
+        var fB = parseFloat(b2.force) || 0;
+        return _dir * (fA - fB);
+      }
+      if (sortBy === 'energy') {
+        function sumE(c) {
+          return (parseFloat(c.redEnergy) || 0)
+               + (parseFloat(c.yellowEnergy) || 0)
+               + (parseFloat(c.greenEnergy) || 0);
+        }
+        return _dir * (sumE(a) - sumE(b2));
+      }
+      var nA = parseInt(a.number, 10), nB = parseInt(b2.number, 10);
+      if (!isNaN(nA) && !isNaN(nB)) return _dir * (nA - nB);
+      return _dir * a.number.localeCompare(b2.number);
+    });
 
-  /* First pass: top up each card to its max, in sorted order */
-  for (var i = 0; i < sorted.length && total < targetSize; i++) {
-    var c   = sorted[i];
-    var cur = b.cards[c.number] || 0;
-    var max = maxCopiesForCard(c.number);
-    var can = Math.min(max - cur, targetSize - total);
-    if (can > 0) {
-      b.cards[c.number] = cur + can;
-      total += can;
-    }
+    return filtered;
   }
 
-  render();
-  toast('Deck auto-completed!');
-}
+  function autoCompleteDeck() {
+    var b          = S.build;
+    var targetSize = b.deckSize === 'full' ? 60 : b.deckSize === 'half' ? 30 : b.customSize;
+    var total      = Object.values(b.cards).reduce(function (a, v) { return a + v; }, 0);
+    if (total >= targetSize) { toast('Deck is already full!'); return; }
+
+    var sorted = getBuildFilteredSorted();
+    if (sorted.length === 0) { toast('No compatible cards to fill from.'); return; }
+
+    for (var i = 0; i < sorted.length && total < targetSize; i++) {
+      var c   = sorted[i];
+      var cur = b.cards[c.number] || 0;
+      var max = maxCopiesForCard(c.number);
+      var can = Math.min(max - cur, targetSize - total);
+      if (can > 0) {
+        b.cards[c.number] = cur + can;
+        total += can;
+      }
+    }
+
+    render();
+    toast('Deck auto-completed!');
+  }
+
   /* ── BUILD VIEW ─────────────────────────────────────────────── */
   function vBuild() {
     var pool      = getPoolCards();
@@ -1431,7 +1398,7 @@ function autoCompleteDeck() {
         +{full:'Full (60+1)',half:'Half (30+1)',custom:'Custom'}[sz]+'</button>';
     }).join('');
 
-    var targetSize = b.deckSize==='full'?60:b.deckSize==='half'?30:b.customSize;
+    var targetSize    = b.deckSize==='full'?60:b.deckSize==='half'?30:b.customSize;
     var totalSelected = Object.values(b.cards).reduce(function(a,v){return a+v;},0);
     var remaining     = targetSize - totalSelected;
     var pctFull       = Math.min(100, Math.round((totalSelected/targetSize)*100));
@@ -1439,7 +1406,6 @@ function autoCompleteDeck() {
     var body = '';
 
     if (!chamberCard) {
-      /* ── Step 1: pick chamber ── */
       var chipHtml = chambers.map(function(c){
         return '<div class="db-chamber-chip" data-chamber="'+esc(c.number)+'">'
           +'<img src="'+esc(cardImg(c))+'" alt="'+esc(c.name)+'" loading="lazy" onerror="this.style.display=\'none\'">'
@@ -1452,7 +1418,6 @@ function autoCompleteDeck() {
         +'<div class="db-chamber-grid">'+chipHtml+'</div>'
       +'</div>';
     } else {
-      /* ── Step 2: pick standard cards — uses main card-grid style ── */
       var compatible = getStandardCards(pool).filter(function(c){
         return isCompatibleWithChamber(c, chamberCard);
       });
@@ -1470,7 +1435,6 @@ function autoCompleteDeck() {
         return true;
       });
 
-      /* ── Multi-key sort matching the main card collection page ── */
       var sortBy  = b.sortBy  || 'number';
       var sortDir = b.sortDir || 'asc';
       var _dir = sortDir === 'asc' ? 1 : -1;
@@ -1501,7 +1465,6 @@ function autoCompleteDeck() {
           }
           return _dir * (sumE(a) - sumE(b2));
         }
-        /* default: number */
         var nA=parseInt(a.number,10), nB=parseInt(b2.number,10);
         if(!isNaN(nA)&&!isNaN(nB)) return _dir * (nA - nB);
         return _dir * a.number.localeCompare(b2.number);
@@ -1511,7 +1474,6 @@ function autoCompleteDeck() {
         return '<button class="db-type-pill'+(b.typeFilter===t?' active':'')+'" data-type="'+esc(t)+'">'+esc(t==='all'?'All Types':t)+'</button>';
       }).join('');
 
-      /* Build card HTML — same structure as main renderCards() */
       var cardHtml = filtered.map(function(c){
         var qty   = b.cards[c.number] || 0;
         var maxCp = maxCopiesForCard(c.number);
@@ -1521,7 +1483,6 @@ function autoCompleteDeck() {
         var rc    = RARITY_COLORS[c.rarity] || 'var(--text-secondary)';
         var backImg = c.backImageLink || '';
 
-        /* Flip inner */
         var flipHtml =
           '<div class="card-flip-container">'
             +'<div class="card-flip-inner" data-flip-id="db-'+esc(c.number)+'">'
@@ -1536,7 +1497,6 @@ function autoCompleteDeck() {
             +'</div>'
           +'</div>';
 
-        /* Qty overlay (shown when selected) */
         var qtyOverlayHtml = sel
           ? '<div class="db-build-qty-overlay">'
               +'<button class="db-build-qty-minus" data-card="'+esc(c.number)+'"'+(qty<=1?' disabled':'')+'>−</button>'
@@ -1545,7 +1505,6 @@ function autoCompleteDeck() {
             +'</div>'
           : '';
 
-        /* Add overlay (shown on hover when not selected) */
         var addOverlayHtml = !sel
           ? '<div class="db-build-add-overlay">'
               +'<button class="db-build-add-btn" data-card="'+esc(c.number)+'"'+(remaining<=0?' disabled':'')+'>+ Add</button>'
@@ -1592,12 +1551,12 @@ function autoCompleteDeck() {
 
         +'<div class="db-section">'
           +'<div class="db-progress-bar">'
-          +'<span class="db-progress-label">Cards selected</span>'
-          +'<span class="db-progress-count" style="color:'+progressColor+'">'+totalSelected+' / '+targetSize+'  '+progressText+'</span>'
-          +(remaining > 0
-            ? '<button class="db-mini-btn" id="dbAutoCompleteBtn" title="Fill remaining slots using current sort order" style="border-color:var(--zen);color:var(--zen);margin-left:8px;white-space:nowrap;"><i class="fas fa-wand-magic-sparkles"></i> Auto-fill</button>'
-            : '')
-        +'</div>'
+            +'<span class="db-progress-label">Cards selected</span>'
+            +'<span class="db-progress-count" style="color:'+progressColor+'">'+totalSelected+' / '+targetSize+'  '+progressText+'</span>'
+            +(remaining > 0
+              ? '<button class="db-mini-btn" id="dbAutoCompleteBtn" title="Fill remaining slots using current sort order" style="border-color:var(--zen);color:var(--zen);margin-left:8px;white-space:nowrap;"><i class="fas fa-wand-magic-sparkles"></i> Auto-fill</button>'
+              : '')
+          +'</div>'
           +'<div style="height:4px;background:var(--bg-primary);border-radius:99px;overflow:hidden;margin-bottom:12px;">'
             +'<div style="height:100%;width:'+pctFull+'%;background:'+progressColor+';border-radius:99px;transition:width .3s;"></div>'
           +'</div>'
@@ -1716,16 +1675,16 @@ function autoCompleteDeck() {
                 +'<button class="db-mini-btn" id="deckRenameCancel"><i class="fas fa-xmark"></i></button>'
               +'</div>'
              : '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap;">'
-   +'<span style="font-family:\'Cinzel\',serif;font-weight:700;font-size:.98rem;">'+esc(deck.name)+'</span>'
-   +'<button class="db-mini-btn" id="deckRenameBtn" title="Rename deck" style="padding:3px 7px;"><i class="fas fa-pencil"></i></button>'
-   +'<button class="db-mini-btn" id="deckPublicToggleBtn" data-deck-id="'+esc(deck.id)+'" '
-     +'style="border-color:'+(deck.is_public?'var(--success)':'var(--border)')+';'
-     +'color:'+(deck.is_public?'var(--success)':'var(--text-muted)')+';margin-left:auto;">'
-     +(deck.is_public
-       ? '<i class="fas fa-globe" style="margin-right:4px;"></i>Public'
-       : '<i class="fas fa-lock" style="margin-right:4px;"></i>Private')
-   +'</button>'
- +'</div>'
+                +'<span style="font-family:\'Cinzel\',serif;font-weight:700;font-size:.98rem;">'+esc(deck.name)+'</span>'
+                +'<button class="db-mini-btn" id="deckRenameBtn" title="Rename deck" style="padding:3px 7px;"><i class="fas fa-pencil"></i></button>'
+                +'<button class="db-mini-btn" id="deckPublicToggleBtn" data-deck-id="'+esc(deck.id)+'" '
+                  +'style="border-color:'+(deck.is_public?'var(--success)':'var(--border)')+';'
+                  +'color:'+(deck.is_public?'var(--success)':'var(--text-muted)')+';margin-left:auto;">'
+                  +(deck.is_public
+                    ? '<i class="fas fa-globe" style="margin-right:4px;"></i>Public'
+                    : '<i class="fas fa-lock" style="margin-right:4px;"></i>Private')
+                +'</button>'
+              +'</div>'
             )
           +'<div style="font-size:.68rem;color:var(--text-muted);margin-bottom:7px;">'
             +(ch?esc(ch.name)+' &bull; ':'')+(totalStd)+' standard cards'
@@ -1821,21 +1780,23 @@ function autoCompleteDeck() {
   ═══════════════════════════════════════════════════════════════ */
   function wire() {
     var el = getEl(); if (!el) return;
-var syncPull = document.getElementById('dbSyncPullBtn');
-if (syncPull) syncPull.addEventListener('click', async function () {
-  this.disabled = true;
-  this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading…';
-  await pullDecksFromSupabase();
-  render();
-});
 
-var syncPush = document.getElementById('dbSyncPushBtn');
-if (syncPush) syncPush.addEventListener('click', async function () {
-  this.disabled = true;
-  this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Syncing ' + S.decks.length + ' deck' + (S.decks.length !== 1 ? 's' : '') + '…';
-  await pushDecksToSupabase();
-  render();
-});   
+    var syncPull = document.getElementById('dbSyncPullBtn');
+    if (syncPull) syncPull.addEventListener('click', async function () {
+      this.disabled = true;
+      this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading…';
+      await pullDecksFromSupabase();
+      render();
+    });
+
+    var syncPush = document.getElementById('dbSyncPushBtn');
+    if (syncPush) syncPush.addEventListener('click', async function () {
+      this.disabled = true;
+      this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Syncing ' + S.decks.length + ' deck' + (S.decks.length !== 1 ? 's' : '') + '…';
+      await pushDecksToSupabase();
+      render();
+    });
+
     /* Pool buttons */
     el.querySelectorAll('.db-pool-btn').forEach(function(btn){
       btn.addEventListener('click', function(){ S.pool=this.dataset.pool; render(); });
@@ -1882,7 +1843,7 @@ if (syncPush) syncPush.addEventListener('click', async function () {
     /* ── BACK ─────────────────────────────────────────────── */
     var backBtn=document.getElementById('dbBack');
     if (backBtn) backBtn.addEventListener('click', function () {
-      S.renamingDeck = false;   // ← add this line
+      S.renamingDeck = false;
       if (S.view === 'export') { S.view = 'stats'; }
       else { S.view = 'list'; S.exportChecked = {}; }
       render();
@@ -1967,7 +1928,6 @@ if (syncPush) syncPush.addEventListener('click', async function () {
     if(bSortBy){
       bSortBy.addEventListener('change',function(){
         S.build.sortBy=this.value;
-        /* Default to descending for stat-heavy sorts, ascending for name/type/number */
         S.build.sortDir=['rarity','intercept','force','energy'].indexOf(this.value)!==-1?'desc':'asc';
         render();
       });
@@ -1982,8 +1942,6 @@ if (syncPush) syncPush.addEventListener('click', async function () {
     }
 
     /* ── BUILD CARD INTERACTIONS ────────────────────────── */
-
-    /* Flip buttons in the build grid */
     el.querySelectorAll('.db-build-flip-btn').forEach(function(btn){
       btn.addEventListener('click',function(e){
         e.stopPropagation();
@@ -1993,7 +1951,6 @@ if (syncPush) syncPush.addEventListener('click', async function () {
       });
     });
 
-    /* + button (qty increase on selected cards) */
     el.querySelectorAll('.db-build-qty-plus').forEach(function(btn){
       btn.addEventListener('click',function(e){
         e.stopPropagation();
@@ -2003,7 +1960,6 @@ if (syncPush) syncPush.addEventListener('click', async function () {
       });
     });
 
-    /* − button (qty decrease on selected cards) */
     el.querySelectorAll('.db-build-qty-minus').forEach(function(btn){
       btn.addEventListener('click',function(e){
         e.stopPropagation();
@@ -2014,7 +1970,6 @@ if (syncPush) syncPush.addEventListener('click', async function () {
       });
     });
 
-    /* Add button (hover overlay on unselected cards) */
     el.querySelectorAll('.db-build-add-btn').forEach(function(btn){
       btn.addEventListener('click',function(e){
         e.stopPropagation();
@@ -2024,7 +1979,6 @@ if (syncPush) syncPush.addEventListener('click', async function () {
       });
     });
 
-    /* Click on card body itself: toggle add/remove */
     el.querySelectorAll('.db-build-card').forEach(function(chip){
       chip.addEventListener('click',function(e){
         if (e.target.closest('button')) return;
@@ -2107,6 +2061,7 @@ if (syncPush) syncPush.addEventListener('click', async function () {
         render();
       });
     });
+
     /* ── STATS: rename ──────────────────────────────────────── */
     var renameBtn = document.getElementById('deckRenameBtn');
     if (renameBtn) renameBtn.addEventListener('click', function () {
@@ -2116,23 +2071,19 @@ if (syncPush) syncPush.addEventListener('click', async function () {
       if (inp) { inp.focus(); inp.select(); }
     });
 
-// Inside wire() — replace the existing deckRenameSave listener
     var renameSave = document.getElementById('deckRenameSave');
     if (renameSave) renameSave.addEventListener('click', function () {
-     var inp = document.getElementById('deckRenameInput');
-     var newName = (inp ? inp.value : '').trim();
-     if (!newName) { toast('Name cannot be empty.'); return; }
-
-  // Update both the array entry AND the viewingDeck reference
-  var idx = S.decks.findIndex(function(d) { return d.id === S.viewingDeck.id; });
-  if (idx !== -1) S.decks[idx].name = newName;
-  S.viewingDeck.name = newName;
-
-  saveDecks();           // → localStorage
-  pushDecksToSupabase(); // → Supabase
-  S.renamingDeck = false;
-  toast('Deck renamed!'); render();
-});
+      var inp = document.getElementById('deckRenameInput');
+      var newName = (inp ? inp.value : '').trim();
+      if (!newName) { toast('Name cannot be empty.'); return; }
+      var idx = S.decks.findIndex(function(d) { return d.id === S.viewingDeck.id; });
+      if (idx !== -1) S.decks[idx].name = newName;
+      S.viewingDeck.name = newName;
+      saveDecks();
+      pushDecksToSupabase();
+      S.renamingDeck = false;
+      toast('Deck renamed!'); render();
+    });
 
     var renameCancel = document.getElementById('deckRenameCancel');
     if (renameCancel) renameCancel.addEventListener('click', function () {
@@ -2141,9 +2092,10 @@ if (syncPush) syncPush.addEventListener('click', async function () {
 
     var pubToggleBtn = document.getElementById('deckPublicToggleBtn');
     if (pubToggleBtn) pubToggleBtn.addEventListener('click', function () {
-     toggleDeckPublic(this.dataset.deckId);
-    }); 
-}
+      toggleDeckPublic(this.dataset.deckId);
+    });
+  }
+
   /* ═══════════════════════════════════════════════════════════════
      UTILITIES
   ═══════════════════════════════════════════════════════════════ */
@@ -2165,12 +2117,12 @@ if (syncPush) syncPush.addEventListener('click', async function () {
   /* ═══════════════════════════════════════════════════════════════
      PUBLIC API + INIT
   ═══════════════════════════════════════════════════════════════ */
-async function init() {
-  injectCSS();
-  loadDecks();
-  render();
-  pullWhenReady(); // non-blocking, retries until logged in
-}
+  async function init() {
+    injectCSS();
+    loadDecks();
+    render();
+    pullWhenReady();
+  }
 
   global.DeckBuilder = { init:init, render:render, encodeDeck:encodeDeck, decodeDeck:decodeDeck };
 
