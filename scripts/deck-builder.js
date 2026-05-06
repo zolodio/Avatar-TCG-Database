@@ -145,7 +145,7 @@
     var E   = gE + yE + rE;
     var hasRules = ((card.rulesText || '').trim().length > 8);
     var t   = (card.type || '').toLowerCase();
-    var noise = Math.random() * 3;
+    var noise = Math.random() * 3.1;
     switch (strength) {
       case 'attack':   return force * 3 + intercept * 0.5 + noise;
       case 'defense':  return intercept * 3 + force * 0.5 + noise;
@@ -488,171 +488,204 @@ async function toggleDeckPublic(deckId) {
       });
     }
 
-    /* Fill up to `quota` total-cards-in-deck using cards from `typeCards`.
-       Copies-per-card follow top/mid/tail tier limits (4 / 2 / 1). */
-    function fillQuota(typeCards, quota) {
+/* Fill up to `quota` total cards from `typeCards`, greedy by score.
+   Top 30% of pool → max 3 copies, mid 30% → 2, tail → 1.          */
+function fillQuota(typeCards, quota) {
   var sorted = sortedByScore(typeCards);
-  var topTier  = Math.ceil(sorted.length * 0.3);
-  var midTier  = Math.ceil(sorted.length * 0.6);
+  var topTier = Math.ceil(sorted.length * 0.3);
+  var midTier = Math.ceil(sorted.length * 0.6);
   for (var i = 0; i < sorted.length && totalAdded < quota; i++) {
-    var c = sorted[i];
+    var c   = sorted[i];
     var cur = selectedCards[c.number] || 0;
-    var tierMax = i < topTier ? 3 : i < midTier ? 2 : 1; // was 4/2/1 → now 3/2/1
-    var maxC = Math.min(tierMax, maxCopiesForCard(c.number));
+    var maxC = Math.min(
+      i < topTier ? 3 : i < midTier ? 2 : 1,
+      maxCopiesForCard(c.number)
+    );
     var canAdd = Math.min(maxC - cur, quota - totalAdded);
     if (canAdd > 0) { selectedCards[c.number] = cur + canAdd; totalAdded += canAdd; }
   }
 }
 
-function fillRemainder() {
+/* Fill remaining slots using weighted random selection by card type.
+   typeWeights = { strike: N, advantage: N, ally: N }
+   rulesBoost  = true → cards with rules text get 3× weight          */
+function fillRemainder(typeWeights, rulesBoost) {
   if (totalAdded >= target) return;
+  typeWeights = typeWeights || { strike: 1, advantage: 1, ally: 1 };
 
-  // Build a pool of cards that still have copies available
   var pool = standard.filter(function (c) {
     return (selectedCards[c.number] || 0) < maxCopiesForCard(c.number);
   });
 
-  var maxAttempts = target * 10;
-  var attempts = 0;
+  var maxAttempts = (target - totalAdded) * 20;
+  var attempts    = 0;
 
   while (totalAdded < target && pool.length > 0 && attempts++ < maxAttempts) {
-    // Weighted random: score → probability, but any card can be picked
-    var scores = pool.map(function (c) { return Math.max(0.5, cardScore(c, strength)); });
-    var totalWeight = scores.reduce(function (s, w) { return s + w; }, 0);
-    var rand = Math.random() * totalWeight;
-
-    var chosen = pool[pool.length - 1]; // fallback
+    var weights = pool.map(function (c) {
+      var t = (c.type || '').toLowerCase();
+      var w = typeWeights[t] || 1;
+      if (rulesBoost && (c.rulesText || '').trim().length > 8) w *= 3;
+      return Math.max(0.1, w + Math.random() * 0.5);
+    });
+    var totalW = weights.reduce(function (s, w) { return s + w; }, 0);
+    var rand   = Math.random() * totalW;
+    var chosen = pool[pool.length - 1];
     for (var i = 0; i < pool.length; i++) {
-      rand -= scores[i];
+      rand -= weights[i];
       if (rand <= 0) { chosen = pool[i]; break; }
     }
 
     var cur = selectedCards[chosen.number] || 0;
-    var max = maxCopiesForCard(chosen.number);
-    if (cur < max) {
-      selectedCards[chosen.number] = cur + 1;
-      totalAdded++;
-    }
+    var mx  = maxCopiesForCard(chosen.number);
+    if (cur < mx) { selectedCards[chosen.number] = cur + 1; totalAdded++; }
 
-    // Remove from pool when maxed
     if ((selectedCards[chosen.number] || 0) >= maxCopiesForCard(chosen.number)) {
       pool = pool.filter(function (c) { return c.number !== chosen.number; });
     }
   }
 
-  // Safety top-up (unchanged — handles edge cases)
+  /* Safety top-up — only reached if pool runs dry before target */
   var pass = 0;
   while (totalAdded < target && pass < standard.length * MAX_COPIES) {
-    var sc = standard[pass % standard.length];
+    var sc   = standard[pass % standard.length];
     var cur2 = selectedCards[sc.number] || 0;
-    var mx = maxCopiesForCard(sc.number);
-    if (cur2 < mx) { selectedCards[sc.number] = cur2 + 1; totalAdded++; }
+    var mx2  = maxCopiesForCard(sc.number);
+    if (cur2 < mx2) { selectedCards[sc.number] = cur2 + 1; totalAdded++; }
     pass++;
   }
 }
 
-    /* ── ATTACK ──────────────────────────────────────────────────
-       At least 20 high-force cards (top third by force value),
-       remainder filled by attack score.
-    ──────────────────────────────────────────────────────────── */
-    if (strength === 'attack') {
-      var MIN_HIGH_FORCE = 20;
+/* Universal post-fill: every deck must have at least 15 strike cards.
+   Swaps out lowest-qty non-strike cards to make room.               */
+function enforceStrikeMinimum() {
+  var MIN_STRIKES  = 15;
+  var strikeCards  = standard.filter(function (c) { return c.type === 'strike'; });
+  if (strikeCards.length === 0) return;
 
-      var byForce = standard.slice().sort(function (a, b) {
-        return (parseFloat(b.force) || 0) - (parseFloat(a.force) || 0);
-      });
-      var highForceCards = byForce.slice(0, Math.ceil(byForce.length / 3));
+  var currentStrikes = 0;
+  strikeCards.forEach(function (c) { currentStrikes += selectedCards[c.number] || 0; });
+  if (currentStrikes >= MIN_STRIKES) return;
 
-      fillQuota(highForceCards, Math.min(MIN_HIGH_FORCE, target));
-      fillRemainder();
+  var needed = MIN_STRIKES - currentStrikes;
 
-    /* ── DEFENSE ─────────────────────────────────────────────────
-       At least 20 high-intercept cards (top third by intercept),
-       remainder filled by defense score.
-    ──────────────────────────────────────────────────────────── */
-    } else if (strength === 'defense') {
-      var MIN_HIGH_INTERCEPT = 20;
+  /* Non-strikes sorted by lowest qty first (safest to trim) */
+  var nonStrikes = standard
+    .filter(function (c) { return c.type !== 'strike' && (selectedCards[c.number] || 0) > 0; })
+    .sort(function (a, b) { return (selectedCards[a.number] || 0) - (selectedCards[b.number] || 0); });
 
-      var byIntercept = standard.slice().sort(function (a, b) {
-        return (parseFloat(b.intercept) || 0) - (parseFloat(a.intercept) || 0);
-      });
-      var highInterceptCards = byIntercept.slice(0, Math.ceil(byIntercept.length / 3));
+  var ni = 0;
+  while (needed > 0 && ni < nonStrikes.length) {
+    var ns    = nonStrikes[ni++];
+    var nsQty = selectedCards[ns.number] || 0;
+    if (nsQty < 1) continue;
 
-      fillQuota(highInterceptCards, Math.min(MIN_HIGH_INTERCEPT, target));
-      fillRemainder();
+    var available = strikeCards.filter(function (c) {
+      return (selectedCards[c.number] || 0) < maxCopiesForCard(c.number);
+    });
+    if (available.length === 0) break;
 
-    /* ── BALANCED ────────────────────────────────────────────────
-       Golden-ratio split: Strike (φ²) : Advantage (φ) : Ally (1)
-         φ² ≈ 2.618  →  ~50% strikes
-         φ  ≈ 1.618  →  ~31% advantage
-         1           →  ~19% allies
-       Remainder (rounding slack) filled by balanced score.
-    ──────────────────────────────────────────────────────────── */
-    } else if (strength === 'balanced') {
-      var PHI2        = PHI * PHI;
-      var totalRatio  = PHI2 + PHI + 1;
+    /* Remove one non-strike, add one strike */
+    selectedCards[ns.number] = nsQty - 1;
+    if (selectedCards[ns.number] === 0) delete selectedCards[ns.number];
 
-      var minStrikesB   = Math.round(target * (PHI2 / totalRatio));
-      var minAdvantageB = Math.round(target * (PHI  / totalRatio));
-      var minAlliesB    = Math.round(target * (1    / totalRatio));
+    var pick = available[Math.floor(Math.random() * available.length)];
+    selectedCards[pick.number] = (selectedCards[pick.number] || 0) + 1;
+    needed--;
+  }
+}
 
-      var strikesB   = standard.filter(function (c) { return c.type === 'strike';    });
-      var advantageB = standard.filter(function (c) { return c.type === 'advantage'; });
-      var alliesB    = standard.filter(function (c) { return c.type === 'ally';      });
+/* ── ATTACK ──────────────────────────────────────────────────────
+   Quota : top-third by force value, minimum 20 cards
+   Remainder : ally-heavy to round out the deck                   */
+if (strength === 'attack') {
+  var byForce       = standard.slice().sort(function (a, b) {
+    return (parseFloat(b.force) || 0) - (parseFloat(a.force) || 0);
+  });
+  var highForceCards = byForce.slice(0, Math.ceil(byForce.length / 3));
+  fillQuota(highForceCards, Math.min(20, target));
+  fillRemainder({ strike: 1, advantage: 3, ally: 4 });
 
-      fillQuota(strikesB,   Math.min(minStrikesB, target));
-      fillQuota(advantageB, Math.min(totalAdded + minAdvantageB, target));
-      fillQuota(alliesB,    Math.min(totalAdded + minAlliesB,    target));
-      fillRemainder();
+/* ── DEFENSE ─────────────────────────────────────────────────────
+   Quota : top-third by intercept, minimum 20 cards
+   Remainder : ally-heavy to round out                            */
+} else if (strength === 'defense') {
+  var byIntercept       = standard.slice().sort(function (a, b) {
+    return (parseFloat(b.intercept) || 0) - (parseFloat(a.intercept) || 0);
+  });
+  var highInterceptCards = byIntercept.slice(0, Math.ceil(byIntercept.length / 3));
+  fillQuota(highInterceptCards, Math.min(20, target));
+  fillRemainder({ strike: 1, advantage: 3, ally: 4 });
 
-    /* ── SUPPORT ─────────────────────────────────────────────────
-       At least 50% strikes, 25% allies, 5 advantage cards.
-    ──────────────────────────────────────────────────────────── */
-    } else if (strength === 'support') {
-      var minStrikesS   = Math.ceil(target * 0.50);
-      var minAlliesS    = Math.ceil(target * 0.25);
-      var minAdvantageS = 5;
+/* ── BALANCED ────────────────────────────────────────────────────
+   Quota : golden-ratio split across all three types
+   Remainder : same ratio, proportional weights                   */
+} else if (strength === 'balanced') {
+  var PHI2       = PHI * PHI;                           /* ≈ 2.618 */
+  var totalRatio = PHI2 + PHI + 1;
+  var minStrikesB   = Math.round(target * (PHI2 / totalRatio));
+  var minAdvantageB = Math.round(target * (PHI  / totalRatio));
+  var minAlliesB    = Math.round(target * (1    / totalRatio));
 
-      var strikesS   = standard.filter(function (c) { return c.type === 'strike';    });
-      var alliesS    = standard.filter(function (c) { return c.type === 'ally';      });
-      var advantageS = standard.filter(function (c) { return c.type === 'advantage'; });
+  fillQuota(standard.filter(function (c) { return c.type === 'strike';    }), Math.min(minStrikesB, target));
+  fillQuota(standard.filter(function (c) { return c.type === 'advantage'; }), Math.min(totalAdded + minAdvantageB, target));
+  fillQuota(standard.filter(function (c) { return c.type === 'ally';      }), Math.min(totalAdded + minAlliesB,    target));
+  fillRemainder({ strike: 3, advantage: 2, ally: 1 });
 
-      fillQuota(strikesS,   Math.min(minStrikesS, target));
-      fillQuota(alliesS,    Math.min(totalAdded + minAlliesS,    target));
-      fillQuota(advantageS, Math.min(totalAdded + minAdvantageS, target));
-      fillRemainder();
+/* ── SUPPORT ─────────────────────────────────────────────────────
+   Quota : 50% strikes, 25% allies, 5 advantage
+   Remainder : strike-dominant to fill remaining slots            */
+} else if (strength === 'support') {
+  fillQuota(standard.filter(function (c) { return c.type === 'strike';    }), Math.min(Math.ceil(target * 0.50), target));
+  fillQuota(standard.filter(function (c) { return c.type === 'ally';      }), Math.min(totalAdded + Math.ceil(target * 0.25), target));
+  fillQuota(standard.filter(function (c) { return c.type === 'advantage'; }), Math.min(totalAdded + 5, target));
+  fillRemainder({ strike: 5, advantage: 2, ally: 1 });
 
-    /* ── ALL OTHER STRENGTHS (random, energy, chamber, wild) ─────
-       Original greedy-score logic, unchanged.
-    ──────────────────────────────────────────────────────────── */
-    } else {
-      standard.sort(function (a, b) { return cardScore(b, strength) - cardScore(a, strength); });
+/* ── CHAMBER CHARGER ─────────────────────────────────────────────
+   Quota : 40% advantage cards (chamber synergy)
+   Remainder : strike-dominant                                    */
+} else if (strength === 'chamber') {
+  fillQuota(standard.filter(function (c) { return c.type === 'advantage'; }), Math.min(Math.ceil(target * 0.40), target));
+  fillRemainder({ strike: 5, ally: 2, advantage: 1 });
 
-      var topTier = Math.ceil(standard.length * 0.3);
-      var midTier = Math.ceil(standard.length * 0.6);
-      for (var i = 0; i < standard.length && totalAdded < target; i++) {
-        var c    = standard[i];
-        var maxC = Math.min(
-          strength === 'random' ? (1 + Math.floor(Math.random() * MAX_COPIES)) :
-            i < topTier ? 4 : i < midTier ? 2 : 1,
-          maxCopiesForCard(c.number),
-          target - totalAdded
-        );
-        if (maxC > 0) { selectedCards[c.number] = maxC; totalAdded += maxC; }
-      }
+/* ── WILD CARD ────────────────────────────────────────────────────
+   Quota : balanced golden-ratio split (same as balanced)
+   Remainder : balanced weights but rules-text cards get 3× pull  */
+} else if (strength === 'wild') {
+  var PHI2w      = PHI * PHI;
+  var totalRatiow = PHI2w + PHI + 1;
+  fillQuota(standard.filter(function (c) { return c.type === 'strike';    }), Math.min(Math.round(target * (PHI2w / totalRatiow)), target));
+  fillQuota(standard.filter(function (c) { return c.type === 'advantage'; }), Math.min(totalAdded + Math.round(target * (PHI  / totalRatiow)), target));
+  fillQuota(standard.filter(function (c) { return c.type === 'ally';      }), Math.min(totalAdded + Math.round(target * (1    / totalRatiow)), target));
+  fillRemainder({ strike: 3, advantage: 2, ally: 1 }, /* rulesBoost */ true);
 
-      if (totalAdded < target) {
-        var pass2 = 0;
-        while (totalAdded < target && pass2 < standard.length * MAX_COPIES) {
-          var card2 = standard[pass2 % standard.length];
-          var cur2  = selectedCards[card2.number] || 0;
-          var mx2   = maxCopiesForCard(card2.number);
-          if (cur2 < mx2) { selectedCards[card2.number] = cur2 + 1; totalAdded++; }
-          pass2++;
-          if (pass2 > standard.length * MAX_COPIES) break;
-        }
-      }
-    }
+/* ── ALL OTHER STRENGTHS (random, energy) ────────────────────────
+   Original greedy-score logic, unchanged.                        */
+} else {
+  standard.sort(function (a, b) { return cardScore(b, strength) - cardScore(a, strength); });
+  var topTierE = Math.ceil(standard.length * 0.3);
+  var midTierE = Math.ceil(standard.length * 0.6);
+  for (var i = 0; i < standard.length && totalAdded < target; i++) {
+    var c    = standard[i];
+    var maxC = Math.min(
+      strength === 'random' ? (1 + Math.floor(Math.random() * MAX_COPIES)) :
+      i < topTierE ? 4 : i < midTierE ? 2 : 1,
+      maxCopiesForCard(c.number),
+      target - totalAdded
+    );
+    if (maxC > 0) { selectedCards[c.number] = maxC; totalAdded += maxC; }
+  }
+  var pass2 = 0;
+  while (totalAdded < target && pass2 < standard.length * MAX_COPIES) {
+    var card2 = standard[pass2 % standard.length];
+    var cur2  = selectedCards[card2.number] || 0;
+    var mx2   = maxCopiesForCard(card2.number);
+    if (cur2 < mx2) { selectedCards[card2.number] = cur2 + 1; totalAdded++; }
+    pass2++;
+  }
+}
+
+/* ── Universal minimum: every deck gets at least 15 strikes ───── */
+enforceStrikeMinimum();
 
     return {
       id:         'deck_' + Date.now(),
