@@ -93,28 +93,40 @@
     return base;
   }
 
-  function parseTraits(str) {
-    if (!str || !str.trim()) return [];
-    return str.split(/[,;\s]+/)
-      .map(function (t) { return t.trim().toLowerCase(); })
-      .filter(function (t) { return t.length > 0; });
-  }
+function parseTraits(str) {
+  if (!str) return [];
+  return str.split(/[,;\s]+/)
+    .map(function (t) { return t.trim().toLowerCase(); })
+    .filter(function (t) {
+      // Must be a real word — at least 2 letters, no placeholder junk
+      return t.length >= 2 && /^[a-z]+$/.test(t);
+    });
+}
 
   function getChamberTraits(chamberCard) {
     return parseTraits(chamberCard.traits || '');
   }
 
-  function isCompatibleWithChamber(card, chamberCard) {
-    if (!chamberCard) return true;
-    var cardTraits = parseTraits(card.traits);
-    if (cardTraits.length === 0) return true;
-    var ct = getChamberTraits(chamberCard);
-    if (ct.length === 0) return true;
-    for (var i = 0; i < cardTraits.length; i++) {
-      if (ct.indexOf(cardTraits[i]) !== -1) return true;
-    }
-    return false;
+function isCompatibleWithChamber(card, chamberCard) {
+  if (!chamberCard) return true;
+
+  var cardTraits = parseTraits(card.traits);
+
+  // No traits on the card → always compatible, no filtering
+  if (cardTraits.length === 0) return true;
+
+  var chamberTraits = parseTraits(chamberCard.traits || '');
+
+  // Chamber has no trait restriction → all cards pass
+  if (chamberTraits.length === 0) return true;
+
+  // Card has traits AND chamber has traits → need at least one overlap
+  // Only excluded if EVERY card trait fails to match
+  for (var i = 0; i < cardTraits.length; i++) {
+    if (chamberTraits.indexOf(cardTraits[i]) !== -1) return true;
   }
+  return false;
+}
 
   function getStandardCards(pool) {
     return pool.filter(function (c) { return c.type !== CHAMBER_TYPE; });
