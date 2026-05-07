@@ -199,14 +199,14 @@
     <div class="mb-controls">
       <button class="mb-btn" id="mbShuffle" title="Shuffle"><i class="fas fa-random"></i></button>
       <button class="mb-btn" id="mbPrev"    title="Previous track"><i class="fas fa-step-backward"></i></button>
-      <button class="mb-btn" id="mbRew"     title="Rewind 10 s"><i class="fas fa-fast-backward"></i></button>
+      <button class="mb-btn" id="mbRew"     title="Rewind 10 s"><i class="fas fa-backward"></i></button>
 
       <button class="mb-playpause" id="mbPP" title="Play / Pause">
         <i class="fas fa-play" id="mbPPIcon"></i>
       </button>
 
       <button class="mb-btn" id="mbStop"    title="Stop &amp; dismiss"><i class="fas fa-stop"></i></button>
-      <button class="mb-btn" id="mbFwd"     title="Forward 10 s"><i class="fas fa-fast-forward"></i></button>
+      <button class="mb-btn" id="mbFwd"     title="Forward 10 s"><i class="fas fa-forward"></i></button>
       <button class="mb-btn" id="mbNext"    title="Next track"><i class="fas fa-step-forward"></i></button>
       <button class="mb-btn" id="mbRepeat"  title="Repeat (off → all → one)">
         <i class="fas fa-redo"></i>
