@@ -39,7 +39,7 @@
       border-top: 1px solid #252a42;
       display: flex;
       align-items: center;
-      padding: 0 12px 0 10px;
+      padding: 0 24px 0 10px;
       gap: 4px;
       transform: translateY(calc(100% + 2px));
       transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
