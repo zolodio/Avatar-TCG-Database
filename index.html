@@ -1790,7 +1790,88 @@ body {
 @media (max-width: 480px) {
   .epb-chat-panel { right: 8px; left: 8px; width: auto; bottom: 76px; }
   .how-to-popup   { bottom: 186px !important; right: 10px; left: 10px; width: auto; }
-}		
+}
+.sf-tog-btn {
+  background: transparent;
+  color: var(--text-muted);
+}
+.sf-tog-active {
+  background: var(--zen) !important;
+  color: #fff !important;
+}
+.sf-type-btn {
+  background: transparent;
+  color: var(--text-muted);
+}
+.sf-type-active[data-type="price"] {
+  background: var(--earth) !important;
+  color: #fff !important;
+}
+.sf-type-active[data-type="trade"] {
+  background: var(--water) !important;
+  color: #fff !important;
+}
+.sf-dropdown-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-bottom: 1px solid var(--border);
+}
+.sf-dropdown-row:last-child { border-bottom: none; }
+.sf-dropdown-row:hover { background: var(--bg-card-hover); }
+.sf-dropdown-row img {
+  width: 28px; height: 37px;
+  object-fit: cover;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.sf-trade-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(46,140,232,0.12);
+  border: 1px solid rgba(46,140,232,0.3);
+  border-radius: 99px;
+  padding: 4px 10px 4px 6px;
+  font-size: 0.72rem;
+  color: var(--water);
+  font-weight: 600;
+}
+.sf-trade-chip img {
+  width: 20px; height: 27px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+.sf-trade-chip-rm {
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+  font-size: 0.7rem;
+  margin-left: 2px;
+}
+.sf-trade-chip-rm:hover { opacity: 1; }
+.sf-trade-chip-qty {
+  background: rgba(46,140,232,0.2);
+  border-radius: 99px;
+  padding: 1px 6px;
+  font-size: 0.65rem;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.sf-trade-chip-qty button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--water);
+  font-size: 0.7rem;
+  padding: 0 1px;
+  line-height: 1;
+}
 	</style>
 </head>
 <body>
@@ -2658,64 +2739,160 @@ body {
     <button class="tab-btn-nested" data-nested-tab="marketplace">Marketplace</button>
   </div>
 
-  <!-- STOREFRONT PANEL -->
-  <div id="nested-storefront" class="nested-tab-content active">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px;">
-      <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px; padding-bottom:14px; border-bottom:1px solid var(--border);">
-        <i class="fas fa-tag" style="color:var(--promo); font-size:1.2rem;"></i>
-        <div>
-          <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Your Storefront</div>
-          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">List items you want to sell or trade</div>
+<!-- ═══════════ HTML — replaces <div id="nested-storefront"> ═══════════ -->
+ 
+<div id="nested-storefront" class="nested-tab-content active">
+  <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;">
+ 
+    <!-- Header -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border);">
+      <i class="fas fa-tag" style="color:var(--promo);font-size:1.2rem;"></i>
+      <div>
+        <div style="font-family:'Cinzel',serif;font-weight:700;font-size:0.95rem;color:var(--text-primary);">Your Storefront</div>
+        <div style="font-size:0.7rem;color:var(--text-muted);margin-top:2px;">List items you want to sell or trade</div>
+      </div>
+    </div>
+ 
+    <!-- ── ROW 1: Collection Source Toggle ── -->
+    <div style="margin-bottom:14px;">
+      <div style="font-size:0.72rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:7px;">Source Collection</div>
+      <div id="sf-source-toggle" style="display:flex;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+        <button class="sf-tog-btn sf-tog-active" data-source="physical"
+          style="flex:1;padding:9px 0;border:none;cursor:pointer;font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:0.8rem;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s;">
+          <i class="fas fa-layer-group"></i> Physical
+        </button>
+        <button class="sf-tog-btn" data-source="digital"
+          style="flex:1;padding:9px 0;border:none;border-left:1px solid var(--border);cursor:pointer;font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:0.8rem;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s;">
+          <i class="fas fa-cloud-download-alt"></i> Digital
+        </button>
+      </div>
+    </div>
+ 
+    <!-- ── ROW 2: Listing Type Toggle ── -->
+    <div style="margin-bottom:18px;">
+      <div style="font-size:0.72rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:7px;">Listing Type</div>
+      <div id="sf-type-toggle" style="display:flex;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+        <button class="sf-type-btn sf-type-active" data-type="price"
+          style="flex:1;padding:9px 0;border:none;cursor:pointer;font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:0.8rem;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s;">
+          <i class="fas fa-dollar-sign"></i> Sell for $
+        </button>
+        <button class="sf-type-btn" data-type="trade"
+          style="flex:1;padding:9px 0;border:none;border-left:1px solid var(--border);cursor:pointer;font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:0.8rem;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s;">
+          <i class="fas fa-exchange-alt"></i> Trade
+        </button>
+      </div>
+    </div>
+ 
+    <!-- ── FORM ── -->
+    <div id="sf-form" style="display:flex;flex-direction:column;gap:12px;">
+ 
+      <!-- Card picker -->
+      <div>
+        <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">
+          Card <span id="sf-source-label" style="font-weight:400;text-transform:none;letter-spacing:0;">(Physical Collection)</span>
+        </label>
+        <div style="position:relative;">
+          <i class="fas fa-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.8rem;pointer-events:none;"></i>
+          <input id="sf-card-search" type="text" placeholder="Search by name or number…"
+            style="width:100%;padding:10px 12px 10px 36px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.85rem;font-family:'Nunito Sans',sans-serif;outline:none;box-sizing:border-box;transition:border-color 0.2s;">
+        </div>
+        <!-- Dropdown results -->
+        <div id="sf-card-dropdown" style="display:none;position:relative;z-index:30;background:var(--bg-secondary);border:1px solid var(--border-light);border-radius:var(--radius);margin-top:4px;max-height:220px;overflow-y:auto;box-shadow:var(--shadow-md);">
+        </div>
+        <!-- Selected card chip -->
+        <div id="sf-card-selected" style="display:none;margin-top:8px;padding:10px 12px;background:var(--bg-primary);border:1px solid var(--border-light);border-radius:var(--radius);display:none;align-items:center;gap:10px;">
+          <img id="sf-card-thumb" src="" alt="" style="width:32px;height:43px;object-fit:cover;border-radius:4px;border:1px solid var(--border);flex-shrink:0;">
+          <div style="flex:1;min-width:0;">
+            <div id="sf-card-name-display" style="font-weight:700;font-size:0.82rem;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+            <div id="sf-card-meta-display" style="font-size:0.68rem;color:var(--text-muted);margin-top:2px;"></div>
+          </div>
+          <button id="sf-card-clear" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:0.85rem;padding:4px;transition:color 0.2s;" title="Clear selection">
+            <i class="fas fa-times"></i>
+          </button>
         </div>
       </div>
-
-      <form id="storefrontForm" style="display:flex; flex-direction:column; gap:12px;">
+ 
+      <!-- Quantity + Condition row -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
         <div>
-          <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;">Card #</label>
-          <input type="text" id="sf-card-number" placeholder="e.g., 45 or ABK001" style="width:100%; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); background:var(--bg-primary); color:var(--text-primary); font-size:0.85rem; font-family:'Nunito Sans',sans-serif; outline:none; box-sizing:border-box;">
+          <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">
+            Quantity <span id="sf-qty-max-hint" style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-muted);"></span>
+          </label>
+          <input type="number" id="sf-quantity" placeholder="1" min="1" value="1"
+            style="width:100%;padding:10px 12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.85rem;font-family:'Nunito Sans',sans-serif;outline:none;box-sizing:border-box;">
         </div>
-
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-          <div>
-            <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;">Quantity</label>
-            <input type="number" id="sf-quantity" placeholder="1" min="1" value="1" style="width:100%; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); background:var(--bg-primary); color:var(--text-primary); font-size:0.85rem; font-family:'Nunito Sans',sans-serif; outline:none; box-sizing:border-box;">
-          </div>
-          <div>
-            <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;">Price per card</label>
-            <input type="number" id="sf-price" placeholder="0.00" min="0" step="0.01" style="width:100%; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); background:var(--bg-primary); color:var(--text-primary); font-size:0.85rem; font-family:'Nunito Sans',sans-serif; outline:none; box-sizing:border-box;">
-          </div>
-        </div>
-
         <div>
-          <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;">Condition</label>
-          <select id="sf-condition" style="width:100%; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); background:var(--bg-primary); color:var(--text-primary); font-size:0.85rem; font-family:'Nunito Sans',sans-serif; outline:none; box-sizing:border-box;">
-            <option value="">— Select condition —</option>
-            <option value="mint">Mint (Never played)</option>
-            <option value="near-mint">Near Mint (Barely played)</option>
+          <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Condition</label>
+          <select id="sf-condition"
+            style="width:100%;padding:10px 12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.85rem;font-family:'Nunito Sans',sans-serif;outline:none;box-sizing:border-box;">
+            <option value="">— Select —</option>
+            <option value="mint">Mint</option>
+            <option value="near-mint">Near Mint</option>
             <option value="lightly-played">Lightly Played</option>
             <option value="moderately-played">Moderately Played</option>
             <option value="heavily-played">Heavily Played</option>
             <option value="damaged">Damaged</option>
           </select>
         </div>
-
-        <div>
-          <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;">Notes (optional)</label>
-          <textarea id="sf-notes" placeholder="Any special details..." style="width:100%; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); background:var(--bg-primary); color:var(--text-primary); font-size:0.85rem; font-family:'Nunito Sans',sans-serif; outline:none; resize:vertical; min-height:60px; box-sizing:border-box;"></textarea>
-        </div>
-
-        <button type="submit" style="padding:12px; border-radius:var(--radius); border:none; background:var(--promo); color:#000; font-family:'Nunito Sans',sans-serif; font-weight:700; font-size:0.85rem; cursor:pointer; transition:opacity 0.2s;">+ List Item</button>
-      </form>
-
-      <div style="margin-top:20px; padding-top:20px; border-top:1px solid var(--border);">
-        <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; font-weight:700; color:var(--text-muted); margin-bottom:12px;">Your listings</div>
-        <div id="storefrontListings" style="display:flex; flex-direction:column; gap:8px;">
-          <div style="text-align:center; padding:20px 0; color:var(--text-muted); font-size:0.8rem;">No items listed yet</div>
+      </div>
+ 
+      <!-- ── PRICE mode ── -->
+      <div id="sf-price-section">
+        <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Asking Price (per card)</label>
+        <div style="position:relative;">
+          <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.85rem;">$</span>
+          <input type="number" id="sf-price" placeholder="0.00" min="0" step="0.01"
+            style="width:100%;padding:10px 12px 10px 26px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.85rem;font-family:'Nunito Sans',sans-serif;outline:none;box-sizing:border-box;">
         </div>
       </div>
+ 
+      <!-- ── TRADE mode ── -->
+      <div id="sf-trade-section" style="display:none;">
+        <div style="font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">
+          Cards Wanted in Trade
+        </div>
+ 
+        <!-- Trade card search -->
+        <div style="position:relative;margin-bottom:8px;">
+          <i class="fas fa-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.8rem;pointer-events:none;"></i>
+          <input id="sf-trade-search" type="text" placeholder="Search any card to add…"
+            style="width:100%;padding:10px 12px 10px 36px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.85rem;font-family:'Nunito Sans',sans-serif;outline:none;box-sizing:border-box;transition:border-color 0.2s;">
+        </div>
+        <div id="sf-trade-dropdown" style="display:none;position:relative;z-index:29;background:var(--bg-secondary);border:1px solid var(--border-light);border-radius:var(--radius);margin-bottom:8px;max-height:190px;overflow-y:auto;box-shadow:var(--shadow-md);">
+        </div>
+ 
+        <!-- Selected trade-want chips -->
+        <div id="sf-trade-wants" style="display:flex;flex-wrap:wrap;gap:6px;min-height:32px;">
+          <div id="sf-trade-empty-hint" style="font-size:0.75rem;color:var(--text-muted);font-style:italic;padding:6px 0;">No cards selected yet — search above</div>
+        </div>
+      </div>
+ 
+      <!-- Notes -->
+      <div>
+        <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Notes (optional)</label>
+        <textarea id="sf-notes" placeholder="Condition details, preferred trade offers, shipping info…"
+          style="width:100%;padding:10px 12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.85rem;font-family:'Nunito Sans',sans-serif;outline:none;resize:vertical;min-height:60px;box-sizing:border-box;"></textarea>
+      </div>
+ 
+      <!-- Error message -->
+      <div id="sf-error" style="display:none;font-size:0.75rem;color:var(--danger);padding:8px 12px;background:rgba(224,72,72,0.08);border:1px solid rgba(224,72,72,0.2);border-radius:6px;"></div>
+ 
+      <!-- Submit -->
+      <button id="sf-submit" style="padding:13px;border-radius:var(--radius);border:none;background:var(--promo);color:#000;font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:0.88rem;cursor:pointer;transition:opacity 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;">
+        <i class="fas fa-plus-circle"></i> <span id="sf-submit-label">List for Sale</span>
+      </button>
     </div>
+ 
+    <!-- ── Active Listings ── -->
+    <div style="margin-top:22px;padding-top:20px;border-top:1px solid var(--border);">
+      <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;color:var(--text-muted);margin-bottom:12px;">Your Listings</div>
+      <div id="storefrontListings" style="display:flex;flex-direction:column;gap:8px;">
+        <div style="text-align:center;padding:20px 0;color:var(--text-muted);font-size:0.8rem;">No items listed yet</div>
+      </div>
+    </div>
+ 
   </div>
-
+</div>
   <!-- MARKETPLACE PANEL -->
   <div id="nested-marketplace" class="nested-tab-content" style="display:none;">
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; margin-bottom:16px;">
@@ -5747,160 +5924,552 @@ init();
 })();
 </script>
 <script src="scripts/social-patch.js"></script>	
+<!-- ═══════════ JAVASCRIPT — replaces the storefront <script> block ═══════════ -->
 <script>
 (function () {
   'use strict';
-
-  /* ─────────────────────────────────────────────────────────────────
-     STOREFRONT (Supabase)
-  ───────────────────────────────────────────────────────────────────── */
-  var storefrontForm = document.getElementById('storefrontForm');
-  var storefrontListings = document.getElementById('storefrontListings');
-  var listings = [];
+ 
+  /* ─── state ─── */
+  var sfState = {
+    source: 'physical',   // 'physical' | 'digital'
+    type:   'price',      // 'price' | 'trade'
+    card:   null,         // selected card object
+    tradeWants: []        // [{ card, qty }]
+  };
+ 
   var currentUser = null;
-
-  // Check if user is logged in
-  async function checkAuth() {
-    var sb = window.sb;
-    if (!sb) {
-      showToast('Supabase not configured');
-      return null;
-    }
-    var session = await sb.auth.getSession();
-    currentUser = session && session.data && session.data.session && session.data.session.user;
-    if (!currentUser) {
-      storefrontListings.innerHTML = '<div style="text-align:center; padding:20px 0; color:var(--text-muted); font-size:0.8rem;"><i class="fas fa-lock" style="margin-right:6px;"></i>Sign in under the Together tab to use the storefront</div>';
-      storefrontForm.style.display = 'none';
-      return null;
-    }
-    storefrontForm.style.display = 'flex';
-    return currentUser;
+  var listings    = [];
+ 
+  /* ─── element refs ─── */
+  var sourceToggle      = document.getElementById('sf-source-toggle');
+  var typeToggle        = document.getElementById('sf-type-toggle');
+  var cardSearch        = document.getElementById('sf-card-search');
+  var cardDropdown      = document.getElementById('sf-card-dropdown');
+  var cardSelected      = document.getElementById('sf-card-selected');
+  var cardThumb         = document.getElementById('sf-card-thumb');
+  var cardNameDisplay   = document.getElementById('sf-card-name-display');
+  var cardMetaDisplay   = document.getElementById('sf-card-meta-display');
+  var cardClearBtn      = document.getElementById('sf-card-clear');
+  var qtyInput          = document.getElementById('sf-quantity');
+  var qtyMaxHint        = document.getElementById('sf-qty-max-hint');
+  var sfSourceLabel     = document.getElementById('sf-source-label');
+  var priceSection      = document.getElementById('sf-price-section');
+  var tradeSection      = document.getElementById('sf-trade-section');
+  var priceInput        = document.getElementById('sf-price');
+  var tradeSearch       = document.getElementById('sf-trade-search');
+  var tradeDropdown     = document.getElementById('sf-trade-dropdown');
+  var tradeWantsEl      = document.getElementById('sf-trade-wants');
+  var tradeEmptyHint    = document.getElementById('sf-trade-empty-hint');
+  var notesInput        = document.getElementById('sf-notes');
+  var errorEl           = document.getElementById('sf-error');
+  var submitBtn         = document.getElementById('sf-submit');
+  var submitLabel       = document.getElementById('sf-submit-label');
+  var storefrontListings = document.getElementById('storefrontListings');
+ 
+  /* ──────────────────────────────────────────────
+     TOGGLE STYLING
+  ────────────────────────────────────────────── */
+  function applyToggleStyle(container, activeClass, activeBg, activeColor) {
+    container.querySelectorAll('button').forEach(function (btn) {
+      var isActive = btn.classList.contains(activeClass);
+      btn.style.background = isActive ? activeBg : 'transparent';
+      btn.style.color      = isActive ? activeColor : 'var(--text-muted)';
+    });
   }
-
-  // Load listings from Supabase
-  async function loadListings() {
-    var sb = window.sb;
-    if (!sb || !currentUser) return;
-
-    try {
-      var res = await sb
-        .from('storefront_listings')
-        .select('*')
-        .eq('user_id', currentUser.id)
-        .order('created_at', { ascending: false });
-
-      if (res.error) throw res.error;
-      listings = res.data || [];
-      renderStorefront();
-    } catch (err) {
-      console.error('Error loading listings:', err);
-      showToast('Failed to load listings');
+ 
+  function refreshSourceToggle() {
+    document.querySelectorAll('#sf-source-toggle .sf-tog-btn').forEach(function (btn) {
+      btn.classList.toggle('sf-tog-active', btn.dataset.source === sfState.source);
+    });
+    applyToggleStyle(sourceToggle, 'sf-tog-active', 'var(--zen)', '#fff');
+    sfSourceLabel.textContent = sfState.source === 'physical'
+      ? '(Physical Collection)'
+      : '(Digital Collection)';
+    clearCardSelection();
+  }
+ 
+  function refreshTypeToggle() {
+    document.querySelectorAll('#sf-type-toggle .sf-type-btn').forEach(function (btn) {
+      btn.classList.toggle('sf-type-active', btn.dataset.type === sfState.type);
+    });
+    var isPriceMode = sfState.type === 'price';
+    document.querySelectorAll('#sf-type-toggle .sf-type-btn').forEach(function (btn) {
+      var a = btn.classList.contains('sf-type-active');
+      btn.style.background = a ? (isPriceMode ? 'var(--earth)' : 'var(--water)') : 'transparent';
+      btn.style.color      = a ? '#fff' : 'var(--text-muted)';
+    });
+    priceSection.style.display = isPriceMode ? '' : 'none';
+    tradeSection.style.display = isPriceMode ? 'none' : '';
+    submitLabel.textContent    = isPriceMode ? 'List for Sale' : 'List for Trade';
+    submitBtn.style.background = isPriceMode ? 'var(--promo)' : 'var(--water)';
+    submitBtn.style.color      = isPriceMode ? '#000' : '#fff';
+  }
+ 
+  sourceToggle.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-source]');
+    if (!btn) return;
+    sfState.source = btn.dataset.source;
+    refreshSourceToggle();
+  });
+ 
+  typeToggle.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-type]');
+    if (!btn) return;
+    sfState.type = btn.dataset.type;
+    refreshTypeToggle();
+  });
+ 
+  /* ──────────────────────────────────────────────
+     COLLECTION HELPERS
+  ────────────────────────────────────────────── */
+  function getOwnedQty(cardNumber) {
+    if (sfState.source === 'physical') {
+      return (typeof collection !== 'undefined' ? collection[cardNumber] : 0) || 0;
+    } else {
+      /* digital collection — try the module's API */
+      if (window.digitalCollection && typeof window.digitalCollection.getQty === 'function') {
+        return window.digitalCollection.getQty(cardNumber) || 0;
+      }
+      /* fallback: check digitalCards global */
+      if (window.digitalCards) {
+        var dc = window.digitalCards.filter(function (c) { return c.number === cardNumber; });
+        return dc.length;
+      }
+      return 0;
     }
   }
-
-  // Render listings
-  function renderStorefront() {
-    if (listings.length === 0) {
-      storefrontListings.innerHTML = '<div style="text-align:center; padding:20px 0; color:var(--text-muted); font-size:0.8rem;">No items listed yet</div>';
+ 
+  function getSourceCards() {
+    if (typeof allCards === 'undefined') return [];
+    return allCards.filter(function (c) { return getOwnedQty(c.number) > 0; });
+  }
+ 
+  /* ──────────────────────────────────────────────
+     CARD SEARCH DROPDOWN (listing card)
+  ────────────────────────────────────────────── */
+  function buildDropdownRow(card, qty) {
+    var div = document.createElement('div');
+    div.className = 'sf-dropdown-row';
+    var rarityColor = {
+      common: 'var(--text-secondary)', uncommon: 'var(--earth)',
+      rare: 'var(--water)', zenemental: 'var(--zen)', promo: 'var(--promo)'
+    }[card.rarity] || 'var(--text-secondary)';
+ 
+    div.innerHTML =
+      '<img src="' + (card.imageLink || '') + '" alt="" onerror="this.style.opacity=0.2">' +
+      '<div style="flex:1;min-width:0;">' +
+        '<div style="font-weight:700;font-size:0.8rem;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + esc(card.name) + '</div>' +
+        '<div style="font-size:0.65rem;color:var(--text-muted);margin-top:1px;">#' + card.number + ' · ' + card.type + ' · <span style="color:' + rarityColor + '">' + card.rarity + '</span></div>' +
+      '</div>' +
+      '<span style="font-size:0.68rem;font-weight:700;color:var(--earth);white-space:nowrap;">Owned: ' + qty + '</span>';
+    return div;
+  }
+ 
+  function showCardDropdown(query) {
+    var src = getSourceCards();
+    var q   = query.trim().toLowerCase();
+    var filtered = q
+      ? src.filter(function (c) {
+          return c.name.toLowerCase().indexOf(q) !== -1 || c.number.toLowerCase().indexOf(q) !== -1;
+        })
+      : src;
+    filtered = filtered.slice(0, 30);
+ 
+    if (!filtered.length) {
+      cardDropdown.innerHTML = '<div style="padding:12px;font-size:0.78rem;color:var(--text-muted);text-align:center;">' +
+        (src.length === 0 ? 'No cards in your ' + sfState.source + ' collection' : 'No matches') +
+        '</div>';
+      cardDropdown.style.display = 'block';
       return;
     }
-
-    storefrontListings.innerHTML = listings.map(function (item) {
-      var card = allCards.find(function (c) { return c.number === item.card_number; });
-      var cardName = card ? card.name : 'Unknown Card';
-      var createdDate = new Date(item.created_at);
-      var daysAgo = Math.floor((Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24));
-      var dateStr = daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : daysAgo + ' days ago';
-
-      return '<div style="background:var(--bg-primary); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:12px;">' +
-        '<div style="flex:1; min-width:0;">' +
-          '<div style="font-weight:700; font-size:0.82rem; color:var(--text-primary); margin-bottom:3px;">#' + item.card_number + ' — ' + cardName + '</div>' +
-          '<div style="font-size:0.7rem; color:var(--text-muted);">' + item.quantity + '× · ' + item.condition + ' · $' + item.price.toFixed(2) + ' each</div>' +
-          (item.notes ? '<div style="font-size:0.7rem; color:var(--text-secondary); margin-top:4px; font-style:italic;">' + item.notes + '</div>' : '') +
-          '<div style="font-size:0.65rem; color:var(--text-muted); margin-top:4px;">Listed ' + dateStr + '</div>' +
+ 
+    cardDropdown.innerHTML = '';
+    filtered.forEach(function (card) {
+      var qty = getOwnedQty(card.number);
+      var row = buildDropdownRow(card, qty);
+      row.addEventListener('click', function () { selectCard(card); });
+      cardDropdown.appendChild(row);
+    });
+    cardDropdown.style.display = 'block';
+  }
+ 
+  function selectCard(card) {
+    sfState.card = card;
+    cardSearch.value = '';
+    cardDropdown.style.display = 'none';
+ 
+    var qty = getOwnedQty(card.number);
+    var rarityColor = {
+      common: 'var(--text-secondary)', uncommon: 'var(--earth)',
+      rare: 'var(--water)', zenemental: 'var(--zen)', promo: 'var(--promo)'
+    }[card.rarity] || 'var(--text-secondary)';
+ 
+    cardThumb.src = card.imageLink || '';
+    cardNameDisplay.textContent = card.name;
+    cardMetaDisplay.innerHTML = '#' + card.number + ' · ' + card.type + ' · <span style="color:' + rarityColor + '">' + card.rarity + '</span>';
+    cardSelected.style.display = 'flex';
+ 
+    qtyMaxHint.textContent = '(max ' + qty + ')';
+    qtyInput.max   = qty;
+    qtyInput.value = Math.min(parseInt(qtyInput.value) || 1, qty);
+  }
+ 
+  function clearCardSelection() {
+    sfState.card = null;
+    cardSearch.value = '';
+    cardDropdown.style.display = 'none';
+    cardSelected.style.display = 'none';
+    qtyMaxHint.textContent = '';
+    qtyInput.removeAttribute('max');
+    qtyInput.value = 1;
+  }
+ 
+  cardSearch.addEventListener('focus', function () { showCardDropdown(this.value); });
+  cardSearch.addEventListener('input', function () { showCardDropdown(this.value); });
+  cardClearBtn.addEventListener('click', clearCardSelection);
+ 
+  document.addEventListener('click', function (e) {
+    if (!cardSearch.contains(e.target) && !cardDropdown.contains(e.target) && !cardSelected.contains(e.target)) {
+      cardDropdown.style.display = 'none';
+    }
+    if (!tradeSearch.contains(e.target) && !tradeDropdown.contains(e.target)) {
+      tradeDropdown.style.display = 'none';
+    }
+  });
+ 
+  /* qty clamp */
+  qtyInput.addEventListener('input', function () {
+    var max = parseInt(this.max);
+    if (!isNaN(max) && parseInt(this.value) > max) this.value = max;
+    if (parseInt(this.value) < 1 || isNaN(parseInt(this.value))) this.value = 1;
+  });
+ 
+  /* ──────────────────────────────────────────────
+     TRADE WANTS — card search (any card in DB)
+  ────────────────────────────────────────────── */
+  function showTradeDropdown(query) {
+    if (typeof allCards === 'undefined' || !query.trim()) {
+      tradeDropdown.style.display = 'none';
+      return;
+    }
+    var q = query.trim().toLowerCase();
+    var filtered = allCards.filter(function (c) {
+      return c.name.toLowerCase().indexOf(q) !== -1 || c.number.toLowerCase().indexOf(q) !== -1;
+    }).slice(0, 30);
+ 
+    if (!filtered.length) {
+      tradeDropdown.innerHTML = '<div style="padding:12px;font-size:0.78rem;color:var(--text-muted);text-align:center;">No cards found</div>';
+      tradeDropdown.style.display = 'block';
+      return;
+    }
+ 
+    tradeDropdown.innerHTML = '';
+    filtered.forEach(function (card) {
+      var div = document.createElement('div');
+      div.className = 'sf-dropdown-row';
+      var rarityColor = {
+        common: 'var(--text-secondary)', uncommon: 'var(--earth)',
+        rare: 'var(--water)', zenemental: 'var(--zen)', promo: 'var(--promo)'
+      }[card.rarity] || 'var(--text-secondary)';
+ 
+      div.innerHTML =
+        '<img src="' + (card.imageLink || '') + '" alt="" onerror="this.style.opacity=0.2">' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="font-weight:700;font-size:0.8rem;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + esc(card.name) + '</div>' +
+          '<div style="font-size:0.65rem;color:var(--text-muted);margin-top:1px;">#' + card.number + ' · <span style="color:' + rarityColor + '">' + card.rarity + '</span></div>' +
         '</div>' +
-        '<button data-listing-id="' + item.id + '" class="sf-delete-btn" style="padding:6px 12px; border-radius:6px; border:1px solid var(--border); background:var(--bg-card); color:var(--danger); font-size:0.7rem; font-family:\'Nunito Sans\',sans-serif; font-weight:700; cursor:pointer; white-space:nowrap; transition:all 0.2s;">Remove</button>' +
+        '<i class="fas fa-plus" style="color:var(--water);font-size:0.75rem;"></i>';
+ 
+      div.addEventListener('click', function () { addTradeWant(card); tradeSearch.value = ''; tradeDropdown.style.display = 'none'; });
+      tradeDropdown.appendChild(div);
+    });
+    tradeDropdown.style.display = 'block';
+  }
+ 
+  tradeSearch.addEventListener('input', function () { showTradeDropdown(this.value); });
+  tradeSearch.addEventListener('focus', function () { if (this.value) showTradeDropdown(this.value); });
+ 
+  function addTradeWant(card) {
+    var existing = sfState.tradeWants.find(function (w) { return w.card.number === card.number; });
+    if (existing) {
+      existing.qty++;
+      renderTradeWants();
+      return;
+    }
+    sfState.tradeWants.push({ card: card, qty: 1 });
+    renderTradeWants();
+  }
+ 
+  function removeTradeWant(cardNumber) {
+    sfState.tradeWants = sfState.tradeWants.filter(function (w) { return w.card.number !== cardNumber; });
+    renderTradeWants();
+  }
+ 
+  function changeTradeWantQty(cardNumber, delta) {
+    var w = sfState.tradeWants.find(function (w) { return w.card.number === cardNumber; });
+    if (!w) return;
+    w.qty = Math.max(1, w.qty + delta);
+    renderTradeWants();
+  }
+ 
+  function renderTradeWants() {
+    if (!sfState.tradeWants.length) {
+      tradeWantsEl.innerHTML = '<div id="sf-trade-empty-hint" style="font-size:0.75rem;color:var(--text-muted);font-style:italic;padding:6px 0;">No cards selected yet — search above</div>';
+      return;
+    }
+    tradeWantsEl.innerHTML = sfState.tradeWants.map(function (w) {
+      return '<div class="sf-trade-chip" data-card="' + w.card.number + '">' +
+        '<img src="' + (w.card.imageLink || '') + '" alt="" onerror="this.style.opacity=0.2">' +
+        '<span style="max-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + esc(w.card.name) + '</span>' +
+        '<span class="sf-trade-chip-qty">' +
+          '<button data-action="minus" data-num="' + w.card.number + '" title="Decrease">-</button>' +
+          '<span>x' + w.qty + '</span>' +
+          '<button data-action="plus"  data-num="' + w.card.number + '" title="Increase">+</button>' +
+        '</span>' +
+        '<span class="sf-trade-chip-rm" data-rm="' + w.card.number + '" title="Remove">\u00d7</span>' +
       '</div>';
     }).join('');
-
-    // Wire delete buttons
-    document.querySelectorAll('.sf-delete-btn').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var listingId = this.getAttribute('data-listing-id');
-        deleteListing(listingId);
+ 
+    tradeWantsEl.querySelectorAll('[data-rm]').forEach(function (el) {
+      el.addEventListener('click', function () { removeTradeWant(this.dataset.rm); });
+    });
+    tradeWantsEl.querySelectorAll('[data-action]').forEach(function (el) {
+      el.addEventListener('click', function () {
+        changeTradeWantQty(this.dataset.num, this.dataset.action === 'plus' ? 1 : -1);
       });
     });
   }
-
-  // Delete listing
-  async function deleteListing(listingId) {
-    var sb = window.sb;
-    if (!sb || !currentUser) return;
-
-    showConfirm('Remove this listing?', async function () {
-      try {
-        var res = await sb.from('storefront_listings').delete().eq('id', listingId).eq('user_id', currentUser.id);
-        if (res.error) throw res.error;
-        listings = listings.filter(function (l) { return l.id !== listingId; });
-        renderStorefront();
-        showToast('Listing removed');
-      } catch (err) {
-        console.error('Error deleting listing:', err);
-        showToast('Failed to remove listing');
-      }
-    }, { okText: 'Remove' });
+ 
+  /* ──────────────────────────────────────────────
+     VALIDATION & SUBMIT
+  ────────────────────────────────────────────── */
+  function showError(msg) {
+    errorEl.textContent = msg;
+    errorEl.style.display = msg ? '' : 'none';
   }
-
-  // Submit form
-  storefrontForm.addEventListener('submit', async function (e) {
-    e.preventDefault();
-    var sb = window.sb;
-    if (!sb || !currentUser) { showToast('Not signed in'); return; }
-
-    var cardNum = document.getElementById('sf-card-number').value.trim().toUpperCase();
-    var qty = parseInt(document.getElementById('sf-quantity').value) || 1;
-    var price = parseFloat(document.getElementById('sf-price').value) || 0;
+ 
+  submitBtn.addEventListener('click', async function () {
+    showError('');
+    if (!sfState.card) { showError('Please select a card from your collection.'); return; }
+ 
+    var qty = parseInt(qtyInput.value) || 0;
+    var max = getOwnedQty(sfState.card.number);
+    if (qty < 1)    { showError('Quantity must be at least 1.'); return; }
+    if (qty > max)  { showError('You only own ' + max + ' cop' + (max === 1 ? 'y' : 'ies') + ' of this card.'); return; }
+ 
     var condition = document.getElementById('sf-condition').value;
-    var notes = document.getElementById('sf-notes').value.trim();
-
-    if (!cardNum || !condition) { showToast('Please fill in all required fields'); return; }
-    var card = allCards.find(function (c) { return c.number === cardNum; });
-    if (!card) { showToast('Card #' + cardNum + ' not found'); return; }
-
-    try {
-      var res = await sb.from('storefront_listings').insert([{
-        user_id: currentUser.id,
-        card_number: cardNum,
-        quantity: qty,
-        price: price,
-        condition: condition,
-        notes: notes || null
-      }]);
-
-      if (res.error) throw res.error;
-      showToast('Item listed!');
-      storefrontForm.reset();
-      loadListings();
-    } catch (err) {
-      console.error('Error creating listing:', err);
-      showToast('Failed to list item');
+    if (!condition) { showError('Please select a condition.'); return; }
+ 
+    if (sfState.type === 'price') {
+      var price = parseFloat(priceInput.value);
+      if (isNaN(price) || price < 0) { showError('Please enter a valid price.'); return; }
+    } else {
+      if (!sfState.tradeWants.length) { showError('Please add at least one card you want in trade.'); return; }
     }
+ 
+    /* ── Try Supabase ── */
+    var sb = window.sb;
+    if (sb && currentUser) {
+      try {
+        var payload = {
+          user_id:        currentUser.id,
+          card_number:    sfState.card.number,
+          card_source:    sfState.source,
+          listing_type:   sfState.type,
+          quantity:       qty,
+          condition:      condition,
+          notes:          notesInput.value.trim() || null,
+          price:          sfState.type === 'price' ? parseFloat(priceInput.value) : null,
+          trade_wants:    sfState.type === 'trade' ? JSON.stringify(sfState.tradeWants.map(function (w) { return { number: w.card.number, name: w.card.name, qty: w.qty }; })) : null
+        };
+        var res = await sb.from('storefront_listings').insert([payload]);
+        if (res.error) throw res.error;
+        typeof showToast === 'function' && showToast('Listing created!');
+        resetForm();
+        loadListings();
+        return;
+      } catch (err) {
+        console.warn('Supabase insert failed, falling back to localStorage:', err);
+      }
+    }
+ 
+    /* ── Fallback: localStorage ── */
+    var stored = JSON.parse(localStorage.getItem('sf_listings') || '[]');
+    stored.unshift({
+      id:           Date.now(),
+      card_number:  sfState.card.number,
+      card_source:  sfState.source,
+      listing_type: sfState.type,
+      quantity:     qty,
+      condition:    condition,
+      notes:        notesInput.value.trim() || null,
+      price:        sfState.type === 'price' ? parseFloat(priceInput.value) : null,
+      trade_wants:  sfState.type === 'trade' ? sfState.tradeWants.map(function (w) { return { number: w.card.number, name: w.card.name, qty: w.qty }; }) : null,
+      created_at:   new Date().toISOString()
+    });
+    localStorage.setItem('sf_listings', JSON.stringify(stored));
+    listings = stored;
+    renderStorefront();
+    resetForm();
+    typeof showToast === 'function' && showToast('Listing saved locally!');
   });
-
-  // Init
-  checkAuth().then(function (user) {
-    if (user) loadListings();
-  });
-
-  // Check auth periodically
-  var authCheckInterval = setInterval(async function () {
-    var user = await checkAuth();
-    if (user && !currentUser) loadListings();
+ 
+  function resetForm() {
+    clearCardSelection();
+    qtyInput.value = 1;
+    document.getElementById('sf-condition').value = '';
+    priceInput.value = '';
+    notesInput.value = '';
+    sfState.tradeWants = [];
+    renderTradeWants();
+    showError('');
+  }
+ 
+  /* ──────────────────────────────────────────────
+     LOAD & RENDER LISTINGS
+  ────────────────────────────────────────────── */
+  async function checkAuth() {
+    var sb = window.sb;
+    if (!sb) return null;
+    var session = await sb.auth.getSession();
+    currentUser = session && session.data && session.data.session && session.data.session.user;
+    return currentUser;
+  }
+ 
+  async function loadListings() {
+    var sb = window.sb;
+    if (sb && currentUser) {
+      try {
+        var res = await sb.from('storefront_listings').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
+        if (!res.error) { listings = res.data || []; renderStorefront(); return; }
+      } catch (e) {}
+    }
+    /* localStorage fallback */
+    listings = JSON.parse(localStorage.getItem('sf_listings') || '[]');
+    renderStorefront();
+  }
+ 
+  function renderStorefront() {
+    if (!listings.length) {
+      storefrontListings.innerHTML = '<div style="text-align:center;padding:20px 0;color:var(--text-muted);font-size:0.8rem;">No items listed yet</div>';
+      return;
+    }
+ 
+    storefrontListings.innerHTML = listings.map(function (item) {
+      var card = (typeof allCards !== 'undefined')
+        ? allCards.find(function (c) { return c.number === item.card_number; })
+        : null;
+      var cardName = card ? card.name : 'Card #' + item.card_number;
+      var img = card ? card.imageLink : '';
+ 
+      var daysAgo = Math.floor((Date.now() - new Date(item.created_at).getTime()) / 86400000);
+      var dateStr = daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : daysAgo + 'd ago';
+ 
+      var sourceTag = item.card_source === 'digital'
+        ? '<span style="font-size:0.58rem;padding:2px 6px;background:rgba(46,140,232,0.12);color:var(--water);border:1px solid rgba(46,140,232,0.25);border-radius:99px;font-weight:700;">Digital</span>'
+        : '<span style="font-size:0.58rem;padding:2px 6px;background:rgba(180,77,223,0.12);color:var(--zen);border:1px solid rgba(180,77,223,0.25);border-radius:99px;font-weight:700;">Physical</span>';
+ 
+      var typeTag = item.listing_type === 'trade'
+        ? '<span style="font-size:0.58rem;padding:2px 6px;background:rgba(46,140,232,0.12);color:var(--water);border:1px solid rgba(46,140,232,0.25);border-radius:99px;font-weight:700;"><i class="fas fa-exchange-alt"></i> Trade</span>'
+        : '<span style="font-size:0.58rem;padding:2px 6px;background:rgba(92,184,92,0.12);color:var(--earth);border:1px solid rgba(92,184,92,0.25);border-radius:99px;font-weight:700;">$ ' + (item.price != null ? item.price.toFixed(2) : '—') + '</span>';
+ 
+      /* trade-wants list */
+      var wantsHtml = '';
+      if (item.listing_type === 'trade') {
+        var wants = typeof item.trade_wants === 'string' ? JSON.parse(item.trade_wants) : (item.trade_wants || []);
+        if (wants.length) {
+          wantsHtml = '<div style="margin-top:6px;font-size:0.68rem;color:var(--text-muted);">Wants: ' +
+            wants.map(function (w) { return '<span style="color:var(--water);">x' + w.qty + ' ' + esc(w.name || w.number) + '</span>'; }).join(', ') +
+          '</div>';
+        }
+      }
+ 
+      return '<div style="background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius);padding:11px 13px;display:flex;align-items:flex-start;gap:10px;">' +
+        (img ? '<img src="' + img + '" alt="" style="width:30px;height:40px;object-fit:cover;border-radius:3px;border:1px solid var(--border);flex-shrink:0;" onerror="this.style.display=\'none\'">' : '') +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:3px;">' +
+            '<span style="font-weight:700;font-size:0.8rem;color:var(--text-primary);">' + esc(cardName) + '</span>' +
+            sourceTag + typeTag +
+          '</div>' +
+          '<div style="font-size:0.68rem;color:var(--text-muted);">x' + item.quantity + ' · ' + (item.condition || '—') + ' · ' + dateStr + '</div>' +
+          (item.notes ? '<div style="font-size:0.68rem;color:var(--text-secondary);margin-top:3px;font-style:italic;">' + esc(item.notes) + '</div>' : '') +
+          wantsHtml +
+        '</div>' +
+        '<button data-lid="' + item.id + '" class="sf-del" style="padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg-card);color:var(--danger);font-size:0.68rem;font-family:\'Nunito Sans\',sans-serif;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">Remove</button>' +
+      '</div>';
+    }).join('');
+ 
+    document.querySelectorAll('.sf-del').forEach(function (btn) {
+      btn.addEventListener('click', function () { deleteListing(this.dataset.lid); });
+    });
+  }
+ 
+  async function deleteListing(id) {
+    var sb = window.sb;
+    var numId = parseInt(id, 10);
+ 
+    if (typeof showConfirm === 'function') {
+      showConfirm('Remove this listing?', async function () {
+        await doDelete(sb, id, numId);
+      }, { okText: 'Remove' });
+    } else {
+      await doDelete(sb, id, numId);
+    }
+  }
+ 
+  async function doDelete(sb, strId, numId) {
+    if (sb && currentUser) {
+      try {
+        await sb.from('storefront_listings').delete().or('id.eq.' + strId + ',id.eq.' + numId).eq('user_id', currentUser.id);
+      } catch (e) {}
+    }
+    /* also clear from localStorage */
+    var stored = JSON.parse(localStorage.getItem('sf_listings') || '[]').filter(function (l) { return String(l.id) !== String(strId); });
+    localStorage.setItem('sf_listings', JSON.stringify(stored));
+    listings = listings.filter(function (l) { return String(l.id) !== String(strId); });
+    renderStorefront();
+    typeof showToast === 'function' && showToast('Listing removed');
+  }
+ 
+  /* ──────────────────────────────────────────────
+     INJECT CSS
+  ────────────────────────────────────────────── */
+  var style = document.createElement('style');
+  style.textContent = [
+    '.sf-tog-btn { background: transparent; color: var(--text-muted); }',
+    '.sf-tog-active { background: var(--zen) !important; color: #fff !important; }',
+    '.sf-type-btn { background: transparent; color: var(--text-muted); }',
+    '.sf-dropdown-row { display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;transition:background 0.15s;border-bottom:1px solid var(--border); }',
+    '.sf-dropdown-row:last-child { border-bottom:none; }',
+    '.sf-dropdown-row:hover { background:var(--bg-card-hover); }',
+    '.sf-dropdown-row img { width:28px;height:37px;object-fit:cover;border-radius:3px;border:1px solid var(--border);flex-shrink:0; }',
+    '.sf-trade-chip { display:inline-flex;align-items:center;gap:5px;background:rgba(46,140,232,0.12);border:1px solid rgba(46,140,232,0.3);border-radius:99px;padding:4px 8px 4px 5px;font-size:0.72rem;color:var(--water);font-weight:600; }',
+    '.sf-trade-chip img { width:18px;height:24px;object-fit:cover;border-radius:2px;flex-shrink:0; }',
+    '.sf-trade-chip-qty { background:rgba(46,140,232,0.18);border-radius:99px;padding:1px 4px;font-size:0.65rem;display:inline-flex;align-items:center;gap:2px; }',
+    '.sf-trade-chip-qty button { background:none;border:none;cursor:pointer;color:var(--water);font-size:0.72rem;padding:0 1px;line-height:1;font-weight:700; }',
+    '.sf-trade-chip-rm { cursor:pointer;opacity:0.55;transition:opacity 0.15s;font-size:0.75rem;margin-left:1px; }',
+    '.sf-trade-chip-rm:hover { opacity:1; }',
+    '#sf-card-search:focus, #sf-trade-search:focus { border-color: var(--accent); }'
+  ].join('\n');
+  document.head.appendChild(style);
+ 
+  /* ──────────────────────────────────────────────
+     INIT
+  ────────────────────────────────────────────── */
+  function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+ 
+  refreshSourceToggle();
+  refreshTypeToggle();
+ 
+  checkAuth().then(function () { loadListings(); });
+ 
+  /* Re-check auth periodically */
+  setInterval(async function () {
+    var prev = currentUser && currentUser.id;
+    await checkAuth();
+    if (currentUser && currentUser.id !== prev) loadListings();
   }, 5000);
-
-  // Cleanup
-  window.addEventListener('unload', function () { clearInterval(authCheckInterval); });
-
+ 
 })();
 </script>
 <script>
