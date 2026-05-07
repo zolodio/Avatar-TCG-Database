@@ -1815,6 +1815,7 @@ body {
   <button class="tab-btn" data-tab="media"><i class="fas fa-film"></i> Media</button>
   <button class="tab-btn" data-tab="wayback"><i class="fas fa-globe"></i> Wayback Websites</button>
   <button class="tab-btn" data-tab="profile"><i class="fas fa-user"></i> Together</button>
+  <button class="tab-btn" data-tab="collect"><i class="fas fa-shopping-bag"></i> Collect</button>
 </div>
 
 <!-- CARD COLLECTION TAB -->
@@ -2650,7 +2651,114 @@ body {
     </div>
   </div>
 </div>
+<!-- COLLECT TAB -->
+<div class="tab-content" id="tab-collect">
+  <div class="tab-nav-nested">
+    <button class="tab-btn-nested active" data-nested-tab="storefront">Storefront</button>
+    <button class="tab-btn-nested" data-nested-tab="marketplace">Marketplace</button>
+  </div>
 
+  <!-- STOREFRONT PANEL -->
+  <div id="nested-storefront" class="nested-tab-content active">
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+        <i class="fas fa-tag" style="color:var(--promo); font-size:1.2rem;"></i>
+        <div>
+          <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Your Storefront</div>
+          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">List items you want to sell or trade</div>
+        </div>
+      </div>
+
+      <form id="storefrontForm" style="display:flex; flex-direction:column; gap:12px;">
+        <div>
+          <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;">Card #</label>
+          <input type="text" id="sf-card-number" placeholder="e.g., 45 or ABK001" style="width:100%; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); background:var(--bg-primary); color:var(--text-primary); font-size:0.85rem; font-family:'Nunito Sans',sans-serif; outline:none; box-sizing:border-box;">
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;">Quantity</label>
+            <input type="number" id="sf-quantity" placeholder="1" min="1" value="1" style="width:100%; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); background:var(--bg-primary); color:var(--text-primary); font-size:0.85rem; font-family:'Nunito Sans',sans-serif; outline:none; box-sizing:border-box;">
+          </div>
+          <div>
+            <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;">Price per card</label>
+            <input type="number" id="sf-price" placeholder="0.00" min="0" step="0.01" style="width:100%; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); background:var(--bg-primary); color:var(--text-primary); font-size:0.85rem; font-family:'Nunito Sans',sans-serif; outline:none; box-sizing:border-box;">
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;">Condition</label>
+          <select id="sf-condition" style="width:100%; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); background:var(--bg-primary); color:var(--text-primary); font-size:0.85rem; font-family:'Nunito Sans',sans-serif; outline:none; box-sizing:border-box;">
+            <option value="">— Select condition —</option>
+            <option value="mint">Mint (Never played)</option>
+            <option value="near-mint">Near Mint (Barely played)</option>
+            <option value="lightly-played">Lightly Played</option>
+            <option value="moderately-played">Moderately Played</option>
+            <option value="heavily-played">Heavily Played</option>
+            <option value="damaged">Damaged</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;">Notes (optional)</label>
+          <textarea id="sf-notes" placeholder="Any special details..." style="width:100%; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); background:var(--bg-primary); color:var(--text-primary); font-size:0.85rem; font-family:'Nunito Sans',sans-serif; outline:none; resize:vertical; min-height:60px; box-sizing:border-box;"></textarea>
+        </div>
+
+        <button type="submit" style="padding:12px; border-radius:var(--radius); border:none; background:var(--promo); color:#000; font-family:'Nunito Sans',sans-serif; font-weight:700; font-size:0.85rem; cursor:pointer; transition:opacity 0.2s;">+ List Item</button>
+      </form>
+
+      <div style="margin-top:20px; padding-top:20px; border-top:1px solid var(--border);">
+        <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; font-weight:700; color:var(--text-muted); margin-bottom:12px;">Your listings</div>
+        <div id="storefrontListings" style="display:flex; flex-direction:column; gap:8px;">
+          <div style="text-align:center; padding:20px 0; color:var(--text-muted); font-size:0.8rem;">No items listed yet</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MARKETPLACE PANEL -->
+  <div id="nested-marketplace" class="nested-tab-content" style="display:none;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; margin-bottom:16px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+        <i class="fas fa-globe" style="color:var(--water); font-size:1.2rem;"></i>
+        <div>
+          <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Marketplace</div>
+          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">Search across multiple platforms</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Filter by platform</label>
+        <div style="display:flex; flex-wrap:wrap; gap:6px;">
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem; color:var(--text-secondary);">
+            <input type="checkbox" class="mp-filter" data-site="ebay" checked style="cursor:pointer;">
+            <span style="display:flex; align-items:center; gap:4px;"><i class="fab fa-ebay" style="color:#e53238;"></i> eBay</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem; color:var(--text-secondary);">
+            <input type="checkbox" class="mp-filter" data-site="craigslist" checked style="cursor:pointer;">
+            <span>Craigslist</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem; color:var(--text-secondary);">
+            <input type="checkbox" class="mp-filter" data-site="shopgoodwill" checked style="cursor:pointer;">
+            <span>ShopGoodWill</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem; color:var(--text-secondary);">
+            <input type="checkbox" class="mp-filter" data-site="facebook" checked style="cursor:pointer;">
+            <span><i class="fab fa-facebook" style="color:#1877f2;"></i> Facebook</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem; color:var(--text-secondary);">
+            <input type="checkbox" class="mp-filter" data-site="letgo" checked style="cursor:pointer;">
+            <span>OfferUp (LetGo)</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div id="marketplaceListings" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:12px;">
+      <!-- Platform cards injected here -->
+    </div>
+  </div>
+</div>
 </div><!-- /.app-container -->
 
 <!-- HOW-TO BUTTON & POPUP -->
@@ -5639,5 +5747,251 @@ init();
 })();
 </script>
 <script src="scripts/social-patch.js"></script>	
+<script>
+(function () {
+  'use strict';
+
+  /* ─────────────────────────────────────────────────────────────────
+     STOREFRONT (Supabase)
+  ───────────────────────────────────────────────────────────────────── */
+  var storefrontForm = document.getElementById('storefrontForm');
+  var storefrontListings = document.getElementById('storefrontListings');
+  var listings = [];
+  var currentUser = null;
+
+  // Check if user is logged in
+  async function checkAuth() {
+    var sb = window.sb;
+    if (!sb) {
+      showToast('Supabase not configured');
+      return null;
+    }
+    var session = await sb.auth.getSession();
+    currentUser = session && session.data && session.data.session && session.data.session.user;
+    if (!currentUser) {
+      storefrontListings.innerHTML = '<div style="text-align:center; padding:20px 0; color:var(--text-muted); font-size:0.8rem;"><i class="fas fa-lock" style="margin-right:6px;"></i>Sign in under the Together tab to use the storefront</div>';
+      storefrontForm.style.display = 'none';
+      return null;
+    }
+    storefrontForm.style.display = 'flex';
+    return currentUser;
+  }
+
+  // Load listings from Supabase
+  async function loadListings() {
+    var sb = window.sb;
+    if (!sb || !currentUser) return;
+
+    try {
+      var res = await sb
+        .from('storefront_listings')
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .order('created_at', { ascending: false });
+
+      if (res.error) throw res.error;
+      listings = res.data || [];
+      renderStorefront();
+    } catch (err) {
+      console.error('Error loading listings:', err);
+      showToast('Failed to load listings');
+    }
+  }
+
+  // Render listings
+  function renderStorefront() {
+    if (listings.length === 0) {
+      storefrontListings.innerHTML = '<div style="text-align:center; padding:20px 0; color:var(--text-muted); font-size:0.8rem;">No items listed yet</div>';
+      return;
+    }
+
+    storefrontListings.innerHTML = listings.map(function (item) {
+      var card = allCards.find(function (c) { return c.number === item.card_number; });
+      var cardName = card ? card.name : 'Unknown Card';
+      var createdDate = new Date(item.created_at);
+      var daysAgo = Math.floor((Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24));
+      var dateStr = daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : daysAgo + ' days ago';
+
+      return '<div style="background:var(--bg-primary); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:12px;">' +
+        '<div style="flex:1; min-width:0;">' +
+          '<div style="font-weight:700; font-size:0.82rem; color:var(--text-primary); margin-bottom:3px;">#' + item.card_number + ' — ' + cardName + '</div>' +
+          '<div style="font-size:0.7rem; color:var(--text-muted);">' + item.quantity + '× · ' + item.condition + ' · $' + item.price.toFixed(2) + ' each</div>' +
+          (item.notes ? '<div style="font-size:0.7rem; color:var(--text-secondary); margin-top:4px; font-style:italic;">' + item.notes + '</div>' : '') +
+          '<div style="font-size:0.65rem; color:var(--text-muted); margin-top:4px;">Listed ' + dateStr + '</div>' +
+        '</div>' +
+        '<button data-listing-id="' + item.id + '" class="sf-delete-btn" style="padding:6px 12px; border-radius:6px; border:1px solid var(--border); background:var(--bg-card); color:var(--danger); font-size:0.7rem; font-family:\'Nunito Sans\',sans-serif; font-weight:700; cursor:pointer; white-space:nowrap; transition:all 0.2s;">Remove</button>' +
+      '</div>';
+    }).join('');
+
+    // Wire delete buttons
+    document.querySelectorAll('.sf-delete-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var listingId = this.getAttribute('data-listing-id');
+        deleteListing(listingId);
+      });
+    });
+  }
+
+  // Delete listing
+  async function deleteListing(listingId) {
+    var sb = window.sb;
+    if (!sb || !currentUser) return;
+
+    showConfirm('Remove this listing?', async function () {
+      try {
+        var res = await sb.from('storefront_listings').delete().eq('id', listingId).eq('user_id', currentUser.id);
+        if (res.error) throw res.error;
+        listings = listings.filter(function (l) { return l.id !== listingId; });
+        renderStorefront();
+        showToast('Listing removed');
+      } catch (err) {
+        console.error('Error deleting listing:', err);
+        showToast('Failed to remove listing');
+      }
+    }, { okText: 'Remove' });
+  }
+
+  // Submit form
+  storefrontForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var sb = window.sb;
+    if (!sb || !currentUser) { showToast('Not signed in'); return; }
+
+    var cardNum = document.getElementById('sf-card-number').value.trim().toUpperCase();
+    var qty = parseInt(document.getElementById('sf-quantity').value) || 1;
+    var price = parseFloat(document.getElementById('sf-price').value) || 0;
+    var condition = document.getElementById('sf-condition').value;
+    var notes = document.getElementById('sf-notes').value.trim();
+
+    if (!cardNum || !condition) { showToast('Please fill in all required fields'); return; }
+    var card = allCards.find(function (c) { return c.number === cardNum; });
+    if (!card) { showToast('Card #' + cardNum + ' not found'); return; }
+
+    try {
+      var res = await sb.from('storefront_listings').insert([{
+        user_id: currentUser.id,
+        card_number: cardNum,
+        quantity: qty,
+        price: price,
+        condition: condition,
+        notes: notes || null
+      }]);
+
+      if (res.error) throw res.error;
+      showToast('Item listed!');
+      storefrontForm.reset();
+      loadListings();
+    } catch (err) {
+      console.error('Error creating listing:', err);
+      showToast('Failed to list item');
+    }
+  });
+
+  // Init
+  checkAuth().then(function (user) {
+    if (user) loadListings();
+  });
+
+  // Check auth periodically
+  var authCheckInterval = setInterval(async function () {
+    var user = await checkAuth();
+    if (user && !currentUser) loadListings();
+  }, 5000);
+
+  // Cleanup
+  window.addEventListener('unload', function () { clearInterval(authCheckInterval); });
+
+})();
+</script>
+<script>
+(function () {
+  'use strict';
+
+  /* ─────────────────────────────────────────────────────────────────
+     MARKETPLACE
+  ───────────────────────────────────────────────────────────────────── */
+  var MP_CONFIG = {
+    ebay: {
+      name: 'eBay',
+      icon: 'fab fa-ebay',
+      color: '#e53238',
+      url: function () {
+        return 'https://www.ebay.com/sch/i.html?_nkw=avatar+quickstrike&_sacat=0';
+      }
+    },
+    craigslist: {
+      name: 'Craigslist',
+      icon: 'fas fa-newspaper',
+      color: '#e8e8e8',
+      url: function () {
+        return 'https://www.craigslist.org/search/sss?query=avatar+quickstrike';
+      }
+    },
+    shopgoodwill: {
+      name: 'ShopGoodWill',
+      icon: 'fas fa-heart',
+      color: '#e74c3c',
+      url: function () {
+        return 'https://www.shopgoodwill.com/search?q=Avatar';
+      }
+    },
+    facebook: {
+      name: 'Facebook Marketplace',
+      icon: 'fab fa-facebook',
+      color: '#1877f2',
+      url: function () {
+        return 'https://www.facebook.com/marketplace/search/?query=avatar%20quickstrike';
+      }
+    },
+    letgo: {
+      name: 'OfferUp (LetGo)',
+      icon: 'fas fa-mobile-alt',
+      color: '#ff6b35',
+      url: function () {
+        return 'https://offerup.com/search?q=avatar+quickstrike';
+      }
+    }
+  };
+
+  var marketplaceFilters = {};
+  Object.keys(MP_CONFIG).forEach(function (key) { marketplaceFilters[key] = true; });
+
+  var marketplaceListings = document.getElementById('marketplaceListings');
+
+  function renderMarketplace() {
+    var html = '';
+    Object.keys(MP_CONFIG).forEach(function (key) {
+      if (!marketplaceFilters[key]) return;
+      var cfg = MP_CONFIG[key];
+      html += '<a href="' + cfg.url() + '" target="_blank" rel="noopener,noreferrer" style="display:block; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; text-decoration:none; transition:all 0.2s; cursor:pointer;">' +
+        '<div style="background:linear-gradient(135deg, ' + cfg.color + '11 0%, ' + cfg.color + '22 100%); padding:16px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px;">' +
+          '<i class="' + cfg.icon + '" style="font-size:1.5rem; color:' + cfg.color + ';"></i>' +
+          '<div style="flex:1;">' +
+            '<div style="font-weight:700; font-size:0.9rem; color:var(--text-primary);">' + cfg.name + '</div>' +
+            '<div style="font-size:0.68rem; color:var(--text-muted); margin-top:2px;">Search for Avatar Quick Strike</div>' +
+          '</div>' +
+          '<i class="fas fa-external-link-alt" style="color:var(--text-muted); font-size:0.85rem;"></i>' +
+        '</div>' +
+        '<div style="padding:12px 16px; font-size:0.75rem; color:var(--text-secondary); line-height:1.5;">' +
+          'Click to search ' + cfg.name + ' for Avatar Quick Strike cards. Results update in real-time.' +
+        '</div>' +
+      '</a>';
+    });
+    marketplaceListings.innerHTML = html;
+  }
+
+  // Wire up filter checkboxes
+  document.querySelectorAll('.mp-filter').forEach(function (checkbox) {
+    checkbox.addEventListener('change', function () {
+      marketplaceFilters[this.dataset.site] = this.checked;
+      renderMarketplace();
+    });
+  });
+
+  renderMarketplace();
+  window.renderMarketplace = renderMarketplace;
+
+})();
+</script>
 </body>
 </html>
