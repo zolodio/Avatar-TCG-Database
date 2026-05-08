@@ -59,43 +59,37 @@
     if (!currentUser || !sb) return;
     setSyncDot('syncing');
     try {
-      // ── 1. Save physical + digital JSON (existing behaviour) ──
       var res = await sb.from('collections').upsert({
         user_id:  currentUser.id,
         physical: getPhysical(),
         digital:  getDigital()
       }, { onConflict: 'user_id' });
       if (res.error) throw res.error;
-
-      // ── 2. Sync user_cards (powers scarcity index + leaderboard) ──
-      var physical = getPhysical();
-      var cardRows = Object.keys(physical)
-        .filter(function (num) { return (physical[num] || 0) > 0; })
-        .map(function (num) {
-          return { user_id: currentUser.id, card_number: num, quantity: physical[num] };
-        });
-
-      // Delete cards no longer owned, then upsert what remains
-      await sb.from('user_cards').delete().eq('user_id', currentUser.id);
-      if (cardRows.length) {
-        var ucRes = await sb.from('user_cards').insert(cardRows);
-        if (ucRes.error) console.warn('[AvatarTCG] user_cards sync error:', ucRes.error.message);
-      }
-
-      // ── 3. Seed cards table with rarity data (safe upsert) ──
-      var cardSeed = (window.allCards || []).map(function (c) {
-        return { number: c.number, name: c.name, rarity: c.rarity, type: c.type };
-      });
-      if (cardSeed.length) {
-        await sb.from('cards').upsert(cardSeed, { onConflict: 'number', ignoreDuplicates: true });
-      }
-
       setSyncDot('ok');
     } catch (e) {
       console.warn('[AvatarTCG] Push failed:', e.message || e);
       setSyncDot('error');
     }
   }
+
+  var debouncedPush = debounce(cloudPush, 2500);
+  window._aqst_cloudSync = function () { if (currentUser) debouncedPush(); };
+
+  async function cloudPull() {
+    if (!currentUser || !sb) return null;
+    try {
+      var res = await sb.from('collections')
+        .select('physical, digital, updated_at')
+        .eq('user_id', currentUser.id)
+        .maybeSingle();
+      if (res.error) throw res.error;
+      return res.data;
+    } catch (e) {
+      console.warn('[AvatarTCG] Pull failed:', e.message || e);
+      return null;
+    }
+  }
+
   // ── Login / logout state ──────────────────────────────────────
   async function onLogin(user) {
     currentUser = user;
