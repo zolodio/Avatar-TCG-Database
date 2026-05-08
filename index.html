@@ -4257,7 +4257,7 @@ var skipCardDetails = (card.type === 'ally' || card.type === 'advantage');
 
     if (hasFront || hasBack) {
       extraStatsEl.innerHTML =
-        '<div class="chamber-side-tabs">' +
+        '<div class="chamber-side-tabs" style="display:none;">' +
           '<button class="chamber-side-btn active" data-chamber-side="front">⬛ Front Side</button>' +
           '<button class="chamber-side-btn" data-chamber-side="back">🔄 Back Side</button>' +
         '</div>' +
@@ -4395,8 +4395,24 @@ var flavorSectionEl = document.getElementById('modalFlavorSection');
     modalFlipped = !modalFlipped;
     var inner = document.getElementById('modalFlipInner');
     var btn = document.getElementById('modalFlipBtn');
-    if (modalFlipped) { inner.classList.add('flipped'); btn.classList.add('is-flipped'); btn.innerHTML = '<i class="fas fa-rotate"></i> Show Front'; }
-    else { inner.classList.remove('flipped'); btn.classList.remove('is-flipped'); btn.innerHTML = '<i class="fas fa-rotate"></i> Flip View'; }
+    if (modalFlipped) {
+      inner.classList.add('flipped');
+      btn.classList.add('is-flipped');
+      btn.innerHTML = '<i class="fas fa-rotate"></i> Show Front';
+    } else {
+      inner.classList.remove('flipped');
+      btn.classList.remove('is-flipped');
+      btn.innerHTML = '<i class="fas fa-rotate"></i> Flip View';
+    }
+    // Sync chamber panels with image flip
+    var extraStatsEl = document.getElementById('modalExtraStats');
+    if (extraStatsEl) {
+      var side = modalFlipped ? 'back' : 'front';
+      extraStatsEl.querySelectorAll('.chamber-side-btn').forEach(function(b) { b.classList.toggle('active', b.dataset.chamberSide === side); });
+      extraStatsEl.querySelectorAll('.chamber-panel').forEach(function(p) { p.classList.remove('active'); });
+      var panel = extraStatsEl.querySelector('#chamberPanel' + (modalFlipped ? 'Back' : 'Front'));
+      if (panel) panel.classList.add('active');
+    }
   });
 
   document.getElementById('qtyDisplay').textContent = qty;
