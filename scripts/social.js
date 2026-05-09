@@ -1018,7 +1018,6 @@
   async function removeFriend(id) {
     await sb().from('friendships').delete().eq('id', id); loadFriends(); toast('Friend removed.');
   }
-
   // ══════════════════════════════════════════════════════════════
   //  FETCH FRIEND COLLECTIONS
   // ══════════════════════════════════════════════════════════════
