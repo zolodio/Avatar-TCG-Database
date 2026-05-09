@@ -1894,7 +1894,6 @@ body {
   <button class="tab-btn" data-tab="portfolio"><i class="fas fa-chart-line"></i> Physical Portfolio</button>
   <button class="tab-btn" data-tab="digital-collection"><i class="fas fa-cloud-download-alt"></i> Digital Collection</button>
   <button class="tab-btn" data-tab="media"><i class="fas fa-film"></i> Media</button>
-  <button class="tab-btn" data-tab="wayback"><i class="fas fa-globe"></i> Wayback Websites</button>
   <button class="tab-btn" data-tab="profile"><i class="fas fa-user"></i> Together</button>
   <button class="tab-btn" data-tab="collect"><i class="fas fa-shopping-bag"></i> Collect</button>
 </div>
@@ -2000,6 +1999,10 @@ body {
     <button class="media-cat-btn" data-panel="music">
       <i class="fas fa-music"></i>
       <span>Music</span>
+    </button>
+    <button class="media-cat-btn" data-panel="wayback">
+      <i class="fas fa-globe"></i>
+      <span>Wayback Websites</span>
     </button>
   </div>
 
@@ -2343,7 +2346,20 @@ body {
     </a>
 
   </div><!-- /music panel -->
-
+ <!-- ══════════════════════════════════════
+       WAYBACK WEBSITES PANEL
+  ══════════════════════════════════════ -->
+<div class="media-panel" id="mediapanel-wayback" style="display:none;">
+  <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px;">
+    <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 16px;">Archived Websites</h3>
+    <p style="color: var(--text-secondary); margin-bottom: 16px;">Visit historical snapshots of Avatar TCG resources</p>
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <a href="https://web.archive.org/web/20080815224144/http://entertainment.upperdeck.com/avatar/en/interface.aspx" target="_blank" style="display: block; padding: 12px; background: var(--bg-card-hover); border: 1px solid var(--border-light); border-radius: 8px; color: var(--accent); text-decoration: none; font-weight: 600; transition: all 0.2s;"><i class="fas fa-link"></i> UDE.com/Avatar</a>
+      <a href="https://web.archive.org/web/20120110012143/https://www.musogato.com/avatar/tcg/cards.php" target="_blank" style="display: block; padding: 12px; background: var(--bg-card-hover); border: 1px solid var(--border-light); border-radius: 8px; color: var(--accent); text-decoration: none; font-weight: 600; transition: all 0.2s;"><i class="fas fa-link"></i> Musogato.com/avatar</a>
+      <a href="https://www.laststicker.ru/cards/upper_deck_avatar_the_last_airbender_tcg/" target="_blank" style="display: block; padding: 12px; background: var(--bg-card-hover); border: 1px solid var(--border-light); border-radius: 8px; color: var(--accent); text-decoration: none; font-weight: 600; transition: all 0.2s;"><i class="fas fa-link"></i> Laststicker.ru</a>
+    </div>
+  </div>
+</div><!-- /wayback panel -->
   <!-- Media tab navigation script -->
   <script>
   (function() {
@@ -2363,19 +2379,6 @@ body {
   </script>
 
 </div><!-- /tab-media -->
-
-<!-- WAYBACK WEBSITES TAB -->
-<div class="tab-content" id="tab-wayback">
-  <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px;">
-    <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 16px;">Archived Websites</h3>
-    <p style="color: var(--text-secondary); margin-bottom: 16px;">Visit historical snapshots of Avatar TCG resources</p>
-    <div style="display: flex; flex-direction: column; gap: 10px;">
-      <a href="https://web.archive.org/web/20080815224144/http://entertainment.upperdeck.com/avatar/en/interface.aspx" target="_blank" style="display: block; padding: 12px; background: var(--bg-card-hover); border: 1px solid var(--border-light); border-radius: 8px; color: var(--accent); text-decoration: none; font-weight: 600; transition: all 0.2s;"><i class="fas fa-link"></i> UDE.com/Avatar</a>
-      <a href="https://web.archive.org/web/20120110012143/https://www.musogato.com/avatar/tcg/cards.php" target="_blank" style="display: block; padding: 12px; background: var(--bg-card-hover); border: 1px solid var(--border-light); border-radius: 8px; color: var(--accent); text-decoration: none; font-weight: 600; transition: all 0.2s;"><i class="fas fa-link"></i> Musogato.com/avatar</a>
-      <a href="https://www.laststicker.ru/cards/upper_deck_avatar_the_last_airbender_tcg/" target="_blank" style="display: block; padding: 12px; background: var(--bg-card-hover); border: 1px solid var(--border-light); border-radius: 8px; color: var(--accent); text-decoration: none; font-weight: 600; transition: all 0.2s;"><i class="fas fa-link"></i> Laststicker.ru</a>
-    </div>
-  </div>
-</div>
 
 <!-- PORTFOLIO TAB -->
 <div class="tab-content" id="tab-portfolio">
