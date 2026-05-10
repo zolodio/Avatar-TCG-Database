@@ -49,7 +49,8 @@
       typeFilter: 'all',
       search:     '',
       sortBy:     'number',
-      sortDir:    'asc'
+      sortDir:    'asc',
+      is_public:  false
     },
     exportSortMode:  'number',
     renamingDeck: false,
@@ -1146,6 +1147,14 @@
 }
 .db-checklist-item.is-checked .db-check-box { background:rgba(61,184,108,.15); border-color:var(--success); }
 
+/* Build-specific public toggle indicator */
+.db-build-public-indicator {
+  font-size:.7rem; padding:4px 8px; border-radius:6px;
+  display:inline-flex; align-items:center; gap:4px; margin-bottom:8px;
+  background:rgba(180,77,223,.08); border:1px solid rgba(180,77,223,.22);
+  color:var(--zen);
+}
+
 @media (max-width:480px) {
   .db-deck-grid { grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:9px; }
   .db-strength-grid { grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); }
@@ -1219,6 +1228,12 @@
             +'<span style="font-size:.58rem;color:var(--earth);">SUP '+st.supportScore+'%</span>'
           +'</div>'
           +'<div class="db-deck-actions">'
+            +'<button class="db-mini-btn db-public-toggle-list" data-deck-id="'+esc(deck.id)+'" '
+              +'style="border-color:'+(deck.is_public?'var(--success)':'var(--border)')+';'
+              +'color:'+(deck.is_public?'var(--success)':'var(--text-muted)');'+'" '
+              +'title="'+(deck.is_public?'Make private':'Make public')+'">'
+              +(deck.is_public?'<i class="fas fa-globe"></i>':'<i class="fas fa-lock"></i>')
+            +'</button>'
             +'<button class="db-mini-btn db-export-btn" data-deck-id="'+esc(deck.id)+'" title="Export"><i class="fas fa-file-export"></i></button>'
             +'<button class="db-mini-btn db-delete-btn" data-deck-id="'+esc(deck.id)+'" title="Delete"><i class="fas fa-trash"></i></button>'
           +'</div>'
@@ -1603,6 +1618,7 @@
       +'<div class="db-section"><label class="db-label">Deck Name</label>'
         +'<input class="db-input" id="buildName" type="text" placeholder="My Deck" value="'+esc(b.name)+'" maxlength="40">'
       +'</div>'
+      +'<div class="db-build-public-indicator" id="buildPublicIndicator" style="display:none;"><i class="fas fa-globe"></i> <span id="buildPublicText">Deck will be private</span> <button class="db-mini-btn" id="dbBuildPublicToggle" style="border-color:var(--zen);color:var(--zen);padding:2px 6px;font-size:.6rem;margin-left:auto;">Toggle</button></div>'
       +'<div class="db-section"><label class="db-label">Deck Size</label>'
         +'<div class="db-size-row">'+sizeBtns+'</div>'
         +(b.deckSize==='custom'?'<div style="margin-top:9px;display:flex;align-items:center;gap:9px;"><span style="font-size:.78rem;color:var(--text-secondary);">Standard cards:</span><input class="db-input" id="buildCustomSize" type="number" min="10" max="127" value="'+b.customSize+'" style="width:88px;"></div>':'')
@@ -1806,7 +1822,7 @@
     var bOwn = document.getElementById('dbBuildOwnBtn');
     if (bOwn) bOwn.addEventListener('click', function(){
       S.view='build';
-      S.build={name:'',deckSize:'full',customSize:60,chamber:null,cards:{},typeFilter:'all',search:'',sortBy:'number',sortDir:'asc'};
+      S.build={name:'',deckSize:'full',customSize:60,chamber:null,cards:{},typeFilter:'all',search:'',sortBy:'number',sortDir:'asc',is_public:false};
       render();
     });
     var bRng = document.getElementById('dbRandomizeBtn');
@@ -1817,6 +1833,15 @@
         if (e.target.closest('.db-mini-btn')) return;
         var d=S.decks.find(function(x){return x.id===this.dataset.deckId;}.bind(this));
         if (d) { S.viewingDeck=d; S.view='stats'; render(); }
+      });
+    });
+
+    /* Public toggle in list view */
+    el.querySelectorAll('.db-public-toggle-list').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        var id=this.dataset.deckId;
+        toggleDeckPublic(id);
       });
     });
 
@@ -1941,7 +1966,22 @@
       });
     }
 
-    /* ── BUILD CARD INTERACTIONS ────────────────────────── */
+    /* ── BUILD PUBLIC TOGGLE ────────────────────────────── */
+    var buildPublicToggle = document.getElementById('dbBuildPublicToggle');
+    if (buildPublicToggle) {
+      buildPublicToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        S.build.is_public = !S.build.is_public;
+        var indicator = document.getElementById('buildPublicIndicator');
+        var text = document.getElementById('buildPublicText');
+        if (indicator) {
+          text.textContent = S.build.is_public ? 'Deck will be public' : 'Deck will be private';
+          indicator.style.display = S.build.is_public ? 'flex' : 'none';
+        }
+      });
+    }
+
+    /* ── BUILD CARD INTERACTIONS ────────────────────────────────── */
     el.querySelectorAll('.db-build-flip-btn').forEach(function(btn){
       btn.addEventListener('click',function(e){
         e.stopPropagation();
@@ -2006,11 +2046,12 @@
       var deck={
         id:'deck_'+Date.now(), name:name, chamber:b.chamber,
         cards:Object.assign({},b.cards), deckSize:b.deckSize,
-        customSize:b.customSize, pool:S.pool, created:Date.now()
+        customSize:b.customSize, pool:S.pool, created:Date.now(),
+        is_public:b.is_public
       };
       persistDeck(deck);
       S.viewingDeck=deck; S.view='stats';
-      toast('Deck saved!'); render();
+      toast('Deck saved'+(b.is_public?' as public! 🌐':'!')); render();
     });
 
     /* ── EXPORT ─────────────────────────────────────────── */
