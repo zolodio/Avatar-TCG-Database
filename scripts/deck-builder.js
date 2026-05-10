@@ -1229,8 +1229,7 @@
           +'</div>'
           +'<div class="db-deck-actions">'
             +'<button class="db-mini-btn db-public-toggle-list" data-deck-id="'+esc(deck.id)+'" '
-              +'style="border-color:'+(deck.is_public?'var(--success)':'var(--border)')+';'
-              +'color:'+(deck.is_public?'var(--success)':'var(--text-muted)');'+'" '
+              +'style="border-color:'+(deck.is_public?'var(--success)':'var(--border)')+';color:'+(deck.is_public?'var(--success)':'var(--text-muted)') +'" '
               +'title="'+(deck.is_public?'Make private':'Make public')+'">'
               +(deck.is_public?'<i class="fas fa-globe"></i>':'<i class="fas fa-lock"></i>')
             +'</button>'
@@ -1618,7 +1617,7 @@
       +'<div class="db-section"><label class="db-label">Deck Name</label>'
         +'<input class="db-input" id="buildName" type="text" placeholder="My Deck" value="'+esc(b.name)+'" maxlength="40">'
       +'</div>'
-      +'<div class="db-build-public-indicator" id="buildPublicIndicator" style="display:none;"><i class="fas fa-globe"></i> <span id="buildPublicText">Deck will be private</span> <button class="db-mini-btn" id="dbBuildPublicToggle" style="border-color:var(--zen);color:var(--zen);padding:2px 6px;font-size:.6rem;margin-left:auto;">Toggle</button></div>'
+      +'<div class="db-build-public-indicator" id="buildPublicIndicator"><i class="fas fa-lock"></i> <span id="buildPublicText">Deck will be private</span> <button class="db-mini-btn" id="dbBuildPublicToggle" style="border-color:var(--zen);color:var(--zen);padding:2px 6px;font-size:.6rem;margin-left:auto;">Toggle</button></div>'
       +'<div class="db-section"><label class="db-label">Deck Size</label>'
         +'<div class="db-size-row">'+sizeBtns+'</div>'
         +(b.deckSize==='custom'?'<div style="margin-top:9px;display:flex;align-items:center;gap:9px;"><span style="font-size:.78rem;color:var(--text-secondary);">Standard cards:</span><input class="db-input" id="buildCustomSize" type="number" min="10" max="127" value="'+b.customSize+'" style="width:88px;"></div>':'')
@@ -1974,9 +1973,13 @@
         S.build.is_public = !S.build.is_public;
         var indicator = document.getElementById('buildPublicIndicator');
         var text = document.getElementById('buildPublicText');
-        if (indicator) {
-          text.textContent = S.build.is_public ? 'Deck will be public' : 'Deck will be private';
-          indicator.style.display = S.build.is_public ? 'flex' : 'none';
+        if (indicator && text) {
+          var newText = S.build.is_public ? 'Deck will be public' : 'Deck will be private';
+          text.textContent = newText;
+          var icon = indicator.querySelector('i');
+          if (icon) {
+            icon.className = S.build.is_public ? 'fas fa-globe' : 'fas fa-lock';
+          }
         }
       });
     }
