@@ -7,9 +7,6 @@
 //  Read receipts via dm_reads table (✓ sent, ✓✓ read, blue).
 //
 //  Requires: window.sb (Supabase client, set by auth.js)
-//
-//  SUPABASE MIGRATION REQUIRED:
-//    ALTER TABLE forum_posts ADD COLUMN IF NOT EXISTS edited_at timestamptz;
 // ================================================================
 (function () {
   'use strict';
@@ -26,9 +23,6 @@
   var currentPostId  = null;
   var tbOffer        = [];
   var tbRequest      = [];
-
-  // Forum post cache for edit lookups
-  var forumPostsCache = {};
 
   // DM read-receipt state
   var currentDmOtherReadAt = null;
@@ -70,74 +64,6 @@
     }
     return null;
   }
-
-// ── Avatar Frame Styles ───────────────────────────────────────
-var FRAME_STYLES = {
-  circle: {
-    label: 'Circle',
-    icon: '●',
-    shape: 'circle',
-    css: function(size) {
-      return 'border-radius:50%;';
-    }
-  },
-  roundSquare: {
-    label: 'Rounded Square',
-    icon: '◇',
-    shape: 'square',
-    css: function(size) {
-      return 'border-radius:' + Math.round(size * 0.15) + 'px;';
-    }
-  },
-  hexagon: {
-    label: 'Hexagon',
-    icon: '⬡',
-    shape: 'polygon',
-    css: function(size) {
-      return 'clip-path:polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);';
-    }
-  },
-  diamond: {
-    label: 'Diamond',
-    icon: '◆',
-    shape: 'polygon',
-    css: function(size) {
-      return 'clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);';
-    }
-  },
-  squircle: {
-    label: 'Squircle',
-    icon: '■',
-    shape: 'custom',
-    css: function(size) {
-      return 'border-radius:' + Math.round(size * 0.25) + 'px;';
-    }
-  }
-};
-
-var FRAME_COLORS = {
-  default: { label: 'Default', hex: 'transparent', border: 'var(--border-light)' },
-  zen: { label: 'Zen', hex: '#b44ddf', border: 'rgba(180,77,223,0.6)' },
-  water: { label: 'Water', hex: '#4eb3f4', border: 'rgba(74,179,244,0.6)' },
-  earth: { label: 'Earth', hex: '#7b9e4d', border: 'rgba(123,158,77,0.6)' },
-  air: { label: 'Air', hex: '#e8c878', border: 'rgba(232,200,120,0.6)' },
-  promo: { label: 'Promo', hex: '#e8b632', border: 'rgba(232,182,50,0.6)' },
-  gradient: { label: 'Gradient', hex: 'gradient', border: 'var(--accent)' }
-};
-
-var BORDER_STYLES = {
-  solid: { label: 'Solid', css: 'solid' },
-  gradient: { label: 'Gradient', css: 'solid' },
-  glow: { label: 'Glow', css: 'solid' },
-  nested: { label: 'Nested', css: 'double' }
-};
-
-var BORDER_WIDTHS = [
-  { label: '2px', value: 2 },
-  { label: '3px', value: 3 },
-  { label: '4px', value: 4 },
-  { label: '6px', value: 6 }
-];
 
   // ── Rarity constants ──────────────────────────────────────────
   var RARITY_COLORS = {
@@ -196,24 +122,6 @@ var BORDER_WIDTHS = [
     return /^\d+$/.test(s) && !isNaN(n) && n >= 1 && n <= 235;
   }
 
-  // ── Linkify helper — converts URLs in plain text to clickable <a> tags ──
-  // Splits on URLs so non-URL segments are HTML-escaped separately.
-  function linkify(text) {
-    var urlRegex = /(https?:\/\/[^\s]+)/g;
-    var parts = String(text || '').split(urlRegex);
-    return parts.map(function (part, i) {
-      if (i % 2 === 1) {
-        // Strip trailing punctuation that's almost never part of the URL
-        var clean = part.replace(/[.,;:!?)\]]+$/, '');
-        var trail = part.slice(clean.length);
-        return '<a href="' + esc(clean) + '" target="_blank" rel="noopener noreferrer" ' +
-          'style="color:var(--accent);text-decoration:underline;word-break:break-all;">' +
-          esc(clean) + '</a>' + esc(trail);
-      }
-      return esc(part);
-    }).join('');
-  }
-
   // ── Avatar crop clamp helper ──────────────────────────────────
   function clampOffset(ox, oy, containerPx) {
     containerPx = containerPx || PE_PREVIEW_SIZE;
@@ -228,50 +136,26 @@ var BORDER_WIDTHS = [
   }
 
   // ── Avatar rendering ──────────────────────────────────────────
-function avatarHtml(profile, size, showFrame) {
-  size = size || 42;
-  showFrame = showFrame !== false; // default true
-  
-  var fs = Math.round(size * 0.38) + 'px';
-  var frameShape = (profile && profile.avatar_frame_shape) || 'circle';
-  var frameColor = (profile && profile.avatar_frame_color) || 'default';
-  var borderStyle = (profile && profile.avatar_border_style) || 'solid';
-  var borderWidth = (profile && profile.avatar_border_width) || 3;
-  var borderGlow = (profile && profile.avatar_border_glow) || false;
-  
-  var frameCss = FRAME_STYLES[frameShape] ? FRAME_STYLES[frameShape].css(size) : 'border-radius:50%;';
-  var colorDef = FRAME_COLORS[frameColor] || FRAME_COLORS.default;
-  var glowEffect = peSelectedBorderGlow ? 'box-shadow:0 0 ' + (peSelectedBorderWidth * 2) + 'px ' + colorDef.border + ';' : '';
-  
-  var borderColor = colorDef.border;
-  if (frameColor === 'gradient') {
-    borderColor = 'var(--water)';
-  }
-  
-  var glowEffect = borderGlow ? 'box-shadow:0 0 ' + (borderWidth * 2) + 'px ' + borderColor + ';' : '';
-  
-  var wrapperStyle = 'width:' + size + 'px;height:' + size + 'px;' + frameCss + 
-    'overflow:hidden;position:relative;flex-shrink:0;background:var(--bg-primary);' +
-    'border:' + borderWidth + 'px ' + borderStyle + ' ' + borderColor + ';' + glowEffect;
-  
-  if (profile && profile.avatar_card_number) {
-    var card = findCard(profile.avatar_card_number);
-    if (card && card.imageLink) {
-      var ox = (profile.avatar_offset_x != null) ? profile.avatar_offset_x : -42;
-      var oy = (profile.avatar_offset_y != null) ? profile.avatar_offset_y : -6;
-      return '<div style="' + wrapperStyle + '">' +
-        '<img src="' + esc(card.imageLink) + '" alt="" loading="lazy" ' +
-        'style="position:absolute;width:185%;height:auto;top:' + oy + '%;left:' + ox + '%;pointer-events:none;">' +
-        '</div>';
+  function avatarHtml(profile, size) {
+    size = size || 42;
+    var fs = Math.round(size * 0.38) + 'px';
+    if (profile && profile.avatar_card_number) {
+      var card = findCard(profile.avatar_card_number);
+      if (card && card.imageLink) {
+        var ox = (profile.avatar_offset_x != null) ? profile.avatar_offset_x : -42;
+        var oy = (profile.avatar_offset_y != null) ? profile.avatar_offset_y : -6;
+        return '<div style="width:'+size+'px;height:'+size+'px;border-radius:50%;overflow:hidden;position:relative;flex-shrink:0;background:var(--bg-primary);">' +
+          '<img src="'+esc(card.imageLink)+'" alt="" loading="lazy" ' +
+          'style="position:absolute;width:185%;height:auto;top:'+oy+'%;left:'+ox+'%;pointer-events:none;">' +
+          '</div>';
+      }
     }
+    return '<div style="width:'+size+'px;height:'+size+'px;border-radius:50%;background:linear-gradient(135deg,var(--water),var(--zen));display:flex;align-items:center;justify-content:center;font-family:\'Cinzel\',serif;font-weight:700;font-size:'+fs+';color:#fff;flex-shrink:0;">'+esc(initials(profile?profile.username:'?'))+'</div>';
   }
-  
-  return '<div style="' + wrapperStyle + '">' +
-    '<div style="width:100%;height:100%;background:linear-gradient(135deg,var(--water),var(--zen));' +
-    'display:flex;align-items:center;justify-content:center;font-family:\'Cinzel\',serif;' +
-    'font-weight:700;font-size:' + fs + ';color:#fff;">' + esc(initials(profile ? profile.username : '?')) + '</div>' +
-    '</div>';
-}
+
+  function proBadge() {
+    return '<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(232,182,50,0.12);color:var(--promo);border:1px solid rgba(232,182,50,0.3);border-radius:99px;padding:2px 8px;font-size:0.58rem;font-weight:700;letter-spacing:0.08em;vertical-align:middle;margin-left:6px;">✦ PRO</span>';
+  }
 
   // ── Persistent header profile indicator ──────────────────────
   function updateHeaderProfile() {
@@ -545,52 +429,11 @@ function avatarHtml(profile, size, showFrame) {
                 '<i class="fas fa-search" style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.78rem;pointer-events:none;"></i>' +
                 '<input id="peAvatarSearch" type="text" placeholder="Search cards by name or number…" ' +
                   'style="width:100%;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;padding:8px 10px 8px 32px;color:var(--text-primary);font-size:0.82rem;font-family:\'Nunito Sans\',sans-serif;outline:none;box-sizing:border-box;">' +
-              '</div>' + 
-             '<div id="peAvatarGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:5px;max-height:220px;overflow-y:auto;padding:2px;"></div>' +
+              '</div>' +
+              '<div id="peAvatarGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:5px;max-height:220px;overflow-y:auto;padding:2px;"></div>' +
               '<div id="peLoadMore" style="text-align:center;margin-top:8px;"></div>' +
             '</div>' +
- // Insert after the avatar grid closing div, before the display name section:
 
-'<div style="padding:0 18px 18px;border-bottom:1px solid var(--border);">' +
-  '<div style="font-size:0.67rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);font-weight:700;margin-bottom:10px;">Frame Style</div>' +
-  '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(70px,1fr));gap:6px;margin-bottom:14px;">' +
-  Object.keys(FRAME_STYLES).map(function(key) {
-    var style = FRAME_STYLES[key];
-    return '<button type="button" class="pe-frame-btn" data-frame="' + key + '" ' +
-      'title="' + style.label + '" ' +
-      'style="padding:10px 6px;border:2px solid var(--border);border-radius:8px;' +
-      'background:var(--bg-primary);color:var(--text-secondary);cursor:pointer;' +
-      'font-family:\'Nunito Sans\',sans-serif;font-weight:600;font-size:0.7rem;' +
-      'transition:all 0.2s;">' +
-      '<div style="font-size:1.2rem;margin-bottom:3px;">' + style.icon + '</div>' +
-      '<div>' + style.label + '</div>' +
-    '</button>';
-  }).join('') +
-  '</div>' +
-  '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">' +
-    '<div>' +
-      '<label style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:700;display:block;margin-bottom:5px;">Border Color</label>' +
-      '<select id="peFrameColor" style="width:100%;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:7px;color:var(--text-primary);font-size:0.75rem;font-family:\'Nunito Sans\',sans-serif;cursor:pointer;">' +
-      Object.keys(FRAME_COLORS).map(function(key) {
-        var color = FRAME_COLORS[key];
-        return '<option value="' + key + '">' + color.label + '</option>';
-      }).join('') +
-      '</select>' +
-    '</div>' +
-    '<div>' +
-      '<label style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:700;display:block;margin-bottom:5px;">Border Width</label>' +
-      '<select id="peFrameWidth" style="width:100%;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:7px;color:var(--text-primary);font-size:0.75rem;font-family:\'Nunito Sans\',sans-serif;cursor:pointer;">' +
-      BORDER_WIDTHS.map(function(w) {
-        return '<option value="' + w.value + '">' + w.label + '</option>';
-      }).join('') +
-      '</select>' +
-    '</div>' +
-  '</div>' +
-  '<label style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:0.75rem;color:var(--text-secondary);">' +
-    '<input type="checkbox" id="peFrameGlow" style="cursor:pointer;"> ' +
-    '<span style="flex:1;">Glowing Border Effect</span>' +
-  '</label>' +
-'</div>' +
             '<div style="padding:18px;">' +
               '<div style="margin-bottom:16px;">' +
                 '<label style="font-size:0.67rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);font-weight:700;display:block;margin-bottom:6px;">' +
@@ -663,11 +506,6 @@ function avatarHtml(profile, size, showFrame) {
     peAvatarFilter   = '';
     peAvatarPage     = 0;
     peUsernameValid  = true;
-    peSelectedFrame = (p.avatar_frame_shape || 'circle');
-    peSelectedFrameColor = (p.avatar_frame_color || 'default');
-    peSelectedBorderStyle = (p.avatar_border_style || 'solid');
-    peSelectedBorderWidth = (p.avatar_border_width || 3);
-    peSelectedBorderGlow = (p.avatar_border_glow || false);
 
     $('peDisplayName').value  = p.display_name || '';
     $('peUsername').value     = p.username || '';
@@ -676,9 +514,6 @@ function avatarHtml(profile, size, showFrame) {
     $('peUsernameHint').textContent = '';
     $('peError').textContent        = '';
     $('peAvatarSearch').value       = '';
-    $('peFrameColor').value = peSelectedFrameColor;
-    $('peFrameWidth').value = peSelectedBorderWidth;
-    $('peFrameGlow').checked = peSelectedBorderGlow
     updateBioCount();
     populateChamberSelect(p.favorite_chamber || '');
     renderPeAvatarPreview();
@@ -761,7 +596,6 @@ function avatarHtml(profile, size, showFrame) {
     var el = $('peAvatarPreview');
     var hint = $('peDragHint');
     if (!el) return;
-    
 
     if (peSelectedAvatar) {
       var card = findCard(peSelectedAvatar);
@@ -775,16 +609,6 @@ function avatarHtml(profile, size, showFrame) {
         return;
       }
     }
-
-// When rendering with a selected avatar, apply frame styling:
-  var frameCss = FRAME_STYLES[peSelectedFrame] ? FRAME_STYLES[peSelectedFrame].css(PE_PREVIEW_SIZE) : 'border-radius:50%;';
-  var colorDef = FRAME_COLORS[peSelectedFrameColor] || FRAME_COLORS.default;
-  var glowEffect = peSelectedBorderGlow ? 'box-shadow:0 0 ' + (peSelectedBorderWidth * 2) + 'px ' + colorDef.border + ';' : '';
-  
-  el.style.cssText = 'width:' + PE_PREVIEW_SIZE + 'px;height:' + PE_PREVIEW_SIZE + 'px;' + frameCss +
-    'overflow:hidden;position:relative;background:linear-gradient(135deg,var(--water),var(--zen));' +
-    'display:flex;align-items:center;justify-content:center;font-family:\'Cinzel\',serif;font-weight:700;font-size:2rem;color:#fff;' +
-    'border:' + peSelectedBorderWidth + 'px solid ' + colorDef.border + ';' + glowEffect;
 
     el.style.cursor = 'default';
     if (hint) hint.style.opacity = '0';
@@ -932,13 +756,8 @@ function avatarHtml(profile, size, showFrame) {
       favorite_chamber:   chamber || null,
       avatar_card_number: peSelectedAvatar || null,
       avatar_offset_x:    peSelectedAvatar ? peOffsetX : null,
-      avatar_offset_y:    peSelectedAvatar ? peOffsetY : null,
-      avatar_frame_shape: peSelectedFrame,
-      avatar_frame_color: peSelectedFrameColor,
-      avatar_border_style: peSelectedBorderStyle,
-      avatar_border_width: peSelectedBorderWidth,
-      avatar_border_glow: peSelectedBorderGlow
-};
+      avatar_offset_y:    peSelectedAvatar ? peOffsetY : null
+    };
 
     var res = await sb().from('profiles').update(updates).eq('user_id', currentUser.id);
     if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save Changes'; }
@@ -953,44 +772,6 @@ function avatarHtml(profile, size, showFrame) {
 
   function initProfileEditorEvents() {
     var overlay = $('profileEditorOverlay'); if (!overlay) return;
-    // Frame selection buttons
-var framesWrap = overlay.querySelector('.pe-frame-btn');
-if (framesWrap || overlay.querySelectorAll('.pe-frame-btn').length) {
-  overlay.addEventListener('click', function(e) {
-    var btn = e.target.closest('.pe-frame-btn');
-    if (!btn) return;
-    var frame = btn.getAttribute('data-frame');
-    overlay.querySelectorAll('.pe-frame-btn').forEach(function(b) {
-      b.style.borderColor = 'var(--border)';
-      b.style.background = 'var(--bg-primary)';
-      b.style.color = 'var(--text-secondary)';
-    });
-    btn.style.borderColor = 'var(--zen)';
-    btn.style.background = 'rgba(180,77,223,0.15)';
-    btn.style.color = 'var(--zen)';
-    peSelectedFrame = frame;
-    renderPeAvatarPreview();
-  });
-}
-
-// Frame color and width selectors
-var colorSel = $('peFrameColor');
-if (colorSel) colorSel.addEventListener('change', function() {
-  peSelectedFrameColor = this.value;
-  renderPeAvatarPreview();
-});
-
-var widthSel = $('peFrameWidth');
-if (widthSel) widthSel.addEventListener('change', function() {
-  peSelectedBorderWidth = parseInt(this.value, 10);
-  renderPeAvatarPreview();
-});
-
-var glowCheck = $('peFrameGlow');
-if (glowCheck) glowCheck.addEventListener('change', function() {
-  peSelectedBorderGlow = this.checked;
-  renderPeAvatarPreview();
-});
 
     [$('peClose'), $('peCancel')].forEach(function (b) { if (b) b.addEventListener('click', closeProfileEditor); });
     overlay.addEventListener('click', function (e) { if (e.target === this) closeProfileEditor(); });
@@ -1662,6 +1443,9 @@ if (glowCheck) glowCheck.addEventListener('change', function() {
     return !!(room && room.indexOf('__dm__') !== -1);
   }
 
+  // Render ✓ (grey, sent) or ✓✓ (blue, read) on the sender's own messages.
+  // Uses currentDmOtherReadAt — the timestamp of when the other person last
+  // read this room — to decide which state to show.
   function dmTickHtml(m) {
     if (!isDmRoom(currentRoom)) return '';
     if (!currentProfile || m.username !== currentProfile.username) return '';
@@ -1675,6 +1459,7 @@ if (glowCheck) glowCheck.addEventListener('change', function() {
       '</span>';
   }
 
+  // Walk all tick spans and flip any that are now read.
   function refreshDmTicks() {
     if (!currentDmOtherReadAt) return;
     var readTime = new Date(currentDmOtherReadAt);
@@ -1687,6 +1472,7 @@ if (glowCheck) glowCheck.addEventListener('change', function() {
     });
   }
 
+  // Fetch the other participant's last_read_at for this DM room.
   async function getOtherUserReadAt(room) {
     if (!isDmRoom(room) || !currentUser || !sb()) return null;
     var res = await sb()
@@ -1698,6 +1484,7 @@ if (glowCheck) glowCheck.addEventListener('change', function() {
     return (res.data && res.data.last_read_at) || null;
   }
 
+  // Upsert my own read position for this room (called when I view or receive).
   async function markDmRead(room) {
     if (!isDmRoom(room) || !currentUser || !sb()) return;
     await sb().from('dm_reads').upsert(
@@ -1706,6 +1493,7 @@ if (glowCheck) glowCheck.addEventListener('change', function() {
     );
   }
 
+  // Load all persisted DM rooms for the current user and add them to the sidebar.
   async function populateDmSidebar() {
     if (!currentUser || !sb()) return;
     var res = await sb()
@@ -1719,6 +1507,7 @@ if (glowCheck) glowCheck.addEventListener('change', function() {
     });
   }
 
+  // Inject the CSS for tick marks once.
   function injectDmTickStyles() {
     if (document.getElementById('dmTickStyles')) return;
     var s = document.createElement('style');
@@ -1742,9 +1531,11 @@ if (glowCheck) glowCheck.addEventListener('change', function() {
 
   async function fetchMessages(room) {
     if (!sb()) return;
+    // For DM rooms: get the other person's read position before rendering
+    // so ticks are correct on the first paint.
     if (isDmRoom(room)) {
       currentDmOtherReadAt = await getOtherUserReadAt(room);
-      markDmRead(room);
+      markDmRead(room); // fire-and-forget: record that I've now read this room
     } else {
       currentDmOtherReadAt = null;
     }
@@ -1775,8 +1566,7 @@ if (glowCheck) glowCheck.addEventListener('change', function() {
         avatarHtml(mp, 28) +
         '<div class="chat-msg-content">' +
           '<div class="chat-msg-name">' + esc(m.username || 'Unknown') + '</div>' +
-          // linkify converts URLs to clickable anchors; non-URL text is still HTML-escaped
-          '<div class="chat-bubble">' + linkify(m.content) + '</div>' +
+          '<div class="chat-bubble">' + esc(m.content) + '</div>' +
           '<div class="chat-ts" style="display:flex;align-items:center;gap:3px;">' +
             fmtTime(m.created_at) + dmTickHtml(m) +
           '</div>' +
@@ -1787,22 +1577,26 @@ if (glowCheck) glowCheck.addEventListener('change', function() {
   }
 
   function subscribeRoom(room) {
+    // Tear down existing subs
     if (chatSub)   { try { chatSub.unsubscribe();   } catch(e){} chatSub   = null; }
     if (dmReadSub) { try { dmReadSub.unsubscribe(); } catch(e){} dmReadSub = null; }
     if (!sb()) return;
 
+    // Always subscribe to new messages
     chatSub = sb().channel('chat:' + room)
       .on('postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'messages', filter: 'room=eq.' + room },
         function (payload) { appendMessage(payload.new); })
       .subscribe();
 
+    // For DM rooms: watch the other person's dm_reads row so ✓ → ✓✓ in real-time
     if (isDmRoom(room)) {
       dmReadSub = sb().channel('dm_reads:' + room)
         .on('postgres_changes',
           { event: '*', schema: 'public', table: 'dm_reads', filter: 'room=eq.' + room },
           function (payload) {
             if (!payload.new || payload.new.user_id === currentUser.id) return;
+            // The other person just read — update our cached time and refresh all ticks
             currentDmOtherReadAt = payload.new.last_read_at;
             refreshDmTicks();
           })
@@ -1815,6 +1609,7 @@ if (glowCheck) glowCheck.addEventListener('change', function() {
     var ph = el.querySelector('[style*="say hi"]'); if (ph) ph.remove();
     var mine = currentProfile && m.username === currentProfile.username;
 
+    // If I'm watching a DM and the other person sends a message, mark the room read
     if (isDmRoom(currentRoom) && !mine) {
       markDmRead(currentRoom);
     }
@@ -1831,8 +1626,7 @@ if (glowCheck) glowCheck.addEventListener('change', function() {
       avatarHtml(mp, 28) +
       '<div class="chat-msg-content">' +
         '<div class="chat-msg-name">' + esc(m.username || 'Unknown') + '</div>' +
-        // linkify converts URLs to clickable anchors
-        '<div class="chat-bubble">' + linkify(m.content) + '</div>' +
+        '<div class="chat-bubble">' + esc(m.content) + '</div>' +
         '<div class="chat-ts" style="display:flex;align-items:center;gap:3px;">' +
           'just now' + dmTickHtml(m) +
         '</div>' +
@@ -1861,20 +1655,25 @@ if (glowCheck) glowCheck.addEventListener('change', function() {
     s.appendChild(btn);
   }
 
+  // Open (or resume) a DM with another user.
+  // Upserts a dm_rooms row so both users see the thread in their sidebar.
   async function openDM(username) {
     if (!currentProfile || !sb()) return;
 
+    // Look up the other user's ID
     var profRes = await sb().from('profiles').select('user_id').eq('username', username).maybeSingle();
     if (!profRes.data) { toast('Could not open DM — user not found.'); return; }
     var otherId = profRes.data.user_id;
 
     var roomId = [currentProfile.username, username].sort().join('__dm__');
 
+    // Sort so user1 < user2 alphabetically (stable regardless of who initiates)
     var pair = [
       { id: currentUser.id, username: currentProfile.username },
       { id: otherId,        username: username }
     ].sort(function (a, b) { return a.username.localeCompare(b.username); });
 
+    // Persist the room — ignoreDuplicates so a race doesn't throw
     await sb().from('dm_rooms').upsert({
       room_id:         roomId,
       user1_id:        pair[0].id,
@@ -1885,7 +1684,7 @@ if (glowCheck) glowCheck.addEventListener('change', function() {
     }, { onConflict: 'room_id', ignoreDuplicates: true });
 
     currentRoom = roomId;
-    addRoomBtn(username + ' (DM)', roomId);
+    addRoomBtn(username + ' (DM)', roomId); // addRoomBtn dedupes by data-room
 
     var tab = document.querySelector('[data-nested-tab="chat"]');
     if (tab) tab.click();
@@ -1906,6 +1705,7 @@ if (glowCheck) glowCheck.addEventListener('change', function() {
       avatar_offset_y:    currentProfile.avatar_offset_y    || null,
       content:            content
     });
+    // Keep dm_rooms sorted by most-recent so the sidebar stays fresh
     if (isDmRoom(currentRoom)) {
       sb().from('dm_rooms')
         .update({ last_message_at: new Date().toISOString() })
@@ -2060,37 +1860,12 @@ if (glowCheck) glowCheck.addEventListener('change', function() {
     var q = sb().from('forum_posts').select('*').order('pinned', {ascending:false}).order('created_at', {ascending:false}).limit(40);
     if (currentCat !== 'all') q = q.eq('category', currentCat);
     var res = await q, rows = res.data || [], el = $('forumPostList');
-
-    // Cache posts so the edit modal can look them up by id
-    forumPostsCache = {};
-    rows.forEach(function (p) { forumPostsCache[p.id] = p; });
-
     if (!rows.length) { el.innerHTML = '<div class="empty-state" style="padding:30px 0;"><p>No posts yet — start the conversation!</p></div>'; return; }
     el.innerHTML = rows.map(function (p) {
-      var isOwn = currentUser && p.user_id === currentUser.id;
-      var editedLabel = p.edited_at
-        ? ' <span style="font-size:0.58rem;color:var(--text-muted);font-style:italic;">(edited)</span>'
-        : '';
-      return '<div class="forum-post-card'+(p.pinned?' pinned':'')+'" data-post-id="'+p.id+'" style="position:relative;">' +
-        // Edit button — top-right, only for own posts
-        (isOwn
-          ? '<button class="forum-post-edit-btn" data-edit-post-id="'+esc(p.id)+'" ' +
-              'title="Edit post" ' +
-              'style="position:absolute;top:10px;right:10px;background:none;border:1px solid var(--border);' +
-              'border-radius:6px;padding:3px 8px;font-size:0.62rem;color:var(--text-muted);cursor:pointer;' +
-              'font-family:\'Nunito Sans\',sans-serif;font-weight:700;transition:all 0.15s;z-index:1;" ' +
-              'onmouseover="this.style.borderColor=\'var(--zen)\';this.style.color=\'var(--zen)\'" ' +
-              'onmouseout="this.style.borderColor=\'var(--border)\';this.style.color=\'var(--text-muted)\'">' +
-              '<i class="fas fa-pen" style="margin-right:3px;font-size:0.55rem;"></i>Edit' +
-            '</button>'
-          : '') +
-        '<div class="forum-post-title" style="padding-right:'+(isOwn?'54px':'0')+';">'+esc(p.title)+'</div>' +
+      return '<div class="forum-post-card'+(p.pinned?' pinned':'')+'" data-post-id="'+p.id+'">' +
+        '<div class="forum-post-title">'+esc(p.title)+'</div>' +
         '<div class="forum-post-preview">'+esc((p.body||'').slice(0,130))+'</div>' +
-        '<div class="forum-post-meta">' +
-          '<span class="forum-post-author">by '+esc(p.username)+' · '+fmtTime(p.created_at)+editedLabel+'</span>' +
-          '<span class="forum-post-cat">'+esc(p.category)+'</span>' +
-          '<span class="forum-reply-count"><i class="fas fa-comment-alt"></i> '+(p.reply_count||0)+'</span>' +
-        '</div>' +
+        '<div class="forum-post-meta"><span class="forum-post-author">by '+esc(p.username)+' · '+fmtTime(p.created_at)+'</span><span class="forum-post-cat">'+esc(p.category)+'</span><span class="forum-reply-count"><i class="fas fa-comment-alt"></i> '+(p.reply_count||0)+'</span></div>' +
       '</div>';
     }).join('');
   }
@@ -2099,42 +1874,14 @@ if (glowCheck) glowCheck.addEventListener('change', function() {
     currentPostId = postId; $('forumDetailOverlay').classList.add('active');
     var pRes = await sb().from('forum_posts').select('*').eq('id', postId).single();
     var post = pRes.data;
-
-    // Keep cache in sync with freshly loaded data
-    if (post) forumPostsCache[post.id] = post;
-
     if (post) {
-      var isOwn = currentUser && post.user_id === currentUser.id;
-      var editedLabel = post.edited_at
-        ? '<span style="font-size:0.6rem;color:var(--text-muted);font-style:italic;margin-left:6px;">(edited ' + fmtTime(post.edited_at) + ')</span>'
-        : '';
-
       $('forumDetailTitle').textContent = post.title;
       var pp = { username: post.username, avatar_card_number: post.avatar_card_number || null, avatar_offset_x: post.avatar_offset_x || null, avatar_offset_y: post.avatar_offset_y || null };
       $('forumDetailBody').innerHTML =
-        '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:14px;position:relative;">' +
-          // Edit button inside open post — only for own posts
-          (isOwn
-            ? '<button data-edit-post-id="'+esc(post.id)+'" class="forum-post-edit-btn" ' +
-                'style="position:absolute;top:12px;right:12px;background:none;border:1px solid var(--border);' +
-                'border-radius:6px;padding:3px 9px;font-size:0.62rem;color:var(--text-muted);cursor:pointer;' +
-                'font-family:\'Nunito Sans\',sans-serif;font-weight:700;transition:all 0.15s;" ' +
-                'onmouseover="this.style.borderColor=\'var(--zen)\';this.style.color=\'var(--zen)\'" ' +
-                'onmouseout="this.style.borderColor=\'var(--border)\';this.style.color=\'var(--text-muted)\'">' +
-                '<i class="fas fa-pen" style="margin-right:3px;font-size:0.55rem;"></i>Edit' +
-              '</button>'
-            : '') +
-          '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">' +
-            avatarHtml(pp, 26) +
-            '<div>' +
-              '<span class="forum-reply-author">'+esc(post.username)+'</span>' +
-              '<div class="forum-reply-ts">'+fmtTime(post.created_at)+editedLabel+'</div>' +
-            '</div>' +
-          '</div>' +
-          // linkify converts URLs in the post body to clickable links
-          '<div style="font-size:0.88rem;color:var(--text-primary);line-height:1.7;white-space:pre-wrap;word-break:break-word;">'+linkify(post.body)+'</div>' +
-        '</div>' +
-        '<div id="forumRepliesContainer"><div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.8rem;">Loading replies…</div></div>';
+        '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:14px;">' +
+          '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">'+avatarHtml(pp, 26)+'<div><span class="forum-reply-author">'+esc(post.username)+'</span><div class="forum-reply-ts">'+fmtTime(post.created_at)+'</div></div></div>' +
+          '<div style="font-size:0.88rem;color:var(--text-primary);line-height:1.7;white-space:pre-wrap;word-break:break-word;">'+esc(post.body)+'</div>' +
+        '</div><div id="forumRepliesContainer"><div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.8rem;">Loading replies…</div></div>';
     }
     loadForumReplies(postId);
     if (forumReplySub) { try { forumReplySub.unsubscribe(); } catch(e){} }
@@ -2156,8 +1903,7 @@ if (glowCheck) glowCheck.addEventListener('change', function() {
     var rp = { username: r.username, avatar_card_number: r.avatar_card_number || null, avatar_offset_x: r.avatar_offset_x || null, avatar_offset_y: r.avatar_offset_y || null };
     return '<div class="forum-reply-card">'+
       '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">'+avatarHtml(rp, 24)+'<div><span class="forum-reply-author">'+esc(r.username)+'</span><div class="forum-reply-ts">'+fmtTime(r.created_at)+'</div></div></div>'+
-      // linkify converts URLs in replies to clickable links
-      '<div class="forum-reply-body">'+linkify(r.body)+'</div></div>';
+      '<div class="forum-reply-body">'+esc(r.body)+'</div></div>';
   }
 
   function appendReply(r) {
@@ -2192,119 +1938,6 @@ if (glowCheck) glowCheck.addEventListener('change', function() {
     if (!res.error) sb().rpc('increment_reply_count', { p_post_id: currentPostId }).catch(function(){});
   }
 
-  // ══════════════════════════════════════════════════════════════
-  //  FORUM POST EDITOR
-  // ══════════════════════════════════════════════════════════════
-
-  function injectForumEditModal() {
-    if ($('forumEditOverlay')) return;
-    var html =
-      '<div id="forumEditOverlay" class="social-modal-overlay" style="z-index:300;">' +
-        '<div class="social-modal" style="max-width:600px;">' +
-          '<div class="social-modal-header">' +
-            '<div class="social-modal-title"><i class="fas fa-pen" style="color:var(--zen);margin-right:8px;"></i>Edit Post</div>' +
-            '<button class="modal-close" id="forumEditClose" type="button"><i class="fas fa-times"></i></button>' +
-          '</div>' +
-          '<div class="social-modal-body" style="padding:18px;">' +
-            '<input type="hidden" id="forumEditPostId">' +
-            '<div style="margin-bottom:14px;">' +
-              '<label style="font-size:0.67rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);font-weight:700;display:block;margin-bottom:6px;">Title</label>' +
-              '<input id="forumEditTitle" type="text" maxlength="120" ' +
-                'style="width:100%;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;' +
-                'padding:11px 13px;color:var(--text-primary);font-size:0.88rem;font-family:\'Nunito Sans\',sans-serif;' +
-                'outline:none;box-sizing:border-box;transition:border-color 0.2s;">' +
-            '</div>' +
-            '<div style="margin-bottom:6px;">' +
-              '<label style="font-size:0.67rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);font-weight:700;display:block;margin-bottom:6px;">Content</label>' +
-              '<textarea id="forumEditBody" maxlength="5000" rows="8" ' +
-                'style="width:100%;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;' +
-                'padding:11px 13px;color:var(--text-primary);font-size:0.85rem;font-family:\'Nunito Sans\',sans-serif;' +
-                'outline:none;resize:vertical;min-height:120px;box-sizing:border-box;transition:border-color 0.2s;"></textarea>' +
-            '</div>' +
-            '<div id="forumEditError" style="font-size:0.75rem;color:var(--danger);padding:4px 0;min-height:18px;"></div>' +
-          '</div>' +
-          '<div class="social-modal-footer" style="justify-content:flex-end;">' +
-            '<button class="confirm-btn confirm-cancel" id="forumEditCancel" type="button">Cancel</button>' +
-            '<button class="confirm-btn confirm-ok" id="forumEditSave" type="button" style="background:var(--zen);border-color:var(--zen);">' +
-              '<i class="fas fa-save" style="margin-right:6px;"></i>Save Changes' +
-            '</button>' +
-          '</div>' +
-        '</div>' +
-      '</div>';
-    document.body.insertAdjacentHTML('beforeend', html);
-
-    $('forumEditClose').addEventListener('click', closeForumEdit);
-    $('forumEditCancel').addEventListener('click', closeForumEdit);
-    $('forumEditSave').addEventListener('click', submitForumEdit);
-    $('forumEditOverlay').addEventListener('click', function (e) { if (e.target === this) closeForumEdit(); });
-
-    // Focus styles
-    ['forumEditTitle', 'forumEditBody'].forEach(function (id) {
-      var el = $(id); if (!el) return;
-      el.addEventListener('focus', function () { this.style.borderColor = 'var(--accent)'; });
-      el.addEventListener('blur',  function () { this.style.borderColor = ''; });
-    });
-  }
-
-  function openForumEdit(post) {
-    injectForumEditModal();
-    $('forumEditPostId').value   = post.id;
-    $('forumEditTitle').value    = post.title || '';
-    $('forumEditBody').value     = post.body  || '';
-    $('forumEditError').textContent = '';
-    $('forumEditOverlay').classList.add('active');
-    document.body.style.overflow = 'hidden';
-    // Focus title after paint
-    setTimeout(function () { var t = $('forumEditTitle'); if (t) t.focus(); }, 80);
-  }
-
-  function closeForumEdit() {
-    var o = $('forumEditOverlay'); if (o) o.classList.remove('active');
-    document.body.style.overflow = '';
-  }
-
-  async function submitForumEdit() {
-    var errEl   = $('forumEditError');
-    var postId  = ($('forumEditPostId').value  || '').trim();
-    var title   = ($('forumEditTitle').value   || '').trim();
-    var body    = ($('forumEditBody').value     || '').trim();
-
-    errEl.textContent = '';
-    if (!title) { errEl.textContent = 'Title is required.';   return; }
-    if (!body)  { errEl.textContent = 'Content is required.'; return; }
-
-    var saveBtn = $('forumEditSave');
-    if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving…'; }
-
-    var res = await sb()
-      .from('forum_posts')
-      .update({ title: title, body: body, edited_at: new Date().toISOString() })
-      .eq('id', postId)
-      .eq('user_id', currentUser.id); // server-side ownership guard
-
-    if (saveBtn) {
-      saveBtn.disabled = false;
-      saveBtn.innerHTML = '<i class="fas fa-save" style="margin-right:6px;"></i>Save Changes';
-    }
-    if (res.error) { errEl.textContent = res.error.message; return; }
-
-    // Update local cache so re-opens don't show stale data
-    if (forumPostsCache[postId]) {
-      forumPostsCache[postId].title     = title;
-      forumPostsCache[postId].body      = body;
-      forumPostsCache[postId].edited_at = new Date().toISOString();
-    }
-
-    closeForumEdit();
-    toast('Post updated! ✏️');
-
-    // Refresh the post list and, if this post is currently open, reload it
-    loadForum();
-    if (currentPostId && String(currentPostId) === String(postId)) {
-      openForumPost(postId);
-    }
-  }
-
   function initForumEvents() {
     var catRow = $('forumCatRow');
     if (catRow) catRow.addEventListener('click', function (e) {
@@ -2312,40 +1945,12 @@ if (glowCheck) glowCheck.addEventListener('change', function() {
       catRow.querySelectorAll('.forum-cat-pill').forEach(function (p) { p.classList.remove('active'); });
       pill.classList.add('active'); currentCat = pill.getAttribute('data-cat'); loadForum();
     });
-
     var nb = $('forumNewBtn');
     if (nb) nb.addEventListener('click', function () { if (!currentProfile) { toast('Sign in to post.'); return; } $('forumNewOverlay').classList.add('active'); });
     [$('forumNewClose'), $('forumNewCancel')].forEach(function (b) { if (b) b.addEventListener('click', function () { $('forumNewOverlay').classList.remove('active'); }); });
     var fno = $('forumNewOverlay'); if (fno) fno.addEventListener('click', function (e) { if (e.target === this) this.classList.remove('active'); });
     var sub = $('forumNewSubmit'); if (sub) sub.addEventListener('click', submitForumPost);
-
-    // Post list — click to open OR edit
-    var pl = $('forumPostList');
-    if (pl) pl.addEventListener('click', function (e) {
-      // Edit button takes priority — stop it from also opening the post
-      var editBtn = e.target.closest('.forum-post-edit-btn');
-      if (editBtn) {
-        e.stopPropagation();
-        var pid = editBtn.getAttribute('data-edit-post-id');
-        var post = forumPostsCache[pid];
-        if (post) openForumEdit(post);
-        return;
-      }
-      var card = e.target.closest('[data-post-id]');
-      if (card) openForumPost(card.getAttribute('data-post-id'));
-    });
-
-    // Edit button inside the open-post detail view
-    var fdb = $('forumDetailBody');
-    if (fdb) fdb.addEventListener('click', function (e) {
-      var editBtn = e.target.closest('.forum-post-edit-btn');
-      if (editBtn) {
-        var pid = editBtn.getAttribute('data-edit-post-id');
-        var post = forumPostsCache[pid];
-        if (post) openForumEdit(post);
-      }
-    });
-
+    var pl = $('forumPostList'); if (pl) pl.addEventListener('click', function (e) { var c = e.target.closest('[data-post-id]'); if (c) openForumPost(c.getAttribute('data-post-id')); });
     var dc = $('forumDetailClose'); if (dc) dc.addEventListener('click', closeForumDetail);
     var fdo = $('forumDetailOverlay'); if (fdo) fdo.addEventListener('click', function (e) { if (e.target === this) closeForumDetail(); });
     var rb = $('forumReplySendBtn'); if (rb) rb.addEventListener('click', sendForumReply);
@@ -2403,7 +2008,6 @@ if (glowCheck) glowCheck.addEventListener('change', function() {
     if ($('socialSetup'))   $('socialSetup').style.display   = 'none';
     if ($('socialSection')) $('socialSection').style.display = 'none';
     closeProfileEditor();
-    closeForumEdit();
   };
   window.socialPopulateDmSidebar = populateDmSidebar;
 
@@ -2419,6 +2023,6 @@ if (glowCheck) glowCheck.addEventListener('change', function() {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 
-  console.log('[social.js] v6.1 loaded ✓ (forum edit + linkify in chat & forum)');
+  console.log('[social.js] v6 loaded ✓ (dm_rooms persistence + dm_reads receipts)');
 
 })();
