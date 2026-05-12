@@ -241,6 +241,7 @@ function avatarHtml(profile, size, showFrame) {
   
   var frameCss = FRAME_STYLES[frameShape] ? FRAME_STYLES[frameShape].css(size) : 'border-radius:50%;';
   var colorDef = FRAME_COLORS[frameColor] || FRAME_COLORS.default;
+  var glowEffect = peSelectedBorderGlow ? 'box-shadow:0 0 ' + (peSelectedBorderWidth * 2) + 'px ' + colorDef.border + ';' : '';
   
   var borderColor = colorDef.border;
   if (frameColor === 'gradient') {
@@ -545,7 +546,10 @@ function avatarHtml(profile, size, showFrame) {
                 '<input id="peAvatarSearch" type="text" placeholder="Search cards by name or number…" ' +
                   'style="width:100%;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;padding:8px 10px 8px 32px;color:var(--text-primary);font-size:0.82rem;font-family:\'Nunito Sans\',sans-serif;outline:none;box-sizing:border-box;">' +
               '</div>' + 
-              // Insert after the avatar grid closing div, before the display name section:
+             '<div id="peAvatarGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:5px;max-height:220px;overflow-y:auto;padding:2px;"></div>' +
+              '<div id="peLoadMore" style="text-align:center;margin-top:8px;"></div>' +
+            '</div>' +
+ // Insert after the avatar grid closing div, before the display name section:
 
 '<div style="padding:0 18px 18px;border-bottom:1px solid var(--border);">' +
   '<div style="font-size:0.67rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);font-weight:700;margin-bottom:10px;">Frame Style</div>' +
@@ -587,10 +591,6 @@ function avatarHtml(profile, size, showFrame) {
     '<span style="flex:1;">Glowing Border Effect</span>' +
   '</label>' +
 '</div>' +
-              '<div id="peAvatarGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:5px;max-height:220px;overflow-y:auto;padding:2px;"></div>' +
-              '<div id="peLoadMore" style="text-align:center;margin-top:8px;"></div>' +
-            '</div>' +
-
             '<div style="padding:18px;">' +
               '<div style="margin-bottom:16px;">' +
                 '<label style="font-size:0.67rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);font-weight:700;display:block;margin-bottom:6px;">' +
@@ -664,10 +664,10 @@ function avatarHtml(profile, size, showFrame) {
     peAvatarPage     = 0;
     peUsernameValid  = true;
     peSelectedFrame = (p.avatar_frame_shape || 'circle');
-peSelectedFrameColor = (p.avatar_frame_color || 'default');
-peSelectedBorderStyle = (p.avatar_border_style || 'solid');
-peSelectedBorderWidth = (p.avatar_border_width || 3);
-peSelectedBorderGlow = (p.avatar_border_glow || false);
+    peSelectedFrameColor = (p.avatar_frame_color || 'default');
+    peSelectedBorderStyle = (p.avatar_border_style || 'solid');
+    peSelectedBorderWidth = (p.avatar_border_width || 3);
+    peSelectedBorderGlow = (p.avatar_border_glow || false);
 
     $('peDisplayName').value  = p.display_name || '';
     $('peUsername').value     = p.username || '';
@@ -677,8 +677,8 @@ peSelectedBorderGlow = (p.avatar_border_glow || false);
     $('peError').textContent        = '';
     $('peAvatarSearch').value       = '';
     $('peFrameColor').value = peSelectedFrameColor;
-$('peFrameWidth').value = peSelectedBorderWidth;
-$('peFrameGlow').checked = peSelectedBorderGlow
+    $('peFrameWidth').value = peSelectedBorderWidth;
+    $('peFrameGlow').checked = peSelectedBorderGlow
     updateBioCount();
     populateChamberSelect(p.favorite_chamber || '');
     renderPeAvatarPreview();
@@ -782,10 +782,9 @@ $('peFrameGlow').checked = peSelectedBorderGlow
   var glowEffect = peSelectedBorderGlow ? 'box-shadow:0 0 ' + (peSelectedBorderWidth * 2) + 'px ' + colorDef.border + ';' : '';
   
   el.style.cssText = 'width:' + PE_PREVIEW_SIZE + 'px;height:' + PE_PREVIEW_SIZE + 'px;' + frameCss +
-    'overflow:hidden;position:relative;background:var(--bg-primary);' +
-    'border:' + peSelectedBorderWidth + 'px solid ' + colorDef.border + ';' + 
-    'border-radius:inherit;cursor:grab;user-select:none;-webkit-user-select:none;' +
-    'touch-action:none;' + glowEffect;
+    'overflow:hidden;position:relative;background:linear-gradient(135deg,var(--water),var(--zen));' +
+    'display:flex;align-items:center;justify-content:center;font-family:\'Cinzel\',serif;font-weight:700;font-size:2rem;color:#fff;' +
+    'border:' + peSelectedBorderWidth + 'px solid ' + colorDef.border + ';' + glowEffect;
 
     el.style.cursor = 'default';
     if (hint) hint.style.opacity = '0';
@@ -933,12 +932,12 @@ $('peFrameGlow').checked = peSelectedBorderGlow
       favorite_chamber:   chamber || null,
       avatar_card_number: peSelectedAvatar || null,
       avatar_offset_x:    peSelectedAvatar ? peOffsetX : null,
-      avatar_offset_y:    peSelectedAvatar ? peOffsetY : null
-        avatar_frame_shape: peSelectedFrame,
-  avatar_frame_color: peSelectedFrameColor,
-  avatar_border_style: peSelectedBorderStyle,
-  avatar_border_width: peSelectedBorderWidth,
-  avatar_border_glow: peSelectedBorderGlow
+      avatar_offset_y:    peSelectedAvatar ? peOffsetY : null,
+      avatar_frame_shape: peSelectedFrame,
+      avatar_frame_color: peSelectedFrameColor,
+      avatar_border_style: peSelectedBorderStyle,
+      avatar_border_width: peSelectedBorderWidth,
+      avatar_border_glow: peSelectedBorderGlow
 };
 
     var res = await sb().from('profiles').update(updates).eq('user_id', currentUser.id);
