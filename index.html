@@ -2011,87 +2011,171 @@ body {
   ══════════════════════════════════════ -->
   <div class="media-panel" id="mediapanel-how-to-play">
 
-    <!-- Interactive Demo -->
-    <div class="media-card-wrap">
-      <div class="media-section-hdr">
-        <div class="media-section-icon" style="background:rgba(180,77,223,0.13);color:var(--zen);">
-          <i class="fas fa-dice-d20"></i>
-        </div>
-        <div>
-          <div class="media-section-title">Interactive Demo</div>
-          <div class="media-section-sub">Playable Flash tutorial — powered by Ruffle emulator</div>
-        </div>
-      </div>
-      <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border);">
-          <span style="font-size:0.68rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:0.1em;">Avatar Quick Strike Demo</span>
-          <button class="toolbar-btn" id="btnReload" title="Reload"><i class="fas fa-redo-alt"></i></button>
-        </div>
-        <div class="player-area" id="playerArea" style="aspect-ratio:4/3;">
-          <div class="loading-overlay" id="loadingOverlay">
-            <div class="loader-ring"></div>
-            <div class="loading-text">Loading Flash...</div>
-            <div class="loading-sub">Initializing Ruffle emulator</div>
-          </div>
-          <div class="error-state" id="errorState">
-            <i class="fas fa-exclamation-triangle"></i>
-            <h3>Playback Error</h3>
-            <p id="errorMessage">Something went wrong while loading the Flash content.</p>
-            <button class="retry-btn" id="btnRetry"><i class="fas fa-redo-alt"></i> Try Again</button>
-          </div>
-        </div>
-        <div class="player-status">
-          <div class="status-indicator">
-            <div class="status-dot loading" id="statusDot"></div>
-            <span id="statusText">Initializing...</span>
-          </div>
-          <span id="engineInfo">Ruffle Flash Emulator</span>
-        </div>
-      </div>
-      <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
-      <script>
-      (function() {
-        var SWF_URL = "https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/Current-Development/Avatar_demo.swf";
-        var playerArea = document.getElementById("playerArea");
-        var loadingOverlay = document.getElementById("loadingOverlay");
-        var errorState = document.getElementById("errorState");
-        var errorMessage = document.getElementById("errorMessage");
-        var statusDot = document.getElementById("statusDot");
-        var statusText = document.getElementById("statusText");
-        var btnReload = document.getElementById("btnReload");
-        var btnRetry = document.getElementById("btnRetry");
-        var currentPlayer = null;
-        function setStatus(s, t) { if(statusDot) statusDot.className = "status-dot " + s; if(statusText) statusText.textContent = t; }
-        function showError(m) { if(loadingOverlay) loadingOverlay.classList.add("hidden"); if(errorState) errorState.classList.add("visible"); if(errorMessage) errorMessage.textContent = m; setStatus("error", "Error"); }
-        function hideError() { if(errorState) errorState.classList.remove("visible"); }
-        function loadSWF() {
-          hideError();
-          if(loadingOverlay) loadingOverlay.classList.remove("hidden");
-          setStatus("loading", "Loading...");
-          if (currentPlayer) { try { currentPlayer.remove(); } catch(e) {} currentPlayer = null; }
-          try {
-            var ruffle = window.RufflePlayer.newest();
-            var player = ruffle.createPlayer();
-            player.style.width = "100%"; player.style.height = "100%";
-            if(playerArea) playerArea.appendChild(player);
-            currentPlayer = player;
-            player.load(SWF_URL).then(function() {
-              if(loadingOverlay) loadingOverlay.classList.add("hidden");
-              setStatus("active", "Playing");
-            }).catch(function(err) { showError("Failed to load: " + (err.message || err)); });
-          } catch(err) { showError("Ruffle failed to initialize. " + (err.message || "Please reload.")); }
-        }
-        function waitForRuffle(n) {
-          if (n <= 0) { showError("Ruffle emulator could not be loaded."); return; }
-          if (typeof window.RufflePlayer !== "undefined") { loadSWF(); }
-          else { setTimeout(function() { waitForRuffle(n - 1); }, 300); }
-        }
-        waitForRuffle(30);
-        if(btnReload) btnReload.addEventListener("click", loadSWF);
-        if(btnRetry) btnRetry.addEventListener("click", loadSWF);
-      })();
-      </script>
+<!-- Interactive Demo -->
+<div class="media-card-wrap">
+  <div class="media-section-hdr">
+    <div class="media-section-icon" style="background:rgba(180,77,223,0.13);color:var(--zen);">
+      <i class="fas fa-dice-d20"></i>
     </div>
+    <div>
+      <div class="media-section-title">Interactive Demo</div>
+      <div class="media-section-sub">Playable Flash tutorial — powered by Ruffle emulator</div>
+    </div>
+  </div>
+
+  <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border);">
+      <span style="font-size:0.68rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:0.1em;">
+        Avatar Quick Strike Demo
+      </span>
+      <button class="toolbar-btn" id="btnReload" title="Reload">
+        <i class="fas fa-redo-alt"></i>
+      </button>
+    </div>
+
+    <div class="player-area" id="playerArea" style="aspect-ratio:4/3;">
+      <div class="loading-overlay" id="loadingOverlay">
+        <div class="loader-ring"></div>
+        <div class="loading-text">Loading Flash...</div>
+        <div class="loading-sub">Initializing Ruffle emulator</div>
+      </div>
+
+      <div class="error-state" id="errorState">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3>Playback Error</h3>
+        <p id="errorMessage">Something went wrong while loading the Flash content.</p>
+        <button class="retry-btn" id="btnRetry">
+          <i class="fas fa-redo-alt"></i> Try Again
+        </button>
+      </div>
+    </div>
+
+    <div class="player-status">
+      <div class="status-indicator">
+        <div class="status-dot loading" id="statusDot"></div>
+        <span id="statusText">Initializing...</span>
+      </div>
+      <span id="engineInfo">Ruffle Flash Emulator</span>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+  <script>
+  (function() {
+
+    // 🔇 1. Prevent AudioContext auto-resume globally
+    (function forceMuteOnLoad() {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (AudioContext) {
+        const originalResume = AudioContext.prototype.resume;
+        AudioContext.prototype.resume = function () {
+          return Promise.resolve(); // Block auto resume
+        };
+      }
+    })();
+
+    var SWF_URL = "https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/Current-Development/Avatar_demo.swf";
+
+    var playerArea = document.getElementById("playerArea");
+    var loadingOverlay = document.getElementById("loadingOverlay");
+    var errorState = document.getElementById("errorState");
+    var errorMessage = document.getElementById("errorMessage");
+    var statusDot = document.getElementById("statusDot");
+    var statusText = document.getElementById("statusText");
+    var btnReload = document.getElementById("btnReload");
+    var btnRetry = document.getElementById("btnRetry");
+
+    var currentPlayer = null;
+
+    function setStatus(state, text) {
+      if (statusDot) statusDot.className = "status-dot " + state;
+      if (statusText) statusText.textContent = text;
+    }
+
+    function showError(message) {
+      if (loadingOverlay) loadingOverlay.classList.add("hidden");
+      if (errorState) errorState.classList.add("visible");
+      if (errorMessage) errorMessage.textContent = message;
+      setStatus("error", "Error");
+    }
+
+    function hideError() {
+      if (errorState) errorState.classList.remove("visible");
+    }
+
+    function hardMutePlayer(player) {
+      try {
+        const ctx = player.audioContext;
+        if (ctx && ctx.state !== "suspended") {
+          ctx.suspend();
+        }
+      } catch (e) {}
+    }
+
+    function loadSWF() {
+      hideError();
+      if (loadingOverlay) loadingOverlay.classList.remove("hidden");
+      setStatus("loading", "Loading...");
+
+      if (currentPlayer) {
+        try { currentPlayer.remove(); } catch(e){}
+        currentPlayer = null;
+      }
+
+      try {
+        var ruffle = window.RufflePlayer.newest();
+        var player = ruffle.createPlayer();
+        player.style.width = "100%";
+        player.style.height = "100%";
+
+        if (playerArea) playerArea.appendChild(player);
+        currentPlayer = player;
+
+        player.load({
+          url: SWF_URL,
+          autoplay: "on",
+          mute: true,
+          unmuteOverlay: "visible"
+        }).then(function() {
+
+          if (loadingOverlay) loadingOverlay.classList.add("hidden");
+          setStatus("active", "Playing");
+
+          // 🔇 2. Post-load hard mute
+          hardMutePlayer(player);
+
+        }).catch(function(err) {
+          showError("Failed to load: " + (err.message || err));
+        });
+
+      } catch (err) {
+        showError("Ruffle failed to initialize. " + (err.message || "Please reload."));
+      }
+    }
+
+    function waitForRuffle(attempts) {
+      if (attempts <= 0) {
+        showError("Ruffle emulator could not be loaded.");
+        return;
+      }
+
+      if (typeof window.RufflePlayer !== "undefined") {
+        loadSWF();
+      } else {
+        setTimeout(function() {
+          waitForRuffle(attempts - 1);
+        }, 300);
+      }
+    }
+
+    waitForRuffle(30);
+
+    if (btnReload) btnReload.addEventListener("click", loadSWF);
+    if (btnRetry) btnRetry.addEventListener("click", loadSWF);
+
+  })();
+  </script>
+</div>
 
     <!-- How to Play Video -->
     <div class="media-card-wrap">
