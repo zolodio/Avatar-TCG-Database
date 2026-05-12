@@ -71,6 +71,74 @@
     return null;
   }
 
+// ── Avatar Frame Styles ───────────────────────────────────────
+var FRAME_STYLES = {
+  circle: {
+    label: 'Circle',
+    icon: '●',
+    shape: 'circle',
+    css: function(size) {
+      return 'border-radius:50%;';
+    }
+  },
+  roundSquare: {
+    label: 'Rounded Square',
+    icon: '◇',
+    shape: 'square',
+    css: function(size) {
+      return 'border-radius:' + Math.round(size * 0.15) + 'px;';
+    }
+  },
+  hexagon: {
+    label: 'Hexagon',
+    icon: '⬡',
+    shape: 'polygon',
+    css: function(size) {
+      return 'clip-path:polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);';
+    }
+  },
+  diamond: {
+    label: 'Diamond',
+    icon: '◆',
+    shape: 'polygon',
+    css: function(size) {
+      return 'clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);';
+    }
+  },
+  squircle: {
+    label: 'Squircle',
+    icon: '■',
+    shape: 'custom',
+    css: function(size) {
+      return 'border-radius:' + Math.round(size * 0.25) + 'px;';
+    }
+  }
+};
+
+var FRAME_COLORS = {
+  default: { label: 'Default', hex: 'transparent', border: 'var(--border-light)' },
+  zen: { label: 'Zen', hex: '#b44ddf', border: 'rgba(180,77,223,0.6)' },
+  water: { label: 'Water', hex: '#4eb3f4', border: 'rgba(74,179,244,0.6)' },
+  earth: { label: 'Earth', hex: '#7b9e4d', border: 'rgba(123,158,77,0.6)' },
+  air: { label: 'Air', hex: '#e8c878', border: 'rgba(232,200,120,0.6)' },
+  promo: { label: 'Promo', hex: '#e8b632', border: 'rgba(232,182,50,0.6)' },
+  gradient: { label: 'Gradient', hex: 'gradient', border: 'var(--accent)' }
+};
+
+var BORDER_STYLES = {
+  solid: { label: 'Solid', css: 'solid' },
+  gradient: { label: 'Gradient', css: 'solid' },
+  glow: { label: 'Glow', css: 'solid' },
+  nested: { label: 'Nested', css: 'double' }
+};
+
+var BORDER_WIDTHS = [
+  { label: '2px', value: 2 },
+  { label: '3px', value: 3 },
+  { label: '4px', value: 4 },
+  { label: '6px', value: 6 }
+];
+
   // ── Rarity constants ──────────────────────────────────────────
   var RARITY_COLORS = {
     common:     'var(--text-secondary)',
@@ -160,26 +228,49 @@
   }
 
   // ── Avatar rendering ──────────────────────────────────────────
-  function avatarHtml(profile, size) {
-    size = size || 42;
-    var fs = Math.round(size * 0.38) + 'px';
-    if (profile && profile.avatar_card_number) {
-      var card = findCard(profile.avatar_card_number);
-      if (card && card.imageLink) {
-        var ox = (profile.avatar_offset_x != null) ? profile.avatar_offset_x : -42;
-        var oy = (profile.avatar_offset_y != null) ? profile.avatar_offset_y : -6;
-        return '<div style="width:'+size+'px;height:'+size+'px;border-radius:50%;overflow:hidden;position:relative;flex-shrink:0;background:var(--bg-primary);">' +
-          '<img src="'+esc(card.imageLink)+'" alt="" loading="lazy" ' +
-          'style="position:absolute;width:185%;height:auto;top:'+oy+'%;left:'+ox+'%;pointer-events:none;">' +
-          '</div>';
-      }
+function avatarHtml(profile, size, showFrame) {
+  size = size || 42;
+  showFrame = showFrame !== false; // default true
+  
+  var fs = Math.round(size * 0.38) + 'px';
+  var frameShape = (profile && profile.avatar_frame_shape) || 'circle';
+  var frameColor = (profile && profile.avatar_frame_color) || 'default';
+  var borderStyle = (profile && profile.avatar_border_style) || 'solid';
+  var borderWidth = (profile && profile.avatar_border_width) || 3;
+  var borderGlow = (profile && profile.avatar_border_glow) || false;
+  
+  var frameCss = FRAME_STYLES[frameShape] ? FRAME_STYLES[frameShape].css(size) : 'border-radius:50%;';
+  var colorDef = FRAME_COLORS[frameColor] || FRAME_COLORS.default;
+  
+  var borderColor = colorDef.border;
+  if (frameColor === 'gradient') {
+    borderColor = 'var(--water)';
+  }
+  
+  var glowEffect = borderGlow ? 'box-shadow:0 0 ' + (borderWidth * 2) + 'px ' + borderColor + ';' : '';
+  
+  var wrapperStyle = 'width:' + size + 'px;height:' + size + 'px;' + frameCss + 
+    'overflow:hidden;position:relative;flex-shrink:0;background:var(--bg-primary);' +
+    'border:' + borderWidth + 'px ' + borderStyle + ' ' + borderColor + ';' + glowEffect;
+  
+  if (profile && profile.avatar_card_number) {
+    var card = findCard(profile.avatar_card_number);
+    if (card && card.imageLink) {
+      var ox = (profile.avatar_offset_x != null) ? profile.avatar_offset_x : -42;
+      var oy = (profile.avatar_offset_y != null) ? profile.avatar_offset_y : -6;
+      return '<div style="' + wrapperStyle + '">' +
+        '<img src="' + esc(card.imageLink) + '" alt="" loading="lazy" ' +
+        'style="position:absolute;width:185%;height:auto;top:' + oy + '%;left:' + ox + '%;pointer-events:none;">' +
+        '</div>';
     }
-    return '<div style="width:'+size+'px;height:'+size+'px;border-radius:50%;background:linear-gradient(135deg,var(--water),var(--zen));display:flex;align-items:center;justify-content:center;font-family:\'Cinzel\',serif;font-weight:700;font-size:'+fs+';color:#fff;flex-shrink:0;">'+esc(initials(profile?profile.username:'?'))+'</div>';
   }
-
-  function proBadge() {
-    return '<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(232,182,50,0.12);color:var(--promo);border:1px solid rgba(232,182,50,0.3);border-radius:99px;padding:2px 8px;font-size:0.58rem;font-weight:700;letter-spacing:0.08em;vertical-align:middle;margin-left:6px;">✦ PRO</span>';
-  }
+  
+  return '<div style="' + wrapperStyle + '">' +
+    '<div style="width:100%;height:100%;background:linear-gradient(135deg,var(--water),var(--zen));' +
+    'display:flex;align-items:center;justify-content:center;font-family:\'Cinzel\',serif;' +
+    'font-weight:700;font-size:' + fs + ';color:#fff;">' + esc(initials(profile ? profile.username : '?')) + '</div>' +
+    '</div>';
+}
 
   // ── Persistent header profile indicator ──────────────────────
   function updateHeaderProfile() {
@@ -453,7 +544,49 @@
                 '<i class="fas fa-search" style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.78rem;pointer-events:none;"></i>' +
                 '<input id="peAvatarSearch" type="text" placeholder="Search cards by name or number…" ' +
                   'style="width:100%;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;padding:8px 10px 8px 32px;color:var(--text-primary);font-size:0.82rem;font-family:\'Nunito Sans\',sans-serif;outline:none;box-sizing:border-box;">' +
-              '</div>' +
+              '</div>' + 
+              // Insert after the avatar grid closing div, before the display name section:
+
+'<div style="padding:0 18px 18px;border-bottom:1px solid var(--border);">' +
+  '<div style="font-size:0.67rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);font-weight:700;margin-bottom:10px;">Frame Style</div>' +
+  '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(70px,1fr));gap:6px;margin-bottom:14px;">' +
+  Object.keys(FRAME_STYLES).map(function(key) {
+    var style = FRAME_STYLES[key];
+    return '<button type="button" class="pe-frame-btn" data-frame="' + key + '" ' +
+      'title="' + style.label + '" ' +
+      'style="padding:10px 6px;border:2px solid var(--border);border-radius:8px;' +
+      'background:var(--bg-primary);color:var(--text-secondary);cursor:pointer;' +
+      'font-family:\'Nunito Sans\',sans-serif;font-weight:600;font-size:0.7rem;' +
+      'transition:all 0.2s;">' +
+      '<div style="font-size:1.2rem;margin-bottom:3px;">' + style.icon + '</div>' +
+      '<div>' + style.label + '</div>' +
+    '</button>';
+  }).join('') +
+  '</div>' +
+  '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">' +
+    '<div>' +
+      '<label style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:700;display:block;margin-bottom:5px;">Border Color</label>' +
+      '<select id="peFrameColor" style="width:100%;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:7px;color:var(--text-primary);font-size:0.75rem;font-family:\'Nunito Sans\',sans-serif;cursor:pointer;">' +
+      Object.keys(FRAME_COLORS).map(function(key) {
+        var color = FRAME_COLORS[key];
+        return '<option value="' + key + '">' + color.label + '</option>';
+      }).join('') +
+      '</select>' +
+    '</div>' +
+    '<div>' +
+      '<label style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:700;display:block;margin-bottom:5px;">Border Width</label>' +
+      '<select id="peFrameWidth" style="width:100%;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:7px;color:var(--text-primary);font-size:0.75rem;font-family:\'Nunito Sans\',sans-serif;cursor:pointer;">' +
+      BORDER_WIDTHS.map(function(w) {
+        return '<option value="' + w.value + '">' + w.label + '</option>';
+      }).join('') +
+      '</select>' +
+    '</div>' +
+  '</div>' +
+  '<label style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:0.75rem;color:var(--text-secondary);">' +
+    '<input type="checkbox" id="peFrameGlow" style="cursor:pointer;"> ' +
+    '<span style="flex:1;">Glowing Border Effect</span>' +
+  '</label>' +
+'</div>' +
               '<div id="peAvatarGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:5px;max-height:220px;overflow-y:auto;padding:2px;"></div>' +
               '<div id="peLoadMore" style="text-align:center;margin-top:8px;"></div>' +
             '</div>' +
@@ -530,6 +663,11 @@
     peAvatarFilter   = '';
     peAvatarPage     = 0;
     peUsernameValid  = true;
+    peSelectedFrame = (p.avatar_frame_shape || 'circle');
+peSelectedFrameColor = (p.avatar_frame_color || 'default');
+peSelectedBorderStyle = (p.avatar_border_style || 'solid');
+peSelectedBorderWidth = (p.avatar_border_width || 3);
+peSelectedBorderGlow = (p.avatar_border_glow || false);
 
     $('peDisplayName').value  = p.display_name || '';
     $('peUsername').value     = p.username || '';
@@ -538,6 +676,9 @@
     $('peUsernameHint').textContent = '';
     $('peError').textContent        = '';
     $('peAvatarSearch').value       = '';
+    $('peFrameColor').value = peSelectedFrameColor;
+$('peFrameWidth').value = peSelectedBorderWidth;
+$('peFrameGlow').checked = peSelectedBorderGlow
     updateBioCount();
     populateChamberSelect(p.favorite_chamber || '');
     renderPeAvatarPreview();
@@ -620,6 +761,7 @@
     var el = $('peAvatarPreview');
     var hint = $('peDragHint');
     if (!el) return;
+    
 
     if (peSelectedAvatar) {
       var card = findCard(peSelectedAvatar);
@@ -633,6 +775,17 @@
         return;
       }
     }
+
+// When rendering with a selected avatar, apply frame styling:
+  var frameCss = FRAME_STYLES[peSelectedFrame] ? FRAME_STYLES[peSelectedFrame].css(PE_PREVIEW_SIZE) : 'border-radius:50%;';
+  var colorDef = FRAME_COLORS[peSelectedFrameColor] || FRAME_COLORS.default;
+  var glowEffect = peSelectedBorderGlow ? 'box-shadow:0 0 ' + (peSelectedBorderWidth * 2) + 'px ' + colorDef.border + ';' : '';
+  
+  el.style.cssText = 'width:' + PE_PREVIEW_SIZE + 'px;height:' + PE_PREVIEW_SIZE + 'px;' + frameCss +
+    'overflow:hidden;position:relative;background:var(--bg-primary);' +
+    'border:' + peSelectedBorderWidth + 'px solid ' + colorDef.border + ';' + 
+    'border-radius:inherit;cursor:grab;user-select:none;-webkit-user-select:none;' +
+    'touch-action:none;' + glowEffect;
 
     el.style.cursor = 'default';
     if (hint) hint.style.opacity = '0';
@@ -781,7 +934,12 @@
       avatar_card_number: peSelectedAvatar || null,
       avatar_offset_x:    peSelectedAvatar ? peOffsetX : null,
       avatar_offset_y:    peSelectedAvatar ? peOffsetY : null
-    };
+        avatar_frame_shape: peSelectedFrame,
+  avatar_frame_color: peSelectedFrameColor,
+  avatar_border_style: peSelectedBorderStyle,
+  avatar_border_width: peSelectedBorderWidth,
+  avatar_border_glow: peSelectedBorderGlow
+};
 
     var res = await sb().from('profiles').update(updates).eq('user_id', currentUser.id);
     if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save Changes'; }
@@ -796,6 +954,44 @@
 
   function initProfileEditorEvents() {
     var overlay = $('profileEditorOverlay'); if (!overlay) return;
+    // Frame selection buttons
+var framesWrap = overlay.querySelector('.pe-frame-btn');
+if (framesWrap || overlay.querySelectorAll('.pe-frame-btn').length) {
+  overlay.addEventListener('click', function(e) {
+    var btn = e.target.closest('.pe-frame-btn');
+    if (!btn) return;
+    var frame = btn.getAttribute('data-frame');
+    overlay.querySelectorAll('.pe-frame-btn').forEach(function(b) {
+      b.style.borderColor = 'var(--border)';
+      b.style.background = 'var(--bg-primary)';
+      b.style.color = 'var(--text-secondary)';
+    });
+    btn.style.borderColor = 'var(--zen)';
+    btn.style.background = 'rgba(180,77,223,0.15)';
+    btn.style.color = 'var(--zen)';
+    peSelectedFrame = frame;
+    renderPeAvatarPreview();
+  });
+}
+
+// Frame color and width selectors
+var colorSel = $('peFrameColor');
+if (colorSel) colorSel.addEventListener('change', function() {
+  peSelectedFrameColor = this.value;
+  renderPeAvatarPreview();
+});
+
+var widthSel = $('peFrameWidth');
+if (widthSel) widthSel.addEventListener('change', function() {
+  peSelectedBorderWidth = parseInt(this.value, 10);
+  renderPeAvatarPreview();
+});
+
+var glowCheck = $('peFrameGlow');
+if (glowCheck) glowCheck.addEventListener('change', function() {
+  peSelectedBorderGlow = this.checked;
+  renderPeAvatarPreview();
+});
 
     [$('peClose'), $('peCancel')].forEach(function (b) { if (b) b.addEventListener('click', closeProfileEditor); });
     overlay.addEventListener('click', function (e) { if (e.target === this) closeProfileEditor(); });
