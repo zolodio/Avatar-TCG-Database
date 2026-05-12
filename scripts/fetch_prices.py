@@ -261,9 +261,9 @@ def main():
 
     # ── 1. Broad searches (common/uncommon cards) ──────────────────────────
     broad_queries = [
-        "Avatar Last Airbender Quick Strike TCG single card",
-        "Avatar Quick Strike TCG holo foil card",
-        "Avatar TCG Upper Deck Quick Strike",
+        "Avatar Quick Strike",
+        "Last Airbender -MTG -Magic",
+        "Legend of Aang -mtg -gathering",
     ]
     print(f"\n==> Broad searches ({len(broad_queries)} queries × up to {BROAD_LIMIT} results each) …")
     for query in broad_queries:
