@@ -108,16 +108,6 @@ function redeemPayload(payload) {
   markCodeUsed(payload.ck);
   return added;
 }
-function removeDigitalCard(num) {
-  if (!dc[num]) return;
-  dc[num].qty--;
-  if (dc[num].qty <= 0) delete dc[num];
-  saveDC();
-  window.aqstDigitalCollection = dc;  // ← Add this line
-  renderDigitalCards();
-  updateDigitalStats();
-  showToastDC('Card removed from digital collection');
-}
   /* ─────────────────────────────────────────────────────────────
      PUBLIC: removeDigitalCard  (called from card detail modal)
   ───────────────────────────────────────────────────────────── */
@@ -126,6 +116,7 @@ function removeDigitalCard(num) {
     dc[num].qty--;
     if (dc[num].qty <= 0) delete dc[num];
     saveDC();
+    window.aqstDigitalCollection = dc; 
     renderDigitalCards();
     updateDigitalStats();
     showToastDC('Card removed from digital collection');
