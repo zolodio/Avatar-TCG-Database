@@ -24,14 +24,20 @@
   /* ─────────────────────────────────────────────────────────────
      STORAGE HELPERS
   ───────────────────────────────────────────────────────────── */
-  function loadDC() {
-    try { dc = JSON.parse(localStorage.getItem(DC_KEY) || '{}'); }
-    catch (e) { dc = {}; }
+function loadDC() {
+  try { 
+    dc = JSON.parse(localStorage.getItem(DC_KEY) || '{}'); 
+    window.aqstDigitalCollection = dc;  // ← Expose globally
   }
-  function saveDC() {
-    try { localStorage.setItem(DC_KEY, JSON.stringify(dc)); }
-    catch (e) {}
+  catch (e) { dc = {}; }
+}
+function saveDC() {
+  try { 
+    localStorage.setItem(DC_KEY, JSON.stringify(dc));
+    window.aqstDigitalCollection = dc;  // ← Expose globally after save
   }
+  catch (e) {}
+}
   function getUsedCodes() {
     try { return JSON.parse(localStorage.getItem(CODES_KEY) || '[]'); }
     catch (e) { return []; }
@@ -88,20 +94,30 @@
   /* ─────────────────────────────────────────────────────────────
      ADD CARDS FROM DECODED PAYLOAD
   ───────────────────────────────────────────────────────────── */
-  function redeemPayload(payload) {
-    var added = 0;
-    var now   = Date.now();
-    payload.c.forEach(function (num) {
-      if (!dc[num]) dc[num] = { qty: 0, lastAcquired: now };
-      dc[num].qty++;
-      dc[num].lastAcquired = now;
-      added++;
-    });
-    saveDC();
-    markCodeUsed(payload.ck);
-    return added;
-  }
-
+function redeemPayload(payload) {
+  var added = 0;
+  var now   = Date.now();
+  payload.c.forEach(function (num) {
+    if (!dc[num]) dc[num] = { qty: 0, lastAcquired: now };
+    dc[num].qty++;
+    dc[num].lastAcquired = now;
+    added++;
+  });
+  saveDC();
+  window.aqstDigitalCollection = dc;  // ← Add this line
+  markCodeUsed(payload.ck);
+  return added;
+}
+function removeDigitalCard(num) {
+  if (!dc[num]) return;
+  dc[num].qty--;
+  if (dc[num].qty <= 0) delete dc[num];
+  saveDC();
+  window.aqstDigitalCollection = dc;  // ← Add this line
+  renderDigitalCards();
+  updateDigitalStats();
+  showToastDC('Card removed from digital collection');
+}
   /* ─────────────────────────────────────────────────────────────
      PUBLIC: removeDigitalCard  (called from card detail modal)
   ───────────────────────────────────────────────────────────── */
