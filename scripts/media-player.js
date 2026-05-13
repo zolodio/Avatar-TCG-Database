@@ -20,18 +20,12 @@
     body.has-media-bar .epb-sub-btn         { bottom: calc(var(--mb-h) + 14px + var(--epb-sub-offset, 0px)) !important; }
 
     /* EPB sub-button Y offsets — recalculate each button's base offset */
-    body.has-media-bar #epbSub-chat   { bottom: calc(var(--mb-h) + 14px + 115px) !important; }
-    body.has-media-bar #epbLabel-chat { bottom: calc(var(--mb-h) + 14px + 115px) !important; }
-    body.has-media-bar #epbSub-help   { bottom: calc(var(--mb-h) + 14px + 89px)  !important; }
-    body.has-media-bar #epbLabel-help { bottom: calc(var(--mb-h) + 14px + 89px)  !important; }
-    body.has-media-bar #epbSub-play   { bottom: calc(var(--mb-h) + 14px + 25px)  !important; }
-    body.has-media-bar #epbLabel-play { bottom: calc(var(--mb-h) + 14px + 25px)  !important; }
-   
-    /* Adjust second arc buttons for media bar */
-    body.has-media-bar #epbSub-card-search { bottom: calc(var(--mb-h) + 14px + 140px) !important; }
-    body.has-media-bar #epbLabel-card-search { bottom: calc(var(--mb-h) + 14px + 140px) !important; }
-    body.has-media-bar #epbSub-music { bottom: calc(var(--mb-h) + 14px + 115px) !important; }
-    body.has-media-bar #epbLabel-music { bottom: calc(var(--mb-h) + 14px + 115px) !important; }
+    body.has-media-bar #epbSub-chat   { bottom: calc(var(--mb-h) + 14px + 90px)  !important; }
+    body.has-media-bar #epbLabel-chat { bottom: calc(var(--mb-h) + 14px + 90px)  !important; }
+    body.has-media-bar #epbSub-help   { bottom: calc(var(--mb-h) + 14px + 54px)  !important; }
+    body.has-media-bar #epbLabel-help { bottom: calc(var(--mb-h) + 14px + 54px)  !important; }
+    body.has-media-bar #epbSub-play   { bottom: calc(var(--mb-h) + 14px + 20px)  !important; }
+    body.has-media-bar #epbLabel-play { bottom: calc(var(--mb-h) + 14px + 20px)  !important; }
 
     /* ── Media bar shell ── */
     .mb-bar {
