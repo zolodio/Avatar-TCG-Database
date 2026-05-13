@@ -70,16 +70,27 @@
   }
 
   function getDigitalCollection() {
-    if (global.digitalCollectionData && typeof global.digitalCollectionData === 'object') {
-      return global.digitalCollectionData;
-    }
-    try {
-      var raw = localStorage.getItem('aqst_digital_col') ||
-                localStorage.getItem('avatarDigitalCollection');
-      if (raw) return JSON.parse(raw);
-    } catch (_) {}
-    return {};
+  if (global.digitalCollectionData && typeof global.digitalCollectionData === 'object') {
+    return global.digitalCollectionData;
   }
+  try {
+    var raw = localStorage.getItem('aqtcg_digital_v1') ||   // ← correct key
+              localStorage.getItem('aqst_digital_col') ||
+              localStorage.getItem('avatarDigitalCollection');
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      // aqtcg_digital_v1 stores { cardNumber: { qty, lastAcquired } }
+      // normalize to { cardNumber: qty } for compatibility
+      var normalized = {};
+      Object.keys(parsed).forEach(function (num) {
+        var val = parsed[num];
+        normalized[num] = (typeof val === 'object' && val !== null) ? (val.qty || 0) : val;
+      });
+      return normalized;
+    }
+  } catch (_) {}
+  return {};
+}
 
   function getPoolCards() {
     var base = (global.allCards || []).filter(isValidForDeck);
