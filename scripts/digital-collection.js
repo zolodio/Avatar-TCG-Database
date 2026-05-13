@@ -709,5 +709,6 @@ function redeemPayload(payload) {
     renderDigitalCards();
     updateDigitalStats();
   };
+  window.aqstDigitalCollection = dc;  // Expose for cloud sync 
 
 })();
