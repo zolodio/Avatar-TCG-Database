@@ -34,7 +34,7 @@ function loadDC() {
 function saveDC() {
   try { 
     localStorage.setItem(DC_KEY, JSON.stringify(dc));
-    window.aqstDigitalCollection = dc;  // ← Expose globally after save
+    global.aqstDigitalCollection = dc;  // ← Expose globally after save
     // Trigger cloud sync if user is logged in
     if (typeof window._aqst_cloudSync === 'function') {
       window._aqst_cloudSync();
@@ -719,7 +719,7 @@ window.aqstRefreshDigital = function (cloudData) {
   if (cloudData && typeof cloudData === 'object') {
     dc = cloudData;
     try { localStorage.setItem(DC_KEY, JSON.stringify(dc)); } catch (e) {}
-    window.aqstDigitalCollection = dc;
+    global.aqstDigitalCollection = dc;
   } else {
     loadDC();
   }
