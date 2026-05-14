@@ -48,11 +48,11 @@
     if (typeof window.updateAllPackCounters === 'function') window.updateAllPackCounters();
   }
 
-  function applyDigital(data) {
-    if (!data || typeof data !== 'object') return;
-    window.aqstDigitalCollection = data;
-    if (typeof window.aqstRefreshDigital === 'function') window.aqstRefreshDigital();
-  }
+function applyDigital(data) {
+  if (!data || typeof data !== 'object') return;
+  window.aqstDigitalCollection = data;
+  if (typeof window.aqstRefreshDigital === 'function') window.aqstRefreshDigital(data);
+}
 
   // ── Cloud push / pull ─────────────────────────────────────────
   async function cloudPush() {

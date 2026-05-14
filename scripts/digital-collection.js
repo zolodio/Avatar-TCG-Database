@@ -708,11 +708,25 @@ function redeemPayload(payload) {
   });
 
   // Expose renderDigitalCards so other scripts can trigger a refresh
-  window.refreshDigitalCards = function () {
-    loadDC();
-    renderDigitalCards();
-    updateDigitalStats();
-  };
-  window.aqstDigitalCollection = dc;  // Expose for cloud sync 
+// REPLACE with this:
+window.refreshDigitalCards = function () {
+  loadDC();
+  renderDigitalCards();
+  updateDigitalStats();
+};
+
+// ADD this new export (used by auth.js applyDigital):
+window.aqstRefreshDigital = function (cloudData) {
+  if (cloudData && typeof cloudData === 'object') {
+    dc = cloudData;
+    // Persist cloud data to localStorage so it survives a page reload
+    try { localStorage.setItem(DC_KEY, JSON.stringify(dc)); } catch (e) {}
+    window.aqstDigitalCollection = dc;
+  } else {
+    loadDC(); // fallback: reload from localStorage
+  }
+  renderDigitalCards();
+  updateDigitalStats();
+};
 
 })();
