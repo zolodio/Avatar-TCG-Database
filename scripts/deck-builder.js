@@ -70,6 +70,31 @@
   }
 
 function getDigitalCollection() {
+  var raw = null;
+
+  if (global.aqstDigitalCollection && typeof global.aqstDigitalCollection === 'object') {
+    raw = global.aqstDigitalCollection;
+  } else if (global.digitalCollectionData && typeof global.digitalCollectionData === 'object') {
+    raw = global.digitalCollectionData;
+  } else {
+    try {
+      var stored = localStorage.getItem('aqtcg_digital_v1') ||
+                   localStorage.getItem('aqst_digital_col') ||
+                   localStorage.getItem('avatarDigitalCollection');
+      if (stored) raw = JSON.parse(stored);
+    } catch (_) {}
+  }
+
+  if (!raw) return {};
+
+  // Normalize: values may be plain numbers OR { qty, lastAcquired } objects
+  var normalized = {};
+  Object.keys(raw).forEach(function (num) {
+    var val = raw[num];
+    normalized[num] = (typeof val === 'object' && val !== null) ? (val.qty || 0) : (val || 0);
+  });
+  return normalized;
+}
 
   function getPoolCards() {
     var base = (global.allCards || []).filter(isValidForDeck);
