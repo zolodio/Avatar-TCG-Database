@@ -34,7 +34,7 @@ function loadDC() {
 function saveDC() {
   try { 
     localStorage.setItem(DC_KEY, JSON.stringify(dc));
-    global.aqstDigitalCollection = dc;  // ← Expose globally after save
+    window.aqstDigitalCollection = dc;  // ← Expose globally after save
     // Trigger cloud sync if user is logged in
     if (typeof window._aqst_cloudSync === 'function') {
       window._aqst_cloudSync();
@@ -715,21 +715,18 @@ window.refreshDigitalCards = function () {
   updateDigitalStats();
 };
 
+// ADD this new export (used by auth.js applyDigital):
 window.aqstRefreshDigital = function (cloudData) {
   if (cloudData && typeof cloudData === 'object') {
     dc = cloudData;
+    // Persist cloud data to localStorage so it survives a page reload
     try { localStorage.setItem(DC_KEY, JSON.stringify(dc)); } catch (e) {}
-    global.aqstDigitalCollection = dc;
+    window.aqstDigitalCollection = dc;
   } else {
-    loadDC();
+    loadDC(); // fallback: reload from localStorage
   }
   renderDigitalCards();
   updateDigitalStats();
-
-  // Re-render the deck builder so its digital pool reflects the new data
-  if (window.DeckBuilder && typeof window.DeckBuilder.render === 'function') {
-    window.DeckBuilder.render();
-  }
 };
 
 })();
