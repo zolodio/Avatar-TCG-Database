@@ -35,6 +35,10 @@ function saveDC() {
   try { 
     localStorage.setItem(DC_KEY, JSON.stringify(dc));
     window.aqstDigitalCollection = dc;  // ← Expose globally after save
+    // Trigger cloud sync if user is logged in
+    if (typeof window._aqst_cloudSync === 'function') {
+      window._aqst_cloudSync();
+    }
   }
   catch (e) {}
 }
@@ -103,7 +107,7 @@ function redeemPayload(payload) {
     dc[num].lastAcquired = now;
     added++;
   });
-  saveDC();
+  saveDC();  // ← This now triggers cloud sync automatically
   window.aqstDigitalCollection = dc;  // ← Add this line
   markCodeUsed(payload.ck);
   return added;
@@ -115,7 +119,7 @@ function redeemPayload(payload) {
     if (!dc[num]) return;
     dc[num].qty--;
     if (dc[num].qty <= 0) delete dc[num];
-    saveDC();
+    saveDC();  // ← This now triggers cloud sync automatically
     window.aqstDigitalCollection = dc; 
     renderDigitalCards();
     updateDigitalStats();
@@ -361,7 +365,7 @@ function redeemPayload(payload) {
     document.getElementById('dcImportConfirmBtn').addEventListener('click', function () {
       var payload = this._payload;
       if (!payload) return;
-      var added = redeemPayload(payload);
+      var added = redeemPayload(payload);  // ← This now triggers cloud sync
       renderDigitalCards();
       updateDigitalStats();
       closeImportModal();
@@ -541,7 +545,7 @@ function redeemPayload(payload) {
           showMsg('✗  ' + result.error, 'error');
           return;
         }
-        var added = redeemPayload(result.payload);
+        var added = redeemPayload(result.payload);  // ← This now triggers cloud sync
         renderDigitalCards();
         updateDigitalStats();
         inp.value = '';
@@ -602,7 +606,7 @@ function redeemPayload(payload) {
             try {
               var parsed = JSON.parse(reader.result);
               if (typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('bad format');
-              dc = parsed; saveDC();
+              dc = parsed; saveDC();  // ← This now triggers cloud sync
               renderDigitalCards(); updateDigitalStats();
               showToastDC('Digital collection imported from JSON!');
             } catch (err) {
@@ -618,7 +622,7 @@ function redeemPayload(payload) {
     if (clrBtn) {
       clrBtn.addEventListener('click', function () {
         if (!confirm('Clear your entire digital collection?\n\nThis cannot be undone — export a backup first if you want to keep your cards.')) return;
-        dc = {}; saveDC();
+        dc = {}; saveDC();  // ← This now triggers cloud sync
         renderDigitalCards(); updateDigitalStats();
         showToastDC('Digital collection cleared');
       });
