@@ -64,7 +64,7 @@
       'opacity:0;animation:aqsUp 0.7s ease 0.45s both;',
       'margin-bottom:26px;',
     '}',
-    '.aqs-logos img{height:auto;width:85vw;',
+    '.aqs-logos img{height:auto;width:318px;',
       'filter:drop-shadow(0 0 10px rgba(255,255,255,0.55));}',
 
     /* ── Orbital ring wrapper ── */
