@@ -97,6 +97,7 @@ function getDigitalCollection() {
 }
 
 async function ensureDigitalCollection() {
+  console.log('DeckBuilder: ensureDigitalCollection called');
   var client = window.sb;
   if (client && client.auth) {
     try {
@@ -108,6 +109,7 @@ async function ensureDigitalCollection() {
           .select('digital')
           .eq('user_id', user.id)
           .single();
+        console.log('DeckBuilder: collections query result', result);  
         if (!result.error && result.data && result.data.digital) {
           window.aqstDigitalCollection = result.data.digital;
           try { localStorage.setItem('aqtcg_digital_v1', JSON.stringify(result.data.digital)); } catch (_) {}
