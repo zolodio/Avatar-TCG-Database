@@ -3122,6 +3122,7 @@ body {
       <!-- Platform cards injected here -->
     </div>
   </div>
+  </div>
 <div class="tab-content" id="tab-creations">
   <!-- BEGIN CREATIONS TAB CONTENT (paste inside tab-content div) -->
 <div id="cc-app">
@@ -7710,6 +7711,21 @@ function showToast(msg){
 }
  
 init();
+})();
+</script>
+<script>
+(function () {
+  document.querySelectorAll('.cc-trait-card[data-val]').forEach(function (card) {
+    var val = card.dataset.val;
+    var iconEl = card.querySelector('.cc-trait-icon');
+    if (!iconEl || !traitIconMap[val]) return;
+
+    var img = document.createElement('img');
+    img.src = traitIconMap[val];
+    img.alt = val;
+    img.style.cssText = 'width:2rem;height:2rem;object-fit:contain;display:block;margin:0 auto 6px;background: var(--promo); border: 1px solid rgba(255,255,255,0.1);display: flex; align-items: center; justify-content: center;  backdrop-filter: blur(4px); color:var(--air);border-radius: 10px';
+    iconEl.replaceWith(img);
+  });
 })();
 </script>
 </body>
