@@ -178,7 +178,7 @@ async function ensureDigitalCollection() {
 
   function availableQty(cardNumber) {
     if (S.pool === 'physical') return (global.collection || {})[cardNumber] || 0;
-    if (S.pool === 'digital')  return (getDigitalCollection() || {})[cardNumber] || 0);
+    if (S.pool === 'digital')  return (getDigitalCollection() || {})[cardNumber] || 0;
     return 99;
   }
 
@@ -1876,14 +1876,18 @@ el.querySelectorAll('.db-pool-btn').forEach(function(btn){
 
     /* ── LIST ──────────────────────────────────────────────── */
     var bOwn = document.getElementById('dbBuildOwnBtn');
-    if (bOwn) bOwn.addEventListener('click', function(){
-      S.view='build';
-      S.build={name:'',deckSize:'full',customSize:60,chamber:null,cards:{},typeFilter:'all',search:'',sortBy:'number',sortDir:'asc',is_public:false};
-      if (S.pool === 'digital') await ensureDigitalCollection();
-      render();
-    });
-    var bRng = document.getElementById('dbRandomizeBtn');
-    if (bRng) bRng.addEventListener('click', function(){ S.view='randomize'; if (S.pool === 'digital') await ensureDigitalCollection(); render(); });
+    if (bOwn) bOwn.addEventListener('click', async function(){
+  S.view = 'build';
+  S.build = {name:'',deckSize:'full',customSize:60,chamber:null,cards:{},typeFilter:'all',search:'',sortBy:'number',sortDir:'asc',is_public:false};
+  if (S.pool === 'digital') await ensureDigitalCollection();
+  render();
+});
+
+if (bRng) bRng.addEventListener('click', async function(){
+  S.view = 'randomize';
+  if (S.pool === 'digital') await ensureDigitalCollection();
+  render();
+});
 
     el.querySelectorAll('.db-deck-card').forEach(function(card){
       card.addEventListener('click', function(e){
