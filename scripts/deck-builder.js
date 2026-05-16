@@ -97,10 +97,6 @@ function getDigitalCollection() {
 }
 
 async function ensureDigitalCollection() {
-  // Already populated — nothing to do
-  if (window.aqstDigitalCollection && Object.keys(window.aqstDigitalCollection).length > 0) return;
-
-  // Try Supabase first
   var client = window.sb;
   if (client && client.auth) {
     try {
@@ -112,25 +108,24 @@ async function ensureDigitalCollection() {
           .select('digital')
           .eq('user_id', user.id)
           .single();
-
         if (!result.error && result.data && result.data.digital) {
-          var digital = result.data.digital;
-          // Supabase returns JSONB already parsed; store it back so other
-          // modules (and subsequent calls) find it in the expected places.
-          window.aqstDigitalCollection = digital;
-          try { localStorage.setItem('aqtcg_digital_v1', JSON.stringify(digital)); } catch (_) {}
+          window.aqstDigitalCollection = result.data.digital;
+          try { localStorage.setItem('aqtcg_digital_v1', JSON.stringify(result.data.digital)); } catch (_) {}
+          console.log('DeckBuilder: digital collection loaded —', Object.keys(result.data.digital).length, 'cards');
           return;
         }
       }
     } catch (e) {
-      console.warn('DeckBuilder: Supabase digital collection fetch failed', e);
+      console.warn('DeckBuilder: digital fetch failed', e);
     }
   }
-
-  // Fallback: localStorage (covers offline / not-logged-in cases)
+  // Fallback: localStorage only if Supabase gave us nothing
   try {
     var stored = localStorage.getItem('aqtcg_digital_v1');
-    if (stored) window.aqstDigitalCollection = JSON.parse(stored);
+    if (stored) {
+      window.aqstDigitalCollection = JSON.parse(stored);
+      console.log('DeckBuilder: digital collection from localStorage —', Object.keys(window.aqstDigitalCollection).length, 'cards');
+    }
   } catch (_) {}
 }
 
@@ -439,31 +434,34 @@ async function ensureDigitalCollection() {
   }
 
   async function pullWhenReady() {
-    var attempts = 0;
-    var interval = setInterval(async function () {
-      attempts++;
-      var client = window.sb;
-      if (!client || !client.auth) {
-        if (attempts >= 40) clearInterval(interval);
-        return;
-      }
-      try {
-        var authResp = await client.auth.getUser();
-        var user = authResp.data && authResp.data.user;
-        if (user) {
-          clearInterval(interval);
-          console.log('DeckBuilder: auth ready, pulling…');
-          await pullDecksFromSupabase();
-          render();
-        } else if (attempts >= 40) {
-          clearInterval(interval);
-          console.log('DeckBuilder: no auth after 20s, giving up');
-        }
-      } catch (e) {
+  var attempts = 0;
+  var interval = setInterval(async function () {
+    attempts++;
+    var client = window.sb;
+    if (!client || !client.auth) {
+      if (attempts >= 40) clearInterval(interval);
+      return;
+    }
+    try {
+      var authResp = await client.auth.getUser();
+      var user = authResp.data && authResp.data.user;
+      if (user) {
         clearInterval(interval);
+        console.log('DeckBuilder: auth ready, pulling…');
+        await Promise.all([
+          pullDecksFromSupabase(),
+          ensureDigitalCollection()   // ← fetch alongside decks
+        ]);
+        render();
+      } else if (attempts >= 40) {
+        clearInterval(interval);
+        console.log('DeckBuilder: no auth after 20s, giving up');
       }
-    }, 500);
-  }
+    } catch (e) {
+      clearInterval(interval);
+    }
+  }, 500);
+}
 
   /* ═══════════════════════════════════════════════════════════════
      RANDOMIZER ENGINE
@@ -1879,10 +1877,11 @@ el.querySelectorAll('.db-pool-btn').forEach(function(btn){
     if (bOwn) bOwn.addEventListener('click', function(){
       S.view='build';
       S.build={name:'',deckSize:'full',customSize:60,chamber:null,cards:{},typeFilter:'all',search:'',sortBy:'number',sortDir:'asc',is_public:false};
+      if (S.pool === 'digital') await ensureDigitalCollection();
       render();
     });
     var bRng = document.getElementById('dbRandomizeBtn');
-    if (bRng) bRng.addEventListener('click', function(){ S.view='randomize'; render(); });
+    if (bRng) bRng.addEventListener('click', function(){ S.view='randomize'; if (S.pool === 'digital') await ensureDigitalCollection(); render(); });
 
     el.querySelectorAll('.db-deck-card').forEach(function(card){
       card.addEventListener('click', function(e){
