@@ -60,7 +60,7 @@
 
     /* ── Logos ── */
     '.aqs-logos{',
-      'display:flex;align-items:center;justify-content:center;gap:10px;',
+      'display:flex;flex-direction: column;align-items:center;justify-content:center;gap:8px;',
       'opacity:0;animation:aqsUp 0.7s ease 0.45s both;',
       'margin-bottom:26px;',
     '}',
