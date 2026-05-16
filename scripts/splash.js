@@ -143,22 +143,14 @@
 
     /* ── Title ── */
     '.aqs-title{',
-      'font-family:"Cinzel",Georgia,serif;font-weight:900;',
-      'font-size:clamp(1rem,3.5vw,1.45rem);',
-      'background:
-  radial-gradient(circle at center, rgba(0,0,0,0.25), rgba(0,0,0,0.6)),
-  linear-gradient(
-    135deg,
-    #5a7d3a 0%,   /* Earth */
-    #b33a1f 35%,  /* Fire */
-    #e6e2c3 65%,  /* Air */
-    #2a6f97 100%  /* Water */
-  );',
-      '-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;',
-      'letter-spacing:0.08em;',
-      'opacity:0;animation:aqsUp 0.7s ease 0.85s both;',
-      'margin-bottom:5px;',
-    '}',
+  'font-family:"Cinzel",Georgia,serif;font-weight:900;',
+  'font-size:clamp(1rem,3.5vw,1.45rem);',
+  'background:radial-gradient(circle at center, rgba(0,0,0,0.25), rgba(0,0,0,0.6)),linear-gradient(135deg,#5a7d3a 0%,#b33a1f 35%,#e6e2c3 65%,#2a6f97 100%);',
+  '-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;',
+  'letter-spacing:0.08em;',
+  'opacity:0;animation:aqsUp 0.7s ease 0.85s both;',
+  'margin-bottom:5px;',
+'}',
     '.aqs-sub{',
       'font-size:0.6rem;letter-spacing:0.28em;text-transform:uppercase;',
       'color:rgba(255,255,255,0.3);',
@@ -182,18 +174,10 @@
       'opacity:0;animation:aqsUp 0.5s ease 1.5s both;',
     '}',
     '.aqs-bar{',
-      'height:100%;border-radius:99px;width:0%;',
-      'background:
-  radial-gradient(circle at center, rgba(0,0,0,0.25), rgba(0,0,0,0.6)),
-  linear-gradient(
-    90deg,
-    #5a7d3a,  /* Earth */
-    #b33a1f,  /* Fire */
-    #e6e2c3,  /* Air */
-    #2a6f97   /* Water */
-  );',
-      'transition:width 0.25s ease;',
-    '}',
+  'height:100%;border-radius:99px;width:0%;',
+  'background:radial-gradient(circle at center, rgba(0,0,0,0.25), rgba(0,0,0,0.6)),linear-gradient(90deg,#5a7d3a,#b33a1f,#e6e2c3,#2a6f97);',
+  'transition:width 0.25s ease;',
+'}',
 
     /* ── Keyframes ── */
     '@keyframes aqsIn{',
