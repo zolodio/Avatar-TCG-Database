@@ -96,6 +96,44 @@ function getDigitalCollection() {
   return normalized;
 }
 
+async function ensureDigitalCollection() {
+  // Already populated — nothing to do
+  if (window.aqstDigitalCollection && Object.keys(window.aqstDigitalCollection).length > 0) return;
+
+  // Try Supabase first
+  var client = window.sb;
+  if (client && client.auth) {
+    try {
+      var authResp = await client.auth.getUser();
+      var user     = authResp.data && authResp.data.user;
+      if (user) {
+        var result = await client
+          .from('collections')
+          .select('digital')
+          .eq('user_id', user.id)
+          .single();
+
+        if (!result.error && result.data && result.data.digital) {
+          var digital = result.data.digital;
+          // Supabase returns JSONB already parsed; store it back so other
+          // modules (and subsequent calls) find it in the expected places.
+          window.aqstDigitalCollection = digital;
+          try { localStorage.setItem('aqtcg_digital_v1', JSON.stringify(digital)); } catch (_) {}
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn('DeckBuilder: Supabase digital collection fetch failed', e);
+    }
+  }
+
+  // Fallback: localStorage (covers offline / not-logged-in cases)
+  try {
+    var stored = localStorage.getItem('aqtcg_digital_v1');
+    if (stored) window.aqstDigitalCollection = JSON.parse(stored);
+  } catch (_) {}
+}
+
   function getPoolCards() {
     var base = (global.allCards || []).filter(isValidForDeck);
     if (S.pool === 'physical') {
@@ -1827,10 +1865,14 @@ function getDigitalCollection() {
       render();
     });
 
-    /* Pool buttons */
-    el.querySelectorAll('.db-pool-btn').forEach(function(btn){
-      btn.addEventListener('click', function(){ S.pool=this.dataset.pool; render(); });
-    });
+/* Pool buttons */
+el.querySelectorAll('.db-pool-btn').forEach(function(btn){
+  btn.addEventListener('click', async function(){
+    S.pool = this.dataset.pool;
+    if (S.pool === 'digital') await ensureDigitalCollection();
+    render();
+  });
+});
 
     /* ── LIST ──────────────────────────────────────────────── */
     var bOwn = document.getElementById('dbBuildOwnBtn');
@@ -2176,12 +2218,13 @@ function getDigitalCollection() {
   /* ═══════════════════════════════════════════════════════════════
      PUBLIC API + INIT
   ═══════════════════════════════════════════════════════════════ */
-  async function init() {
-    injectCSS();
-    loadDecks();
-    render();
-    pullWhenReady();
-  }
+async function init() {
+  injectCSS();
+  loadDecks();
+  if (S.pool === 'digital') await ensureDigitalCollection();
+  render();
+  pullWhenReady();
+}
 
   global.DeckBuilder = { init:init, render:render, encodeDeck:encodeDeck, decodeDeck:decodeDeck };
 
