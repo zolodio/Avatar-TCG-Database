@@ -7683,19 +7683,19 @@ function loadCharacterIntoForm(char){
     if(sv){ sv.textContent = state.personality[t]; }
   });
   /* physical sliders */
-  Object.keys(state.physical||{}).forEach(function(t){
+Object.keys(state.physical||{}).forEach(function(t){
     var sl = document.querySelector('.cc-slider2[data-trait="'+t+'"]');
-    var sv = document.getElementById('sv-'+t);
+    var sv = document.getElementById('svxt-'+t);   // ← was 'sv-'
     if(sl){ sl.value = state.physical[t]; }
     if(sv){ sv.textContent = state.physical[t]; }
-  });
-    /* mental sliders */
-  Object.keys(state.mental||{}).forEach(function(t){
+});
+/* mental sliders */
+Object.keys(state.mental||{}).forEach(function(t){
     var sl = document.querySelector('.cc-slider3[data-trait="'+t+'"]');
-    var sv = document.getElementById('sv-'+t);
+    var sv = document.getElementById('svxq-'+t);   // ← was 'sv-'
     if(sl){ sl.value = state.mental[t]; }
     if(sv){ sv.textContent = state.mental[t]; }
-  });
+});
   document.querySelector('[data-cctab="create"]').click();
   showToast('Editing: ' + state.givenName);
 }
