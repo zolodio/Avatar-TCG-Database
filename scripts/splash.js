@@ -64,7 +64,7 @@
       'opacity:0;animation:aqsUp 0.7s ease 0.45s both;',
       'margin-bottom:26px;',
     '}',
-    '.aqs-logos img{height:38px;width:auto;',
+    '.aqs-logos img{height:auto;width:85vw;',
       'filter:drop-shadow(0 0 10px rgba(255,255,255,0.55));}',
 
     /* ── Orbital ring wrapper ── */
@@ -227,8 +227,8 @@
 
       /* Logos */
       '<div class="aqs-logos">',
-        '<img src="' + LOGO_SM + '" alt="Avatar Quick Strike" onerror="this.style.display=\'none\'">',
         '<img src="' + LOGO_LG + '" alt="Avatar Quick Strike TCG" onerror="this.style.display=\'none\'">',
+        '<img src="' + LOGO_SM + '" alt="Avatar Quick Strike" onerror="this.style.display=\'none\'">',
       '</div>',
 
       /* Orbital ring */
