@@ -104,7 +104,8 @@
       'position:absolute;top:50%;left:50%;',
       'transform:translate(-50%,-50%);',
       'width:38px;height:38px;border-radius:50%;',
-      'background:conic-gradient(#e8532e,#f0c946,#5cb85c,#2e8ce8,#b44ddf,#e8532e);',
+      'background:radial-gradient(circle at center, rgba(0,0,0,0.25), rgba(0,0,0,0.6)),
+  conic-gradient(#5a7d3a,#b33a1f,#e6e2c3,#2a6f97,#5a7d3a);',
       'opacity:0.9;',
       'animation:aqsChakra 4s linear infinite;',
     '}',
@@ -144,7 +145,15 @@
     '.aqs-title{',
       'font-family:"Cinzel",Georgia,serif;font-weight:900;',
       'font-size:clamp(1rem,3.5vw,1.45rem);',
-      'background:linear-gradient(135deg,#f0c946 0%,#e8532e 30%,#b44ddf 60%,#2e8ce8 85%,#5cb85c 100%);',
+      'background:
+  radial-gradient(circle at center, rgba(0,0,0,0.25), rgba(0,0,0,0.6)),
+  linear-gradient(
+    135deg,
+    #5a7d3a 0%,   /* Earth */
+    #b33a1f 35%,  /* Fire */
+    #e6e2c3 65%,  /* Air */
+    #2a6f97 100%  /* Water */
+  );',
       '-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;',
       'letter-spacing:0.08em;',
       'opacity:0;animation:aqsUp 0.7s ease 0.85s both;',
@@ -174,7 +183,15 @@
     '}',
     '.aqs-bar{',
       'height:100%;border-radius:99px;width:0%;',
-      'background:linear-gradient(90deg,#2e8ce8,#b44ddf,#e8532e,#f0c946);',
+      'background:
+  radial-gradient(circle at center, rgba(0,0,0,0.25), rgba(0,0,0,0.6)),
+  linear-gradient(
+    90deg,
+    #5a7d3a,  /* Earth */
+    #b33a1f,  /* Fire */
+    #e6e2c3,  /* Air */
+    #2a6f97   /* Water */
+  );',
       'transition:width 0.25s ease;',
     '}',
 
