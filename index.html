@@ -62,7 +62,105 @@ body {
   overflow-x: hidden;
   background-color: #000000;
 }
-
+/* ── Section card ── */
+.cc-section{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;margin-bottom:14px;}
+.cc-section-title{font-family:'Cinzel',serif;font-weight:700;font-size:0.9rem;color:var(--text-primary);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.cc-section-title i{color:var(--zen);font-size:1rem;}
+ 
+/* ── Labels & inputs ── */
+.cc-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:6px;display:block;}
+.cc-input,.cc-select,.cc-textarea{width:100%;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text-primary);font-size:0.88rem;font-family:'Nunito Sans',sans-serif;outline:none;transition:border-color 0.2s;box-sizing:border-box;}
+.cc-input:focus,.cc-select:focus,.cc-textarea:focus{border-color:var(--zen);}
+.cc-textarea{resize:vertical;min-height:80px;line-height:1.5;}
+.cc-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.cc-field{margin-bottom:12px;}
+.cc-field:last-child{margin-bottom:0;}
+ 
+/* ── Pill toggles ── */
+.cc-pill-group{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.cc-pill{flex-shrink:0;background:var(--bg-surface);border:1px solid var(--border);border-radius:99px;padding:6px 13px;font-size:0.74rem;font-weight:700;color:var(--text-secondary);cursor:pointer;transition:all 0.18s;user-select:none;}
+.cc-pill:hover{border-color:var(--border-light);color:var(--text-primary);}
+.cc-pill.selected{color:#fff;}
+.cc-pill.fire.selected{background:rgba(232,83,46,0.18);border-color:var(--fire);color:var(--fire);}
+.cc-pill.water.selected{background:rgba(46,140,232,0.18);border-color:var(--water);color:var(--water);}
+.cc-pill.earth.selected{background:rgba(92,184,92,0.18);border-color:var(--earth);color:var(--earth);}
+.cc-pill.air.selected{background:rgba(240,201,70,0.18);border-color:var(--air);color:var(--air);}
+.cc-pill.spirit.selected{background:rgba(180,77,223,0.18);border-color:var(--zen);color:var(--zen);}
+.cc-pill.nonbender.selected{background:rgba(138,142,168,0.18);border-color:var(--text-secondary);color:var(--text-primary);}
+.cc-pill.generic.selected{background:rgba(180,77,223,0.15);border-color:var(--zen);color:var(--zen);}
+ 
+/* ── Trait cards (Strike/Advantage/Ally) ── */
+.cc-trait-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.cc-trait-card{background:var(--bg-surface);border:2px solid var(--border);border-radius:var(--radius);padding:12px 8px;text-align:center;cursor:pointer;transition:all 0.2s;}
+.cc-trait-card:hover{border-color:var(--border-light);}
+.cc-trait-card.selected-strike{border-color:var(--fire);background:rgba(232,83,46,0.1);}
+.cc-trait-card.selected-advantage{border-color:var(--earth);background:rgba(92,184,92,0.1);}
+.cc-trait-card.selected-ally{border-color:var(--water);background:rgba(46,140,232,0.1);}
+.cc-trait-icon{font-size:1.5rem;margin-bottom:6px;display:block;}
+.cc-trait-name{font-family:'Cinzel',serif;font-weight:700;font-size:0.78rem;}
+.cc-trait-desc{font-size:0.62rem;color:var(--text-muted);margin-top:3px;line-height:1.4;}
+ 
+/* ── Image upload ── */
+.cc-img-area{border:2px dashed var(--border-light);border-radius:var(--radius-lg);padding:24px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
+.cc-img-area:hover{border-color:var(--zen);}
+.cc-img-area.has-img{border-style:solid;border-color:var(--border-light);}
+.cc-img-preview{width:100%;max-height:240px;object-fit:contain;border-radius:8px;display:none;}
+.cc-img-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text-muted);}
+.cc-img-placeholder i{font-size:2rem;}
+.cc-img-placeholder span{font-size:0.78rem;}
+.cc-img-input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+ 
+/* ── Coming soon badge ── */
+.cc-soon{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:99px;font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;background:rgba(240,201,70,0.1);color:var(--air);border:1px solid rgba(240,201,70,0.25);}
+ 
+/* ── Save/Load bar ── */
+.cc-action-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.cc-btn{padding:10px 18px;border-radius:var(--radius);border:none;font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:0.82rem;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;}
+.cc-btn-primary{background:var(--zen);color:#fff;}
+.cc-btn-primary:hover{opacity:0.88;}
+.cc-btn-secondary{background:var(--bg-card);border:1px solid var(--border);color:var(--text-secondary);}
+.cc-btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+.cc-btn-danger{background:var(--bg-card);border:1px solid rgba(224,72,72,0.3);color:var(--danger);}
+.cc-btn-danger:hover{background:rgba(224,72,72,0.1);}
+ 
+/* ── Saved characters list ── */
+.cc-char-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all 0.2s;}
+.cc-char-card:hover{border-color:var(--border-light);transform:translateY(-1px);}
+.cc-char-avatar{width:44px;height:44px;border-radius:8px;object-fit:cover;background:var(--bg-surface);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.2rem;border:1px solid var(--border);}
+.cc-char-info{flex:1;min-width:0;}
+.cc-char-name{font-family:'Cinzel',serif;font-weight:700;font-size:0.85rem;}
+.cc-char-sub{font-size:0.68rem;color:var(--text-muted);margin-top:2px;}
+.cc-char-actions{display:flex;gap:6px;flex-shrink:0;}
+.cc-char-action{padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-secondary);font-size:0.7rem;font-family:'Nunito Sans',sans-serif;font-weight:700;cursor:pointer;transition:all 0.2s;}
+.cc-char-action.edit:hover{border-color:var(--accent);color:var(--accent);}
+.cc-char-action.del:hover{border-color:var(--danger);color:var(--danger);}
+ 
+/* ── Range sliders ── */
+.cc-slider{width:100%;accent-color:var(--zen);}
+.cc-slider-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.cc-slider-label{font-size:0.72rem;color:var(--text-secondary);width:110px;flex-shrink:0;}
+.cc-slider-val{font-size:0.72rem;font-weight:700;color:var(--zen);width:28px;text-align:right;flex-shrink:0;}
+ 
+/* ── Tabs (sub) ── */
+.cc-tabs{display:flex;gap:0;margin-bottom:16px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.cc-tab{flex:1;padding:9px 0;background:none;border:none;color:var(--text-secondary);font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:0.75rem;cursor:pointer;transition:all 0.2s;text-align:center;}
+.cc-tab.active{background:var(--zen);color:#fff;}
+ 
+/* ── Toast ── */
+.cc-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:10px 18px;color:var(--text-primary);font-size:0.82rem;font-weight:700;z-index:9999;transition:transform 0.3s;pointer-events:none;}
+.cc-toast.show{transform:translateX(-50%) translateY(0);}
+ 
+/* ── Mastery/rarity badge ── */
+.cc-mastery-badge{display:inline-flex;padding:3px 10px;border-radius:99px;font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;border:1px solid;}
+.m-novice{background:rgba(138,142,168,0.1);border-color:var(--text-secondary);color:var(--text-secondary);}
+.m-adept{background:rgba(92,184,92,0.1);border-color:var(--earth);color:var(--earth);}
+.m-master{background:rgba(46,140,232,0.1);border-color:var(--water);color:var(--water);}
+.m-grandmaster{background:rgba(180,77,223,0.12);border-color:var(--zen);color:var(--zen);}
+ 
+@media(max-width:480px){
+  .cc-row{grid-template-columns:1fr;}
+  .cc-trait-grid{grid-template-columns:repeat(3,1fr);}
+}
 .bg-fixed-image {
   position: fixed;
   top: 0; left: 0;
@@ -1897,6 +1995,7 @@ body {
   <button class="tab-btn" data-tab="media"><i class="fas fa-film"></i> Media</button>
   <button class="tab-btn" data-tab="profile"><i class="fas fa-user"></i> Together</button>
   <button class="tab-btn" data-tab="collect"><i class="fas fa-shopping-bag"></i> Collect</button>
+  <button class="tab-btn" data-tab="creations"><i class="fas fa-scroll"></i> Creations</button>
 </div>
 
 <!-- CARD COLLECTION TAB -->
@@ -3023,6 +3122,380 @@ body {
       <!-- Platform cards injected here -->
     </div>
   </div>
+<div class="tab-content" id="tab-creations">
+  <!-- BEGIN CREATIONS TAB CONTENT (paste inside tab-content div) -->
+<div id="cc-app">
+ 
+  <!-- Sub-tab navigation -->
+  <div class="cc-tabs" id="ccTabs">
+    <button class="cc-tab active" data-cctab="create">&#10010; Create</button>
+    <button class="cc-tab" data-cctab="roster">&#9876; My Characters</button>
+  </div>
+ 
+  <!-- ── CREATE PANEL ── -->
+  <div id="cctab-create">
+ 
+    <!-- Action bar -->
+    <div class="cc-action-bar">
+      <button class="cc-btn cc-btn-primary" id="cc-save-btn">
+        <i class="fas fa-save"></i> Save Character
+      </button>
+      <button class="cc-btn cc-btn-secondary" id="cc-random-btn">
+        <i class="fas fa-dice"></i> Randomize
+      </button>
+      <button class="cc-btn cc-btn-secondary" id="cc-clear-btn">
+        <i class="fas fa-eraser"></i> Clear Form
+      </button>
+    </div>
+ 
+    <!-- 1. NAME -->
+    <div class="cc-section">
+      <div class="cc-section-title"><i class="fas fa-signature"></i> Name</div>
+      <div class="cc-row">
+        <div class="cc-field">
+          <label class="cc-label">Given Name</label>
+          <input class="cc-input" id="cc-given-name" placeholder="e.g. Zuko, Katara…" maxlength="40">
+        </div>
+        <div class="cc-field">
+          <label class="cc-label">Nickname / Bending Name</label>
+          <input class="cc-input" id="cc-nick-name" placeholder="e.g. The Blue Spirit…" maxlength="40">
+        </div>
+      </div>
+    </div>
+ 
+    <!-- 2. IMAGE -->
+    <div class="cc-section">
+      <div class="cc-section-title"><i class="fas fa-image"></i> Character Image</div>
+      <div class="cc-img-area" id="cc-img-area">
+        <input type="file" class="cc-img-input" id="cc-img-input" accept="image/png,image/jpeg,image/webp">
+        <img class="cc-img-preview" id="cc-img-preview" alt="Character portrait">
+        <div class="cc-img-placeholder" id="cc-img-placeholder">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <span>Click to upload portrait (JPG / PNG / WEBP)</span>
+          <span style="font-size:0.65rem;opacity:0.6;">Recommended: portrait (2:3 ratio)</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center;">
+        <button class="cc-btn cc-btn-secondary" id="cc-img-clear" style="font-size:0.75rem;padding:7px 12px;" disabled>
+          <i class="fas fa-times"></i> Remove Image
+        </button>
+        <span class="cc-soon"><i class="fas fa-robot"></i> AI Image Gen — Coming Soon</span>
+        <span class="cc-soon"><i class="fas fa-palette"></i> Commission — Coming Soon</span>
+      </div>
+    </div>
+ 
+    <!-- 3. BENDING -->
+    <div class="cc-section">
+      <div class="cc-section-title"><i class="fas fa-fire"></i> Bending Status</div>
+      <label class="cc-label">Element</label>
+      <div class="cc-pill-group" id="cc-bending-group">
+        <div class="cc-pill nonbender" data-group="bending" data-val="non-bender">Non-Bender</div>
+        <div class="cc-pill water" data-group="bending" data-val="water">Water</div>
+        <div class="cc-pill earth" data-group="bending" data-val="earth">Earth</div>
+        <div class="cc-pill fire" data-group="bending" data-val="fire">Fire</div>
+        <div class="cc-pill air" data-group="bending" data-val="air">Air</div>
+        <div class="cc-pill spirit" data-group="bending" data-val="spirit">Spirit</div>
+      </div>
+ 
+      <div style="margin-top:14px;">
+        <label class="cc-label">Specialty / Sub-Bending <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:0.68rem;">(select all that apply)</span></label>
+        <div class="cc-pill-group" id="cc-specialty-group">
+          <!-- Populated by JS based on bending selection -->
+          <span style="font-size:0.75rem;color:var(--text-muted);font-style:italic;">Select an element above to see specialties</span>
+        </div>
+      </div>
+ 
+      <div style="margin-top:14px;">
+        <label class="cc-label">Mastery Level</label>
+        <div class="cc-pill-group">
+          <div class="cc-pill generic" data-group="mastery" data-val="novice">Novice</div>
+          <div class="cc-pill generic" data-group="mastery" data-val="adept">Adept</div>
+          <div class="cc-pill generic" data-group="mastery" data-val="master">Master</div>
+          <div class="cc-pill generic" data-group="mastery" data-val="grandmaster">Grandmaster</div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- 4. QUICKSTRIKE TRAITS -->
+    <div class="cc-section">
+      <div class="cc-section-title"><i class="fas fa-bolt"></i> Quickstrike Traits</div>
+      <div style="margin-bottom:14px;">
+        <label class="cc-label" style="margin-bottom:8px;">Strike Type</label>
+        <div class="cc-trait-grid" id="cc-strike-group">
+          <div class="cc-trait-card" data-group="strike" data-val="bull">
+            <span class="cc-trait-icon">🐂</span>
+            <div class="cc-trait-name" style="color:var(--fire);">Bull</div>
+            <div class="cc-trait-desc">Overpowering force, breaks through defenses</div>
+          </div>
+          <div class="cc-trait-card" data-group="strike" data-val="fox">
+            <span class="cc-trait-icon">🦊</span>
+            <div class="cc-trait-name" style="color:var(--air);">Fox</div>
+            <div class="cc-trait-desc">Cunning and deceptive, exploits openings</div>
+          </div>
+          <div class="cc-trait-card" data-group="strike" data-val="lion">
+            <span class="cc-trait-icon">🦁</span>
+            <div class="cc-trait-name" style="color:var(--promo);">Lion</div>
+            <div class="cc-trait-desc">Noble precision, calculated strikes</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-bottom:14px;">
+        <label class="cc-label" style="margin-bottom:8px;">Advantage</label>
+        <div class="cc-trait-grid" id="cc-advantage-group">
+          <div class="cc-trait-card" data-group="advantage" data-val="mind">
+            <span class="cc-trait-icon">🧠</span>
+            <div class="cc-trait-name" style="color:var(--water);">Mind</div>
+            <div class="cc-trait-desc">Strategic insight, tactical dominance</div>
+          </div>
+          <div class="cc-trait-card" data-group="advantage" data-val="body">
+            <span class="cc-trait-icon">💪</span>
+            <div class="cc-trait-name" style="color:var(--earth);">Body</div>
+            <div class="cc-trait-desc">Raw strength and endurance</div>
+          </div>
+          <div class="cc-trait-card" data-group="advantage" data-val="spirit">
+            <span class="cc-trait-icon">✨</span>
+            <div class="cc-trait-name" style="color:var(--zen);">Spirit</div>
+            <div class="cc-trait-desc">Inner power and spiritual connection</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <label class="cc-label" style="margin-bottom:8px;">Ally</label>
+        <div class="cc-trait-grid" id="cc-ally-group">
+          <div class="cc-trait-card" data-group="ally" data-val="light">
+            <span class="cc-trait-icon">☀️</span>
+            <div class="cc-trait-name" style="color:var(--air);">Light</div>
+            <div class="cc-trait-desc">Openly honorable, fights for good</div>
+          </div>
+          <div class="cc-trait-card" data-group="ally" data-val="shadow">
+            <span class="cc-trait-icon">🌑</span>
+            <div class="cc-trait-name" style="color:var(--text-secondary);">Shadow</div>
+            <div class="cc-trait-desc">Morally grey, acts in the dark</div>
+          </div>
+          <div class="cc-trait-card" data-group="ally" data-val="dark">
+            <span class="cc-trait-icon">🌑</span>
+            <div class="cc-trait-name" style="color:var(--danger);">Dark</div>
+            <div class="cc-trait-desc">Villainous or corrupted path</div>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- 5. COMBAT STYLE -->
+    <div class="cc-section">
+      <div class="cc-section-title"><i class="fas fa-fist-raised"></i> Combat Style</div>
+      <div class="cc-row">
+        <div class="cc-field">
+          <label class="cc-label">Temperament</label>
+          <div class="cc-pill-group" id="cc-temperament-group">
+            <div class="cc-pill generic" data-group="temperament" data-val="aggressive">Aggressive</div>
+            <div class="cc-pill generic" data-group="temperament" data-val="defensive">Defensive</div>
+            <div class="cc-pill generic" data-group="temperament" data-val="tactical">Tactical</div>
+            <div class="cc-pill generic" data-group="temperament" data-val="passive">Passive</div>
+            <div class="cc-pill generic" data-group="temperament" data-val="chaotic">Chaotic</div>
+            <div class="cc-pill generic" data-group="temperament" data-val="disciplined">Disciplined</div>
+          </div>
+        </div>
+        <div class="cc-field">
+          <label class="cc-label">Life Path</label>
+          <div class="cc-pill-group" id="cc-lifepath-group">
+            <div class="cc-pill generic" data-group="lifepath" data-val="open-palm">Open Palm</div>
+            <div class="cc-pill generic" data-group="lifepath" data-val="closed-fist">Closed Fist</div>
+          </div>
+          <label class="cc-label" style="margin-top:10px;">Tactical Range</label>
+          <div class="cc-pill-group" id="cc-range-group">
+            <div class="cc-pill generic" data-group="range" data-val="close">Close Range</div>
+            <div class="cc-pill generic" data-group="range" data-val="mid">Mid Range</div>
+            <div class="cc-pill generic" data-group="range" data-val="long">Long Range</div>
+            <div class="cc-pill generic" data-group="range" data-val="support">Support</div>
+            <div class="cc-pill generic" data-group="range" data-val="control">Battlefield Control</div>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- 6. COMPANION -->
+    <div class="cc-section">
+      <div class="cc-section-title"><i class="fas fa-paw"></i> Companion / Pet</div>
+      <label class="cc-label">Category</label>
+      <div class="cc-pill-group" id="cc-pet-cat-group">
+        <div class="cc-pill generic selected generic" data-group="petcat" data-val="none">None</div>
+        <div class="cc-pill generic" data-group="petcat" data-val="standard">Standard Animal</div>
+        <div class="cc-pill generic" data-group="petcat" data-val="hybrid">Hybrid Animal</div>
+        <div class="cc-pill generic" data-group="petcat" data-val="mount">Mount Class</div>
+        <div class="cc-pill generic" data-group="petcat" data-val="spirit">Spirit Companion</div>
+      </div>
+      <div id="cc-pet-picker" style="margin-top:10px;display:none;">
+        <label class="cc-label">Select Pet</label>
+        <select class="cc-select" id="cc-pet-select"><option value="">— Choose —</option></select>
+        <label class="cc-label" style="margin-top:10px;">Bond Level</label>
+        <div class="cc-pill-group" id="cc-bond-group">
+          <div class="cc-pill generic" data-group="bond" data-val="wild">Wild</div>
+          <div class="cc-pill generic" data-group="bond" data-val="trained">Trained</div>
+          <div class="cc-pill generic" data-group="bond" data-val="loyal">Loyal</div>
+          <div class="cc-pill generic" data-group="bond" data-val="spirit-bound">Spirit-Bound</div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- 7. PHYSICAL DESCRIPTION -->
+    <div class="cc-section">
+      <div class="cc-section-title"><i class="fas fa-user-alt"></i> Physical Description</div>
+      <div class="cc-row">
+        <div class="cc-field">
+          <label class="cc-label">Height</label>
+          <input class="cc-input" id="cc-height" placeholder='e.g. 5&apos;8" / 172cm'>
+        </div>
+        <div class="cc-field">
+          <label class="cc-label">Weight</label>
+          <input class="cc-input" id="cc-weight" placeholder="e.g. 145 lbs / 66kg">
+        </div>
+      </div>
+      <div class="cc-row">
+        <div class="cc-field">
+          <label class="cc-label">Eye Color</label>
+          <input class="cc-input" id="cc-eyes" placeholder="e.g. amber, silver…">
+        </div>
+        <div class="cc-field">
+          <label class="cc-label">Hair Color</label>
+          <input class="cc-input" id="cc-hair" placeholder="e.g. black, white…">
+        </div>
+      </div>
+      <div class="cc-row">
+        <div class="cc-field">
+          <label class="cc-label">Skin Tone</label>
+          <input class="cc-input" id="cc-skin" placeholder="e.g. olive, tan, dark…">
+        </div>
+        <div class="cc-field">
+          <label class="cc-label">Build</label>
+          <div class="cc-pill-group" id="cc-build-group" style="margin-top:2px;">
+            <div class="cc-pill generic" data-group="build" data-val="lean">Lean</div>
+            <div class="cc-pill generic" data-group="build" data-val="muscular">Muscular</div>
+            <div class="cc-pill generic" data-group="build" data-val="stocky">Stocky</div>
+            <div class="cc-pill generic" data-group="build" data-val="slender">Slender</div>
+          </div>
+        </div>
+      </div>
+      <div class="cc-field">
+        <label class="cc-label">Optional Details (scars, tattoos, outfit, nation attire…)</label>
+        <textarea class="cc-textarea" id="cc-appearance-notes" placeholder="Describe any notable features…" style="min-height:60px;"></textarea>
+      </div>
+    </div>
+ 
+    <!-- 8. PERSONALITY -->
+    <div class="cc-section">
+      <div class="cc-section-title"><i class="fas fa-brain"></i> Personality Traits</div>
+      <div id="cc-personality-sliders">
+        <!-- rendered by JS -->
+      </div>
+      <div style="margin-top:12px;">
+        <label class="cc-label">Flaws (optional, select all that apply)</label>
+        <div class="cc-pill-group" id="cc-flaws-group">
+          <div class="cc-pill generic" data-group="flaws" data-val="arrogant" data-multi="1">Arrogant</div>
+          <div class="cc-pill generic" data-group="flaws" data-val="impulsive" data-multi="1">Impulsive</div>
+          <div class="cc-pill generic" data-group="flaws" data-val="distrustful" data-multi="1">Distrustful</div>
+          <div class="cc-pill generic" data-group="flaws" data-val="reckless" data-multi="1">Reckless</div>
+          <div class="cc-pill generic" data-group="flaws" data-val="idealistic" data-multi="1">Idealistic</div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- 9. BACKSTORY -->
+    <div class="cc-section">
+      <div class="cc-section-title"><i class="fas fa-scroll"></i> Backstory</div>
+      <div class="cc-tabs" id="cc-backstory-tabs">
+        <button class="cc-tab active" data-bstab="freewrite">Write Freely</button>
+        <button class="cc-tab" data-bstab="template">Use Template</button>
+        <button class="cc-tab" data-bstab="ai" disabled style="opacity:0.5;cursor:not-allowed;">AI Generate ✦</button>
+      </div>
+      <div id="cc-bs-freewrite">
+        <textarea class="cc-textarea" id="cc-backstory-free" placeholder="Write your character's backstory here…" style="min-height:140px;"></textarea>
+      </div>
+      <div id="cc-bs-template" style="display:none;">
+        <div class="cc-field">
+          <label class="cc-label">Birth Nation</label>
+          <select class="cc-select" id="cc-bs-nation">
+            <option value="">— Select —</option>
+            <option>Fire Nation</option><option>Earth Kingdom</option>
+            <option>Water Tribe (Northern)</option><option>Water Tribe (Southern)</option>
+            <option>Air Nomads</option><option>Spirit World</option>
+            <option>United Republic / Republic City</option>
+            <option>Unknown / Stateless</option>
+          </select>
+        </div>
+        <div class="cc-field">
+          <label class="cc-label">Early Training</label>
+          <input class="cc-input" id="cc-bs-training" placeholder="e.g. Trained under a military general…">
+        </div>
+        <div class="cc-field">
+          <label class="cc-label">Defining Trauma / Call to Adventure</label>
+          <input class="cc-input" id="cc-bs-trauma" placeholder="e.g. Village destroyed by…">
+        </div>
+        <div class="cc-row">
+          <div class="cc-field">
+            <label class="cc-label">Mentor</label>
+            <input class="cc-input" id="cc-bs-mentor" placeholder="e.g. A retired master…">
+          </div>
+          <div class="cc-field">
+            <label class="cc-label">Rival</label>
+            <input class="cc-input" id="cc-bs-rival" placeholder="e.g. A former friend who…">
+          </div>
+        </div>
+        <div class="cc-row">
+          <div class="cc-field">
+            <label class="cc-label">Goal</label>
+            <input class="cc-input" id="cc-bs-goal" placeholder="What drives them?">
+          </div>
+          <div class="cc-field">
+            <label class="cc-label">Secret</label>
+            <input class="cc-input" id="cc-bs-secret" placeholder="What are they hiding?">
+          </div>
+        </div>
+        <div style="margin-top:4px;">
+          <label class="cc-label">Tone</label>
+          <div class="cc-pill-group" id="cc-bs-tone-group">
+            <div class="cc-pill generic" data-group="bstone" data-val="hopeful">Hopeful</div>
+            <div class="cc-pill generic" data-group="bstone" data-val="dark">Dark</div>
+            <div class="cc-pill generic" data-group="bstone" data-val="epic">Epic</div>
+            <div class="cc-pill generic" data-group="bstone" data-val="political">Political</div>
+            <div class="cc-pill generic" data-group="bstone" data-val="tragic">Tragic</div>
+          </div>
+        </div>
+        <button class="cc-btn cc-btn-secondary" id="cc-bs-generate-text" style="margin-top:12px;width:100%;justify-content:center;">
+          <i class="fas fa-magic"></i> Generate Backstory from Template
+        </button>
+        <textarea class="cc-textarea" id="cc-backstory-generated" style="margin-top:10px;min-height:100px;display:none;" placeholder="Generated backstory will appear here…"></textarea>
+      </div>
+      <div id="cc-bs-ai" style="display:none;text-align:center;padding:20px 0;">
+        <span class="cc-soon"><i class="fas fa-robot"></i> AI Backstory Generator — Coming Soon</span>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin-top:10px;">Will generate unique, lore-consistent backstories with no canon overlaps.</p>
+      </div>
+    </div>
+ 
+  </div><!-- /create panel -->
+ 
+  <!-- ── ROSTER PANEL ── -->
+  <div id="cctab-roster" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <div style="font-family:'Cinzel',serif;font-weight:700;font-size:0.95rem;">Saved Characters</div>
+      <span id="cc-roster-count" style="font-size:0.72rem;color:var(--text-muted);"></span>
+    </div>
+    <div id="cc-roster-list">
+      <div style="text-align:center;padding:40px 0;color:var(--text-muted);font-size:0.82rem;">
+        <i class="fas fa-users" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:10px;"></i>
+        No characters yet — create your first one!
+      </div>
+    </div>
+    <div style="margin-top:18px;padding:14px;background:rgba(240,201,70,0.06);border:1px solid rgba(240,201,70,0.18);border-radius:var(--radius);">
+      <div style="font-size:0.7rem;color:var(--air);font-weight:700;margin-bottom:3px;"><i class="fas fa-cloud" style="margin-right:5px;"></i>Supabase Sync — Coming Soon</div>
+      <div style="font-size:0.68rem;color:var(--text-muted);line-height:1.5;">Characters will be saved to the cloud with duplicate detection &amp; similarity checking.</div>
+    </div>
+  </div>
+ 
+</div><!-- /cc-app -->
+ 
+<div class="cc-toast" id="cc-toast"></div>
+</div>  
 </div>
 </div><!-- /.app-container -->
 
@@ -6664,6 +7137,579 @@ init();
   renderMarketplace();
   window.renderMarketplace = renderMarketplace;
 
+})();
+</script>
+<script>
+(function(){
+'use strict';
+ 
+/* ── SPECIALTY OPTIONS per element ── */
+var SPECIALTIES = {
+  'non-bender': ['Weapons Mastery','Chi Blocking','Acrobatics','Throwables & Gadgets','Engineering','Tactical Genius','Stealth','Mechanized Combat','Precision Ranged'],
+  'water': ['Bloodbending','Healing','Swamp/Plant Bending','Breathe Underwater','Ice Bending'],
+  'earth': ['Metalbending','Sandbending','Seismic Sense','Magnetization','Lavabending','Diamond Bending','Fossil Bending'],
+  'fire': ['Lightning','Colored Fire','Combustion','Plasma Bending'],
+  'air': ['Flight','Sound Bending','Breathe in Space','Super Hearing','Vacuum Creation','Echo Bending'],
+  'spirit': ['Spirit Projection','Spirit Bending','Light/Shadow Bending','Emotion Bending'],
+  '_cross': ['Light/Shadow Bending','Mudbending','Ink Bending','Weather Bending','Gravity Bending','Molecular Vibration','Chi Pulse']
+};
+ 
+var PET_OPTIONS = {
+  'standard': ['Cat','Dog','Hawk','Pig','Chicken','Rat','Butterfly','Bear'],
+  'hybrid': ['Turtle Duck','Otter Penguin','Fire Ferret','Platypus Bear','Catgator','Wolfbat','Koala Sheep','Eel Hound'],
+  'mount': ['Sky Bison','Komodo Rhino','Ostrich Horse','Shirshu','Badgermole','Polar Bear Dog','Armadillo Lion','Dragon','Lion Turtle','Sand Shark','Moose Lion'],
+  'spirit': ['Spirit Vine','Forest Mask Spirit','Spirit Dragon','Mushroom Spirit','Butterfly Spirit']
+};
+ 
+var PERSONALITY_TRAITS = ['Honor','Aggression','Compassion','Discipline','Spirituality','Loyalty','Independence'];
+ 
+/* ── STATE ── */
+var state = {
+  givenName:'', nickName:'', imageData:null, imageMime:'',
+  bending:'', specialties:[], mastery:'',
+  strike:'', advantage:'', ally:'',
+  temperament:'', lifepath:'', range:'',
+  petCat:'none', pet:'', bond:'',
+  height:'', weight:'', eyes:'', hair:'', skin:'', build:'', appearanceNotes:'',
+  personality:{ Honor:50, Aggression:30, Compassion:70, Discipline:50, Spirituality:50, Loyalty:60, Independence:50 },
+  flaws:[],
+  backstoryMode:'freewrite', backstoryFree:'',
+  bsNation:'', bsTraining:'', bsTrauma:'', bsMentor:'', bsRival:'', bsGoal:'', bsSecret:'', bsTone:''
+};
+ 
+var editingId = null;
+ 
+/* ── INIT ── */
+function init(){
+  renderPersonalitySliders();
+  bindPillGroups();
+  bindSubTabs();
+  bindBackstoryTabs();
+  bindImageUpload();
+  bindActions();
+  updateSpecialties();
+}
+ 
+/* ── PILL GROUPS ── */
+function bindPillGroups(){
+  document.querySelectorAll('.cc-pill').forEach(function(pill){
+    pill.addEventListener('click', function(){
+      var group = this.dataset.group;
+      var val = this.dataset.val;
+      var multi = this.dataset.multi === '1';
+      if(multi){
+        this.classList.toggle('selected');
+        this.classList.toggle('generic');
+        var selected = Array.from(document.querySelectorAll('.cc-pill[data-group="'+group+'"].selected')).map(function(p){return p.dataset.val;});
+        state.flaws = selected;
+      } else {
+        var wasSelected = this.classList.contains('selected');
+        document.querySelectorAll('.cc-pill[data-group="'+group+'"]').forEach(function(p){
+          p.classList.remove('selected');
+        });
+        if(!wasSelected){
+          this.classList.add('selected');
+          state[group] = val;
+          if(group === 'bending') updateSpecialties();
+          if(group === 'petcat') updatePetPicker(val);
+        } else {
+          state[group] = '';
+          if(group === 'bending') updateSpecialties();
+          if(group === 'petcat') updatePetPicker('none');
+        }
+      }
+    });
+  });
+  /* trait cards */
+  document.querySelectorAll('.cc-trait-card').forEach(function(card){
+    card.addEventListener('click', function(){
+      var group = this.dataset.group;
+      var val = this.dataset.val;
+      document.querySelectorAll('.cc-trait-card[data-group="'+group+'"]').forEach(function(c){
+        c.className = 'cc-trait-card';
+      });
+      this.classList.add('selected-'+group);
+      state[group] = val;
+    });
+  });
+}
+ 
+/* ── SPECIALTY PILLS ── */
+function updateSpecialties(){
+  var container = document.getElementById('cc-specialty-group');
+  var bending = state.bending;
+  if(!bending){
+    container.innerHTML = '<span style="font-size:0.75rem;color:var(--text-muted);font-style:italic;">Select an element above to see specialties</span>';
+    state.specialties = [];
+    return;
+  }
+  var options = (SPECIALTIES[bending] || []).concat(SPECIALTIES['_cross']);
+  var saved = state.specialties;
+  container.innerHTML = '';
+  options.forEach(function(opt){
+    var pill = document.createElement('div');
+    pill.className = 'cc-pill generic' + (saved.indexOf(opt) !== -1 ? ' selected' : '');
+    pill.dataset.multi = '1';
+    pill.dataset.group = 'specialties';
+    pill.textContent = opt;
+    pill.addEventListener('click', function(){
+      this.classList.toggle('selected');
+      var idx = state.specialties.indexOf(opt);
+      if(this.classList.contains('selected')){ if(idx === -1) state.specialties.push(opt); }
+      else { if(idx !== -1) state.specialties.splice(idx,1); }
+    });
+    container.appendChild(pill);
+  });
+}
+ 
+/* ── PET PICKER ── */
+function updatePetPicker(cat){
+  var picker = document.getElementById('cc-pet-picker');
+  var sel = document.getElementById('cc-pet-select');
+  if(cat === 'none' || !PET_OPTIONS[cat]){
+    picker.style.display = 'none'; state.pet = ''; return;
+  }
+  picker.style.display = '';
+  sel.innerHTML = '<option value="">— Choose —</option>';
+  PET_OPTIONS[cat].forEach(function(p){
+    var opt = document.createElement('option');
+    opt.value = p; opt.textContent = p;
+    sel.appendChild(opt);
+  });
+  sel.value = state.pet || '';
+  sel.onchange = function(){ state.pet = this.value; };
+}
+ 
+/* ── PERSONALITY SLIDERS ── */
+function renderPersonalitySliders(){
+  var container = document.getElementById('cc-personality-sliders');
+  var html = '';
+  PERSONALITY_TRAITS.forEach(function(trait){
+    var val = state.personality[trait];
+    html += '<div class="cc-slider-row">' +
+      '<span class="cc-slider-label">'+trait+'</span>' +
+      '<input type="range" class="cc-slider" min="0" max="100" value="'+val+'" data-trait="'+trait+'">' +
+      '<span class="cc-slider-val" id="sv-'+trait+'">'+val+'</span>' +
+      '</div>';
+  });
+  container.innerHTML = html;
+  container.querySelectorAll('.cc-slider').forEach(function(s){
+    s.addEventListener('input', function(){
+      state.personality[this.dataset.trait] = parseInt(this.value);
+      document.getElementById('sv-'+this.dataset.trait).textContent = this.value;
+    });
+  });
+}
+ 
+/* ── SUB TABS ── */
+function bindSubTabs(){
+  document.getElementById('ccTabs').addEventListener('click', function(e){
+    var btn = e.target.closest('[data-cctab]');
+    if(!btn) return;
+    document.querySelectorAll('#ccTabs .cc-tab').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+    document.getElementById('cctab-create').style.display = btn.dataset.cctab === 'create' ? '' : 'none';
+    document.getElementById('cctab-roster').style.display = btn.dataset.cctab === 'roster' ? '' : 'none';
+    if(btn.dataset.cctab === 'roster') renderRoster();
+  });
+}
+ 
+/* ── BACKSTORY TABS ── */
+function bindBackstoryTabs(){
+  document.getElementById('cc-backstory-tabs').addEventListener('click', function(e){
+    var btn = e.target.closest('[data-bstab]');
+    if(!btn || btn.disabled) return;
+    document.querySelectorAll('#cc-backstory-tabs .cc-tab').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+    var tab = btn.dataset.bstab;
+    state.backstoryMode = tab;
+    document.getElementById('cc-bs-freewrite').style.display = tab === 'freewrite' ? '' : 'none';
+    document.getElementById('cc-bs-template').style.display  = tab === 'template'  ? '' : 'none';
+    document.getElementById('cc-bs-ai').style.display        = tab === 'ai'        ? '' : 'none';
+  });
+  document.getElementById('cc-bs-generate-text').addEventListener('click', generateTemplateBackstory);
+}
+ 
+function generateTemplateBackstory(){
+  var nation   = document.getElementById('cc-bs-nation').value;
+  var training = document.getElementById('cc-bs-training').value;
+  var trauma   = document.getElementById('cc-bs-trauma').value;
+  var mentor   = document.getElementById('cc-bs-mentor').value;
+  var rival    = document.getElementById('cc-bs-rival').value;
+  var goal     = document.getElementById('cc-bs-goal').value;
+  var secret   = document.getElementById('cc-bs-secret').value;
+  var name     = document.getElementById('cc-given-name').value || 'The character';
+  var toneEl   = document.querySelector('.cc-pill[data-group="bstone"].selected');
+  var tone     = toneEl ? toneEl.dataset.val : '';
+ 
+  var parts = [];
+  if(nation) parts.push(name + ' was born in the ' + nation + '.');
+  if(training) parts.push('Their early years were shaped by ' + training + '.');
+  if(trauma) parts.push('Everything changed when ' + trauma + '.');
+  if(mentor) parts.push('Under the guidance of ' + mentor + ', they honed their skills.');
+  if(rival) parts.push('Their greatest rival remains ' + rival + '.');
+  if(goal) parts.push('Above all else, they seek: ' + goal + '.');
+  if(secret) parts.push('But there is something they keep hidden — ' + secret + '.');
+ 
+  if(tone === 'dark') parts.push('The shadows that follow them run deeper than most suspect.');
+  else if(tone === 'hopeful') parts.push('Despite everything, hope burns within them like an undying flame.');
+  else if(tone === 'tragic') parts.push('Their story is one written in loss, yet they press forward.');
+  else if(tone === 'epic') parts.push('Destiny itself seems to pull them toward something greater.');
+  else if(tone === 'political') parts.push('The nations around them are in flux, and they are no mere bystander.');
+ 
+  var result = parts.length ? parts.join(' ') : 'Fill in the template fields above to generate a backstory.';
+  var area = document.getElementById('cc-backstory-generated');
+  area.value = result;
+  area.style.display = '';
+  state.backstoryFree = result;
+}
+ 
+/* ── IMAGE UPLOAD ── */
+function bindImageUpload(){
+  var input = document.getElementById('cc-img-input');
+  var area  = document.getElementById('cc-img-area');
+  var preview = document.getElementById('cc-img-preview');
+  var placeholder = document.getElementById('cc-img-placeholder');
+  var clearBtn = document.getElementById('cc-img-clear');
+ 
+  input.addEventListener('change', function(){
+    var file = this.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e){
+      state.imageData = e.target.result.split(',')[1];
+      state.imageMime = file.type;
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+      placeholder.style.display = 'none';
+      area.classList.add('has-img');
+      clearBtn.disabled = false;
+    };
+    reader.readAsDataURL(file);
+    this.value = '';
+  });
+ 
+  clearBtn.addEventListener('click', function(){
+    state.imageData = null; state.imageMime = '';
+    preview.src = ''; preview.style.display = 'none';
+    placeholder.style.display = 'flex';
+    area.classList.remove('has-img');
+    this.disabled = true;
+  });
+}
+ 
+/* ── ACTIONS ── */
+function bindActions(){
+  document.getElementById('cc-save-btn').addEventListener('click', saveCharacter);
+  document.getElementById('cc-random-btn').addEventListener('click', randomizeCharacter);
+  document.getElementById('cc-clear-btn').addEventListener('click', clearForm);
+ 
+  /* sync text inputs to state */
+  var textMap = {
+    'cc-given-name':'givenName','cc-nick-name':'nickName',
+    'cc-height':'height','cc-weight':'weight','cc-eyes':'eyes','cc-hair':'hair',
+    'cc-skin':'skin','cc-appearance-notes':'appearanceNotes',
+    'cc-backstory-free':'backstoryFree','cc-bs-nation':'bsNation',
+    'cc-bs-training':'bsTraining','cc-bs-trauma':'bsTrauma',
+    'cc-bs-mentor':'bsMentor','cc-bs-rival':'bsRival',
+    'cc-bs-goal':'bsGoal','cc-bs-secret':'bsSecret'
+  };
+  Object.keys(textMap).forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.addEventListener('input', function(){ state[textMap[id]] = this.value; });
+  });
+}
+ 
+/* ── SAVE ── */
+function collectFormState(){
+  /* collect current input values */
+  state.givenName = document.getElementById('cc-given-name').value;
+  state.nickName  = document.getElementById('cc-nick-name').value;
+  state.height    = document.getElementById('cc-height').value;
+  state.weight    = document.getElementById('cc-weight').value;
+  state.eyes      = document.getElementById('cc-eyes').value;
+  state.hair      = document.getElementById('cc-hair').value;
+  state.skin      = document.getElementById('cc-skin').value;
+  state.appearanceNotes = document.getElementById('cc-appearance-notes').value;
+  state.backstoryFree = document.getElementById('cc-backstory-free').value;
+  state.bsNation  = document.getElementById('cc-bs-nation').value;
+  state.bsTraining= document.getElementById('cc-bs-training').value;
+  state.bsTrauma  = document.getElementById('cc-bs-trauma').value;
+  state.bsMentor  = document.getElementById('cc-bs-mentor').value;
+  state.bsRival   = document.getElementById('cc-bs-rival').value;
+  state.bsGoal    = document.getElementById('cc-bs-goal').value;
+  state.bsSecret  = document.getElementById('cc-bs-secret').value;
+  var genArea = document.getElementById('cc-backstory-generated');
+  if(genArea && genArea.value) state.backstoryFree = genArea.value;
+}
+ 
+function saveCharacter(){
+  collectFormState();
+  if(!state.givenName.trim()){ showToast('Please enter a name first.'); return; }
+  var chars = getCharacters();
+  var char = Object.assign({}, state, {
+    id: editingId || Date.now(),
+    createdAt: editingId ? (chars.find(function(c){return c.id===editingId;})||{}).createdAt || Date.now() : Date.now(),
+    updatedAt: Date.now()
+  });
+  if(editingId){
+    var idx = chars.findIndex(function(c){return c.id===editingId;});
+    if(idx !== -1) chars[idx] = char; else chars.unshift(char);
+  } else {
+    chars.unshift(char);
+  }
+  localStorage.setItem('aqst_characters', JSON.stringify(chars));
+  editingId = null;
+  showToast(editingId ? 'Character updated!' : '✅ Character saved!');
+  /* switch to roster */
+  document.querySelector('[data-cctab="roster"]').click();
+}
+ 
+/* ── LOAD ── */
+function getCharacters(){
+  try{ return JSON.parse(localStorage.getItem('aqst_characters') || '[]'); }
+  catch(e){ return []; }
+}
+ 
+function loadCharacterIntoForm(char){
+  editingId = char.id;
+  Object.assign(state, char);
+ 
+  document.getElementById('cc-given-name').value = state.givenName || '';
+  document.getElementById('cc-nick-name').value  = state.nickName  || '';
+  document.getElementById('cc-height').value     = state.height    || '';
+  document.getElementById('cc-weight').value     = state.weight    || '';
+  document.getElementById('cc-eyes').value       = state.eyes      || '';
+  document.getElementById('cc-hair').value       = state.hair      || '';
+  document.getElementById('cc-skin').value       = state.skin      || '';
+  document.getElementById('cc-appearance-notes').value = state.appearanceNotes || '';
+  document.getElementById('cc-backstory-free').value   = state.backstoryFree   || '';
+  document.getElementById('cc-bs-nation').value   = state.bsNation   || '';
+  document.getElementById('cc-bs-training').value = state.bsTraining || '';
+  document.getElementById('cc-bs-trauma').value   = state.bsTrauma   || '';
+  document.getElementById('cc-bs-mentor').value   = state.bsMentor   || '';
+  document.getElementById('cc-bs-rival').value    = state.bsRival    || '';
+  document.getElementById('cc-bs-goal').value     = state.bsGoal     || '';
+  document.getElementById('cc-bs-secret').value   = state.bsSecret   || '';
+ 
+  /* pills */
+  restorePill('bending',     state.bending);
+  restorePill('mastery',     state.mastery);
+  restorePill('strike',      null, true);  /* trait cards */
+  restorePill('advantage',   null, true);
+  restorePill('ally',        null, true);
+  restorePill('temperament', state.temperament);
+  restorePill('lifepath',    state.lifepath);
+  restorePill('range',       state.range);
+  restorePill('build',       state.build);
+  restorePill('bstone',      state.bsTone);
+  restorePill('petcat',      state.petCat || 'none');
+ 
+  /* trait cards */
+  if(state.strike){
+    document.querySelectorAll('.cc-trait-card[data-group="strike"]').forEach(function(c){c.className='cc-trait-card'+(c.dataset.val===state.strike?' selected-strike':'');});
+  }
+  if(state.advantage){
+    document.querySelectorAll('.cc-trait-card[data-group="advantage"]').forEach(function(c){c.className='cc-trait-card'+(c.dataset.val===state.advantage?' selected-advantage':'');});
+  }
+  if(state.ally){
+    document.querySelectorAll('.cc-trait-card[data-group="ally"]').forEach(function(c){c.className='cc-trait-card'+(c.dataset.val===state.ally?' selected-ally':'');});
+  }
+ 
+  updateSpecialties();
+  setTimeout(function(){
+    (state.specialties||[]).forEach(function(sp){
+      document.querySelectorAll('.cc-pill[data-group="specialties"]').forEach(function(p){
+        if(p.textContent.trim() === sp) p.classList.add('selected');
+      });
+    });
+    (state.flaws||[]).forEach(function(fl){
+      document.querySelectorAll('.cc-pill[data-group="flaws"]').forEach(function(p){
+        if(p.dataset.val === fl) p.classList.add('selected');
+      });
+    });
+  }, 50);
+ 
+  updatePetPicker(state.petCat || 'none');
+  if(state.pet) setTimeout(function(){document.getElementById('cc-pet-select').value=state.pet;},60);
+  restorePill('bond', state.bond);
+ 
+  /* image */
+  if(state.imageData){
+    var preview = document.getElementById('cc-img-preview');
+    preview.src = 'data:'+state.imageMime+';base64,'+state.imageData;
+    preview.style.display = 'block';
+    document.getElementById('cc-img-placeholder').style.display = 'none';
+    document.getElementById('cc-img-area').classList.add('has-img');
+    document.getElementById('cc-img-clear').disabled = false;
+  }
+ 
+  /* personality sliders */
+  Object.keys(state.personality||{}).forEach(function(t){
+    var sl = document.querySelector('.cc-slider[data-trait="'+t+'"]');
+    var sv = document.getElementById('sv-'+t);
+    if(sl){ sl.value = state.personality[t]; }
+    if(sv){ sv.textContent = state.personality[t]; }
+  });
+ 
+  document.querySelector('[data-cctab="create"]').click();
+  showToast('Editing: ' + state.givenName);
+}
+ 
+function restorePill(group, val){
+  if(!val) return;
+  document.querySelectorAll('.cc-pill[data-group="'+group+'"]').forEach(function(p){
+    p.classList.toggle('selected', p.dataset.val === val);
+  });
+}
+ 
+/* ── ROSTER ── */
+function renderRoster(){
+  var chars = getCharacters();
+  var list = document.getElementById('cc-roster-list');
+  var countEl = document.getElementById('cc-roster-count');
+  countEl.textContent = chars.length + ' character' + (chars.length !== 1 ? 's' : '');
+  if(!chars.length){
+    list.innerHTML = '<div style="text-align:center;padding:40px 0;color:var(--text-muted);font-size:0.82rem;"><i class="fas fa-users" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:10px;"></i>No characters yet — create your first one!</div>';
+    return;
+  }
+  list.innerHTML = chars.map(function(char){
+    var imgHtml = char.imageData
+      ? '<img src="data:'+char.imageMime+';base64,'+char.imageData+'" alt="'+esc(char.givenName)+'" style="width:44px;height:44px;border-radius:8px;object-fit:cover;border:1px solid var(--border);flex-shrink:0;">'
+      : '<div class="cc-char-avatar">'+getElementEmoji(char.bending)+'</div>';
+    var bend = char.bending ? (char.bending.charAt(0).toUpperCase()+char.bending.slice(1)) : 'Non-Bender';
+    var sub  = [bend, char.strike||'', char.advantage||'', char.ally||''].filter(Boolean).join(' · ');
+    return '<div class="cc-char-card" data-id="'+char.id+'">' +
+      imgHtml +
+      '<div class="cc-char-info">' +
+        '<div class="cc-char-name">'+esc(char.givenName)+(char.nickName?' <span style="color:var(--text-muted);font-weight:400;font-size:0.72rem;">"'+esc(char.nickName)+'"</span>':'')+'</div>' +
+        '<div class="cc-char-sub">'+esc(sub)+'</div>' +
+      '</div>' +
+      '<div class="cc-char-actions">' +
+        '<button class="cc-char-action edit" data-id="'+char.id+'"><i class="fas fa-edit"></i> Edit</button>' +
+        '<button class="cc-char-action del"  data-id="'+char.id+'"><i class="fas fa-trash"></i></button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+ 
+  list.querySelectorAll('.cc-char-action.edit').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      var ch = getCharacters().find(function(c){return String(c.id)===String(this.dataset.id);}.bind(this));
+      if(ch) loadCharacterIntoForm(ch);
+    });
+  });
+  list.querySelectorAll('.cc-char-action.del').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      var id = this.dataset.id;
+      if(!confirm('Delete this character? This cannot be undone.')) return;
+      var chars = getCharacters().filter(function(c){return String(c.id)!==String(id);});
+      localStorage.setItem('aqst_characters', JSON.stringify(chars));
+      renderRoster();
+      showToast('Character deleted.');
+    });
+  });
+}
+ 
+/* ── RANDOMIZE ── */
+var NAMES_A = ['Bai','Zhen','Kai','Lei','Mei','Tao','Jin','Suki','Raya','Shen'];
+var NAMES_B = ['Fong','Xin','Long','Shi','Yun','Wei','Hao','Peng','Yao','Dan'];
+var ELEMENTS = ['water','earth','fire','air','non-bender'];
+var STRIKES  = ['bull','fox','lion'];
+var ADVS     = ['mind','body','spirit'];
+var ALLIES   = ['light','shadow','dark'];
+ 
+function randomizeCharacter(){
+  clearForm(true);
+  document.getElementById('cc-given-name').value = pick(NAMES_A)+' '+pick(NAMES_B);
+  var el = pick(ELEMENTS);
+  clickPill('bending', el);
+  setTimeout(function(){
+    var specs = (SPECIALTIES[el]||[]);
+    if(specs.length){
+      var sp = pick(specs);
+      document.querySelectorAll('.cc-pill[data-group="specialties"]').forEach(function(p){
+        if(p.textContent.trim()===sp){ p.classList.add('selected'); state.specialties=[sp]; }
+      });
+    }
+  },60);
+  clickPill('mastery', pick(['novice','adept','master']));
+  clickTraitCard('strike',    pick(STRIKES));
+  clickTraitCard('advantage', pick(ADVS));
+  clickTraitCard('ally',      pick(ALLIES));
+  clickPill('temperament', pick(['aggressive','defensive','tactical','passive']));
+  clickPill('lifepath',    pick(['open-palm','closed-fist']));
+  clickPill('build',       pick(['lean','muscular','stocky','slender']));
+  var slider = document.querySelectorAll('.cc-slider');
+  slider.forEach(function(s){
+    var v = Math.round(Math.random()*100);
+    s.value = v;
+    state.personality[s.dataset.trait] = v;
+    var sv = document.getElementById('sv-'+s.dataset.trait);
+    if(sv) sv.textContent = v;
+  });
+  showToast('Character randomized!');
+}
+ 
+function clickPill(group, val){
+  var p = document.querySelector('.cc-pill[data-group="'+group+'"][data-val="'+val+'"]');
+  if(p) p.click();
+}
+function clickTraitCard(group, val){
+  var c = document.querySelector('.cc-trait-card[data-group="'+group+'"][data-val="'+val+'"]');
+  if(c) c.click();
+}
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+ 
+/* ── CLEAR ── */
+function clearForm(silent){
+  if(!silent && !confirm('Clear the form? Unsaved changes will be lost.')) return;
+  editingId = null;
+  state.givenName=''; state.nickName=''; state.imageData=null; state.imageMime='';
+  state.bending=''; state.specialties=[]; state.mastery='';
+  state.strike=''; state.advantage=''; state.ally='';
+  state.temperament=''; state.lifepath=''; state.range='';
+  state.petCat='none'; state.pet=''; state.bond='';
+  state.height=''; state.weight=''; state.eyes=''; state.hair=''; state.skin=''; state.build=''; state.appearanceNotes='';
+  state.personality={ Honor:50,Aggression:30,Compassion:70,Discipline:50,Spirituality:50,Loyalty:60,Independence:50 };
+  state.flaws=[];
+  state.backstoryFree=''; state.bsNation=''; state.bsTraining=''; state.bsTrauma='';
+  state.bsMentor=''; state.bsRival=''; state.bsGoal=''; state.bsSecret=''; state.bsTone='';
+ 
+  document.querySelectorAll('.cc-input,.cc-textarea,.cc-select').forEach(function(el){ el.value=''; });
+  document.querySelectorAll('.cc-backstory-generated').forEach(function(el){el.value='';el.style.display='none';});
+  document.getElementById('cc-backstory-generated').style.display='none';
+  document.querySelectorAll('.cc-pill.selected').forEach(function(p){ p.classList.remove('selected'); });
+  document.querySelectorAll('.cc-trait-card').forEach(function(c){ c.className='cc-trait-card'; });
+  document.getElementById('cc-img-preview').style.display='none';
+  document.getElementById('cc-img-placeholder').style.display='flex';
+  document.getElementById('cc-img-area').classList.remove('has-img');
+  document.getElementById('cc-img-clear').disabled=true;
+  document.getElementById('cc-pet-picker').style.display='none';
+  updateSpecialties();
+  renderPersonalitySliders();
+  /* restore "None" pet pill */
+  var nonePill = document.querySelector('.cc-pill[data-group="petcat"][data-val="none"]');
+  if(nonePill){ nonePill.classList.add('selected'); state.petCat='none'; }
+  if(!silent) showToast('Form cleared.');
+}
+ 
+/* ── HELPERS ── */
+function getElementEmoji(el){
+  var map={water:'💧',earth:'🪨',fire:'🔥',air:'🌬️','non-bender':'⚔️',spirit:'✨'};
+  return map[el]||'🌀';
+}
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+ 
+function showToast(msg){
+  var t = document.getElementById('cc-toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2200);
+}
+ 
+init();
 })();
 </script>
 </body>
