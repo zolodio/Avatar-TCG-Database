@@ -70,30 +70,29 @@
   }
 
 function getDigitalCollection() {
+  // Normalize whatever format is stored to a flat { cardNumber: qty } object,
+  // identical in shape to global.collection used by the physical pool.
   var raw = null;
 
-  if (global.aqstDigitalCollection && typeof global.aqstDigitalCollection === 'object') {
-    raw = global.aqstDigitalCollection;
-  } else if (global.digitalCollectionData && typeof global.digitalCollectionData === 'object') {
-    raw = global.digitalCollectionData;
+  // digital-collection.js keeps this up-to-date on the window
+  if (window.aqstDigitalCollection && typeof window.aqstDigitalCollection === 'object') {
+    raw = window.aqstDigitalCollection;
   } else {
     try {
-      var stored = localStorage.getItem('aqtcg_digital_v1') ||
-                   localStorage.getItem('aqst_digital_col') ||
-                   localStorage.getItem('avatarDigitalCollection');
+      var stored = localStorage.getItem('aqtcg_digital_v1');
       if (stored) raw = JSON.parse(stored);
     } catch (_) {}
   }
 
   if (!raw) return {};
 
-  // Normalize: values may be plain numbers OR { qty, lastAcquired } objects
-  var normalized = {};
+  // Values may be plain numbers OR { qty, lastAcquired } objects — normalise both
+  var out = {};
   Object.keys(raw).forEach(function (num) {
     var val = raw[num];
-    normalized[num] = (typeof val === 'object' && val !== null) ? (val.qty || 0) : (val || 0);
+    out[num] = (val !== null && typeof val === 'object') ? (val.qty || 0) : (Number(val) || 0);
   });
-  return normalized;
+  return out;
 }
 
 async function ensureDigitalCollection() {
@@ -133,20 +132,18 @@ async function ensureDigitalCollection() {
 
   function getPoolCards() {
   var base = (global.allCards || []).filter(isValidForDeck);
+
   if (S.pool === 'physical') {
-    var col = global.collection || {};
-    return base.filter(function (c) { return (col[c.number] || 0) > 0; });
+    var phys = global.collection || {};
+    return base.filter(function (c) { return (phys[c.number] || 0) > 0; });
   }
+
   if (S.pool === 'digital') {
-    var dc = getDigitalCollection() || {};
-    var dcKeys = Object.keys(dc);
-    var chamberCards = base.filter(function(c) { return c.type === 'chamber'; });
-    console.log('DC keys sample:', dcKeys.slice(0,5));
-    console.log('Chamber card numbers sample:', chamberCards.slice(0,5).map(function(c){ return c.number; }));
-    console.log('DC has chamber matches:', chamberCards.filter(function(c){ return dc[c.number] > 0; }).length);
-    return base.filter(function (c) { return (dc[c.number] || 0) > 0; });
+    var dig = getDigitalCollection();
+    return base.filter(function (c) { return (dig[c.number] || 0) > 0; });
   }
-  return base;
+
+  return base; // 'all'
 }
 
   function parseTraits(str) {
@@ -182,10 +179,10 @@ async function ensureDigitalCollection() {
   }
 
   function availableQty(cardNumber) {
-    if (S.pool === 'physical') return (global.collection || {})[cardNumber] || 0;
-    if (S.pool === 'digital')  return (getDigitalCollection() || {})[cardNumber] || 0;
-    return 99;
-  }
+  if (S.pool === 'physical') return (global.collection || {})[cardNumber] || 0;
+  if (S.pool === 'digital')  return getDigitalCollection()[cardNumber] || 0;
+  return 99;
+}
 
   function maxCopiesForCard(cardNumber) {
     return S.pool === 'all' ? MAX_COPIES : Math.min(MAX_COPIES, availableQty(cardNumber));
@@ -454,15 +451,10 @@ async function ensureDigitalCollection() {
       var user = authResp.data && authResp.data.user;
       if (user) {
         clearInterval(interval);
-        console.log('DeckBuilder: auth ready, pulling…');
-        await Promise.all([
-          pullDecksFromSupabase(),
-          ensureDigitalCollection()   // ← fetch alongside decks
-        ]);
+        await pullDecksFromSupabase();
         render();
       } else if (attempts >= 40) {
         clearInterval(interval);
-        console.log('DeckBuilder: no auth after 20s, giving up');
       }
     } catch (e) {
       clearInterval(interval);
@@ -1871,10 +1863,9 @@ async function ensureDigitalCollection() {
     });
 
 /* Pool buttons */
-el.querySelectorAll('.db-pool-btn').forEach(function(btn){
-  btn.addEventListener('click', async function(){
+el.querySelectorAll('.db-pool-btn').forEach(function (btn) {
+  btn.addEventListener('click', function () {
     S.pool = this.dataset.pool;
-    if (S.pool === 'digital') await ensureDigitalCollection();
     render();
   });
 });
@@ -2231,7 +2222,6 @@ if (bRng) bRng.addEventListener('click', async function(){
 async function init() {
   injectCSS();
   loadDecks();
-  if (S.pool === 'digital') await ensureDigitalCollection();
   render();
   pullWhenReady();
 }
