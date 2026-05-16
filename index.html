@@ -53,6 +53,8 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+html { overflow-x: hidden; }
+
 body {
   font-family: 'Nunito Sans', sans-serif;
   color: var(--text-primary);
@@ -60,7 +62,105 @@ body {
   overflow-x: hidden;
   background-color: #000000;
 }
-
+/* ── Section card ── */
+.cc-section{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;margin-bottom:14px;}
+.cc-section-title{font-family:'Cinzel',serif;font-weight:700;font-size:0.9rem;color:var(--text-primary);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.cc-section-title i{color:var(--zen);font-size:1rem;}
+ 
+/* ── Labels & inputs ── */
+.cc-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:6px;display:block;}
+.cc-input,.cc-select,.cc-textarea{width:100%;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text-primary);font-size:0.88rem;font-family:'Nunito Sans',sans-serif;outline:none;transition:border-color 0.2s;box-sizing:border-box;}
+.cc-input:focus,.cc-select:focus,.cc-textarea:focus{border-color:var(--zen);}
+.cc-textarea{resize:vertical;min-height:80px;line-height:1.5;}
+.cc-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.cc-field{margin-bottom:12px;}
+.cc-field:last-child{margin-bottom:0;}
+ 
+/* ── Pill toggles ── */
+.cc-pill-group{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.cc-pill{flex-shrink:0;background:var(--bg-surface);border:1px solid var(--border);border-radius:99px;padding:6px 13px;font-size:0.74rem;font-weight:700;color:var(--text-secondary);cursor:pointer;transition:all 0.18s;user-select:none;}
+.cc-pill:hover{border-color:var(--border-light);color:var(--text-primary);}
+.cc-pill.selected{color:#fff;}
+.cc-pill.fire.selected{background:rgba(232,83,46,0.18);border-color:var(--fire);color:var(--fire);}
+.cc-pill.water.selected{background:rgba(46,140,232,0.18);border-color:var(--water);color:var(--water);}
+.cc-pill.earth.selected{background:rgba(92,184,92,0.18);border-color:var(--earth);color:var(--earth);}
+.cc-pill.air.selected{background:rgba(240,201,70,0.18);border-color:var(--air);color:var(--air);}
+.cc-pill.spirit.selected{background:rgba(180,77,223,0.18);border-color:var(--zen);color:var(--zen);}
+.cc-pill.nonbender.selected{background:rgba(138,142,168,0.18);border-color:var(--text-secondary);color:var(--text-primary);}
+.cc-pill.generic.selected{background:rgba(180,77,223,0.15);border-color:var(--zen);color:var(--zen);}
+ 
+/* ── Trait cards (Strike/Advantage/Ally) ── */
+.cc-trait-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.cc-trait-card{background:var(--bg-surface);border:2px solid var(--border);border-radius:var(--radius);padding:12px 8px;text-align:center;cursor:pointer;transition:all 0.2s;}
+.cc-trait-card:hover{border-color:var(--border-light);}
+.cc-trait-card.selected-strike{border-color:var(--fire);background:rgba(232,83,46,0.1);}
+.cc-trait-card.selected-advantage{border-color:var(--earth);background:rgba(92,184,92,0.1);}
+.cc-trait-card.selected-ally{border-color:var(--water);background:rgba(46,140,232,0.1);}
+.cc-trait-icon{font-size:1.5rem;margin-bottom:6px;display:block;}
+.cc-trait-name{font-family:'Cinzel',serif;font-weight:700;font-size:0.78rem;}
+.cc-trait-desc{font-size:0.62rem;color:var(--text-muted);margin-top:3px;line-height:1.4;}
+ 
+/* ── Image upload ── */
+.cc-img-area{border:2px dashed var(--border-light);border-radius:var(--radius-lg);padding:24px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
+.cc-img-area:hover{border-color:var(--zen);}
+.cc-img-area.has-img{border-style:solid;border-color:var(--border-light);}
+.cc-img-preview{width:100%;max-height:240px;object-fit:contain;border-radius:8px;display:none;}
+.cc-img-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text-muted);}
+.cc-img-placeholder i{font-size:2rem;}
+.cc-img-placeholder span{font-size:0.78rem;}
+.cc-img-input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+ 
+/* ── Coming soon badge ── */
+.cc-soon{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:99px;font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;background:rgba(240,201,70,0.1);color:var(--air);border:1px solid rgba(240,201,70,0.25);}
+ 
+/* ── Save/Load bar ── */
+.cc-action-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.cc-btn{padding:10px 18px;border-radius:var(--radius);border:none;font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:0.82rem;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;}
+.cc-btn-primary{background:var(--zen);color:#fff;}
+.cc-btn-primary:hover{opacity:0.88;}
+.cc-btn-secondary{background:var(--bg-card);border:1px solid var(--border);color:var(--text-secondary);}
+.cc-btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+.cc-btn-danger{background:var(--bg-card);border:1px solid rgba(224,72,72,0.3);color:var(--danger);}
+.cc-btn-danger:hover{background:rgba(224,72,72,0.1);}
+ 
+/* ── Saved characters list ── */
+.cc-char-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all 0.2s;}
+.cc-char-card:hover{border-color:var(--border-light);transform:translateY(-1px);}
+.cc-char-avatar{width:44px;height:44px;border-radius:8px;object-fit:cover;background:var(--bg-surface);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.2rem;border:1px solid var(--border);}
+.cc-char-info{flex:1;min-width:0;}
+.cc-char-name{font-family:'Cinzel',serif;font-weight:700;font-size:0.85rem;}
+.cc-char-sub{font-size:0.68rem;color:var(--text-muted);margin-top:2px;}
+.cc-char-actions{display:flex;gap:6px;flex-shrink:0;}
+.cc-char-action{padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-secondary);font-size:0.7rem;font-family:'Nunito Sans',sans-serif;font-weight:700;cursor:pointer;transition:all 0.2s;}
+.cc-char-action.edit:hover{border-color:var(--accent);color:var(--accent);}
+.cc-char-action.del:hover{border-color:var(--danger);color:var(--danger);}
+ 
+/* ── Range sliders ── */
+.cc-slider{width:100%;accent-color:var(--zen);}
+.cc-slider-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.cc-slider-label{font-size:0.72rem;color:var(--text-secondary);width:110px;flex-shrink:0;}
+.cc-slider-val{font-size:0.72rem;font-weight:700;color:var(--zen);width:28px;text-align:right;flex-shrink:0;}
+ 
+/* ── Tabs (sub) ── */
+.cc-tabs{display:flex;gap:0;margin-bottom:16px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.cc-tab{flex:1;padding:9px 0;background:none;border:none;color:var(--text-secondary);font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:0.75rem;cursor:pointer;transition:all 0.2s;text-align:center;}
+.cc-tab.active{background:var(--zen);color:#fff;}
+ 
+/* ── Toast ── */
+.cc-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:10px 18px;color:var(--text-primary);font-size:0.82rem;font-weight:700;z-index:9999;transition:transform 0.3s;pointer-events:none;}
+.cc-toast.show{transform:translateX(-50%) translateY(0);}
+ 
+/* ── Mastery/rarity badge ── */
+.cc-mastery-badge{display:inline-flex;padding:3px 10px;border-radius:99px;font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;border:1px solid;}
+.m-novice{background:rgba(138,142,168,0.1);border-color:var(--text-secondary);color:var(--text-secondary);}
+.m-adept{background:rgba(92,184,92,0.1);border-color:var(--earth);color:var(--earth);}
+.m-master{background:rgba(46,140,232,0.1);border-color:var(--water);color:var(--water);}
+.m-grandmaster{background:rgba(180,77,223,0.12);border-color:var(--zen);color:var(--zen);}
+ 
+@media(max-width:480px){
+  .cc-row{grid-template-columns:1fr;}
+  .cc-trait-grid{grid-template-columns:repeat(3,1fr);}
+}
 .bg-fixed-image {
   position: fixed;
   top: 0; left: 0;
@@ -216,9 +316,7 @@ body {
 
 .how-to-popup {
   position: fixed;
-  bottom: 160px; right: 20px;
-  width: 320px;
-  max-height: 70vh;
+  inset: 5vw;
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -314,7 +412,8 @@ body {
   transition: all 0.2s;
 }
 .rarity-chip:hover { border-color: var(--border-light); }
-.rarity-chip.active { border-color: var(--accent); background: rgba(74,125,255,0.08); }
+.rarity-chip.active { border-color: var(--accent); background: rgba(0,0,0,0.42); backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px); }
 .rarity-chip-dot { width: 8px; height: 8px; border-radius: 50%; margin: 0 auto 4px; }
 .rarity-chip-count { font-size: 0.72rem; font-weight: 700; color: var(--text-primary); }
 .rarity-chip-label { font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
@@ -393,7 +492,7 @@ body {
   white-space: nowrap;
 }
 .filter-pill:hover { border-color: var(--border-light); }
-.filter-pill.active { background: var(--zen); color: #fff; border-color: white; }
+.filter-pill.active { background: var(--zen); color: #fff; border-color: var(--accent);}
 .filter-pill.owned-filter.active { background: var(--success); border-color: var(--success); }
 .filter-pill.missing-filter.active { background: var(--danger); border-color: var(--danger); }
 .filter-pill.shared-filter.active { background: var(--water); border-color: var(--water); }
@@ -1669,7 +1768,8 @@ body {
   .friend-card .friend-actions { width: 100%; justify-content: flex-start; padding-top: 2px; }
   .friend-btn { font-size: 0.65rem; padding: 4px 9px; }
 }
-/* ── EVERPRESENT BUTTON ───────────────────────────────────── */
+/* ── EVERPRESENT BUTTON ─────────────────────────────────────────── */
+/* Sub-button positions + actions are configured in EPB_BUTTONS below */
 .epb-backdrop {
   position: fixed; inset: 0; z-index: 48;
   background: rgba(0,0,0,0); backdrop-filter: blur(0px);
@@ -1683,36 +1783,44 @@ body {
 }
 .epb-main-btn {
   position: fixed; bottom: 20px; right: 20px;
-  width: 54px; height: 54px; border-radius: 50%;
-  background: var(--bg-card); border: 2px solid var(--border-light);
-  cursor: pointer; z-index: 51; display: flex; align-items: center;
-  justify-content: center; padding: 0; overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.55);
+  width: 45px; height: 45px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.1);
+  cursor: pointer; z-index: 51;
+  display: block; padding: 0; overflow: hidden;
+  background: var(--common);
+  box-shadow: 0 0 10px var(--promo);
   transition: all 0.22s ease;
+  backdrop-filter: blur(4px);
+  opacity: 70%;
 }
-.epb-main-btn img { width: 30px; height: 30px; border-radius: 50%; display: block; }
-.epb-main-btn:hover { transform: scale(1.08); border-color: var(--zen); box-shadow: 0 0 0 3px rgba(180,77,223,0.25), 0 6px 24px rgba(0,0,0,0.4); }
-.epb-main-btn.open  { border-color: var(--zen); box-shadow: 0 0 0 4px rgba(180,77,223,0.35); transform: scale(1.06); }
- 
+.epb-main-btn img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+@media (hover: hover) {
+.epb-main-btn:hover {
+  transform: scale(1.06); border-color: var(--promo);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.2), 0 0 12px var(--promo);
+}
+}
+.epb-main-btn.open {
+  transform: scale(1.06); border-color: var(--promo);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.25), 0 0 14px var(--promo);
+}
+/* All sub-buttons share one class — right/bottom/color set via JS from EPB_BUTTONS */
 .epb-sub-btn {
-  position: fixed; right: 25px;
+  position: fixed; z-index: 51;
   width: 44px; height: 44px; border-radius: 50%; border: none;
-  cursor: pointer; z-index: 51; color: #fff; font-size: 0.95rem;
+  cursor: pointer; color: #fff; font-size: 0.95rem;
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-  opacity: 0; transform: scale(0.35) translateY(30px); pointer-events: none;
-  transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+  opacity: 0; pointer-events: none;
+  transform: var(--epb-off-tf, scale(0.35));
+  transition: opacity 0.22s ease,
+              transform 0.28s cubic-bezier(0.34,1.56,0.64,1),
+              box-shadow 0.2s;
 }
-.epb-sub-btn.visible { opacity: 1; transform: scale(1) translateY(0); pointer-events: auto; }
-.epb-sub-btn:hover   { transform: scale(1.13) translateY(0) !important; }
- 
-.epb-sub-chat { background: var(--water); bottom: 84px; transition-delay: 0.07s; }
-.epb-sub-chat.visible { transition-delay: 0.07s; }
-.epb-sub-help { background: var(--zen);   bottom: 138px; transition-delay: 0.02s; }
-.epb-sub-help.visible { transition-delay: 0.02s; }
- 
+.epb-sub-btn.visible { opacity: 1; transform: scale(1); pointer-events: auto; }
+.epb-sub-btn.visible:hover { transform: scale(1.12); }
 .epb-sub-label {
-  position: fixed; right: 76px; z-index: 51;
+  position: fixed; z-index: 51;
   background: var(--bg-card); border: 1px solid var(--border);
   border-radius: 6px; padding: 5px 11px;
   font-size: 0.68rem; font-family: 'Nunito Sans', sans-serif;
@@ -1721,10 +1829,7 @@ body {
   box-shadow: 0 2px 8px rgba(0,0,0,0.25);
 }
 .epb-sub-label.show { opacity: 1; }
-.epb-label-chat { bottom: 95px; }
-.epb-label-help { bottom: 149px; }
- 
-/* ── FLOATING CHAT PANEL ─────────────────────────────────── */
+/* ── Floating Chat Panel ─────────────────────────────────── */
 .epb-chat-panel {
   position: fixed; bottom: 82px; right: 78px;
   width: 320px; max-height: 450px;
@@ -1776,23 +1881,99 @@ body {
   flex-direction: column; gap: 10px; padding: 24px; text-align: center;
   color: var(--text-muted); font-size: 0.8rem; line-height: 1.5;
 }
- 
-/* Override how-to popup position to clear new button height */
+.epb-dm-tick { font-size: 0.58rem; color: var(--text-muted); margin-left: 4px;
+  letter-spacing: -1px; vertical-align: middle; transition: color 0.25s; }
+.epb-dm-tick--read { color: #4ab3f4; }
 .how-to-popup { bottom: 192px !important; }
 @media (max-width: 480px) {
   .epb-chat-panel { right: 8px; left: 8px; width: auto; bottom: 76px; }
-  .epb-sub-chat   { bottom: 76px; }
-  .epb-sub-help   { bottom: 128px; }
-  .epb-label-chat { bottom: 87px; }
-  .epb-label-help { bottom: 139px; }
   .how-to-popup   { bottom: 186px !important; right: 10px; left: 10px; width: auto; }
 }
-.epb-sub-play { background: var(--earth); bottom: 192px; transition-delay: 0.12s; }
-.epb-sub-play.visible { transition-delay: 0.12s; }
-.epb-label-play { bottom: 203px; }
+.sf-tog-btn {
+  background: transparent;
+  color: var(--text-muted);
+}
+.sf-tog-active {
+  background: var(--zen) !important;
+  color: #fff !important;
+}
+.sf-type-btn {
+  background: transparent;
+  color: var(--text-muted);
+}
+.sf-type-active[data-type="price"] {
+  background: var(--earth) !important;
+  color: #fff !important;
+}
+.sf-type-active[data-type="trade"] {
+  background: var(--water) !important;
+  color: #fff !important;
+}
+.sf-dropdown-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-bottom: 1px solid var(--border);
+}
+.sf-dropdown-row:last-child { border-bottom: none; }
+.sf-dropdown-row:hover { background: var(--bg-card-hover); }
+.sf-dropdown-row img {
+  width: 28px; height: 37px;
+  object-fit: cover;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.sf-trade-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(46,140,232,0.12);
+  border: 1px solid rgba(46,140,232,0.3);
+  border-radius: 99px;
+  padding: 4px 10px 4px 6px;
+  font-size: 0.72rem;
+  color: var(--water);
+  font-weight: 600;
+}
+.sf-trade-chip img {
+  width: 20px; height: 27px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+.sf-trade-chip-rm {
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+  font-size: 0.7rem;
+  margin-left: 2px;
+}
+.sf-trade-chip-rm:hover { opacity: 1; }
+.sf-trade-chip-qty {
+  background: rgba(46,140,232,0.2);
+  border-radius: 99px;
+  padding: 1px 6px;
+  font-size: 0.65rem;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.sf-trade-chip-qty button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--water);
+  font-size: 0.7rem;
+  padding: 0 1px;
+  line-height: 1;
+}
 	</style>
 </head>
 <body>
+<script src="scripts/splash.js"></script>
 <div class="bg-fixed-image">
   <img src="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/Current-Development/BKGRND.png" alt="" loading="eager">
 </div>
@@ -1812,8 +1993,9 @@ body {
   <button class="tab-btn" data-tab="portfolio"><i class="fas fa-chart-line"></i> Physical Portfolio</button>
   <button class="tab-btn" data-tab="digital-collection"><i class="fas fa-cloud-download-alt"></i> Digital Collection</button>
   <button class="tab-btn" data-tab="media"><i class="fas fa-film"></i> Media</button>
-  <button class="tab-btn" data-tab="wayback"><i class="fas fa-globe"></i> Wayback Websites</button>
   <button class="tab-btn" data-tab="profile"><i class="fas fa-user"></i> Together</button>
+  <button class="tab-btn" data-tab="collect"><i class="fas fa-shopping-bag"></i> Collect</button>
+  <button class="tab-btn" data-tab="creations"><i class="fas fa-scroll"></i> Creations</button>
 </div>
 
 <!-- CARD COLLECTION TAB -->
@@ -1918,6 +2100,10 @@ body {
       <i class="fas fa-music"></i>
       <span>Music</span>
     </button>
+    <button class="media-cat-btn" data-panel="wayback">
+      <i class="fas fa-globe"></i>
+      <span>Wayback Websites</span>
+    </button>
   </div>
 
   <!-- ══════════════════════════════════════
@@ -1925,87 +2111,171 @@ body {
   ══════════════════════════════════════ -->
   <div class="media-panel" id="mediapanel-how-to-play">
 
-    <!-- Interactive Demo -->
-    <div class="media-card-wrap">
-      <div class="media-section-hdr">
-        <div class="media-section-icon" style="background:rgba(180,77,223,0.13);color:var(--zen);">
-          <i class="fas fa-dice-d20"></i>
-        </div>
-        <div>
-          <div class="media-section-title">Interactive Demo</div>
-          <div class="media-section-sub">Playable Flash tutorial — powered by Ruffle emulator</div>
-        </div>
-      </div>
-      <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border);">
-          <span style="font-size:0.68rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:0.1em;">Avatar Quick Strike Demo</span>
-          <button class="toolbar-btn" id="btnReload" title="Reload"><i class="fas fa-redo-alt"></i></button>
-        </div>
-        <div class="player-area" id="playerArea" style="aspect-ratio:4/3;">
-          <div class="loading-overlay" id="loadingOverlay">
-            <div class="loader-ring"></div>
-            <div class="loading-text">Loading Flash...</div>
-            <div class="loading-sub">Initializing Ruffle emulator</div>
-          </div>
-          <div class="error-state" id="errorState">
-            <i class="fas fa-exclamation-triangle"></i>
-            <h3>Playback Error</h3>
-            <p id="errorMessage">Something went wrong while loading the Flash content.</p>
-            <button class="retry-btn" id="btnRetry"><i class="fas fa-redo-alt"></i> Try Again</button>
-          </div>
-        </div>
-        <div class="player-status">
-          <div class="status-indicator">
-            <div class="status-dot loading" id="statusDot"></div>
-            <span id="statusText">Initializing...</span>
-          </div>
-          <span id="engineInfo">Ruffle Flash Emulator</span>
-        </div>
-      </div>
-      <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
-      <script>
-      (function() {
-        var SWF_URL = "https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/Current-Development/Avatar_demo.swf";
-        var playerArea = document.getElementById("playerArea");
-        var loadingOverlay = document.getElementById("loadingOverlay");
-        var errorState = document.getElementById("errorState");
-        var errorMessage = document.getElementById("errorMessage");
-        var statusDot = document.getElementById("statusDot");
-        var statusText = document.getElementById("statusText");
-        var btnReload = document.getElementById("btnReload");
-        var btnRetry = document.getElementById("btnRetry");
-        var currentPlayer = null;
-        function setStatus(s, t) { if(statusDot) statusDot.className = "status-dot " + s; if(statusText) statusText.textContent = t; }
-        function showError(m) { if(loadingOverlay) loadingOverlay.classList.add("hidden"); if(errorState) errorState.classList.add("visible"); if(errorMessage) errorMessage.textContent = m; setStatus("error", "Error"); }
-        function hideError() { if(errorState) errorState.classList.remove("visible"); }
-        function loadSWF() {
-          hideError();
-          if(loadingOverlay) loadingOverlay.classList.remove("hidden");
-          setStatus("loading", "Loading...");
-          if (currentPlayer) { try { currentPlayer.remove(); } catch(e) {} currentPlayer = null; }
-          try {
-            var ruffle = window.RufflePlayer.newest();
-            var player = ruffle.createPlayer();
-            player.style.width = "100%"; player.style.height = "100%";
-            if(playerArea) playerArea.appendChild(player);
-            currentPlayer = player;
-            player.load(SWF_URL).then(function() {
-              if(loadingOverlay) loadingOverlay.classList.add("hidden");
-              setStatus("active", "Playing");
-            }).catch(function(err) { showError("Failed to load: " + (err.message || err)); });
-          } catch(err) { showError("Ruffle failed to initialize. " + (err.message || "Please reload.")); }
-        }
-        function waitForRuffle(n) {
-          if (n <= 0) { showError("Ruffle emulator could not be loaded."); return; }
-          if (typeof window.RufflePlayer !== "undefined") { loadSWF(); }
-          else { setTimeout(function() { waitForRuffle(n - 1); }, 300); }
-        }
-        waitForRuffle(30);
-        if(btnReload) btnReload.addEventListener("click", loadSWF);
-        if(btnRetry) btnRetry.addEventListener("click", loadSWF);
-      })();
-      </script>
+<!-- Interactive Demo -->
+<div class="media-card-wrap">
+  <div class="media-section-hdr">
+    <div class="media-section-icon" style="background:rgba(180,77,223,0.13);color:var(--zen);">
+      <i class="fas fa-dice-d20"></i>
     </div>
+    <div>
+      <div class="media-section-title">Interactive Demo</div>
+      <div class="media-section-sub">Playable Flash tutorial — powered by Ruffle emulator</div>
+    </div>
+  </div>
+
+  <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border);">
+      <span style="font-size:0.68rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:0.1em;">
+        Avatar Quick Strike Demo
+      </span>
+      <button class="toolbar-btn" id="btnReload" title="Reload">
+        <i class="fas fa-redo-alt"></i>
+      </button>
+    </div>
+
+    <div class="player-area" id="playerArea" style="aspect-ratio:4/3;">
+      <div class="loading-overlay" id="loadingOverlay">
+        <div class="loader-ring"></div>
+        <div class="loading-text">Loading Flash...</div>
+        <div class="loading-sub">Initializing Ruffle emulator</div>
+      </div>
+
+      <div class="error-state" id="errorState">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3>Playback Error</h3>
+        <p id="errorMessage">Something went wrong while loading the Flash content.</p>
+        <button class="retry-btn" id="btnRetry">
+          <i class="fas fa-redo-alt"></i> Try Again
+        </button>
+      </div>
+    </div>
+
+    <div class="player-status">
+      <div class="status-indicator">
+        <div class="status-dot loading" id="statusDot"></div>
+        <span id="statusText">Initializing...</span>
+      </div>
+      <span id="engineInfo">Ruffle Flash Emulator</span>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+  <script>
+  (function() {
+
+    // 🔇 1. Prevent AudioContext auto-resume globally
+    (function forceMuteOnLoad() {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (AudioContext) {
+        const originalResume = AudioContext.prototype.resume;
+        AudioContext.prototype.resume = function () {
+          return Promise.resolve(); // Block auto resume
+        };
+      }
+    })();
+
+    var SWF_URL = "https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/Current-Development/Avatar_demo.swf";
+
+    var playerArea = document.getElementById("playerArea");
+    var loadingOverlay = document.getElementById("loadingOverlay");
+    var errorState = document.getElementById("errorState");
+    var errorMessage = document.getElementById("errorMessage");
+    var statusDot = document.getElementById("statusDot");
+    var statusText = document.getElementById("statusText");
+    var btnReload = document.getElementById("btnReload");
+    var btnRetry = document.getElementById("btnRetry");
+
+    var currentPlayer = null;
+
+    function setStatus(state, text) {
+      if (statusDot) statusDot.className = "status-dot " + state;
+      if (statusText) statusText.textContent = text;
+    }
+
+    function showError(message) {
+      if (loadingOverlay) loadingOverlay.classList.add("hidden");
+      if (errorState) errorState.classList.add("visible");
+      if (errorMessage) errorMessage.textContent = message;
+      setStatus("error", "Error");
+    }
+
+    function hideError() {
+      if (errorState) errorState.classList.remove("visible");
+    }
+
+    function hardMutePlayer(player) {
+      try {
+        const ctx = player.audioContext;
+        if (ctx && ctx.state !== "suspended") {
+          ctx.suspend();
+        }
+      } catch (e) {}
+    }
+
+    function loadSWF() {
+      hideError();
+      if (loadingOverlay) loadingOverlay.classList.remove("hidden");
+      setStatus("loading", "Loading...");
+
+      if (currentPlayer) {
+        try { currentPlayer.remove(); } catch(e){}
+        currentPlayer = null;
+      }
+
+      try {
+        var ruffle = window.RufflePlayer.newest();
+        var player = ruffle.createPlayer();
+        player.style.width = "100%";
+        player.style.height = "100%";
+
+        if (playerArea) playerArea.appendChild(player);
+        currentPlayer = player;
+
+        player.load({
+          url: SWF_URL,
+          autoplay: "on",
+          mute: true,
+          unmuteOverlay: "visible"
+        }).then(function() {
+
+          if (loadingOverlay) loadingOverlay.classList.add("hidden");
+          setStatus("active", "Playing");
+
+          // 🔇 2. Post-load hard mute
+          hardMutePlayer(player);
+
+        }).catch(function(err) {
+          showError("Failed to load: " + (err.message || err));
+        });
+
+      } catch (err) {
+        showError("Ruffle failed to initialize. " + (err.message || "Please reload."));
+      }
+    }
+
+    function waitForRuffle(attempts) {
+      if (attempts <= 0) {
+        showError("Ruffle emulator could not be loaded.");
+        return;
+      }
+
+      if (typeof window.RufflePlayer !== "undefined") {
+        loadSWF();
+      } else {
+        setTimeout(function() {
+          waitForRuffle(attempts - 1);
+        }, 300);
+      }
+    }
+
+    waitForRuffle(30);
+
+    if (btnReload) btnReload.addEventListener("click", loadSWF);
+    if (btnRetry) btnRetry.addEventListener("click", loadSWF);
+
+  })();
+  </script>
+</div>
 
     <!-- How to Play Video -->
     <div class="media-card-wrap">
@@ -2059,7 +2329,7 @@ body {
         <div style="font-family:'Cinzel',serif;font-weight:700;font-size:1.05rem;color:var(--text-primary);">Official Rulebook</div>
         <div style="font-size:0.72rem;color:var(--text-muted);margin-top:3px;">Browse the complete rules in-browser, or download the PDF</div>
       </div>
-      <a href="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/ee860bbdec2054309b89bfc4055ab57b9fbb8f5e/avatar_rulebook.pdf"
+      <a href="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/Current-Development/avatar_rulebook.pdf"
          target="_blank"
          style="flex-shrink:0;display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:var(--accent);color:#fff;border-radius:var(--radius);font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:0.82rem;text-decoration:none;transition:opacity 0.2s;white-space:nowrap;"
          onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
@@ -2074,13 +2344,13 @@ body {
         <span style="font-size:0.7rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;">avatar_rulebook.pdf</span>
       </div>
       <iframe
-        src="https://docs.google.com/viewer?url=https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/ee860bbdec2054309b89bfc4055ab57b9fbb8f5e/avatar_rulebook.pdf&embedded=true"
+        src="https://docs.google.com/viewer?url=https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/Current-Development/avatar_rulebook.pdf&embedded=true"
         class="pdf-viewer-frame"
         title="Avatar TCG Rulebook"
         loading="lazy"></iframe>
     </div>
     <p style="font-size:0.7rem;color:var(--text-muted);margin-top:8px;text-align:center;">
-      PDF not loading? <a href="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/ee860bbdec2054309b89bfc4055ab57b9fbb8f5e/avatar_rulebook.pdf" target="_blank" style="color:var(--zen);">Open directly ↗</a>
+      PDF not loading? <a href="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/Current-Development/avatar_rulebook.pdf" target="_blank" style="color:var(--zen);">Open directly ↗</a>
     </p>
 
   </div><!-- /rulebook panel -->
@@ -2260,7 +2530,20 @@ body {
     </a>
 
   </div><!-- /music panel -->
-
+ <!-- ══════════════════════════════════════
+       WAYBACK WEBSITES PANEL
+  ══════════════════════════════════════ -->
+<div class="media-panel" id="mediapanel-wayback" style="display:none;">
+  <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px;">
+    <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 16px;">Archived Websites</h3>
+    <p style="color: var(--text-secondary); margin-bottom: 16px;">Visit historical snapshots of Avatar TCG resources</p>
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <a href="https://web.archive.org/web/20080815224144/http://entertainment.upperdeck.com/avatar/en/interface.aspx" target="_blank" style="display: block; padding: 12px; background: var(--bg-card-hover); border: 1px solid var(--border-light); border-radius: 8px; color: var(--accent); text-decoration: none; font-weight: 600; transition: all 0.2s;"><i class="fas fa-link"></i> UDE.com/Avatar</a>
+      <a href="https://web.archive.org/web/20120110012143/https://www.musogato.com/avatar/tcg/cards.php" target="_blank" style="display: block; padding: 12px; background: var(--bg-card-hover); border: 1px solid var(--border-light); border-radius: 8px; color: var(--accent); text-decoration: none; font-weight: 600; transition: all 0.2s;"><i class="fas fa-link"></i> Musogato.com/avatar</a>
+      <a href="https://www.laststicker.ru/cards/upper_deck_avatar_the_last_airbender_tcg/" target="_blank" style="display: block; padding: 12px; background: var(--bg-card-hover); border: 1px solid var(--border-light); border-radius: 8px; color: var(--accent); text-decoration: none; font-weight: 600; transition: all 0.2s;"><i class="fas fa-link"></i> Laststicker.ru</a>
+    </div>
+  </div>
+</div><!-- /wayback panel -->
   <!-- Media tab navigation script -->
   <script>
   (function() {
@@ -2280,19 +2563,6 @@ body {
   </script>
 
 </div><!-- /tab-media -->
-
-<!-- WAYBACK WEBSITES TAB -->
-<div class="tab-content" id="tab-wayback">
-  <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px;">
-    <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 16px;">Archived Websites</h3>
-    <p style="color: var(--text-secondary); margin-bottom: 16px;">Visit historical snapshots of Avatar TCG resources</p>
-    <div style="display: flex; flex-direction: column; gap: 10px;">
-      <a href="https://web.archive.org/web/20080815224144/http://entertainment.upperdeck.com/avatar/en/interface.aspx" target="_blank" style="display: block; padding: 12px; background: var(--bg-card-hover); border: 1px solid var(--border-light); border-radius: 8px; color: var(--accent); text-decoration: none; font-weight: 600; transition: all 0.2s;"><i class="fas fa-link"></i> UDE.com/Avatar</a>
-      <a href="https://web.archive.org/web/20120110012143/https://www.musogato.com/avatar/tcg/cards.php" target="_blank" style="display: block; padding: 12px; background: var(--bg-card-hover); border: 1px solid var(--border-light); border-radius: 8px; color: var(--accent); text-decoration: none; font-weight: 600; transition: all 0.2s;"><i class="fas fa-link"></i> Musogato.com/avatar</a>
-      <a href="https://www.laststicker.ru/cards/upper_deck_avatar_the_last_airbender_tcg/" target="_blank" style="display: block; padding: 12px; background: var(--bg-card-hover); border: 1px solid var(--border-light); border-radius: 8px; color: var(--accent); text-decoration: none; font-weight: 600; transition: all 0.2s;"><i class="fas fa-link"></i> Laststicker.ru</a>
-    </div>
-  </div>
-</div>
 
 <!-- PORTFOLIO TAB -->
 <div class="tab-content" id="tab-portfolio">
@@ -2518,18 +2788,20 @@ body {
         <button id="auth-reset-btn" style="background:none;border:none;color:var(--text-muted);font-size:0.7rem;cursor:pointer;font-family:'Nunito Sans',sans-serif;padding:2px 0;text-align:left;">Forgot password?</button>
       </div>
     </div>
-    <div id="auth-logged-in" style="display:none;">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div style="width:32px;height:32px;border-radius:50%;background:var(--zen);display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;">👤</div>
-        <div style="flex:1;min-width:0;">
-          <div id="auth-user-email" style="font-weight:700;font-size:0.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-primary);"></div>
-          <div id="auth-sync-dot" style="font-size:0.65rem;margin-top:1px;color:var(--text-muted);">Not synced</div>
-        </div>
-        <button id="auth-push-btn" title="Sync Now" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--zen);font-size:0.72rem;font-family:'Nunito Sans',sans-serif;font-weight:700;cursor:pointer;white-space:nowrap;">Sync to Cloud☁️</button>
-        <button id="auth-pull-btn" title="Load Cloud" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--water);font-size:0.72rem;font-family:'Nunito Sans',sans-serif;font-weight:700;cursor:pointer;white-space:nowrap;">Load from Cloud⬇️</button>
-        <button id="auth-logout-btn" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary);color:var(--text-muted);font-size:0.72rem;font-family:'Nunito Sans',sans-serif;font-weight:600;cursor:pointer;white-space:nowrap;">Log Out</button>
-      </div>
+<div id="auth-logged-in" style="display:none;">
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <div style="width:32px;height:32px;border-radius:50%;background:var(--zen);display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;">👤</div>
+    <div style="flex:1;min-width:120px;">
+      <div id="auth-user-email" style="font-weight:700;font-size:0.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-primary);"></div>
+      <div id="auth-sync-dot" style="font-size:0.65rem;margin-top:1px;color:var(--text-muted);">Not synced</div>
     </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0;">
+      <button id="auth-push-btn" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--zen);font-size:0.72rem;font-family:'Nunito Sans',sans-serif;font-weight:700;cursor:pointer;white-space:nowrap;">Sync ☁️</button>
+      <button id="auth-pull-btn" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--water);font-size:0.72rem;font-family:'Nunito Sans',sans-serif;font-weight:700;cursor:pointer;white-space:nowrap;">Load ⬇️</button>
+      <button id="auth-logout-btn" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary);color:var(--text-muted);font-size:0.72rem;font-family:'Nunito Sans',sans-serif;font-weight:600;cursor:pointer;white-space:nowrap;">Log Out</button>
+    </div>
+  </div>
+</div>
     <div id="auth-no-config" style="display:none;font-size:0.8rem;color:var(--text-muted);text-align:center;padding:6px 0;">
       ⚙️ Cloud sync not configured — edit <code>scripts/supabase-config.js</code>
     </div>
@@ -2647,31 +2919,597 @@ body {
     </div>
   </div>
 </div>
+<!-- COLLECT TAB -->
+<div class="tab-content" id="tab-collect">
+  <div class="tab-nav-nested">
+    <button class="tab-btn-nested active" data-nested-tab="storefront">Storefront</button>
+    <button class="tab-btn-nested" data-nested-tab="marketplace">Marketplace</button>
+  </div>
 
+<!-- ═══════════ HTML — replaces <div id="nested-storefront"> ═══════════ -->
+ 
+<div id="nested-storefront" class="nested-tab-content active">
+  <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;">
+ 
+    <!-- Header -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border);">
+      <i class="fas fa-tag" style="color:var(--promo);font-size:1.2rem;"></i>
+      <div>
+        <div style="font-family:'Cinzel',serif;font-weight:700;font-size:0.95rem;color:var(--text-primary);">Your Storefront</div>
+        <div style="font-size:0.7rem;color:var(--text-muted);margin-top:2px;">List items you want to sell or trade</div>
+      </div>
+    </div>
+ 
+    <!-- ── ROW 1: Collection Source Toggle ── -->
+    <div style="margin-bottom:14px;">
+      <div style="font-size:0.72rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:7px;">Source Collection</div>
+      <div id="sf-source-toggle" style="display:flex;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+        <button class="sf-tog-btn sf-tog-active" data-source="physical"
+          style="flex:1;padding:9px 0;border:none;cursor:pointer;font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:0.8rem;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s;">
+          <i class="fas fa-layer-group"></i> Physical
+        </button>
+        <button class="sf-tog-btn" data-source="digital"
+          style="flex:1;padding:9px 0;border:none;border-left:1px solid var(--border);cursor:pointer;font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:0.8rem;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s;">
+          <i class="fas fa-cloud-download-alt"></i> Digital
+        </button>
+      </div>
+    </div>
+ 
+    <!-- ── ROW 2: Listing Type Toggle ── -->
+    <div style="margin-bottom:18px;">
+      <div style="font-size:0.72rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:7px;">Listing Type</div>
+      <div id="sf-type-toggle" style="display:flex;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+        <button class="sf-type-btn sf-type-active" data-type="price"
+          style="flex:1;padding:9px 0;border:none;cursor:pointer;font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:0.8rem;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s;">
+          <i class="fas fa-dollar-sign"></i> Sell for $
+        </button>
+        <button class="sf-type-btn" data-type="trade"
+          style="flex:1;padding:9px 0;border:none;border-left:1px solid var(--border);cursor:pointer;font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:0.8rem;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s;">
+          <i class="fas fa-exchange-alt"></i> Trade
+        </button>
+      </div>
+    </div>
+ 
+    <!-- ── FORM ── -->
+    <div id="sf-form" style="display:flex;flex-direction:column;gap:12px;">
+ 
+      <!-- Card picker -->
+      <div>
+        <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">
+          Card <span id="sf-source-label" style="font-weight:400;text-transform:none;letter-spacing:0;">(Physical Collection)</span>
+        </label>
+        <div style="position:relative;">
+          <i class="fas fa-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.8rem;pointer-events:none;"></i>
+          <input id="sf-card-search" type="text" placeholder="Search by name or number…"
+            style="width:100%;padding:10px 12px 10px 36px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.85rem;font-family:'Nunito Sans',sans-serif;outline:none;box-sizing:border-box;transition:border-color 0.2s;">
+        </div>
+        <!-- Dropdown results -->
+        <div id="sf-card-dropdown" style="display:none;position:relative;z-index:30;background:var(--bg-secondary);border:1px solid var(--border-light);border-radius:var(--radius);margin-top:4px;max-height:220px;overflow-y:auto;box-shadow:var(--shadow-md);">
+        </div>
+        <!-- Selected card chip -->
+        <div id="sf-card-selected" style="display:none;margin-top:8px;padding:10px 12px;background:var(--bg-primary);border:1px solid var(--border-light);border-radius:var(--radius);display:none;align-items:center;gap:10px;">
+          <img id="sf-card-thumb" src="" alt="" style="width:32px;height:43px;object-fit:cover;border-radius:4px;border:1px solid var(--border);flex-shrink:0;">
+          <div style="flex:1;min-width:0;">
+            <div id="sf-card-name-display" style="font-weight:700;font-size:0.82rem;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+            <div id="sf-card-meta-display" style="font-size:0.68rem;color:var(--text-muted);margin-top:2px;"></div>
+          </div>
+          <button id="sf-card-clear" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:0.85rem;padding:4px;transition:color 0.2s;" title="Clear selection">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+ 
+      <!-- Quantity + Condition row -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div>
+          <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">
+            Quantity <span id="sf-qty-max-hint" style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-muted);"></span>
+          </label>
+          <input type="number" id="sf-quantity" placeholder="1" min="1" value="1"
+            style="width:100%;padding:10px 12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.85rem;font-family:'Nunito Sans',sans-serif;outline:none;box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Condition</label>
+          <select id="sf-condition"
+            style="width:100%;padding:10px 12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.85rem;font-family:'Nunito Sans',sans-serif;outline:none;box-sizing:border-box;">
+            <option value="">— Select —</option>
+            <option value="mint">Mint</option>
+            <option value="near-mint">Near Mint</option>
+            <option value="lightly-played">Lightly Played</option>
+            <option value="moderately-played">Moderately Played</option>
+            <option value="heavily-played">Heavily Played</option>
+            <option value="damaged">Damaged</option>
+          </select>
+        </div>
+      </div>
+ 
+      <!-- ── PRICE mode ── -->
+      <div id="sf-price-section">
+        <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Asking Price (per card)</label>
+        <div style="position:relative;">
+          <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.85rem;">$</span>
+          <input type="number" id="sf-price" placeholder="0.00" min="0" step="0.01"
+            style="width:100%;padding:10px 12px 10px 26px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.85rem;font-family:'Nunito Sans',sans-serif;outline:none;box-sizing:border-box;">
+        </div>
+      </div>
+ 
+      <!-- ── TRADE mode ── -->
+      <div id="sf-trade-section" style="display:none;">
+        <div style="font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">
+          Cards Wanted in Trade
+        </div>
+ 
+        <!-- Trade card search -->
+        <div style="position:relative;margin-bottom:8px;">
+          <i class="fas fa-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.8rem;pointer-events:none;"></i>
+          <input id="sf-trade-search" type="text" placeholder="Search any card to add…"
+            style="width:100%;padding:10px 12px 10px 36px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.85rem;font-family:'Nunito Sans',sans-serif;outline:none;box-sizing:border-box;transition:border-color 0.2s;">
+        </div>
+        <div id="sf-trade-dropdown" style="display:none;position:relative;z-index:29;background:var(--bg-secondary);border:1px solid var(--border-light);border-radius:var(--radius);margin-bottom:8px;max-height:190px;overflow-y:auto;box-shadow:var(--shadow-md);">
+        </div>
+ 
+        <!-- Selected trade-want chips -->
+        <div id="sf-trade-wants" style="display:flex;flex-wrap:wrap;gap:6px;min-height:32px;">
+          <div id="sf-trade-empty-hint" style="font-size:0.75rem;color:var(--text-muted);font-style:italic;padding:6px 0;">No cards selected yet — search above</div>
+        </div>
+      </div>
+ 
+      <!-- Notes -->
+      <div>
+        <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Notes (optional)</label>
+        <textarea id="sf-notes" placeholder="Condition details, preferred trade offers, shipping info…"
+          style="width:100%;padding:10px 12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.85rem;font-family:'Nunito Sans',sans-serif;outline:none;resize:vertical;min-height:60px;box-sizing:border-box;"></textarea>
+      </div>
+ 
+      <!-- Error message -->
+      <div id="sf-error" style="display:none;font-size:0.75rem;color:var(--danger);padding:8px 12px;background:rgba(224,72,72,0.08);border:1px solid rgba(224,72,72,0.2);border-radius:6px;"></div>
+ 
+      <!-- Submit -->
+      <button id="sf-submit" style="padding:13px;border-radius:var(--radius);border:none;background:var(--promo);color:#000;font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:0.88rem;cursor:pointer;transition:opacity 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;">
+        <i class="fas fa-plus-circle"></i> <span id="sf-submit-label">List for Sale</span>
+      </button>
+    </div>
+ 
+    <!-- ── Active Listings ── -->
+    <div style="margin-top:22px;padding-top:20px;border-top:1px solid var(--border);">
+      <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;color:var(--text-muted);margin-bottom:12px;">Your Listings</div>
+      <div id="storefrontListings" style="display:flex;flex-direction:column;gap:8px;">
+        <div style="text-align:center;padding:20px 0;color:var(--text-muted);font-size:0.8rem;">No items listed yet</div>
+      </div>
+    </div>
+ 
+  </div>
+</div>
+  <!-- MARKETPLACE PANEL -->
+  <div id="nested-marketplace" class="nested-tab-content" style="display:none;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; margin-bottom:16px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+        <i class="fas fa-globe" style="color:var(--water); font-size:1.2rem;"></i>
+        <div>
+          <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Marketplace</div>
+          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">Search across multiple platforms</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Filter by platform</label>
+        <div style="display:flex; flex-wrap:wrap; gap:6px;">
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem; color:var(--text-secondary);">
+            <input type="checkbox" class="mp-filter" data-site="ebay" checked style="cursor:pointer;">
+            <span style="display:flex; align-items:center; gap:4px;"><i class="fab fa-ebay" style="color:#e53238;"></i> eBay</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem; color:var(--text-secondary);">
+            <input type="checkbox" class="mp-filter" data-site="craigslist" checked style="cursor:pointer;">
+            <span>Craigslist</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem; color:var(--text-secondary);">
+            <input type="checkbox" class="mp-filter" data-site="shopgoodwill" checked style="cursor:pointer;">
+            <span>ShopGoodWill</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem; color:var(--text-secondary);">
+            <input type="checkbox" class="mp-filter" data-site="facebook" checked style="cursor:pointer;">
+            <span><i class="fab fa-facebook" style="color:#1877f2;"></i> Facebook</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem; color:var(--text-secondary);">
+            <input type="checkbox" class="mp-filter" data-site="letgo" checked style="cursor:pointer;">
+            <span>OfferUp (LetGo)</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div id="marketplaceListings" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:12px;">
+      <!-- Platform cards injected here -->
+    </div>
+  </div>
+  </div>
+<div class="tab-content" id="tab-creations">
+  <!-- BEGIN CREATIONS TAB CONTENT (paste inside tab-content div) -->
+<div id="cc-app">
+ 
+  <!-- Sub-tab navigation -->
+  <div class="cc-tabs" id="ccTabs">
+    <button class="cc-tab active" data-cctab="create">&#10010; Create</button>
+    <button class="cc-tab" data-cctab="roster">&#9876; My Characters</button>
+  </div>
+ 
+  <!-- ── CREATE PANEL ── -->
+  <div id="cctab-create">
+ 
+    <!-- Action bar -->
+    <div class="cc-action-bar">
+      <button class="cc-btn cc-btn-primary" id="cc-save-btn">
+        <i class="fas fa-save"></i> Save Character
+      </button>
+      <button class="cc-btn cc-btn-secondary" id="cc-random-btn">
+        <i class="fas fa-dice"></i> Randomize
+      </button>
+      <button class="cc-btn cc-btn-secondary" id="cc-clear-btn">
+        <i class="fas fa-eraser"></i> Clear Form
+      </button>
+    </div>
+ 
+    <!-- 1. NAME -->
+    <div class="cc-section">
+      <div class="cc-section-title"><i class="fas fa-signature"></i> Name</div>
+      <div class="cc-row">
+        <div class="cc-field">
+          <label class="cc-label">Given Name</label>
+          <input class="cc-input" id="cc-given-name" placeholder="e.g. Zuko, Katara…" maxlength="40">
+        </div>
+        <div class="cc-field">
+          <label class="cc-label">Nickname / Bending Name</label>
+          <input class="cc-input" id="cc-nick-name" placeholder="e.g. The Blue Spirit…" maxlength="40">
+        </div>
+      </div>
+    </div>
+ 
+    <!-- 2. IMAGE -->
+    <div class="cc-section">
+      <div class="cc-section-title"><i class="fas fa-image"></i> Character Image</div>
+      <div class="cc-img-area" id="cc-img-area">
+        <input type="file" class="cc-img-input" id="cc-img-input" accept="image/png,image/jpeg,image/webp">
+        <img class="cc-img-preview" id="cc-img-preview" alt="Character portrait">
+        <div class="cc-img-placeholder" id="cc-img-placeholder">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <span>Click to upload portrait (JPG / PNG / WEBP)</span>
+          <span style="font-size:0.65rem;opacity:0.6;">Recommended: portrait (2:3 ratio)</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center;">
+        <button class="cc-btn cc-btn-secondary" id="cc-img-clear" style="font-size:0.75rem;padding:7px 12px;" disabled>
+          <i class="fas fa-times"></i> Remove Image
+        </button>
+        <span class="cc-soon"><i class="fas fa-robot"></i> AI Image Gen — Coming Soon</span>
+        <span class="cc-soon"><i class="fas fa-palette"></i> Commission — Coming Soon</span>
+      </div>
+    </div>
+ 
+    <!-- 3. BENDING -->
+    <div class="cc-section">
+      <div class="cc-section-title"><i class="fas fa-fire"></i> Bending Status</div>
+      <label class="cc-label">Element</label>
+      <div class="cc-pill-group" id="cc-bending-group">
+        <div class="cc-pill nonbender" data-group="bending" data-val="non-bender">Non-Bender</div>
+        <div class="cc-pill water" data-group="bending" data-val="water">Water</div>
+        <div class="cc-pill earth" data-group="bending" data-val="earth">Earth</div>
+        <div class="cc-pill fire" data-group="bending" data-val="fire">Fire</div>
+        <div class="cc-pill air" data-group="bending" data-val="air">Air</div>
+        <div class="cc-pill spirit" data-group="bending" data-val="spirit">Spirit</div>
+      </div>
+ 
+      <div style="margin-top:14px;">
+        <label class="cc-label">Specialty / Sub-Bending <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:0.68rem;">(select all that apply)</span></label>
+        <div class="cc-pill-group" id="cc-specialty-group">
+          <!-- Populated by JS based on bending selection -->
+          <span style="font-size:0.75rem;color:var(--text-muted);font-style:italic;">Select an element above to see specialties</span>
+        </div>
+      </div>
+ 
+      <div style="margin-top:14px;">
+        <label class="cc-label">Mastery Level</label>
+        <div class="cc-pill-group">
+          <div class="cc-pill generic" data-group="mastery" data-val="novice">Novice</div>
+          <div class="cc-pill generic" data-group="mastery" data-val="adept">Adept</div>
+          <div class="cc-pill generic" data-group="mastery" data-val="master">Master</div>
+          <div class="cc-pill generic" data-group="mastery" data-val="grandmaster">Grandmaster</div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- 4. QUICKSTRIKE TRAITS -->
+    <div class="cc-section">
+      <div class="cc-section-title"><i class="fas fa-bolt"></i> Quickstrike Traits</div>
+      <div style="margin-bottom:14px;">
+        <label class="cc-label" style="margin-bottom:8px;">Strike Type</label>
+        <div class="cc-trait-grid" id="cc-strike-group">
+          <div class="cc-trait-card" data-group="strike" data-val="bull">
+            <span class="cc-trait-icon">🐂</span>
+            <div class="cc-trait-name" style="color:var(--fire);">Bull</div>
+            <div class="cc-trait-desc">Overpowering force, breaks through defenses</div>
+          </div>
+          <div class="cc-trait-card" data-group="strike" data-val="fox">
+            <span class="cc-trait-icon">🦊</span>
+            <div class="cc-trait-name" style="color:var(--air);">Fox</div>
+            <div class="cc-trait-desc">Cunning and deceptive, exploits openings</div>
+          </div>
+          <div class="cc-trait-card" data-group="strike" data-val="lion">
+            <span class="cc-trait-icon">🦁</span>
+            <div class="cc-trait-name" style="color:var(--promo);">Lion</div>
+            <div class="cc-trait-desc">Noble precision, calculated strikes</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-bottom:14px;">
+        <label class="cc-label" style="margin-bottom:8px;">Advantage</label>
+        <div class="cc-trait-grid" id="cc-advantage-group">
+          <div class="cc-trait-card" data-group="advantage" data-val="mind">
+            <span class="cc-trait-icon">🧠</span>
+            <div class="cc-trait-name" style="color:var(--water);">Mind</div>
+            <div class="cc-trait-desc">Strategic insight, tactical dominance</div>
+          </div>
+          <div class="cc-trait-card" data-group="advantage" data-val="body">
+            <span class="cc-trait-icon">💪</span>
+            <div class="cc-trait-name" style="color:var(--earth);">Body</div>
+            <div class="cc-trait-desc">Raw strength and endurance</div>
+          </div>
+          <div class="cc-trait-card" data-group="advantage" data-val="spirit">
+            <span class="cc-trait-icon">✨</span>
+            <div class="cc-trait-name" style="color:var(--zen);">Spirit</div>
+            <div class="cc-trait-desc">Inner power and spiritual connection</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <label class="cc-label" style="margin-bottom:8px;">Ally</label>
+        <div class="cc-trait-grid" id="cc-ally-group">
+          <div class="cc-trait-card" data-group="ally" data-val="light">
+            <span class="cc-trait-icon">☀️</span>
+            <div class="cc-trait-name" style="color:var(--air);">Light</div>
+            <div class="cc-trait-desc">Openly honorable, fights for good</div>
+          </div>
+          <div class="cc-trait-card" data-group="ally" data-val="shadow">
+            <span class="cc-trait-icon">🌑</span>
+            <div class="cc-trait-name" style="color:var(--text-secondary);">Shadow</div>
+            <div class="cc-trait-desc">Morally grey, acts in the dark</div>
+          </div>
+          <div class="cc-trait-card" data-group="ally" data-val="dark">
+            <span class="cc-trait-icon">🌑</span>
+            <div class="cc-trait-name" style="color:var(--danger);">Dark</div>
+            <div class="cc-trait-desc">Villainous or corrupted path</div>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- 5. COMBAT STYLE -->
+    <div class="cc-section">
+      <div class="cc-section-title"><i class="fas fa-fist-raised"></i> Combat Style</div>
+      <div class="cc-row">
+        <div class="cc-field">
+          <label class="cc-label">Temperament</label>
+          <div class="cc-pill-group" id="cc-temperament-group">
+            <div class="cc-pill generic" data-group="temperament" data-val="aggressive">Aggressive</div>
+            <div class="cc-pill generic" data-group="temperament" data-val="defensive">Defensive</div>
+            <div class="cc-pill generic" data-group="temperament" data-val="tactical">Tactical</div>
+            <div class="cc-pill generic" data-group="temperament" data-val="passive">Passive</div>
+            <div class="cc-pill generic" data-group="temperament" data-val="chaotic">Chaotic</div>
+            <div class="cc-pill generic" data-group="temperament" data-val="disciplined">Disciplined</div>
+          </div>
+        </div>
+        <div class="cc-field">
+          <label class="cc-label">Life Path</label>
+          <div class="cc-pill-group" id="cc-lifepath-group">
+            <div class="cc-pill generic" data-group="lifepath" data-val="open-palm">Open Palm</div>
+            <div class="cc-pill generic" data-group="lifepath" data-val="closed-fist">Closed Fist</div>
+          </div>
+          <label class="cc-label" style="margin-top:10px;">Tactical Range</label>
+          <div class="cc-pill-group" id="cc-range-group">
+            <div class="cc-pill generic" data-group="range" data-val="close">Close Range</div>
+            <div class="cc-pill generic" data-group="range" data-val="mid">Mid Range</div>
+            <div class="cc-pill generic" data-group="range" data-val="long">Long Range</div>
+            <div class="cc-pill generic" data-group="range" data-val="support">Support</div>
+            <div class="cc-pill generic" data-group="range" data-val="control">Battlefield Control</div>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- 6. COMPANION -->
+    <div class="cc-section">
+      <div class="cc-section-title"><i class="fas fa-paw"></i> Companion / Pet</div>
+      <label class="cc-label">Category</label>
+      <div class="cc-pill-group" id="cc-pet-cat-group">
+        <div class="cc-pill generic selected generic" data-group="petcat" data-val="none">None</div>
+        <div class="cc-pill generic" data-group="petcat" data-val="standard">Standard Animal</div>
+        <div class="cc-pill generic" data-group="petcat" data-val="hybrid">Hybrid Animal</div>
+        <div class="cc-pill generic" data-group="petcat" data-val="mount">Mount Class</div>
+        <div class="cc-pill generic" data-group="petcat" data-val="spirit">Spirit Companion</div>
+      </div>
+      <div id="cc-pet-picker" style="margin-top:10px;display:none;">
+        <label class="cc-label">Select Pet</label>
+        <select class="cc-select" id="cc-pet-select"><option value="">— Choose —</option></select>
+        <label class="cc-label" style="margin-top:10px;">Bond Level</label>
+        <div class="cc-pill-group" id="cc-bond-group">
+          <div class="cc-pill generic" data-group="bond" data-val="wild">Wild</div>
+          <div class="cc-pill generic" data-group="bond" data-val="trained">Trained</div>
+          <div class="cc-pill generic" data-group="bond" data-val="loyal">Loyal</div>
+          <div class="cc-pill generic" data-group="bond" data-val="spirit-bound">Spirit-Bound</div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- 7. PHYSICAL DESCRIPTION -->
+    <div class="cc-section">
+      <div class="cc-section-title"><i class="fas fa-user-alt"></i> Physical Description</div>
+      <div class="cc-row">
+        <div class="cc-field">
+          <label class="cc-label">Height</label>
+          <input class="cc-input" id="cc-height" placeholder='e.g. 5&apos;8" / 172cm'>
+        </div>
+        <div class="cc-field">
+          <label class="cc-label">Weight</label>
+          <input class="cc-input" id="cc-weight" placeholder="e.g. 145 lbs / 66kg">
+        </div>
+      </div>
+      <div class="cc-row">
+        <div class="cc-field">
+          <label class="cc-label">Eye Color</label>
+          <input class="cc-input" id="cc-eyes" placeholder="e.g. amber, silver…">
+        </div>
+        <div class="cc-field">
+          <label class="cc-label">Hair Color</label>
+          <input class="cc-input" id="cc-hair" placeholder="e.g. black, white…">
+        </div>
+      </div>
+      <div class="cc-row">
+        <div class="cc-field">
+          <label class="cc-label">Skin Tone</label>
+          <input class="cc-input" id="cc-skin" placeholder="e.g. olive, tan, dark…">
+        </div>
+        <div class="cc-field">
+          <label class="cc-label">Build</label>
+          <div class="cc-pill-group" id="cc-build-group" style="margin-top:2px;">
+            <div class="cc-pill generic" data-group="build" data-val="lean">Lean</div>
+            <div class="cc-pill generic" data-group="build" data-val="muscular">Muscular</div>
+            <div class="cc-pill generic" data-group="build" data-val="stocky">Stocky</div>
+            <div class="cc-pill generic" data-group="build" data-val="slender">Slender</div>
+          </div>
+        </div>
+      </div>
+      <div class="cc-field">
+        <label class="cc-label">Optional Details (scars, tattoos, outfit, nation attire…)</label>
+        <textarea class="cc-textarea" id="cc-appearance-notes" placeholder="Describe any notable features…" style="min-height:60px;"></textarea>
+      </div>
+    </div>
+ 
+    <!-- 8. PERSONALITY -->
+    <div class="cc-section">
+      <div class="cc-section-title"><i class="fas fa-brain"></i> Personality Traits</div>
+      <div id="cc-personality-sliders">
+        <!-- rendered by JS -->
+      </div>
+      <div style="margin-top:12px;">
+        <label class="cc-label">Flaws (optional, select all that apply)</label>
+        <div class="cc-pill-group" id="cc-flaws-group">
+          <div class="cc-pill generic" data-group="flaws" data-val="arrogant" data-multi="1">Arrogant</div>
+          <div class="cc-pill generic" data-group="flaws" data-val="impulsive" data-multi="1">Impulsive</div>
+          <div class="cc-pill generic" data-group="flaws" data-val="distrustful" data-multi="1">Distrustful</div>
+          <div class="cc-pill generic" data-group="flaws" data-val="reckless" data-multi="1">Reckless</div>
+          <div class="cc-pill generic" data-group="flaws" data-val="idealistic" data-multi="1">Idealistic</div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- 9. BACKSTORY -->
+    <div class="cc-section">
+      <div class="cc-section-title"><i class="fas fa-scroll"></i> Backstory</div>
+      <div class="cc-tabs" id="cc-backstory-tabs">
+        <button class="cc-tab active" data-bstab="freewrite">Write Freely</button>
+        <button class="cc-tab" data-bstab="template">Use Template</button>
+        <button class="cc-tab" data-bstab="ai" disabled style="opacity:0.5;cursor:not-allowed;">AI Generate ✦</button>
+      </div>
+      <div id="cc-bs-freewrite">
+        <textarea class="cc-textarea" id="cc-backstory-free" placeholder="Write your character's backstory here…" style="min-height:140px;"></textarea>
+      </div>
+      <div id="cc-bs-template" style="display:none;">
+        <div class="cc-field">
+          <label class="cc-label">Birth Nation</label>
+          <select class="cc-select" id="cc-bs-nation">
+            <option value="">— Select —</option>
+            <option>Fire Nation</option><option>Earth Kingdom</option>
+            <option>Water Tribe (Northern)</option><option>Water Tribe (Southern)</option>
+            <option>Air Nomads</option><option>Spirit World</option>
+            <option>United Republic / Republic City</option>
+            <option>Unknown / Stateless</option>
+          </select>
+        </div>
+        <div class="cc-field">
+          <label class="cc-label">Early Training</label>
+          <input class="cc-input" id="cc-bs-training" placeholder="e.g. Trained under a military general…">
+        </div>
+        <div class="cc-field">
+          <label class="cc-label">Defining Trauma / Call to Adventure</label>
+          <input class="cc-input" id="cc-bs-trauma" placeholder="e.g. Village destroyed by…">
+        </div>
+        <div class="cc-row">
+          <div class="cc-field">
+            <label class="cc-label">Mentor</label>
+            <input class="cc-input" id="cc-bs-mentor" placeholder="e.g. A retired master…">
+          </div>
+          <div class="cc-field">
+            <label class="cc-label">Rival</label>
+            <input class="cc-input" id="cc-bs-rival" placeholder="e.g. A former friend who…">
+          </div>
+        </div>
+        <div class="cc-row">
+          <div class="cc-field">
+            <label class="cc-label">Goal</label>
+            <input class="cc-input" id="cc-bs-goal" placeholder="What drives them?">
+          </div>
+          <div class="cc-field">
+            <label class="cc-label">Secret</label>
+            <input class="cc-input" id="cc-bs-secret" placeholder="What are they hiding?">
+          </div>
+        </div>
+        <div style="margin-top:4px;">
+          <label class="cc-label">Tone</label>
+          <div class="cc-pill-group" id="cc-bs-tone-group">
+            <div class="cc-pill generic" data-group="bstone" data-val="hopeful">Hopeful</div>
+            <div class="cc-pill generic" data-group="bstone" data-val="dark">Dark</div>
+            <div class="cc-pill generic" data-group="bstone" data-val="epic">Epic</div>
+            <div class="cc-pill generic" data-group="bstone" data-val="political">Political</div>
+            <div class="cc-pill generic" data-group="bstone" data-val="tragic">Tragic</div>
+          </div>
+        </div>
+        <button class="cc-btn cc-btn-secondary" id="cc-bs-generate-text" style="margin-top:12px;width:100%;justify-content:center;">
+          <i class="fas fa-magic"></i> Generate Backstory from Template
+        </button>
+        <textarea class="cc-textarea" id="cc-backstory-generated" style="margin-top:10px;min-height:100px;display:none;" placeholder="Generated backstory will appear here…"></textarea>
+      </div>
+      <div id="cc-bs-ai" style="display:none;text-align:center;padding:20px 0;">
+        <span class="cc-soon"><i class="fas fa-robot"></i> AI Backstory Generator — Coming Soon</span>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin-top:10px;">Will generate unique, lore-consistent backstories with no canon overlaps.</p>
+      </div>
+    </div>
+ 
+  </div><!-- /create panel -->
+ 
+  <!-- ── ROSTER PANEL ── -->
+  <div id="cctab-roster" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <div style="font-family:'Cinzel',serif;font-weight:700;font-size:0.95rem;">Saved Characters</div>
+      <span id="cc-roster-count" style="font-size:0.72rem;color:var(--text-muted);"></span>
+    </div>
+    <div id="cc-roster-list">
+      <div style="text-align:center;padding:40px 0;color:var(--text-muted);font-size:0.82rem;">
+        <i class="fas fa-users" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:10px;"></i>
+        No characters yet — create your first one!
+      </div>
+    </div>
+    <div style="margin-top:18px;padding:14px;background:rgba(240,201,70,0.06);border:1px solid rgba(240,201,70,0.18);border-radius:var(--radius);">
+      <div style="font-size:0.7rem;color:var(--air);font-weight:700;margin-bottom:3px;"><i class="fas fa-cloud" style="margin-right:5px;"></i>Supabase Sync — Coming Soon</div>
+      <div style="font-size:0.68rem;color:var(--text-muted);line-height:1.5;">Characters will be saved to the cloud with duplicate detection &amp; similarity checking.</div>
+    </div>
+  </div>
+ 
+</div><!-- /cc-app -->
+ 
+<div class="cc-toast" id="cc-toast"></div>
+</div>  
+</div>
 </div><!-- /.app-container -->
 
 <!-- HOW-TO BUTTON & POPUP -->
 <!-- Backdrop blur -->
 <div class="epb-backdrop" id="epbBackdrop"></div>
- 
-<!-- Sub-button: Chat -->
-<button class="epb-sub-btn epb-sub-chat" id="epbChatSubBtn" title="Quick Chat">
-  <i class="fas fa-comment-dots"></i>
-</button>
-<div class="epb-sub-label epb-label-chat" id="epbLabelChat">Quick Chat</div>
- 
-<!-- Sub-button: Help -->
-<button class="epb-sub-btn epb-sub-help" id="epbHelpSubBtn" title="Help / How to Use">
-  <i class="fas fa-question"></i>
-</button>
-<div class="epb-sub-label epb-label-help" id="epbLabelHelp">How to Use</div>
-<button class="epb-sub-btn epb-sub-play" id="epbPlaySubBtn" title="Play Avatar Quick Strike Online">
-  <i class="fas fa-gamepad"></i>
-</button>
-<div class="epb-sub-label epb-label-play" id="epbLabelPlay">Play Game</div> 
-<!-- Everpresent main button -->
+
+<!-- Sub-buttons injected radially by JS — edit EPB_BUTTONS in the epb script -->
+
 <button class="epb-main-btn" id="epbMainBtn" title="Avatar Quick Strike Menu">
-  <img src="https://zolodio.github.io/Avatar-TCG-Database/favicon-32x32.png" alt="Menu">
+
+  <img src="https://github.com/zolodio/Avatar-TCG-Database/blob/Current-Development/ATCGicon.png?raw=true" alt="Menu">
+
 </button>
  
 <!-- Floating Chat Panel -->
@@ -3266,6 +4104,7 @@ function switchTab(tabName) {
   if (tab) tab.classList.add('active');
   var btn = document.querySelector('.tab-btn[data-tab="' + tabName + '"]');
   if (btn) btn.classList.add('active');
+  if (tabName === 'portfolio') updateAllPackCounters(); // ← add this line
 }
 
 /* ---- STATE ---- */
@@ -3980,7 +4819,7 @@ var skipCardDetails = (card.type === 'ally' || card.type === 'advantage');
 
     if (hasFront || hasBack) {
       extraStatsEl.innerHTML =
-        '<div class="chamber-side-tabs">' +
+        '<div class="chamber-side-tabs" style="display:none;">' +
           '<button class="chamber-side-btn active" data-chamber-side="front">⬛ Front Side</button>' +
           '<button class="chamber-side-btn" data-chamber-side="back">🔄 Back Side</button>' +
         '</div>' +
@@ -4118,8 +4957,24 @@ var flavorSectionEl = document.getElementById('modalFlavorSection');
     modalFlipped = !modalFlipped;
     var inner = document.getElementById('modalFlipInner');
     var btn = document.getElementById('modalFlipBtn');
-    if (modalFlipped) { inner.classList.add('flipped'); btn.classList.add('is-flipped'); btn.innerHTML = '<i class="fas fa-rotate"></i> Show Front'; }
-    else { inner.classList.remove('flipped'); btn.classList.remove('is-flipped'); btn.innerHTML = '<i class="fas fa-rotate"></i> Flip View'; }
+    if (modalFlipped) {
+      inner.classList.add('flipped');
+      btn.classList.add('is-flipped');
+      btn.innerHTML = '<i class="fas fa-rotate"></i> Show Front';
+    } else {
+      inner.classList.remove('flipped');
+      btn.classList.remove('is-flipped');
+      btn.innerHTML = '<i class="fas fa-rotate"></i> Flip View';
+    }
+    // Sync chamber panels with image flip
+    var extraStatsEl = document.getElementById('modalExtraStats');
+    if (extraStatsEl) {
+      var side = modalFlipped ? 'back' : 'front';
+      extraStatsEl.querySelectorAll('.chamber-side-btn').forEach(function(b) { b.classList.toggle('active', b.dataset.chamberSide === side); });
+      extraStatsEl.querySelectorAll('.chamber-panel').forEach(function(p) { p.classList.remove('active'); });
+      var panel = extraStatsEl.querySelector('#chamberPanel' + (modalFlipped ? 'Back' : 'Front'));
+      if (panel) panel.classList.add('active');
+    }
   });
 
   document.getElementById('qtyDisplay').textContent = qty;
@@ -5130,6 +5985,7 @@ init();
 	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="scripts/supabase-config.js"></script>
 <script src="scripts/prices.js"></script>
+<script src="scripts/media-player.js"></script>
 <script src="scripts/auth.js"></script>
 <script src="scripts/digital-collection.js"></script>
 <script>
@@ -5147,99 +6003,133 @@ init();
 (function () {
   /* ── Tab-specific how-to content ── */
   var HOW_TO_PAGES = {
-    home: {
-      title: 'Card Collection Help',
-      html: `
-        <h3>Searching & Filtering</h3>
-        <p>Type in the search box to find cards by name, number, type, rarity, rules text, or flavor text. Click <strong>✕</strong> to clear instantly.</p>
-        <h3>Adding Cards</h3>
-        <p>Click any card to open its detail view. Use <strong>+/–</strong> to adjust quantity, then click <em>Add to Collection</em>.</p>
-        <h3>Rarity Filter</h3>
-        <p>Click the colored rarity chips (C / UC / R / ZEN / PR) to filter to that rarity. Click again to clear.</p>
-        <h3>Sorting</h3>
-        <p>Use the sort dropdown and the arrow button to reverse order. Sort by number, name, rarity, type, quantity, stats, or price.</p>
-        <h3>Compare Collections</h3>
-        <p>Click <em>Compare</em>, paste a friend's save code, and their cards show a blue badge. Use the <em>Shared</em> filter to see only cards you both own.</p>
-        <h3>Export / Import</h3>
-        <p>Export saves a CSV + copies your save code. Import accepts a CSV file or a pasted save code. Clear lets you wipe your collection or comparison data.</p>
-        <h3>Card Zoom</h3>
-        <p>In the card detail modal, click the image to open a fullscreen zoom. Click anywhere outside or press Esc to close.</p>`
-    },
-    portfolio: {
-      title: 'Portfolio Help',
-      html: `
-        <h3>Pack Calculators</h3>
-        <p>Each tab (Zenemental, Chamber, Rare, Uncommon, Common) shows how many packs you'd expect to need to complete that subset, using the Coupon Collector formula.</p>
-        <h3>How It Works</h3>
-        <p>The calculator uses your current owned cards to estimate remaining packs. Green chips = owned, grey = missing.</p>
-        <h3>Pull Rates</h3>
-        <ul>
-          <li><strong>Zenemental</strong> — 1-in-6 per pack</li>
-          <li><strong>Chamber</strong> — 1 per pack</li>
-          <li><strong>Rare</strong> — 1 per pack</li>
-          <li><strong>Uncommon</strong> — 3 per pack</li>
-          <li><strong>Common</strong> — 5 per pack</li>
-        </ul>
-        <h3>Save Code</h3>
-        <p>The <em>Save Code</em> tab shows your current code — select it all to copy and back up offline.</p>`
-    },
-    'digital-collection': {
-      title: 'Digital Collection Help',
-      html: `
-        <h3>Redeeming Codes</h3>
-        <p>Go to the <em>Redeem</em> tab and paste a one-time code from the Booster App. Each code can only be used once.</p>
-        <h3>Viewing Your Digital Cards</h3>
-        <p>The <em>Collection</em> tab shows all your redeemed cards. Filter by rarity or search by name/number.</p>
-        <h3>Backup & Restore</h3>
-        <p>Use <em>Export JSON</em> to save a backup file and <em>Import JSON</em> to restore it on another device.</p>
-        <h3>Deck Builder</h3>
-        <p>Coming soon — build and save decks using your digital collection.</p>`
-    },
-    howtoplay: {
-      title: 'How to Play Help',
-      html: `
-        <h3>Interactive Demo</h3>
-        <p>The Flash demo runs via the Ruffle emulator. If it doesn't load, click <em>Try Again</em> or check your connection.</p>
-        <h3>Video Tutorial</h3>
-        <p>A YouTube walkthrough is embedded below the demo. Click <em>Watch on YouTube</em> if it doesn't play inline.</p>
-        <h3>Rulebook</h3>
-        <p>Click the <em>Rulebook</em> tab and download the official PDF for the complete rules.</p>
-        <h3>Avatar Wiki</h3>
-        <p>The <em>Avatar Wiki</em> tab links to the fandom wiki with card and game information.</p>`
-    },
-    wayback: {
-      title: 'Archived Sites',
-      html: `
-        <h3>Wayback Machine Links</h3>
-        <p>These are historical snapshots of Avatar TCG websites preserved via the Internet Archive and other sources.</p>
-        <ul>
-          <li><strong>UDE.com/Avatar</strong> — Upper Deck's original game portal</li>
-          <li><strong>Musogato.com</strong> — community card database</li>
-          <li><strong>Laststicker.ru</strong> — card checklist resource</li>
-        </ul>
-        <p>Links open in a new tab. Some archived pages may load slowly.</p>`
-    },
-    profile: {
-      title: 'Together / Social Help',
-      html: `
-        <h3>Creating an Account</h3>
-        <p>Enter your email and password, then click <em>Sign Up</em>. Once in, choose a username — it can only be set once.</p>
-        <h3>Cloud Sync</h3>
-        <p>Click <em>☁ Sync Now</em> to push your physical collection to the cloud. <em>⬇ Load Cloud</em> pulls it back.</p>
-        <h3>Editing Your Profile</h3>
-        <p>Set a display name, bio, avatar (card artwork), preferred traits, and favourite chamber. Drag the avatar preview to reframe the image.</p>
-        <h3>Friends</h3>
-        <p>Search by username and send a friend request. Accept incoming requests from the <em>Pending</em> section.</p>
-        <h3>Chat</h3>
-        <p>Global chat is open to everyone. Click a friend's <em>Chat</em> button to open a private DM room.</p>
-        <h3>Trades</h3>
-        <p>Click <em>Propose a Trade</em>, select a friend, pick cards to offer and request, then send. They can accept or decline from their Trades tab.</p>
-        <h3>Forum</h3>
-        <p>Post questions, strategies, or trade offers. Filter by category and reply to threads. Press Ctrl+Enter to send a reply.</p>
-        <h3>Compare via Friend Profile</h3>
-        <p>Open a friend's profile, go to their <em>Collection</em> tab, and click <em>Compare</em> to load their physical collection into the Card Collection view.</p>`
-    }
-  };
+  home: {
+    title: 'Card Collection',
+    html: `
+      <h3>Searching</h3>
+      <p>Type in the search box to find cards by <strong>name, number, type, rarity, rules text, flavor text, description,</strong> or <strong>traits</strong>. Click <strong>✕</strong> inside the box to clear instantly.</p>
+      <h3>Filtering</h3>
+      <p>Use the pill row to filter by card type (Strike, Advantage, Ally…). Toggle <strong>Owned</strong> or <strong>Missing</strong> to focus your list. If a friend's code is loaded, the <strong>Shared</strong> filter shows only cards you both own. Click the colored rarity chips (C / UC / R / ZEN / PR) to filter by rarity — click again to clear.</p>
+      <h3>Sorting</h3>
+      <p>Use the dropdown to sort by Number, Name, Rarity, Type, Quantity, Intercept, Force, Energy Cost, or Price. The <strong>↑↓ arrow button</strong> reverses the order.</p>
+      <h3>Grid vs List view</h3>
+      <p>The grid/list toggle is in the top-right of the search row. List view is faster for scanning large sets; grid view shows card art.</p>
+      <h3>Adding &amp; adjusting cards</h3>
+      <p>Click any card to open its detail view. Use <strong>+/–</strong> to set your quantity, or click <strong>Add to Collection</strong> to add one copy. Click <strong>Remove from Collection</strong> to zero it out.</p>
+      <h3>Card flip</h3>
+      <p>Click the <strong>rotate button</strong> (bottom-left of a card in grid view) to flip between front and back art without opening the modal. In the detail modal, click <strong>Flip View</strong> below the image to flip there too.</p>
+      <h3>Card zoom</h3>
+      <p>In the detail modal, click the card image for a <strong>fullscreen zoom</strong>. Click anywhere outside the image, press <kbd>Esc</kbd>, or hit the × button to close.</p>
+      <h3>Navigating between cards</h3>
+      <p>While a card detail is open, use the <strong>← / →</strong> arrow buttons on the image, press <kbd>ArrowLeft</kbd> / <kbd>ArrowRight</kbd>, or <strong>swipe left/right</strong> on touch screens to step through the filtered list.</p>
+      <h3>Market prices</h3>
+      <p>Cards with eBay sold data show a price widget (low / avg / high) in the detail view. Prices refresh automatically from recent sales. The avg price also appears as a green badge in grid view.</p>
+      <h3>Compare collections</h3>
+      <p>Click <strong>Compare</strong>, paste a friend's save code, and their cards show a blue <em>x N</em> badge. The <strong>Shared</strong> filter lets you see cards you both own. Load another code at any time to update the comparison.</p>
+      <h3>Export &amp; Import</h3>
+      <p><strong>Export</strong> saves a CSV and copies your save code to the clipboard at the same time. <strong>Import</strong> accepts either a CSV file or a pasted save code. Use <strong>Clear</strong> to wipe your collection or remove the comparison data.</p>
+      <h3>Save codes</h3>
+      <p>Your save code is generated automatically as you add cards. It is also shown in the Portfolio → Save Code tab. Select all the text to copy it and save it offline.</p>
+    `
+  },
+  portfolio: {
+    title: 'Portfolio',
+    html: `
+      <h3>Pack Calculators</h3>
+      <p>Five tabs cover each in-pack rarity: <strong>Zenemental, Chamber, Rare, Uncommon, Common</strong>. Each uses the Coupon Collector formula to estimate how many more packs you need to finish that subset of core (pack-only) cards.</p>
+      <h3>Pull rates used</h3>
+      <ul>
+        <li><strong>Zenemental</strong> — 1-in-6 chance per pack</li>
+        <li><strong>Chamber</strong> — 1 guaranteed per pack</li>
+        <li><strong>Rare</strong> — 1 guaranteed per pack</li>
+        <li><strong>Uncommon</strong> — 3 per pack</li>
+        <li><strong>Common</strong> — 5 per pack</li>
+      </ul>
+      <h3>Reading the calculator</h3>
+      <p>The three stat boxes show <strong>Expected packs left</strong>, <strong>Cards needed</strong>, and <strong>% complete</strong>. Below them the chip grid shows every card in that subset — green = owned, grey = missing. The breakdown table shows how many packs each individual new card is expected to cost as your collection grows.</p>
+      <h3>Core cards only</h3>
+      <p>Calculators only count numbered pack cards (1–235). Promos, starter sets, and bonus products are excluded because they are not in booster packs.</p>
+      <h3>Portfolio Graph &amp; Card Values</h3>
+      <p>These tabs are coming soon — they will show your collection value over time and live market prices per card.</p>
+      <h3>Save Code tab</h3>
+      <p>Shows your current save code for the physical collection. Select it all to copy and store it somewhere safe.</p>
+    `
+  },
+  'digital-collection': {
+    title: 'Digital Collection',
+    html: `
+      <h3>Redeeming codes</h3>
+      <p>Go to the <strong>Redeem</strong> tab and paste a one-time redemption code from the Booster App. Each code is single-use. Successful redemptions add the card(s) to your digital collection immediately.</p>
+      <h3>Browsing your digital cards</h3>
+      <p>The <strong>Collection</strong> tab shows all redeemed cards. Search by name or card number. Filter by rarity (Common / Uncommon / Rare / Zenemental) or sort by Recently Added, Card Number, Name, or Rarity.</p>
+      <h3>Card details</h3>
+      <p>Click any digital card to open the detail modal. In digital mode the quantity controls are hidden; use the <strong>Remove from Digital Collection</strong> button to delete a card. A confirmation step prevents accidents.</p>
+      <h3>Export &amp; Import</h3>
+      <p><strong>Export JSON</strong> saves a full backup file of your digital collection. <strong>Import JSON</strong> restores it on any device. Use <strong>Clear All</strong> to wipe the digital collection (physical collection is unaffected).</p>
+      <h3>Stats bar</h3>
+      <p>The collapsible stats bar at the top shows totals across your digital collection — expand or collapse it with the toggle button.</p>
+      <h3>Deck Builder</h3>
+      <p>Coming soon — build and save legal decks using your digital card pool, with compatibility rules for online gameplay.</p>
+    `
+  },
+  media: {
+    title: 'Media',
+    html: `
+      <h3>How to Play</h3>
+      <p>The <strong>Interactive Demo</strong> is a playable Flash tutorial running via the Ruffle emulator. If it stalls, click the <strong>Reload</strong> button in the toolbar. A status dot at the bottom shows Loading / Playing / Error.</p>
+      <p>A community <strong>YouTube tutorial</strong> is embedded below the demo. Click <em>Watch on YouTube</em> if it doesn't play inline (common on iOS).</p>
+      <p>The <strong>Avatar Wiki</strong> link leads to the fandom wiki with card listings, rules, and lore.</p>
+      <h3>Rulebook</h3>
+      <p>Browses the official PDF in-browser via Google Docs viewer. Use the <strong>Download PDF</strong> button in the top-right to save a local copy. If the viewer doesn't render, click <em>Open directly</em>.</p>
+      <h3>Master Sets</h3>
+      <p>Community showcase videos of complete set builds. More videos can be found via the <em>Search YouTube</em> link at the bottom of the panel.</p>
+      <h3>Pack Rips</h3>
+      <p>Community booster pack opening videos. Use the <em>Search YouTube</em> link to find more.</p>
+      <h3>Music</h3>
+      <p>Streams the Avatar: The Last Airbender soundtrack playlist via YouTube. Click <em>Open Full Playlist on YouTube</em> for the complete list.</p>
+    `
+  },
+  wayback: {
+    title: 'Archived Websites',
+    html: `
+      <h3>What these links are</h3>
+      <p>Historical snapshots of Avatar TCG websites preserved via the Internet Archive (Wayback Machine) and other archival sources.</p>
+      <h3>UDE.com/Avatar</h3>
+      <p>Upper Deck Entertainment's original Avatar Quick Strike game portal, archived from 2008. Includes the original card search interface and game info.</p>
+      <h3>Musogato.com/avatar</h3>
+      <p>A community-built card database from 2012. Contains card scans and set information.</p>
+      <h3>Laststicker.ru</h3>
+      <p>A card checklist and trade resource. Still active — useful for tracking which cards you need.</p>
+      <h3>Loading speed</h3>
+      <p>Wayback Machine snapshots load through the archive servers and can be slow. Give them 10–20 seconds before concluding a page is broken. All links open in a new tab.</p>
+    `
+  },
+  profile: {
+    title: 'Together',
+    html: `
+      <h3>Creating an account</h3>
+      <p>Enter your email and a password (at least 6 characters), then click <strong>Sign Up</strong>. Check your email for a confirmation link if prompted. Once signed in, you'll be asked to choose a <strong>username</strong> — this is shown to friends, in chat, on trades, and on the leaderboard. <em>It can only be set once</em>, so choose carefully.</p>
+      <h3>Cloud sync</h3>
+      <p>Click <strong>☁ Sync to Cloud</strong> to push your physical collection to your account. Click <strong>⬇ Load from Cloud</strong> to pull it back on another device. If both the device and cloud have data, a conflict dialog asks which version to keep.</p>
+      <h3>Editing your profile</h3>
+      <p>Under <strong>Edit Profile</strong> you can set a display name, bio, favorite traits, favorite chamber card, and an avatar (any card's artwork). Drag the avatar image to reframe it. Changes save automatically.</p>
+      <h3>Friends</h3>
+      <p>Search by username in the Friends tab and send a request. Accept incoming requests from the <strong>Pending</strong> section. Once friends, you can open a private DM chat or propose a trade directly from their friend card.</p>
+      <h3>Chat</h3>
+      <p><strong>Global</strong> chat is open to everyone who is signed in. Private DM rooms open automatically when you click a friend's <em>Chat</em> button. The floating <strong>Quick Chat</strong> panel (bottom-right menu) mirrors the same rooms without switching tabs.</p>
+      <h3>Trades</h3>
+      <p>Click <strong>Propose a Trade</strong>, choose a friend, select cards you're offering and cards you want in return, add an optional note, then send. The recipient sees it in their <em>Incoming</em> tab and can accept or decline. Completed trades appear in History.</p>
+      <h3>Forum</h3>
+      <p>Post questions, strategies, trade offers, or news. Filter posts by category (General, Trading, Strategy, Collection, News). Open a post to read replies and add your own — press <kbd>Ctrl</kbd>+<kbd>Enter</kbd> to send a reply quickly.</p>
+      <h3>Leaderboard</h3>
+      <p>Shows set-completion percentage for all users who have synced their collection to the cloud. Updates whenever anyone syncs.</p>
+      <h3>Compare via a friend's profile</h3>
+      <p>Open a friend's profile card, navigate to their <em>Collection</em> tab, and click <strong>Compare</strong> to load their physical collection into the main Card Collection view — the same as pasting their save code manually.</p>
+      <h3>Signing out</h3>
+      <p>Click <strong>Log Out</strong> in the profile bar. Your local collection remains on the device; cloud data stays in your account for next time.</p>
+    `
+  }
+};
 
   var currentHowToTab = 'home';
 
@@ -5290,34 +6180,109 @@ init();
 })();
 </script>
 <script>
-/*  epb.js — Everpresent Button (Avatar Quick Strike TCG)
-    Replaces the inline <script> block in the HTML.
-    All three sub-buttons (Chat, Help, Play) are managed by a
-    single openMenu / closeMenu pair — no duplicate declarations.
-*/
 (function () {
   'use strict';
 
-  /* ── State ───────────────────────────────────────────────────── */
-  var state = {
-    menuOpen : false,
-    chatOpen : false,
-    room     : 'global',
-    profile  : null,
-    userId   : null,
-    chatSub  : null,
-    seenRooms: { global: true }
-  };
+  /* ═══════════════════════════════════════════════════════════════════
+     EPB_BUTTONS — the only place you need to edit to add/remove/reorder
+     sub-buttons. Each entry needs:
+       id     – unique string, used for element IDs
+       icon   – FontAwesome class name (without "fa-" prefix... add it below)
+       bg     – CSS color value for the button background
+       label  – tooltip / hover label text
+       angle  – degrees from straight-up, clockwise toward left
+                (0 = directly above main btn, 90 = directly left of it)
+       action – function called on click (closeMenu() is called first if needed)
+  ═══════════════════════════════════════════════════════════════════ */
+  var EPB_BUTTONS = [
+    {
+      id:     'chat',
+      icon:   'fa-comment-dots',
+      bg:     'var(--water)',
+      label:  'Quick Chat',
+      angle:  0,
+      action: function () { toggleChat(); }
+    },
+    {
+      id:     'help',
+      icon:   'fa-question',
+      bg:     'var(--zen)',
+      label:  'How to Use',
+      angle:  45,
+      action: function () { closeMenu(); if (howToPopup) howToPopup.classList.toggle('active'); }
+    },
+    {
+      id:     'play',
+      icon:   'fa-gamepad',
+      bg:     'var(--earth)',
+      label:  'Play Game',
+      angle:  90,
+      action: function () { closeMenu(); window.open('https://zolodio.github.io/PlayAvatar/', '_blank', 'noopener,noreferrer'); }
+    },
+    /* ── add more buttons here ── */
+  ];
 
-  /* ── Elements ────────────────────────────────────────────────── */
+  /* ── Radial layout math ──────────────────────────────────────────
+     Main button: bottom:20px right:20px, 54px diameter → center at (47, 47)
+     from the bottom-right corner of the viewport.
+     Sub-buttons fan out from 0° (straight up) toward 90° (straight left).
+  ─────────────────────────────────────────────────────────────────── */
+  var MAIN_R    = 20;               /* main btn CSS right & bottom      */
+  var MAIN_SIZE = 54;               /* main btn diameter px             */
+  var SUB_SIZE  = 44;               /* sub-btn diameter px              */
+  var RADIUS    = 90;               /* arc radius (main center → sub center) */
+  var mainCX    = MAIN_R + MAIN_SIZE / 2;   /* 47 — from right edge     */
+  var mainCY    = MAIN_R + MAIN_SIZE / 2;   /* 47 — from bottom edge    */
+  var subH      = SUB_SIZE / 2;             /* 22                       */
+
+  EPB_BUTTONS.forEach(function (cfg, i) {
+    var rad = cfg.angle * Math.PI / 180;
+    var cx  = mainCX + Math.sin(rad) * RADIUS;  /* sub center from right  */
+    var cy  = mainCY + Math.cos(rad) * RADIUS;  /* sub center from bottom */
+    var btnRight  = Math.round(cx - subH);
+    var btnBottom = Math.round(cy - subH);
+
+    /* Hidden-state transform: visually place button at main-btn center.
+       translateX(+) = move rightward on screen (toward smaller `right` value).
+       translateY(+) = move downward on screen (toward smaller `bottom` value).
+       Both move the sub-button inward toward the main button. */
+    var tx = Math.round(cx - mainCX);
+    var ty = Math.round(cy - mainCY);
+    cfg._hiddenTf = 'translateX(' + tx + 'px) translateY(' + ty + 'px) scale(0.35)';
+    cfg._delay    = (i * 55) + 'ms';
+
+    /* Button element */
+    var btn = document.createElement('button');
+    btn.id        = 'epbSub-' + cfg.id;
+    btn.className = 'epb-sub-btn';
+    btn.title     = cfg.label;
+    btn.setAttribute('aria-label', cfg.label);
+    btn.style.right      = btnRight  + 'px';
+    btn.style.bottom     = btnBottom + 'px';
+    btn.style.background = cfg.bg;
+    btn.style.setProperty('--epb-off-tf', cfg._hiddenTf);
+    btn.innerHTML = '<i class="fas ' + cfg.icon + '"></i>';
+    document.body.appendChild(btn);
+    cfg._btn = btn;
+
+    /* Label element */
+    var lbl = document.createElement('div');
+    lbl.id        = 'epbLabel-' + cfg.id;
+    lbl.className = 'epb-sub-label';
+    lbl.textContent = cfg.label;
+    lbl.style.right  = (btnRight + SUB_SIZE + 8) + 'px';
+    lbl.style.bottom = (btnBottom + subH - 10)   + 'px';
+    document.body.appendChild(lbl);
+    cfg._label = lbl;
+
+    btn.addEventListener('mouseenter', function () { lbl.classList.add('show'); });
+    btn.addEventListener('mouseleave', function () { lbl.classList.remove('show'); });
+    btn.addEventListener('click',      function () { cfg.action(); });
+  });
+
+  /* ── Core elements ─────────────────────────────────────────────── */
   var backdrop   = document.getElementById('epbBackdrop');
   var mainBtn    = document.getElementById('epbMainBtn');
-  var chatSubBtn = document.getElementById('epbChatSubBtn');
-  var helpSubBtn = document.getElementById('epbHelpSubBtn');
-  var playSubBtn = document.getElementById('epbPlaySubBtn');   // declared once, here
-  var labelChat  = document.getElementById('epbLabelChat');
-  var labelHelp  = document.getElementById('epbLabelHelp');
-  var labelPlay  = document.getElementById('epbLabelPlay');   // declared once, here
   var chatPanel  = document.getElementById('epbChatPanel');
   var chatClose  = document.getElementById('epbChatClose');
   var roomSel    = document.getElementById('epbRoomSel');
@@ -5327,78 +6292,60 @@ init();
   var sendBtn    = document.getElementById('epbSendBtn');
   var howToPopup = document.getElementById('howToPopup');
 
-  /* ── Single, authoritative open / close ─────────────────────── */
-  function openMenu() {
+  /* ── State ─────────────────────────────────────────────────────── */
+  var state = {
+    menuOpen:      false,
+    chatOpen:      false,
+    room:          'global',
+    profile:       null,
+    userId:        null,
+    chatSub:       null,
+    dmReadSub:     null,
+    dmOtherReadAt: null,
+    seenRooms:     { global: true }
+  };
+
+  /* ── Menu open / close ─────────────────────────────────────────── */
+  function openMenu () {
     state.menuOpen = true;
     mainBtn.classList.add('open');
     backdrop.classList.add('active');
-    chatSubBtn.classList.add('visible');
-    helpSubBtn.classList.add('visible');
-    playSubBtn.classList.add('visible');
+    EPB_BUTTONS.forEach(function (cfg) {
+      cfg._btn.style.transitionDelay = cfg._delay;
+      cfg._btn.classList.add('visible');
+    });
     syncRoomsFromSidebar();
   }
 
-  function closeMenu() {
+  function closeMenu () {
     state.menuOpen = false;
     mainBtn.classList.remove('open');
     backdrop.classList.remove('active');
-    chatSubBtn.classList.remove('visible');
-    helpSubBtn.classList.remove('visible');
-    playSubBtn.classList.remove('visible');
-    labelChat.classList.remove('show');
-    labelHelp.classList.remove('show');
-    labelPlay.classList.remove('show');
+    EPB_BUTTONS.forEach(function (cfg) {
+      cfg._btn.style.transitionDelay = '0ms';
+      cfg._btn.classList.remove('visible');
+      cfg._label.classList.remove('show');
+    });
   }
 
-  /* ── Main button ─────────────────────────────────────────────── */
-  mainBtn.addEventListener('click', function () {
-    state.menuOpen ? closeMenu() : openMenu();
-  });
-
-  /* Backdrop closes menu (but NOT the floating chat panel) */
-  backdrop.addEventListener('click', closeMenu);
-
-  /* ── Help sub-button ─────────────────────────────────────────── */
-  helpSubBtn.addEventListener('click', function () {
-    closeMenu();
-    if (howToPopup) howToPopup.classList.toggle('active');
-  });
-  helpSubBtn.addEventListener('mouseenter', function () { labelHelp.classList.add('show'); });
-  helpSubBtn.addEventListener('mouseleave', function () { labelHelp.classList.remove('show'); });
-
-  /* ── Play Game sub-button ────────────────────────────────────── */
-  playSubBtn.addEventListener('click', function () {
-    closeMenu();
-    window.open('https://zolodio.github.io/PlayAvatar/', '_blank', 'noopener,noreferrer');
-  });
-  playSubBtn.addEventListener('mouseenter', function () { labelPlay.classList.add('show'); });
-  playSubBtn.addEventListener('mouseleave', function () { labelPlay.classList.remove('show'); });
-
-  /* ── Chat sub-button ─────────────────────────────────────────── */
-  chatSubBtn.addEventListener('click', function () {
+  /* ── Chat toggle ───────────────────────────────────────────────── */
+  function toggleChat () {
     closeMenu();
     state.chatOpen = !state.chatOpen;
     chatPanel.classList.toggle('active', state.chatOpen);
     if (state.chatOpen) {
-      syncRoomsFromSidebar();
-      loadMessages(state.room);
+      populateEpbRooms().then(function () { loadMessages(state.room); });
     }
-  });
-  chatSubBtn.addEventListener('mouseenter', function () { labelChat.classList.add('show'); });
-  chatSubBtn.addEventListener('mouseleave', function () { labelChat.classList.remove('show'); });
+  }
 
-  chatClose.addEventListener('click', function () {
-    state.chatOpen = false;
-    chatPanel.classList.remove('active');
-  });
+  /* ── Wiring ────────────────────────────────────────────────────── */
+  mainBtn.addEventListener('click', function () { state.menuOpen ? closeMenu() : openMenu(); });
+  backdrop.addEventListener('click', closeMenu);
+  chatClose.addEventListener('click', function () { state.chatOpen = false; chatPanel.classList.remove('active'); });
+  roomSel.addEventListener('change', function () { state.room = this.value; loadMessages(state.room); });
 
-  /* ── Room selector ───────────────────────────────────────────── */
-  roomSel.addEventListener('change', function () {
-    state.room = this.value;
-    loadMessages(state.room);
-  });
-
-  function syncRoomsFromSidebar() {
+  /* ── Room sync ─────────────────────────────────────────────────── */
+  function syncRoomsFromSidebar () {
     document.querySelectorAll('#chatSidebar .chat-room-btn[data-room]').forEach(function (btn) {
       var rid = btn.getAttribute('data-room');
       if (state.seenRooms[rid]) return;
@@ -5412,177 +6359,1375 @@ init();
     });
   }
 
-  /* Watch the chat sidebar for newly-added DM room buttons */
   var sidebar = document.getElementById('chatSidebar');
-  if (sidebar) {
-    new MutationObserver(syncRoomsFromSidebar).observe(sidebar, { childList: true });
+  if (sidebar) { new MutationObserver(syncRoomsFromSidebar).observe(sidebar, { childList: true }); }
+
+  async function populateEpbRooms () {
+    syncRoomsFromSidebar();
+    if (typeof window.socialPopulateDmSidebar === 'function') {
+      await window.socialPopulateDmSidebar();
+      syncRoomsFromSidebar();
+    }
   }
 
-  /* ── Messages ────────────────────────────────────────────────── */
-  async function loadMessages(room) {
-    var sb = window.sb;
-    msgsEl.innerHTML =
-      '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem;">' +
-      '<i class="fas fa-circle-notch fa-spin"></i></div>';
+  function isDmRoom (room) { return !!(room && room.indexOf('__dm__') !== -1); }
 
+  function dmTickHtml (m) {
+    if (!isDmRoom(state.room)) return '';
+    if (!state.profile || m.username !== state.profile.username) return '';
+    var isRead = !!(state.dmOtherReadAt && m.created_at && new Date(state.dmOtherReadAt) >= new Date(m.created_at));
+    return '<span class="epb-dm-tick' + (isRead ? ' epb-dm-tick--read' : '') + '" data-msg-ts="' + (m.created_at || '') + '">' + (isRead ? '\u2713\u2713' : '\u2713') + '</span>';
+  }
+
+  function refreshEpbDmTicks () {
+    if (!state.dmOtherReadAt) return;
+    var readTime = new Date(state.dmOtherReadAt);
+    msgsEl.querySelectorAll('.epb-dm-tick[data-msg-ts]').forEach(function (span) {
+      var ts = span.getAttribute('data-msg-ts');
+      if (ts && readTime >= new Date(ts)) { span.textContent = '\u2713\u2713'; span.classList.add('epb-dm-tick--read'); }
+    });
+  }
+
+  async function markEpbDmRead (room) {
+    var sb = window.sb;
+    if (!isDmRoom(room) || !state.userId || !sb) return;
+    await sb.from('dm_reads').upsert({ user_id: state.userId, room: room, last_read_at: new Date().toISOString() }, { onConflict: 'user_id,room' });
+  }
+
+  /* ── Messages ──────────────────────────────────────────────────── */
+  async function loadMessages (room) {
+    var sb = window.sb;
+    msgsEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem;"><i class="fas fa-circle-notch fa-spin"></i></div>';
     if (!sb) { showPrompt('Supabase not configured.'); return; }
 
     var session = await sb.auth.getSession();
     var user    = session && session.data && session.data.session && session.data.session.user;
-
     if (!user) {
-      showPrompt(
-        '<i class="fas fa-comments" style="font-size:1.8rem;opacity:0.2;display:block;margin-bottom:8px;"></i>' +
-        'Sign in under the <strong>Together</strong> tab to join the chat'
-      );
+      showPrompt('<i class="fas fa-comments" style="font-size:1.8rem;opacity:0.2;display:block;margin-bottom:8px;"></i>Sign in under the <strong>Together</strong> tab to join the chat');
       inputRow.style.display = 'none';
       return;
     }
-
     if (!state.profile || state.userId !== user.id) {
       state.userId = user.id;
-      var pRes = await sb.from('profiles')
-        .select('username,avatar_card_number')
-        .eq('user_id', user.id)
-        .maybeSingle();
+      var pRes = await sb.from('profiles').select('username,avatar_card_number').eq('user_id', user.id).maybeSingle();
       state.profile = pRes.data || { username: user.email };
     }
+    if (isDmRoom(room)) {
+      var rRes = await sb.from('dm_reads').select('last_read_at').eq('room', room).neq('user_id', state.userId).maybeSingle();
+      state.dmOtherReadAt = (rRes.data && rRes.data.last_read_at) || null;
+      markEpbDmRead(room);
+    } else { state.dmOtherReadAt = null; }
 
     inputRow.style.display = '';
     txtEl.placeholder = 'Message as @' + (state.profile.username || '?') + '\u2026';
-
-    var res = await sb.from('messages')
-      .select('*')
-      .eq('room', room)
-      .order('created_at', { ascending: true })
-      .limit(80);
+    var res = await sb.from('messages').select('*').eq('room', room).order('created_at', { ascending: true }).limit(80);
     renderAll(res.data || []);
     subscribeRoom(room);
   }
 
-  function showPrompt(html) {
-    msgsEl.innerHTML = '<div class="epb-prompt">' + html + '</div>';
-    inputRow.style.display = 'none';
-  }
+  function showPrompt (html) { msgsEl.innerHTML = '<div class="epb-prompt">' + html + '</div>'; inputRow.style.display = 'none'; }
 
-  /* ── Rendering ───────────────────────────────────────────────── */
-  function esc(s) {
-    return String(s || '')
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
-  }
+  function esc (s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
-  function msgHtml(m) {
+  function msgHtml (m) {
     var mine = state.profile && m.username === state.profile.username;
     var init = esc((m.username || '?').charAt(0).toUpperCase());
-    var avatarStyle =
-      'width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,' +
-      (mine ? 'var(--zen),var(--fire)' : 'var(--water),var(--zen)') +
-      ');display:flex;align-items:center;justify-content:center;' +
-      'font-size:0.55rem;font-weight:700;color:#fff;flex-shrink:0;font-family:Cinzel,serif;';
-
-    return (
-      '<div style="display:flex;flex-direction:' + (mine ? 'row-reverse' : 'row') +
-        ';align-items:flex-start;gap:7px;">' +
-        '<div style="' + avatarStyle + '">' + init + '</div>' +
-        '<div style="max-width:76%;">' +
-          '<div style="font-size:0.58rem;color:var(--text-muted);margin-bottom:2px;' +
-            (mine ? 'text-align:right;' : '') + '">' + esc(m.username || '?') + '</div>' +
-          '<div style="background:' + (mine ? 'rgba(180,77,223,0.15)' : 'var(--bg-surface,#1a2035)') + ';' +
-            'border:1px solid ' + (mine ? 'rgba(180,77,223,0.22)' : 'var(--border)') + ';' +
-            'border-radius:' + (mine ? '12px 12px 3px 12px' : '12px 12px 12px 3px') + ';' +
-            'padding:7px 11px;font-size:0.8rem;color:var(--text-primary);' +
-            'line-height:1.45;word-break:break-word;">' +
-            esc(m.content) +
-          '</div>' +
-        '</div>' +
-      '</div>'
-    );
+    var av   = 'width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,' + (mine ? 'var(--zen),var(--fire)' : 'var(--water),var(--zen)') + ');display:flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:700;color:#fff;flex-shrink:0;font-family:Cinzel,serif;';
+    return '<div style="display:flex;flex-direction:' + (mine ? 'row-reverse' : 'row') + ';align-items:flex-start;gap:7px;"><div style="' + av + '">' + init + '</div><div style="max-width:76%;"><div style="font-size:0.58rem;color:var(--text-muted);margin-bottom:2px;' + (mine ? 'text-align:right;' : '') + '">' + esc(m.username || '?') + '</div><div style="background:' + (mine ? 'rgba(180,77,223,0.15)' : 'var(--bg-surface,#1a2035)') + ';border:1px solid ' + (mine ? 'rgba(180,77,223,0.22)' : 'var(--border)') + ';border-radius:' + (mine ? '12px 12px 3px 12px' : '12px 12px 12px 3px') + ';padding:7px 11px;font-size:0.8rem;color:var(--text-primary);line-height:1.45;word-break:break-word;">' + esc(m.content) + '</div><div style="font-size:0.58rem;color:var(--text-muted);margin-top:2px;' + (mine ? 'text-align:right;' : '') + 'display:flex;align-items:center;' + (mine ? 'justify-content:flex-end;' : '') + 'gap:2px;">' + dmTickHtml(m) + '</div></div></div>';
   }
 
-  function renderAll(msgs) {
-    if (!msgs.length) {
-      msgsEl.innerHTML =
-        '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem;">' +
-        'No messages yet \u2014 say hi! \uD83D\uDC4B</div>';
-      return;
-    }
+  function renderAll (msgs) {
+    if (!msgs.length) { msgsEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem;">No messages yet \u2014 say hi! \uD83D\uDC4B</div>'; return; }
     msgsEl.innerHTML = msgs.map(msgHtml).join('');
     msgsEl.scrollTop = msgsEl.scrollHeight;
   }
 
-  function appendMsg(m) {
-    var ph = msgsEl.querySelector('.epb-prompt');
-    if (ph) ph.remove();
-    var noMsg = msgsEl.querySelector('[style*="say hi"]');
-    if (noMsg) noMsg.remove();
+  function appendMsg (m) {
+    var ph = msgsEl.querySelector('.epb-prompt'); if (ph) ph.remove();
+    var nm = msgsEl.querySelector('[style*="say hi"]'); if (nm) nm.remove();
+    if (isDmRoom(state.room) && !(state.profile && m.username === state.profile.username)) markEpbDmRead(state.room);
     var div = document.createElement('div');
     div.innerHTML = msgHtml(m);
     msgsEl.appendChild(div.firstChild);
     msgsEl.scrollTop = msgsEl.scrollHeight;
   }
 
-  /* ── Realtime subscription ───────────────────────────────────── */
-  function subscribeRoom(room) {
+  function subscribeRoom (room) {
     var sb = window.sb; if (!sb) return;
-    if (state.chatSub) { try { state.chatSub.unsubscribe(); } catch (e) {} state.chatSub = null; }
+    if (state.chatSub)   { try { state.chatSub.unsubscribe();   } catch (e) {} state.chatSub   = null; }
+    if (state.dmReadSub) { try { state.dmReadSub.unsubscribe(); } catch (e) {} state.dmReadSub = null; }
     state.chatSub = sb.channel('epb:' + room)
-      .on('postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'messages', filter: 'room=eq.' + room },
-        function (payload) { appendMsg(payload.new); })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: 'room=eq.' + room }, function (p) { appendMsg(p.new); })
       .subscribe();
+    if (isDmRoom(room)) {
+      state.dmReadSub = sb.channel('epb_reads:' + room)
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'dm_reads', filter: 'room=eq.' + room }, function (p) {
+          if (!p.new || p.new.user_id === state.userId) return;
+          state.dmOtherReadAt = p.new.last_read_at;
+          refreshEpbDmTicks();
+        }).subscribe();
+    }
   }
 
-  /* ── Send ────────────────────────────────────────────────────── */
-  async function sendMsg() {
+  /* ── Send ──────────────────────────────────────────────────────── */
+  async function sendMsg () {
     var sb = window.sb;
     if (!sb || !state.profile || !state.userId) return;
     var content = (txtEl.value || '').trim(); if (!content) return;
     txtEl.value = '';
-    await sb.from('messages').insert({
-      room              : state.room,
-      user_id           : state.userId,
-      username          : state.profile.username,
-      avatar_card_number: state.profile.avatar_card_number || null,
-      content           : content
-    });
-    if (state.room.indexOf('__dm__') !== -1) {
-      sb.from('dm_rooms')
-        .update({ last_message_at: new Date().toISOString() })
-        .eq('room_id', state.room)
-        .then(function () {});
-    }
+    await sb.from('messages').insert({ room: state.room, user_id: state.userId, username: state.profile.username, avatar_card_number: state.profile.avatar_card_number || null, content: content });
+    if (state.room.indexOf('__dm__') !== -1) sb.from('dm_rooms').update({ last_message_at: new Date().toISOString() }).eq('room_id', state.room).then(function () {});
   }
-
   sendBtn.addEventListener('click', sendMsg);
-  txtEl.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
-  });
+  txtEl.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); } });
 
-  /* ── Auth-change polling (keeps panel in sync with login state) ─ */
+  /* ── Auth poll ─────────────────────────────────────────────────── */
   var _lastUid = null;
   setInterval(async function () {
     if (!window.sb) return;
-    var s   = await window.sb.auth.getSession();
+    var s = await window.sb.auth.getSession();
     var uid = s && s.data && s.data.session && s.data.session.user && s.data.session.user.id;
     if (uid !== _lastUid) {
-      _lastUid = uid;
-      state.profile = null;
-      state.userId  = null;
+      _lastUid = uid; state.profile = null; state.userId = null;
+      if (uid) populateEpbRooms();
       if (state.chatOpen) loadMessages(state.room);
     }
   }, 4000);
 
-  /* ── Sync howToClose button (still rendered in HTML) ─────────── */
+  /* ── howToClose wiring ─────────────────────────────────────────── */
   var howToCloseBtn = document.getElementById('howToClose');
-  if (howToCloseBtn) {
-    howToCloseBtn.addEventListener('click', function () {
-      if (howToPopup) howToPopup.classList.remove('active');
-    });
-  }
+  if (howToCloseBtn) { howToCloseBtn.addEventListener('click', function () { if (howToPopup) howToPopup.classList.remove('active'); }); }
 
   console.log('[epb.js] loaded \u2713');
 })();
 </script>
+<script src="scripts/social-patch.js"></script>	
+<!-- ═══════════ JAVASCRIPT — replaces the storefront <script> block ═══════════ -->
+<script>
+(function () {
+  'use strict';
+ 
+  /* ─── state ─── */
+  var sfState = {
+    source: 'physical',   // 'physical' | 'digital'
+    type:   'price',      // 'price' | 'trade'
+    card:   null,         // selected card object
+    tradeWants: []        // [{ card, qty }]
+  };
+ 
+  var currentUser = null;
+  var listings    = [];
+ 
+  /* ─── element refs ─── */
+  var sourceToggle      = document.getElementById('sf-source-toggle');
+  var typeToggle        = document.getElementById('sf-type-toggle');
+  var cardSearch        = document.getElementById('sf-card-search');
+  var cardDropdown      = document.getElementById('sf-card-dropdown');
+  var cardSelected      = document.getElementById('sf-card-selected');
+  var cardThumb         = document.getElementById('sf-card-thumb');
+  var cardNameDisplay   = document.getElementById('sf-card-name-display');
+  var cardMetaDisplay   = document.getElementById('sf-card-meta-display');
+  var cardClearBtn      = document.getElementById('sf-card-clear');
+  var qtyInput          = document.getElementById('sf-quantity');
+  var qtyMaxHint        = document.getElementById('sf-qty-max-hint');
+  var sfSourceLabel     = document.getElementById('sf-source-label');
+  var priceSection      = document.getElementById('sf-price-section');
+  var tradeSection      = document.getElementById('sf-trade-section');
+  var priceInput        = document.getElementById('sf-price');
+  var tradeSearch       = document.getElementById('sf-trade-search');
+  var tradeDropdown     = document.getElementById('sf-trade-dropdown');
+  var tradeWantsEl      = document.getElementById('sf-trade-wants');
+  var tradeEmptyHint    = document.getElementById('sf-trade-empty-hint');
+  var notesInput        = document.getElementById('sf-notes');
+  var errorEl           = document.getElementById('sf-error');
+  var submitBtn         = document.getElementById('sf-submit');
+  var submitLabel       = document.getElementById('sf-submit-label');
+  var storefrontListings = document.getElementById('storefrontListings');
+ 
+  /* ──────────────────────────────────────────────
+     TOGGLE STYLING
+  ────────────────────────────────────────────── */
+  function applyToggleStyle(container, activeClass, activeBg, activeColor) {
+    container.querySelectorAll('button').forEach(function (btn) {
+      var isActive = btn.classList.contains(activeClass);
+      btn.style.background = isActive ? activeBg : 'transparent';
+      btn.style.color      = isActive ? activeColor : 'var(--text-muted)';
+    });
+  }
+ 
+  function refreshSourceToggle() {
+    document.querySelectorAll('#sf-source-toggle .sf-tog-btn').forEach(function (btn) {
+      btn.classList.toggle('sf-tog-active', btn.dataset.source === sfState.source);
+    });
+    applyToggleStyle(sourceToggle, 'sf-tog-active', 'var(--zen)', '#fff');
+    sfSourceLabel.textContent = sfState.source === 'physical'
+      ? '(Physical Collection)'
+      : '(Digital Collection)';
+    clearCardSelection();
+  }
+ 
+  function refreshTypeToggle() {
+    document.querySelectorAll('#sf-type-toggle .sf-type-btn').forEach(function (btn) {
+      btn.classList.toggle('sf-type-active', btn.dataset.type === sfState.type);
+    });
+    var isPriceMode = sfState.type === 'price';
+    document.querySelectorAll('#sf-type-toggle .sf-type-btn').forEach(function (btn) {
+      var a = btn.classList.contains('sf-type-active');
+      btn.style.background = a ? (isPriceMode ? 'var(--earth)' : 'var(--water)') : 'transparent';
+      btn.style.color      = a ? '#fff' : 'var(--text-muted)';
+    });
+    priceSection.style.display = isPriceMode ? '' : 'none';
+    tradeSection.style.display = isPriceMode ? 'none' : '';
+    submitLabel.textContent    = isPriceMode ? 'List for Sale' : 'List for Trade';
+    submitBtn.style.background = isPriceMode ? 'var(--promo)' : 'var(--water)';
+    submitBtn.style.color      = isPriceMode ? '#000' : '#fff';
+  }
+ 
+  sourceToggle.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-source]');
+    if (!btn) return;
+    sfState.source = btn.dataset.source;
+    refreshSourceToggle();
+  });
+ 
+  typeToggle.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-type]');
+    if (!btn) return;
+    sfState.type = btn.dataset.type;
+    refreshTypeToggle();
+  });
+ 
+  /* ──────────────────────────────────────────────
+     COLLECTION HELPERS
+  ────────────────────────────────────────────── */
+  function getOwnedQty(cardNumber) {
+    if (sfState.source === 'physical') {
+      return (typeof collection !== 'undefined' ? collection[cardNumber] : 0) || 0;
+    } else {
+      /* digital collection — try the module's API */
+      if (window.digitalCollection && typeof window.digitalCollection.getQty === 'function') {
+        return window.digitalCollection.getQty(cardNumber) || 0;
+      }
+      /* fallback: check digitalCards global */
+      if (window.digitalCards) {
+        var dc = window.digitalCards.filter(function (c) { return c.number === cardNumber; });
+        return dc.length;
+      }
+      return 0;
+    }
+  }
+ 
+  function getSourceCards() {
+    if (typeof allCards === 'undefined') return [];
+    return allCards.filter(function (c) { return getOwnedQty(c.number) > 0; });
+  }
+ 
+  /* ──────────────────────────────────────────────
+     CARD SEARCH DROPDOWN (listing card)
+  ────────────────────────────────────────────── */
+  function buildDropdownRow(card, qty) {
+    var div = document.createElement('div');
+    div.className = 'sf-dropdown-row';
+    var rarityColor = {
+      common: 'var(--text-secondary)', uncommon: 'var(--earth)',
+      rare: 'var(--water)', zenemental: 'var(--zen)', promo: 'var(--promo)'
+    }[card.rarity] || 'var(--text-secondary)';
+ 
+    div.innerHTML =
+      '<img src="' + (card.imageLink || '') + '" alt="" onerror="this.style.opacity=0.2">' +
+      '<div style="flex:1;min-width:0;">' +
+        '<div style="font-weight:700;font-size:0.8rem;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + esc(card.name) + '</div>' +
+        '<div style="font-size:0.65rem;color:var(--text-muted);margin-top:1px;">#' + card.number + ' · ' + card.type + ' · <span style="color:' + rarityColor + '">' + card.rarity + '</span></div>' +
+      '</div>' +
+      '<span style="font-size:0.68rem;font-weight:700;color:var(--earth);white-space:nowrap;">Owned: ' + qty + '</span>';
+    return div;
+  }
+ 
+  function showCardDropdown(query) {
+    var src = getSourceCards();
+    var q   = query.trim().toLowerCase();
+    var filtered = q
+      ? src.filter(function (c) {
+          return c.name.toLowerCase().indexOf(q) !== -1 || c.number.toLowerCase().indexOf(q) !== -1;
+        })
+      : src;
+    filtered = filtered.slice(0, 30);
+ 
+    if (!filtered.length) {
+      cardDropdown.innerHTML = '<div style="padding:12px;font-size:0.78rem;color:var(--text-muted);text-align:center;">' +
+        (src.length === 0 ? 'No cards in your ' + sfState.source + ' collection' : 'No matches') +
+        '</div>';
+      cardDropdown.style.display = 'block';
+      return;
+    }
+ 
+    cardDropdown.innerHTML = '';
+    filtered.forEach(function (card) {
+      var qty = getOwnedQty(card.number);
+      var row = buildDropdownRow(card, qty);
+      row.addEventListener('click', function () { selectCard(card); });
+      cardDropdown.appendChild(row);
+    });
+    cardDropdown.style.display = 'block';
+  }
+ 
+  function selectCard(card) {
+    sfState.card = card;
+    cardSearch.value = '';
+    cardDropdown.style.display = 'none';
+ 
+    var qty = getOwnedQty(card.number);
+    var rarityColor = {
+      common: 'var(--text-secondary)', uncommon: 'var(--earth)',
+      rare: 'var(--water)', zenemental: 'var(--zen)', promo: 'var(--promo)'
+    }[card.rarity] || 'var(--text-secondary)';
+ 
+    cardThumb.src = card.imageLink || '';
+    cardNameDisplay.textContent = card.name;
+    cardMetaDisplay.innerHTML = '#' + card.number + ' · ' + card.type + ' · <span style="color:' + rarityColor + '">' + card.rarity + '</span>';
+    cardSelected.style.display = 'flex';
+ 
+    qtyMaxHint.textContent = '(max ' + qty + ')';
+    qtyInput.max   = qty;
+    qtyInput.value = Math.min(parseInt(qtyInput.value) || 1, qty);
+  }
+ 
+  function clearCardSelection() {
+    sfState.card = null;
+    cardSearch.value = '';
+    cardDropdown.style.display = 'none';
+    cardSelected.style.display = 'none';
+    qtyMaxHint.textContent = '';
+    qtyInput.removeAttribute('max');
+    qtyInput.value = 1;
+  }
+ 
+  cardSearch.addEventListener('focus', function () { showCardDropdown(this.value); });
+  cardSearch.addEventListener('input', function () { showCardDropdown(this.value); });
+  cardClearBtn.addEventListener('click', clearCardSelection);
+ 
+  document.addEventListener('click', function (e) {
+    if (!cardSearch.contains(e.target) && !cardDropdown.contains(e.target) && !cardSelected.contains(e.target)) {
+      cardDropdown.style.display = 'none';
+    }
+    if (!tradeSearch.contains(e.target) && !tradeDropdown.contains(e.target)) {
+      tradeDropdown.style.display = 'none';
+    }
+  });
+ 
+  /* qty clamp */
+  qtyInput.addEventListener('input', function () {
+    var max = parseInt(this.max);
+    if (!isNaN(max) && parseInt(this.value) > max) this.value = max;
+    if (parseInt(this.value) < 1 || isNaN(parseInt(this.value))) this.value = 1;
+  });
+ 
+  /* ──────────────────────────────────────────────
+     TRADE WANTS — card search (any card in DB)
+  ────────────────────────────────────────────── */
+  function showTradeDropdown(query) {
+    if (typeof allCards === 'undefined' || !query.trim()) {
+      tradeDropdown.style.display = 'none';
+      return;
+    }
+    var q = query.trim().toLowerCase();
+    var filtered = allCards.filter(function (c) {
+      return c.name.toLowerCase().indexOf(q) !== -1 || c.number.toLowerCase().indexOf(q) !== -1;
+    }).slice(0, 30);
+ 
+    if (!filtered.length) {
+      tradeDropdown.innerHTML = '<div style="padding:12px;font-size:0.78rem;color:var(--text-muted);text-align:center;">No cards found</div>';
+      tradeDropdown.style.display = 'block';
+      return;
+    }
+ 
+    tradeDropdown.innerHTML = '';
+    filtered.forEach(function (card) {
+      var div = document.createElement('div');
+      div.className = 'sf-dropdown-row';
+      var rarityColor = {
+        common: 'var(--text-secondary)', uncommon: 'var(--earth)',
+        rare: 'var(--water)', zenemental: 'var(--zen)', promo: 'var(--promo)'
+      }[card.rarity] || 'var(--text-secondary)';
+ 
+      div.innerHTML =
+        '<img src="' + (card.imageLink || '') + '" alt="" onerror="this.style.opacity=0.2">' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="font-weight:700;font-size:0.8rem;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + esc(card.name) + '</div>' +
+          '<div style="font-size:0.65rem;color:var(--text-muted);margin-top:1px;">#' + card.number + ' · <span style="color:' + rarityColor + '">' + card.rarity + '</span></div>' +
+        '</div>' +
+        '<i class="fas fa-plus" style="color:var(--water);font-size:0.75rem;"></i>';
+ 
+      div.addEventListener('click', function () { addTradeWant(card); tradeSearch.value = ''; tradeDropdown.style.display = 'none'; });
+      tradeDropdown.appendChild(div);
+    });
+    tradeDropdown.style.display = 'block';
+  }
+ 
+  tradeSearch.addEventListener('input', function () { showTradeDropdown(this.value); });
+  tradeSearch.addEventListener('focus', function () { if (this.value) showTradeDropdown(this.value); });
+ 
+  function addTradeWant(card) {
+    var existing = sfState.tradeWants.find(function (w) { return w.card.number === card.number; });
+    if (existing) {
+      existing.qty++;
+      renderTradeWants();
+      return;
+    }
+    sfState.tradeWants.push({ card: card, qty: 1 });
+    renderTradeWants();
+  }
+ 
+  function removeTradeWant(cardNumber) {
+    sfState.tradeWants = sfState.tradeWants.filter(function (w) { return w.card.number !== cardNumber; });
+    renderTradeWants();
+  }
+ 
+  function changeTradeWantQty(cardNumber, delta) {
+    var w = sfState.tradeWants.find(function (w) { return w.card.number === cardNumber; });
+    if (!w) return;
+    w.qty = Math.max(1, w.qty + delta);
+    renderTradeWants();
+  }
+ 
+  function renderTradeWants() {
+    if (!sfState.tradeWants.length) {
+      tradeWantsEl.innerHTML = '<div id="sf-trade-empty-hint" style="font-size:0.75rem;color:var(--text-muted);font-style:italic;padding:6px 0;">No cards selected yet — search above</div>';
+      return;
+    }
+    tradeWantsEl.innerHTML = sfState.tradeWants.map(function (w) {
+      return '<div class="sf-trade-chip" data-card="' + w.card.number + '">' +
+        '<img src="' + (w.card.imageLink || '') + '" alt="" onerror="this.style.opacity=0.2">' +
+        '<span style="max-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + esc(w.card.name) + '</span>' +
+        '<span class="sf-trade-chip-qty">' +
+          '<button data-action="minus" data-num="' + w.card.number + '" title="Decrease">-</button>' +
+          '<span>x' + w.qty + '</span>' +
+          '<button data-action="plus"  data-num="' + w.card.number + '" title="Increase">+</button>' +
+        '</span>' +
+        '<span class="sf-trade-chip-rm" data-rm="' + w.card.number + '" title="Remove">\u00d7</span>' +
+      '</div>';
+    }).join('');
+ 
+    tradeWantsEl.querySelectorAll('[data-rm]').forEach(function (el) {
+      el.addEventListener('click', function () { removeTradeWant(this.dataset.rm); });
+    });
+    tradeWantsEl.querySelectorAll('[data-action]').forEach(function (el) {
+      el.addEventListener('click', function () {
+        changeTradeWantQty(this.dataset.num, this.dataset.action === 'plus' ? 1 : -1);
+      });
+    });
+  }
+ 
+  /* ──────────────────────────────────────────────
+     VALIDATION & SUBMIT
+  ────────────────────────────────────────────── */
+  function showError(msg) {
+    errorEl.textContent = msg;
+    errorEl.style.display = msg ? '' : 'none';
+  }
+ 
+  submitBtn.addEventListener('click', async function () {
+    showError('');
+    if (!sfState.card) { showError('Please select a card from your collection.'); return; }
+ 
+    var qty = parseInt(qtyInput.value) || 0;
+    var max = getOwnedQty(sfState.card.number);
+    if (qty < 1)    { showError('Quantity must be at least 1.'); return; }
+    if (qty > max)  { showError('You only own ' + max + ' cop' + (max === 1 ? 'y' : 'ies') + ' of this card.'); return; }
+ 
+    var condition = document.getElementById('sf-condition').value;
+    if (!condition) { showError('Please select a condition.'); return; }
+ 
+    if (sfState.type === 'price') {
+      var price = parseFloat(priceInput.value);
+      if (isNaN(price) || price < 0) { showError('Please enter a valid price.'); return; }
+    } else {
+      if (!sfState.tradeWants.length) { showError('Please add at least one card you want in trade.'); return; }
+    }
+ 
+    /* ── Try Supabase ── */
+    var sb = window.sb;
+    if (sb && currentUser) {
+      try {
+        var payload = {
+          user_id:        currentUser.id,
+          card_number:    sfState.card.number,
+          card_source:    sfState.source,
+          listing_type:   sfState.type,
+          quantity:       qty,
+          condition:      condition,
+          notes:          notesInput.value.trim() || null,
+          price:          sfState.type === 'price' ? parseFloat(priceInput.value) : null,
+          trade_wants:    sfState.type === 'trade' ? JSON.stringify(sfState.tradeWants.map(function (w) { return { number: w.card.number, name: w.card.name, qty: w.qty }; })) : null
+        };
+        var res = await sb.from('storefront_listings').insert([payload]);
+        if (res.error) throw res.error;
+        typeof showToast === 'function' && showToast('Listing created!');
+        resetForm();
+        loadListings();
+        return;
+      } catch (err) {
+        console.warn('Supabase insert failed, falling back to localStorage:', err);
+      }
+    }
+ 
+    /* ── Fallback: localStorage ── */
+    var stored = JSON.parse(localStorage.getItem('sf_listings') || '[]');
+    stored.unshift({
+      id:           Date.now(),
+      card_number:  sfState.card.number,
+      card_source:  sfState.source,
+      listing_type: sfState.type,
+      quantity:     qty,
+      condition:    condition,
+      notes:        notesInput.value.trim() || null,
+      price:        sfState.type === 'price' ? parseFloat(priceInput.value) : null,
+      trade_wants:  sfState.type === 'trade' ? sfState.tradeWants.map(function (w) { return { number: w.card.number, name: w.card.name, qty: w.qty }; }) : null,
+      created_at:   new Date().toISOString()
+    });
+    localStorage.setItem('sf_listings', JSON.stringify(stored));
+    listings = stored;
+    renderStorefront();
+    resetForm();
+    typeof showToast === 'function' && showToast('Listing saved locally!');
+  });
+ 
+  function resetForm() {
+    clearCardSelection();
+    qtyInput.value = 1;
+    document.getElementById('sf-condition').value = '';
+    priceInput.value = '';
+    notesInput.value = '';
+    sfState.tradeWants = [];
+    renderTradeWants();
+    showError('');
+  }
+ 
+  /* ──────────────────────────────────────────────
+     LOAD & RENDER LISTINGS
+  ────────────────────────────────────────────── */
+  async function checkAuth() {
+    var sb = window.sb;
+    if (!sb) return null;
+    var session = await sb.auth.getSession();
+    currentUser = session && session.data && session.data.session && session.data.session.user;
+    return currentUser;
+  }
+ 
+  async function loadListings() {
+    var sb = window.sb;
+    if (sb && currentUser) {
+      try {
+        var res = await sb.from('storefront_listings').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
+        if (!res.error) { listings = res.data || []; renderStorefront(); return; }
+      } catch (e) {}
+    }
+    /* localStorage fallback */
+    listings = JSON.parse(localStorage.getItem('sf_listings') || '[]');
+    renderStorefront();
+  }
+ 
+  function renderStorefront() {
+    if (!listings.length) {
+      storefrontListings.innerHTML = '<div style="text-align:center;padding:20px 0;color:var(--text-muted);font-size:0.8rem;">No items listed yet</div>';
+      return;
+    }
+ 
+    storefrontListings.innerHTML = listings.map(function (item) {
+      var card = (typeof allCards !== 'undefined')
+        ? allCards.find(function (c) { return c.number === item.card_number; })
+        : null;
+      var cardName = card ? card.name : 'Card #' + item.card_number;
+      var img = card ? card.imageLink : '';
+ 
+      var daysAgo = Math.floor((Date.now() - new Date(item.created_at).getTime()) / 86400000);
+      var dateStr = daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : daysAgo + 'd ago';
+ 
+      var sourceTag = item.card_source === 'digital'
+        ? '<span style="font-size:0.58rem;padding:2px 6px;background:rgba(46,140,232,0.12);color:var(--water);border:1px solid rgba(46,140,232,0.25);border-radius:99px;font-weight:700;">Digital</span>'
+        : '<span style="font-size:0.58rem;padding:2px 6px;background:rgba(180,77,223,0.12);color:var(--zen);border:1px solid rgba(180,77,223,0.25);border-radius:99px;font-weight:700;">Physical</span>';
+ 
+      var typeTag = item.listing_type === 'trade'
+        ? '<span style="font-size:0.58rem;padding:2px 6px;background:rgba(46,140,232,0.12);color:var(--water);border:1px solid rgba(46,140,232,0.25);border-radius:99px;font-weight:700;"><i class="fas fa-exchange-alt"></i> Trade</span>'
+        : '<span style="font-size:0.58rem;padding:2px 6px;background:rgba(92,184,92,0.12);color:var(--earth);border:1px solid rgba(92,184,92,0.25);border-radius:99px;font-weight:700;">$ ' + (item.price != null ? item.price.toFixed(2) : '—') + '</span>';
+ 
+      /* trade-wants list */
+      var wantsHtml = '';
+      if (item.listing_type === 'trade') {
+        var wants = typeof item.trade_wants === 'string' ? JSON.parse(item.trade_wants) : (item.trade_wants || []);
+        if (wants.length) {
+          wantsHtml = '<div style="margin-top:6px;font-size:0.68rem;color:var(--text-muted);">Wants: ' +
+            wants.map(function (w) { return '<span style="color:var(--water);">x' + w.qty + ' ' + esc(w.name || w.number) + '</span>'; }).join(', ') +
+          '</div>';
+        }
+      }
+ 
+      return '<div style="background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius);padding:11px 13px;display:flex;align-items:flex-start;gap:10px;">' +
+        (img ? '<img src="' + img + '" alt="" style="width:30px;height:40px;object-fit:cover;border-radius:3px;border:1px solid var(--border);flex-shrink:0;" onerror="this.style.display=\'none\'">' : '') +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:3px;">' +
+            '<span style="font-weight:700;font-size:0.8rem;color:var(--text-primary);">' + esc(cardName) + '</span>' +
+            sourceTag + typeTag +
+          '</div>' +
+          '<div style="font-size:0.68rem;color:var(--text-muted);">x' + item.quantity + ' · ' + (item.condition || '—') + ' · ' + dateStr + '</div>' +
+          (item.notes ? '<div style="font-size:0.68rem;color:var(--text-secondary);margin-top:3px;font-style:italic;">' + esc(item.notes) + '</div>' : '') +
+          wantsHtml +
+        '</div>' +
+        '<button data-lid="' + item.id + '" class="sf-del" style="padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg-card);color:var(--danger);font-size:0.68rem;font-family:\'Nunito Sans\',sans-serif;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">Remove</button>' +
+      '</div>';
+    }).join('');
+ 
+    document.querySelectorAll('.sf-del').forEach(function (btn) {
+      btn.addEventListener('click', function () { deleteListing(this.dataset.lid); });
+    });
+  }
+ 
+  async function deleteListing(id) {
+    var sb = window.sb;
+    var numId = parseInt(id, 10);
+ 
+    if (typeof showConfirm === 'function') {
+      showConfirm('Remove this listing?', async function () {
+        await doDelete(sb, id, numId);
+      }, { okText: 'Remove' });
+    } else {
+      await doDelete(sb, id, numId);
+    }
+  }
+ 
+  async function doDelete(sb, strId, numId) {
+    if (sb && currentUser) {
+      try {
+        await sb.from('storefront_listings').delete().or('id.eq.' + strId + ',id.eq.' + numId).eq('user_id', currentUser.id);
+      } catch (e) {}
+    }
+    /* also clear from localStorage */
+    var stored = JSON.parse(localStorage.getItem('sf_listings') || '[]').filter(function (l) { return String(l.id) !== String(strId); });
+    localStorage.setItem('sf_listings', JSON.stringify(stored));
+    listings = listings.filter(function (l) { return String(l.id) !== String(strId); });
+    renderStorefront();
+    typeof showToast === 'function' && showToast('Listing removed');
+  }
+ 
+  /* ──────────────────────────────────────────────
+     INJECT CSS
+  ────────────────────────────────────────────── */
+  var style = document.createElement('style');
+  style.textContent = [
+    '.sf-tog-btn { background: transparent; color: var(--text-muted); }',
+    '.sf-tog-active { background: var(--zen) !important; color: #fff !important; }',
+    '.sf-type-btn { background: transparent; color: var(--text-muted); }',
+    '.sf-dropdown-row { display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;transition:background 0.15s;border-bottom:1px solid var(--border); }',
+    '.sf-dropdown-row:last-child { border-bottom:none; }',
+    '.sf-dropdown-row:hover { background:var(--bg-card-hover); }',
+    '.sf-dropdown-row img { width:28px;height:37px;object-fit:cover;border-radius:3px;border:1px solid var(--border);flex-shrink:0; }',
+    '.sf-trade-chip { display:inline-flex;align-items:center;gap:5px;background:rgba(46,140,232,0.12);border:1px solid rgba(46,140,232,0.3);border-radius:99px;padding:4px 8px 4px 5px;font-size:0.72rem;color:var(--water);font-weight:600; }',
+    '.sf-trade-chip img { width:18px;height:24px;object-fit:cover;border-radius:2px;flex-shrink:0; }',
+    '.sf-trade-chip-qty { background:rgba(46,140,232,0.18);border-radius:99px;padding:1px 4px;font-size:0.65rem;display:inline-flex;align-items:center;gap:2px; }',
+    '.sf-trade-chip-qty button { background:none;border:none;cursor:pointer;color:var(--water);font-size:0.72rem;padding:0 1px;line-height:1;font-weight:700; }',
+    '.sf-trade-chip-rm { cursor:pointer;opacity:0.55;transition:opacity 0.15s;font-size:0.75rem;margin-left:1px; }',
+    '.sf-trade-chip-rm:hover { opacity:1; }',
+    '#sf-card-search:focus, #sf-trade-search:focus { border-color: var(--accent); }'
+  ].join('\n');
+  document.head.appendChild(style);
+ 
+  /* ──────────────────────────────────────────────
+     INIT
+  ────────────────────────────────────────────── */
+  function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+ 
+  refreshSourceToggle();
+  refreshTypeToggle();
+ 
+  checkAuth().then(function () { loadListings(); });
+ 
+  /* Re-check auth periodically */
+  setInterval(async function () {
+    var prev = currentUser && currentUser.id;
+    await checkAuth();
+    if (currentUser && currentUser.id !== prev) loadListings();
+  }, 5000);
+ 
+})();
+</script>
+<script>
+(function () {
+  'use strict';
+
+  /* ─────────────────────────────────────────────────────────────────
+     MARKETPLACE
+  ───────────────────────────────────────────────────────────────────── */
+  var MP_CONFIG = {
+    ebay: {
+      name: 'eBay',
+      icon: 'fab fa-ebay',
+      color: '#e53238',
+      url: function () {
+        return 'https://www.ebay.com/sch/i.html?_nkw=avatar+quickstrike&_sacat=0';
+      }
+    },
+    craigslist: {
+      name: 'Craigslist',
+      icon: 'fas fa-newspaper',
+      color: '#e8e8e8',
+      url: function () {
+        return 'https://craigslist.org/search/sss?query=avatar#search=2~gallery~0';
+      }
+    },
+    shopgoodwill: {
+      name: 'ShopGoodWill',
+      icon: 'fas fa-heart',
+      color: '#e74c3c',
+      url: function () {
+        return 'https://shopgoodwill.com/categories/listing?st=avatar&sg=&c=&s=&lp=0&hp=999999&sbn=&spo=false&snpo=false&socs=false&sd=false&sca=false&caed=5%2F7%2F2026&cadb=7&scs=false&sis=false&col=1&p=1&ps=40&desc=false&ss=0&UseBuyerPrefs=true&sus=false&cln=1&catIds=&pn=&wc=false&mci=false&hmt=false&layout=grid&ihp=true';
+      }
+    },
+    facebook: {
+      name: 'Facebook Marketplace',
+      icon: 'fab fa-facebook',
+      color: '#1877f2',
+      url: function () {
+        return 'https://www.facebook.com/marketplace/search/?query=avatar%20quick%20strike';
+      }
+    },
+    letgo: {
+      name: 'OfferUp (LetGo)',
+      icon: 'fas fa-mobile-alt',
+      color: '#ff6b35',
+      url: function () {
+        return 'https://offerup.com/search?q=avatar+quickstrike&distance=50';
+      }
+    }
+  };
+
+  var marketplaceFilters = {};
+  Object.keys(MP_CONFIG).forEach(function (key) { marketplaceFilters[key] = true; });
+
+  var marketplaceListings = document.getElementById('marketplaceListings');
+
+  function renderMarketplace() {
+    var html = '';
+    Object.keys(MP_CONFIG).forEach(function (key) {
+      if (!marketplaceFilters[key]) return;
+      var cfg = MP_CONFIG[key];
+      html += '<a href="' + cfg.url() + '" target="_blank" rel="noopener,noreferrer" style="display:block; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; text-decoration:none; transition:all 0.2s; cursor:pointer;">' +
+        '<div style="background:linear-gradient(135deg, ' + cfg.color + '11 0%, ' + cfg.color + '22 100%); padding:16px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px;">' +
+          '<i class="' + cfg.icon + '" style="font-size:1.5rem; color:' + cfg.color + ';"></i>' +
+          '<div style="flex:1;">' +
+            '<div style="font-weight:700; font-size:0.9rem; color:var(--text-primary);">' + cfg.name + '</div>' +
+            '<div style="font-size:0.68rem; color:var(--text-muted); margin-top:2px;">Search for Avatar Quick Strike</div>' +
+          '</div>' +
+          '<i class="fas fa-external-link-alt" style="color:var(--text-muted); font-size:0.85rem;"></i>' +
+        '</div>' +
+        '<div style="padding:12px 16px; font-size:0.75rem; color:var(--text-secondary); line-height:1.5;">' +
+          'Click to search ' + cfg.name + ' for Avatar Quick Strike cards. Results update in real-time.' +
+        '</div>' +
+      '</a>';
+    });
+    marketplaceListings.innerHTML = html;
+  }
+
+  // Wire up filter checkboxes
+  document.querySelectorAll('.mp-filter').forEach(function (checkbox) {
+    checkbox.addEventListener('change', function () {
+      marketplaceFilters[this.dataset.site] = this.checked;
+      renderMarketplace();
+    });
+  });
+
+  renderMarketplace();
+  window.renderMarketplace = renderMarketplace;
+
+})();
+</script>
+<script>
+(function(){
+'use strict';
+ 
+/* ── SPECIALTY OPTIONS per element ── */
+var SPECIALTIES = {
+  'non-bender': ['Weapons Mastery','Chi Blocking','Acrobatics','Throwables & Gadgets','Engineering','Tactical Genius','Stealth','Mechanized Combat','Precision Ranged'],
+  'water': ['Bloodbending','Healing','Swamp/Plant Bending','Breathe Underwater','Ice Bending'],
+  'earth': ['Metalbending','Sandbending','Seismic Sense','Magnetization','Lavabending','Diamond Bending','Fossil Bending'],
+  'fire': ['Lightning','Colored Fire','Combustion','Plasma Bending'],
+  'air': ['Flight','Sound Bending','Breathe in Space','Super Hearing','Vacuum Creation','Echo Bending'],
+  'spirit': ['Spirit Projection','Spirit Bending','Light/Shadow Bending','Emotion Bending'],
+  '_cross': ['Light/Shadow Bending','Mudbending','Ink Bending','Weather Bending','Gravity Bending','Molecular Vibration','Chi Pulse']
+};
+ 
+var PET_OPTIONS = {
+  'standard': ['Cat','Dog','Hawk','Pig','Chicken','Rat','Butterfly','Bear'],
+  'hybrid': ['Turtle Duck','Otter Penguin','Fire Ferret','Platypus Bear','Catgator','Wolfbat','Koala Sheep','Eel Hound'],
+  'mount': ['Sky Bison','Komodo Rhino','Ostrich Horse','Shirshu','Badgermole','Polar Bear Dog','Armadillo Lion','Dragon','Lion Turtle','Sand Shark','Moose Lion'],
+  'spirit': ['Spirit Vine','Forest Mask Spirit','Spirit Dragon','Mushroom Spirit','Butterfly Spirit']
+};
+ 
+var PERSONALITY_TRAITS = ['Honor','Aggression','Compassion','Discipline','Spirituality','Loyalty','Independence'];
+ 
+/* ── STATE ── */
+var state = {
+  givenName:'', nickName:'', imageData:null, imageMime:'',
+  bending:'', specialties:[], mastery:'',
+  strike:'', advantage:'', ally:'',
+  temperament:'', lifepath:'', range:'',
+  petCat:'none', pet:'', bond:'',
+  height:'', weight:'', eyes:'', hair:'', skin:'', build:'', appearanceNotes:'',
+  personality:{ Honor:50, Aggression:30, Compassion:70, Discipline:50, Spirituality:50, Loyalty:60, Independence:50 },
+  flaws:[],
+  backstoryMode:'freewrite', backstoryFree:'',
+  bsNation:'', bsTraining:'', bsTrauma:'', bsMentor:'', bsRival:'', bsGoal:'', bsSecret:'', bsTone:''
+};
+ 
+var editingId = null;
+ 
+/* ── INIT ── */
+function init(){
+  renderPersonalitySliders();
+  bindPillGroups();
+  bindSubTabs();
+  bindBackstoryTabs();
+  bindImageUpload();
+  bindActions();
+  updateSpecialties();
+}
+ 
+/* ── PILL GROUPS ── */
+function bindPillGroups(){
+  document.querySelectorAll('.cc-pill').forEach(function(pill){
+    pill.addEventListener('click', function(){
+      var group = this.dataset.group;
+      var val = this.dataset.val;
+      var multi = this.dataset.multi === '1';
+      if(multi){
+        this.classList.toggle('selected');
+        this.classList.toggle('generic');
+        var selected = Array.from(document.querySelectorAll('.cc-pill[data-group="'+group+'"].selected')).map(function(p){return p.dataset.val;});
+        state.flaws = selected;
+      } else {
+        var wasSelected = this.classList.contains('selected');
+        document.querySelectorAll('.cc-pill[data-group="'+group+'"]').forEach(function(p){
+          p.classList.remove('selected');
+        });
+        if(!wasSelected){
+          this.classList.add('selected');
+          state[group] = val;
+          if(group === 'bending') updateSpecialties();
+          if(group === 'petcat') updatePetPicker(val);
+        } else {
+          state[group] = '';
+          if(group === 'bending') updateSpecialties();
+          if(group === 'petcat') updatePetPicker('none');
+        }
+      }
+    });
+  });
+  /* trait cards */
+  document.querySelectorAll('.cc-trait-card').forEach(function(card){
+    card.addEventListener('click', function(){
+      var group = this.dataset.group;
+      var val = this.dataset.val;
+      document.querySelectorAll('.cc-trait-card[data-group="'+group+'"]').forEach(function(c){
+        c.className = 'cc-trait-card';
+      });
+      this.classList.add('selected-'+group);
+      state[group] = val;
+    });
+  });
+}
+ 
+/* ── SPECIALTY PILLS ── */
+function updateSpecialties(){
+  var container = document.getElementById('cc-specialty-group');
+  var bending = state.bending;
+  if(!bending){
+    container.innerHTML = '<span style="font-size:0.75rem;color:var(--text-muted);font-style:italic;">Select an element above to see specialties</span>';
+    state.specialties = [];
+    return;
+  }
+  var options = (SPECIALTIES[bending] || []).concat(SPECIALTIES['_cross']);
+  var saved = state.specialties;
+  container.innerHTML = '';
+  options.forEach(function(opt){
+    var pill = document.createElement('div');
+    pill.className = 'cc-pill generic' + (saved.indexOf(opt) !== -1 ? ' selected' : '');
+    pill.dataset.multi = '1';
+    pill.dataset.group = 'specialties';
+    pill.textContent = opt;
+    pill.addEventListener('click', function(){
+      this.classList.toggle('selected');
+      var idx = state.specialties.indexOf(opt);
+      if(this.classList.contains('selected')){ if(idx === -1) state.specialties.push(opt); }
+      else { if(idx !== -1) state.specialties.splice(idx,1); }
+    });
+    container.appendChild(pill);
+  });
+}
+ 
+/* ── PET PICKER ── */
+function updatePetPicker(cat){
+  var picker = document.getElementById('cc-pet-picker');
+  var sel = document.getElementById('cc-pet-select');
+  if(cat === 'none' || !PET_OPTIONS[cat]){
+    picker.style.display = 'none'; state.pet = ''; return;
+  }
+  picker.style.display = '';
+  sel.innerHTML = '<option value="">— Choose —</option>';
+  PET_OPTIONS[cat].forEach(function(p){
+    var opt = document.createElement('option');
+    opt.value = p; opt.textContent = p;
+    sel.appendChild(opt);
+  });
+  sel.value = state.pet || '';
+  sel.onchange = function(){ state.pet = this.value; };
+}
+ 
+/* ── PERSONALITY SLIDERS ── */
+function renderPersonalitySliders(){
+  var container = document.getElementById('cc-personality-sliders');
+  var html = '';
+  PERSONALITY_TRAITS.forEach(function(trait){
+    var val = state.personality[trait];
+    html += '<div class="cc-slider-row">' +
+      '<span class="cc-slider-label">'+trait+'</span>' +
+      '<input type="range" class="cc-slider" min="0" max="100" value="'+val+'" data-trait="'+trait+'">' +
+      '<span class="cc-slider-val" id="sv-'+trait+'">'+val+'</span>' +
+      '</div>';
+  });
+  container.innerHTML = html;
+  container.querySelectorAll('.cc-slider').forEach(function(s){
+    s.addEventListener('input', function(){
+      state.personality[this.dataset.trait] = parseInt(this.value);
+      document.getElementById('sv-'+this.dataset.trait).textContent = this.value;
+    });
+  });
+}
+ 
+/* ── SUB TABS ── */
+function bindSubTabs(){
+  document.getElementById('ccTabs').addEventListener('click', function(e){
+    var btn = e.target.closest('[data-cctab]');
+    if(!btn) return;
+    document.querySelectorAll('#ccTabs .cc-tab').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+    document.getElementById('cctab-create').style.display = btn.dataset.cctab === 'create' ? '' : 'none';
+    document.getElementById('cctab-roster').style.display = btn.dataset.cctab === 'roster' ? '' : 'none';
+    if(btn.dataset.cctab === 'roster') renderRoster();
+  });
+}
+ 
+/* ── BACKSTORY TABS ── */
+function bindBackstoryTabs(){
+  document.getElementById('cc-backstory-tabs').addEventListener('click', function(e){
+    var btn = e.target.closest('[data-bstab]');
+    if(!btn || btn.disabled) return;
+    document.querySelectorAll('#cc-backstory-tabs .cc-tab').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+    var tab = btn.dataset.bstab;
+    state.backstoryMode = tab;
+    document.getElementById('cc-bs-freewrite').style.display = tab === 'freewrite' ? '' : 'none';
+    document.getElementById('cc-bs-template').style.display  = tab === 'template'  ? '' : 'none';
+    document.getElementById('cc-bs-ai').style.display        = tab === 'ai'        ? '' : 'none';
+  });
+  document.getElementById('cc-bs-generate-text').addEventListener('click', generateTemplateBackstory);
+}
+ 
+function generateTemplateBackstory(){
+  var nation   = document.getElementById('cc-bs-nation').value;
+  var training = document.getElementById('cc-bs-training').value;
+  var trauma   = document.getElementById('cc-bs-trauma').value;
+  var mentor   = document.getElementById('cc-bs-mentor').value;
+  var rival    = document.getElementById('cc-bs-rival').value;
+  var goal     = document.getElementById('cc-bs-goal').value;
+  var secret   = document.getElementById('cc-bs-secret').value;
+  var name     = document.getElementById('cc-given-name').value || 'The character';
+  var toneEl   = document.querySelector('.cc-pill[data-group="bstone"].selected');
+  var tone     = toneEl ? toneEl.dataset.val : '';
+ 
+  var parts = [];
+  if(nation) parts.push(name + ' was born in the ' + nation + '.');
+  if(training) parts.push('Their early years were shaped by ' + training + '.');
+  if(trauma) parts.push('Everything changed when ' + trauma + '.');
+  if(mentor) parts.push('Under the guidance of ' + mentor + ', they honed their skills.');
+  if(rival) parts.push('Their greatest rival remains ' + rival + '.');
+  if(goal) parts.push('Above all else, they seek: ' + goal + '.');
+  if(secret) parts.push('But there is something they keep hidden — ' + secret + '.');
+ 
+  if(tone === 'dark') parts.push('The shadows that follow them run deeper than most suspect.');
+  else if(tone === 'hopeful') parts.push('Despite everything, hope burns within them like an undying flame.');
+  else if(tone === 'tragic') parts.push('Their story is one written in loss, yet they press forward.');
+  else if(tone === 'epic') parts.push('Destiny itself seems to pull them toward something greater.');
+  else if(tone === 'political') parts.push('The nations around them are in flux, and they are no mere bystander.');
+ 
+  var result = parts.length ? parts.join(' ') : 'Fill in the template fields above to generate a backstory.';
+  var area = document.getElementById('cc-backstory-generated');
+  area.value = result;
+  area.style.display = '';
+  state.backstoryFree = result;
+}
+ 
+/* ── IMAGE UPLOAD ── */
+function bindImageUpload(){
+  var input = document.getElementById('cc-img-input');
+  var area  = document.getElementById('cc-img-area');
+  var preview = document.getElementById('cc-img-preview');
+  var placeholder = document.getElementById('cc-img-placeholder');
+  var clearBtn = document.getElementById('cc-img-clear');
+ 
+  input.addEventListener('change', function(){
+    var file = this.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e){
+      state.imageData = e.target.result.split(',')[1];
+      state.imageMime = file.type;
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+      placeholder.style.display = 'none';
+      area.classList.add('has-img');
+      clearBtn.disabled = false;
+    };
+    reader.readAsDataURL(file);
+    this.value = '';
+  });
+ 
+  clearBtn.addEventListener('click', function(){
+    state.imageData = null; state.imageMime = '';
+    preview.src = ''; preview.style.display = 'none';
+    placeholder.style.display = 'flex';
+    area.classList.remove('has-img');
+    this.disabled = true;
+  });
+}
+ 
+/* ── ACTIONS ── */
+function bindActions(){
+  document.getElementById('cc-save-btn').addEventListener('click', saveCharacter);
+  document.getElementById('cc-random-btn').addEventListener('click', randomizeCharacter);
+  document.getElementById('cc-clear-btn').addEventListener('click', clearForm);
+ 
+  /* sync text inputs to state */
+  var textMap = {
+    'cc-given-name':'givenName','cc-nick-name':'nickName',
+    'cc-height':'height','cc-weight':'weight','cc-eyes':'eyes','cc-hair':'hair',
+    'cc-skin':'skin','cc-appearance-notes':'appearanceNotes',
+    'cc-backstory-free':'backstoryFree','cc-bs-nation':'bsNation',
+    'cc-bs-training':'bsTraining','cc-bs-trauma':'bsTrauma',
+    'cc-bs-mentor':'bsMentor','cc-bs-rival':'bsRival',
+    'cc-bs-goal':'bsGoal','cc-bs-secret':'bsSecret'
+  };
+  Object.keys(textMap).forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.addEventListener('input', function(){ state[textMap[id]] = this.value; });
+  });
+}
+ 
+/* ── SAVE ── */
+function collectFormState(){
+  /* collect current input values */
+  state.givenName = document.getElementById('cc-given-name').value;
+  state.nickName  = document.getElementById('cc-nick-name').value;
+  state.height    = document.getElementById('cc-height').value;
+  state.weight    = document.getElementById('cc-weight').value;
+  state.eyes      = document.getElementById('cc-eyes').value;
+  state.hair      = document.getElementById('cc-hair').value;
+  state.skin      = document.getElementById('cc-skin').value;
+  state.appearanceNotes = document.getElementById('cc-appearance-notes').value;
+  state.backstoryFree = document.getElementById('cc-backstory-free').value;
+  state.bsNation  = document.getElementById('cc-bs-nation').value;
+  state.bsTraining= document.getElementById('cc-bs-training').value;
+  state.bsTrauma  = document.getElementById('cc-bs-trauma').value;
+  state.bsMentor  = document.getElementById('cc-bs-mentor').value;
+  state.bsRival   = document.getElementById('cc-bs-rival').value;
+  state.bsGoal    = document.getElementById('cc-bs-goal').value;
+  state.bsSecret  = document.getElementById('cc-bs-secret').value;
+  var genArea = document.getElementById('cc-backstory-generated');
+  if(genArea && genArea.value) state.backstoryFree = genArea.value;
+}
+ 
+function saveCharacter(){
+  collectFormState();
+  if(!state.givenName.trim()){ showToast('Please enter a name first.'); return; }
+  var chars = getCharacters();
+  var char = Object.assign({}, state, {
+    id: editingId || Date.now(),
+    createdAt: editingId ? (chars.find(function(c){return c.id===editingId;})||{}).createdAt || Date.now() : Date.now(),
+    updatedAt: Date.now()
+  });
+  if(editingId){
+    var idx = chars.findIndex(function(c){return c.id===editingId;});
+    if(idx !== -1) chars[idx] = char; else chars.unshift(char);
+  } else {
+    chars.unshift(char);
+  }
+  localStorage.setItem('aqst_characters', JSON.stringify(chars));
+  editingId = null;
+  showToast(editingId ? 'Character updated!' : '✅ Character saved!');
+  /* switch to roster */
+  document.querySelector('[data-cctab="roster"]').click();
+}
+ 
+/* ── LOAD ── */
+function getCharacters(){
+  try{ return JSON.parse(localStorage.getItem('aqst_characters') || '[]'); }
+  catch(e){ return []; }
+}
+ 
+function loadCharacterIntoForm(char){
+  editingId = char.id;
+  Object.assign(state, char);
+ 
+  document.getElementById('cc-given-name').value = state.givenName || '';
+  document.getElementById('cc-nick-name').value  = state.nickName  || '';
+  document.getElementById('cc-height').value     = state.height    || '';
+  document.getElementById('cc-weight').value     = state.weight    || '';
+  document.getElementById('cc-eyes').value       = state.eyes      || '';
+  document.getElementById('cc-hair').value       = state.hair      || '';
+  document.getElementById('cc-skin').value       = state.skin      || '';
+  document.getElementById('cc-appearance-notes').value = state.appearanceNotes || '';
+  document.getElementById('cc-backstory-free').value   = state.backstoryFree   || '';
+  document.getElementById('cc-bs-nation').value   = state.bsNation   || '';
+  document.getElementById('cc-bs-training').value = state.bsTraining || '';
+  document.getElementById('cc-bs-trauma').value   = state.bsTrauma   || '';
+  document.getElementById('cc-bs-mentor').value   = state.bsMentor   || '';
+  document.getElementById('cc-bs-rival').value    = state.bsRival    || '';
+  document.getElementById('cc-bs-goal').value     = state.bsGoal     || '';
+  document.getElementById('cc-bs-secret').value   = state.bsSecret   || '';
+ 
+  /* pills */
+  restorePill('bending',     state.bending);
+  restorePill('mastery',     state.mastery);
+  restorePill('strike',      null, true);  /* trait cards */
+  restorePill('advantage',   null, true);
+  restorePill('ally',        null, true);
+  restorePill('temperament', state.temperament);
+  restorePill('lifepath',    state.lifepath);
+  restorePill('range',       state.range);
+  restorePill('build',       state.build);
+  restorePill('bstone',      state.bsTone);
+  restorePill('petcat',      state.petCat || 'none');
+ 
+  /* trait cards */
+  if(state.strike){
+    document.querySelectorAll('.cc-trait-card[data-group="strike"]').forEach(function(c){c.className='cc-trait-card'+(c.dataset.val===state.strike?' selected-strike':'');});
+  }
+  if(state.advantage){
+    document.querySelectorAll('.cc-trait-card[data-group="advantage"]').forEach(function(c){c.className='cc-trait-card'+(c.dataset.val===state.advantage?' selected-advantage':'');});
+  }
+  if(state.ally){
+    document.querySelectorAll('.cc-trait-card[data-group="ally"]').forEach(function(c){c.className='cc-trait-card'+(c.dataset.val===state.ally?' selected-ally':'');});
+  }
+ 
+  updateSpecialties();
+  setTimeout(function(){
+    (state.specialties||[]).forEach(function(sp){
+      document.querySelectorAll('.cc-pill[data-group="specialties"]').forEach(function(p){
+        if(p.textContent.trim() === sp) p.classList.add('selected');
+      });
+    });
+    (state.flaws||[]).forEach(function(fl){
+      document.querySelectorAll('.cc-pill[data-group="flaws"]').forEach(function(p){
+        if(p.dataset.val === fl) p.classList.add('selected');
+      });
+    });
+  }, 50);
+ 
+  updatePetPicker(state.petCat || 'none');
+  if(state.pet) setTimeout(function(){document.getElementById('cc-pet-select').value=state.pet;},60);
+  restorePill('bond', state.bond);
+ 
+  /* image */
+  if(state.imageData){
+    var preview = document.getElementById('cc-img-preview');
+    preview.src = 'data:'+state.imageMime+';base64,'+state.imageData;
+    preview.style.display = 'block';
+    document.getElementById('cc-img-placeholder').style.display = 'none';
+    document.getElementById('cc-img-area').classList.add('has-img');
+    document.getElementById('cc-img-clear').disabled = false;
+  }
+ 
+  /* personality sliders */
+  Object.keys(state.personality||{}).forEach(function(t){
+    var sl = document.querySelector('.cc-slider[data-trait="'+t+'"]');
+    var sv = document.getElementById('sv-'+t);
+    if(sl){ sl.value = state.personality[t]; }
+    if(sv){ sv.textContent = state.personality[t]; }
+  });
+ 
+  document.querySelector('[data-cctab="create"]').click();
+  showToast('Editing: ' + state.givenName);
+}
+ 
+function restorePill(group, val){
+  if(!val) return;
+  document.querySelectorAll('.cc-pill[data-group="'+group+'"]').forEach(function(p){
+    p.classList.toggle('selected', p.dataset.val === val);
+  });
+}
+ 
+/* ── ROSTER ── */
+function renderRoster(){
+  var chars = getCharacters();
+  var list = document.getElementById('cc-roster-list');
+  var countEl = document.getElementById('cc-roster-count');
+  countEl.textContent = chars.length + ' character' + (chars.length !== 1 ? 's' : '');
+  if(!chars.length){
+    list.innerHTML = '<div style="text-align:center;padding:40px 0;color:var(--text-muted);font-size:0.82rem;"><i class="fas fa-users" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:10px;"></i>No characters yet — create your first one!</div>';
+    return;
+  }
+  list.innerHTML = chars.map(function(char){
+    var imgHtml = char.imageData
+      ? '<img src="data:'+char.imageMime+';base64,'+char.imageData+'" alt="'+esc(char.givenName)+'" style="width:44px;height:44px;border-radius:8px;object-fit:cover;border:1px solid var(--border);flex-shrink:0;">'
+      : '<div class="cc-char-avatar">'+getElementEmoji(char.bending)+'</div>';
+    var bend = char.bending ? (char.bending.charAt(0).toUpperCase()+char.bending.slice(1)) : 'Non-Bender';
+    var sub  = [bend, char.strike||'', char.advantage||'', char.ally||''].filter(Boolean).join(' · ');
+    return '<div class="cc-char-card" data-id="'+char.id+'">' +
+      imgHtml +
+      '<div class="cc-char-info">' +
+        '<div class="cc-char-name">'+esc(char.givenName)+(char.nickName?' <span style="color:var(--text-muted);font-weight:400;font-size:0.72rem;">"'+esc(char.nickName)+'"</span>':'')+'</div>' +
+        '<div class="cc-char-sub">'+esc(sub)+'</div>' +
+      '</div>' +
+      '<div class="cc-char-actions">' +
+        '<button class="cc-char-action edit" data-id="'+char.id+'"><i class="fas fa-edit"></i> Edit</button>' +
+        '<button class="cc-char-action del"  data-id="'+char.id+'"><i class="fas fa-trash"></i></button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+ 
+  list.querySelectorAll('.cc-char-action.edit').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      var ch = getCharacters().find(function(c){return String(c.id)===String(this.dataset.id);}.bind(this));
+      if(ch) loadCharacterIntoForm(ch);
+    });
+  });
+  list.querySelectorAll('.cc-char-action.del').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      var id = this.dataset.id;
+      if(!confirm('Delete this character? This cannot be undone.')) return;
+      var chars = getCharacters().filter(function(c){return String(c.id)!==String(id);});
+      localStorage.setItem('aqst_characters', JSON.stringify(chars));
+      renderRoster();
+      showToast('Character deleted.');
+    });
+  });
+}
+ 
+/* ── RANDOMIZE ── */
+var NAMES_A = ['Bai','Zhen','Kai','Lei','Mei','Tao','Jin','Suki','Raya','Shen'];
+var NAMES_B = ['Fong','Xin','Long','Shi','Yun','Wei','Hao','Peng','Yao','Dan'];
+var ELEMENTS = ['water','earth','fire','air','non-bender'];
+var STRIKES  = ['bull','fox','lion'];
+var ADVS     = ['mind','body','spirit'];
+var ALLIES   = ['light','shadow','dark'];
+ 
+function randomizeCharacter(){
+  clearForm(true);
+  document.getElementById('cc-given-name').value = pick(NAMES_A)+' '+pick(NAMES_B);
+  var el = pick(ELEMENTS);
+  clickPill('bending', el);
+  setTimeout(function(){
+    var specs = (SPECIALTIES[el]||[]);
+    if(specs.length){
+      var sp = pick(specs);
+      document.querySelectorAll('.cc-pill[data-group="specialties"]').forEach(function(p){
+        if(p.textContent.trim()===sp){ p.classList.add('selected'); state.specialties=[sp]; }
+      });
+    }
+  },60);
+  clickPill('mastery', pick(['novice','adept','master']));
+  clickTraitCard('strike',    pick(STRIKES));
+  clickTraitCard('advantage', pick(ADVS));
+  clickTraitCard('ally',      pick(ALLIES));
+  clickPill('temperament', pick(['aggressive','defensive','tactical','passive']));
+  clickPill('lifepath',    pick(['open-palm','closed-fist']));
+  clickPill('build',       pick(['lean','muscular','stocky','slender']));
+  var slider = document.querySelectorAll('.cc-slider');
+  slider.forEach(function(s){
+    var v = Math.round(Math.random()*100);
+    s.value = v;
+    state.personality[s.dataset.trait] = v;
+    var sv = document.getElementById('sv-'+s.dataset.trait);
+    if(sv) sv.textContent = v;
+  });
+  showToast('Character randomized!');
+}
+ 
+function clickPill(group, val){
+  var p = document.querySelector('.cc-pill[data-group="'+group+'"][data-val="'+val+'"]');
+  if(p) p.click();
+}
+function clickTraitCard(group, val){
+  var c = document.querySelector('.cc-trait-card[data-group="'+group+'"][data-val="'+val+'"]');
+  if(c) c.click();
+}
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+ 
+/* ── CLEAR ── */
+function clearForm(silent){
+  if(!silent && !confirm('Clear the form? Unsaved changes will be lost.')) return;
+  editingId = null;
+  state.givenName=''; state.nickName=''; state.imageData=null; state.imageMime='';
+  state.bending=''; state.specialties=[]; state.mastery='';
+  state.strike=''; state.advantage=''; state.ally='';
+  state.temperament=''; state.lifepath=''; state.range='';
+  state.petCat='none'; state.pet=''; state.bond='';
+  state.height=''; state.weight=''; state.eyes=''; state.hair=''; state.skin=''; state.build=''; state.appearanceNotes='';
+  state.personality={ Honor:50,Aggression:30,Compassion:70,Discipline:50,Spirituality:50,Loyalty:60,Independence:50 };
+  state.flaws=[];
+  state.backstoryFree=''; state.bsNation=''; state.bsTraining=''; state.bsTrauma='';
+  state.bsMentor=''; state.bsRival=''; state.bsGoal=''; state.bsSecret=''; state.bsTone='';
+ 
+  document.querySelectorAll('.cc-input,.cc-textarea,.cc-select').forEach(function(el){ el.value=''; });
+  document.querySelectorAll('.cc-backstory-generated').forEach(function(el){el.value='';el.style.display='none';});
+  document.getElementById('cc-backstory-generated').style.display='none';
+  document.querySelectorAll('.cc-pill.selected').forEach(function(p){ p.classList.remove('selected'); });
+  document.querySelectorAll('.cc-trait-card').forEach(function(c){ c.className='cc-trait-card'; });
+  document.getElementById('cc-img-preview').style.display='none';
+  document.getElementById('cc-img-placeholder').style.display='flex';
+  document.getElementById('cc-img-area').classList.remove('has-img');
+  document.getElementById('cc-img-clear').disabled=true;
+  document.getElementById('cc-pet-picker').style.display='none';
+  updateSpecialties();
+  renderPersonalitySliders();
+  /* restore "None" pet pill */
+  var nonePill = document.querySelector('.cc-pill[data-group="petcat"][data-val="none"]');
+  if(nonePill){ nonePill.classList.add('selected'); state.petCat='none'; }
+  if(!silent) showToast('Form cleared.');
+}
+ 
+/* ── HELPERS ── */
+function getElementEmoji(el){
+  var map={water:'💧',earth:'🪨',fire:'🔥',air:'🌬️','non-bender':'⚔️',spirit:'✨'};
+  return map[el]||'🌀';
+}
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+ 
+function showToast(msg){
+  var t = document.getElementById('cc-toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2200);
+}
+ 
+init();
+})();
+</script>
+<script>
+(function () {
+  document.querySelectorAll('.cc-trait-card[data-val]').forEach(function (card) {
+    var val = card.dataset.val;
+    var iconEl = card.querySelector('.cc-trait-icon');
+    if (!iconEl || !traitIconMap[val]) return;
+
+    var img = document.createElement('img');
+    img.src = traitIconMap[val];
+    img.alt = val;
+    img.style.cssText = 'width:2rem;height:2rem;object-fit:contain;display:block;margin:0 auto 6px;background: var(--promo); border: 1px solid rgba(255,255,255,0.1);display: flex; align-items: center; justify-content: center;  backdrop-filter: blur(4px); color:var(--air);border-radius: 10px';
+    iconEl.replaceWith(img);
+  });
+})();
+</script>
+<script src="scripts/characters-sync.js"></script>
 </body>
 </html>
