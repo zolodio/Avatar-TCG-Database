@@ -132,17 +132,22 @@ async function ensureDigitalCollection() {
 }
 
   function getPoolCards() {
-    var base = (global.allCards || []).filter(isValidForDeck);
-    if (S.pool === 'physical') {
-      var col = global.collection || {};
-      return base.filter(function (c) { return (col[c.number] || 0) > 0; });
-    }
-    if (S.pool === 'digital') {
-      var dc = getDigitalCollection() || {};
-      return base.filter(function (c) { return (dc[c.number] || 0) > 0; });
-    }
-    return base;
+  var base = (global.allCards || []).filter(isValidForDeck);
+  if (S.pool === 'physical') {
+    var col = global.collection || {};
+    return base.filter(function (c) { return (col[c.number] || 0) > 0; });
   }
+  if (S.pool === 'digital') {
+    var dc = getDigitalCollection() || {};
+    var dcKeys = Object.keys(dc);
+    var chamberCards = base.filter(function(c) { return c.type === 'chamber'; });
+    console.log('DC keys sample:', dcKeys.slice(0,5));
+    console.log('Chamber card numbers sample:', chamberCards.slice(0,5).map(function(c){ return c.number; }));
+    console.log('DC has chamber matches:', chamberCards.filter(function(c){ return dc[c.number] > 0; }).length);
+    return base.filter(function (c) { return (dc[c.number] || 0) > 0; });
+  }
+  return base;
+}
 
   function parseTraits(str) {
     if (!str) return [];
