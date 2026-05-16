@@ -136,7 +136,7 @@ async function ensureDigitalCollection() {
       return base.filter(function (c) { return (col[c.number] || 0) > 0; });
     }
     if (S.pool === 'digital') {
-      var dc = getDigitalCollection();
+      var dc = getDigitalCollection() || {};
       return base.filter(function (c) { return (dc[c.number] || 0) > 0; });
     }
     return base;
@@ -176,7 +176,7 @@ async function ensureDigitalCollection() {
 
   function availableQty(cardNumber) {
     if (S.pool === 'physical') return (global.collection || {})[cardNumber] || 0;
-    if (S.pool === 'digital')  return (getDigitalCollection()[cardNumber] || 0);
+    if (S.pool === 'digital')  return (getDigitalCollection() || {})[cardNumber] || 0);
     return 99;
   }
 
