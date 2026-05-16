@@ -32,6 +32,7 @@
   --air: #f0c946;
   --air-glow: #ffd966;
   --zen: #b44ddf;
+  --zeny: #b44ddf;
   --zen-glow: #d16bff;
   --promo: #e8b632;
   --promo-glow: #ffd04a;
@@ -43,6 +44,7 @@
   --uncommon-bg: rgba(92,184,92,0.1);
   --rare-bg: rgba(74,125,255,0.1);
   --zen-bg: rgba(180,77,223,0.1);
+  --zeny-bg: rgba(232,182,50,0.1);
   --promo-bg: rgba(232,182,50,0.1);
   --owned-overlay: rgba(61,184,108,0.12);
   --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
@@ -135,11 +137,21 @@ body {
 .cc-char-action.edit:hover{border-color:var(--accent);color:var(--accent);}
 .cc-char-action.del:hover{border-color:var(--danger);color:var(--danger);}
  
-/* ── Range sliders ── */
-.cc-slider{width:100%;accent-color:var(--zen);}
+/* ── Personality sliders ── */
+.cc-slider{width:100%;accent-color:var(--zen-glow);}
 .cc-slider-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
 .cc-slider-label{font-size:0.72rem;color:var(--text-secondary);width:110px;flex-shrink:0;}
-.cc-slider-val{font-size:0.72rem;font-weight:700;color:var(--zen);width:28px;text-align:right;flex-shrink:0;}
+.cc-slider-val{font-size:0.72rem;font-weight:700;color:var(--zen-glow);width:28px;text-align:right;flex-shrink:0;}
+/* ── Physical sliders ── */
+.cc-slider2{width:100%;accent-color:var(--promo);}
+.cc-slider2-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.cc-slider2-label{font-size:0.72rem;color:var(--text-secondary);width:110px;flex-shrink:0;}
+.cc-slider2-val{font-size:0.72rem;font-weight:700;color:var(--promo);width:28px;text-align:right;flex-shrink:0;}
+/* ── Mental sliders ── */
+.cc-slider3{width:100%;accent-color:var(--accent);}
+.cc-slider3-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.cc-slider3-label{font-size:0.72rem;color:var(--text-secondary);width:110px;flex-shrink:0;}
+.cc-slider3-val{font-size:0.72rem;font-weight:700;color:var(--accent);width:28px;text-align:right;flex-shrink:0;}
  
 /* ── Tabs (sub) ── */
 .cc-tabs{display:flex;gap:0;margin-bottom:16px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
@@ -3385,8 +3397,16 @@ body {
  
     <!-- 8. PERSONALITY -->
     <div class="cc-section">
-      <div class="cc-section-title"><i class="fas fa-brain"></i> Personality Traits</div>
+      <div class="cc-section-title"><i class="fas fa-fingerprint" style="color:var(--zen)"></i> Personality Traits</div>
       <div id="cc-personality-sliders">
+        <!-- rendered by JS -->
+      </div>
+      <div class="cc-section-title"><i class="fas fa-heart-circle-exclamation" style="color:var(--promo)"></i> Physical Traits</div>
+      <div id="cc-physical-sliders">
+        <!-- rendered by JS -->
+      </div>
+      <div class="cc-section-title"><i class="fas fa-brain" style="color:var(--accent)"></i> Mental Traits</div>
+      <div id="cc-mental-sliders">
         <!-- rendered by JS -->
       </div>
       <div style="margin-top:12px;">
@@ -3397,10 +3417,40 @@ body {
           <div class="cc-pill generic" data-group="flaws" data-val="distrustful" data-multi="1">Distrustful</div>
           <div class="cc-pill generic" data-group="flaws" data-val="reckless" data-multi="1">Reckless</div>
           <div class="cc-pill generic" data-group="flaws" data-val="idealistic" data-multi="1">Idealistic</div>
+          <div class="cc-pill generic" data-group="flaws" data-val="vengeful" data-multi="1">Vengeful</div>
+<div class="cc-pill generic" data-group="flaws" data-val="stubborn" data-multi="1">Stubborn</div>
+<div class="cc-pill generic" data-group="flaws" data-val="hot-tempered" data-multi="1">Hot-Tempered</div>
+<div class="cc-pill generic" data-group="flaws" data-val="naive" data-multi="1">Naive</div>
+<div class="cc-pill generic" data-group="flaws" data-val="overconfident" data-multi="1">Overconfident</div>
+<div class="cc-pill generic" data-group="flaws" data-val="self-righteous" data-multi="1">Self-Righteous</div>
+<div class="cc-pill generic" data-group="flaws" data-val="emotionally-guarded" data-multi="1">Emotionally Guarded</div>
+<div class="cc-pill generic" data-group="flaws" data-val="venomous-tongue" data-multi="1">Venomous Tongue</div>
+<div class="cc-pill generic" data-group="flaws" data-val="manipulative" data-multi="1">Manipulative</div>
+<div class="cc-pill generic" data-group="flaws" data-val="power-hungry" data-multi="1">Power Hungry</div>
+<div class="cc-pill generic" data-group="flaws" data-val="fearful-of-failure" data-multi="1">Fear of Failure</div>
+<div class="cc-pill generic" data-group="flaws" data-val="identity-conflict" data-multi="1">Identity Conflict</div>
+<div class="cc-pill generic" data-group="flaws" data-val="emotionally-unstable" data-multi="1">Emotionally Unstable</div>
+<div class="cc-pill generic" data-group="flaws" data-val="detached" data-multi="1">Detached</div>
+<div class="cc-pill generic" data-group="flaws" data-val="overprotective" data-multi="1">Overprotective</div>
+<div class="cc-pill generic" data-group="flaws" data-val="rigid-honor-code" data-multi="1">Rigid Honor Code</div>
+<div class="cc-pill generic" data-group="flaws" data-val="secretive" data-multi="1">Secretive</div>
+<div class="cc-pill generic" data-group="flaws" data-val="obsessive" data-multi="1">Obsessive</div>
+<div class="cc-pill generic" data-group="flaws" data-val="cowardly" data-multi="1">Cowardly</div>
+<div class="cc-pill generic" data-group="flaws" data-val="vengeance-driven" data-multi="1">Vengeance Driven</div>
+<div class="cc-pill generic" data-group="flaws" data-val="emotion-first" data-multi="1">Emotion Before Logic</div>
+<div class="cc-pill generic" data-group="flaws" data-val="logic-first" data-multi="1">Logic Over Empathy</div>
+<div class="cc-pill generic" data-group="flaws" data-val="authority-dependent" data-multi="1">Authority Dependent</div>
+<div class="cc-pill generic" data-group="flaws" data-val="authority-rejecting" data-multi="1">Authority Rejecting</div>
+<div class="cc-pill generic" data-group="flaws" data-val="spiritually-disconnected" data-multi="1">Spiritually Disconnected</div>
+<div class="cc-pill generic" data-group="flaws" data-val="overly-sacrificial" data-multi="1">Overly Self-Sacrificing</div>
+<div class="cc-pill generic" data-group="flaws" data-val="jealous" data-multi="1">Jealous</div>
+<div class="cc-pill generic" data-group="flaws" data-val="territorial" data-multi="1">Territorial</div>
+<div class="cc-pill generic" data-group="flaws" data-val="unforgiving" data-multi="1">Unforgiving</div>
+<div class="cc-pill generic" data-group="flaws" data-val="vengeful-pride" data-multi="1">Wounded Pride</div>
         </div>
       </div>
     </div>
- 
+
     <!-- 9. BACKSTORY -->
     <div class="cc-section">
       <div class="cc-section-title"><i class="fas fa-scroll"></i> Backstory</div>
@@ -7158,7 +7208,45 @@ var PET_OPTIONS = {
   'spirit': ['Spirit Vine','Forest Mask Spirit','Spirit Dragon','Mushroom Spirit','Butterfly Spirit']
 };
  
-var PERSONALITY_TRAITS = ['Honor','Aggression','Compassion','Discipline','Spirituality','Loyalty','Independence'];
+var PERSONALITY_TRAITS = [
+  'Honor',
+  'Aggression',
+  'Compassion',
+  'Discipline',
+  'Spirituality',
+  'Loyalty',
+  'Independence',
+  'Patience',
+  'Pride',
+  'Temperament',
+  'Mercy',
+  'Ambition',
+  'Creativity',
+  'Resilience'
+];
+var PHYSICAL_TRAITS = [
+  'Agility',
+  'Strength',
+  'Endurance',
+  'Reflexes',
+  'Dexterity',
+  'Balance',
+  'Durability',
+  'Speed',
+  'Flexibility',
+  'Pain Tolerance'
+];
+var MENTAL_TRAITS = [
+  'Tactical Intelligence',
+  'Perception',
+  'Battle Awareness',
+  'Memory',
+  'Adaptability',
+  'Willpower',
+  'Deception',
+  'Leadership',
+  'Intimidation'
+];
  
 /* ── STATE ── */
 var state = {
@@ -7168,7 +7256,9 @@ var state = {
   temperament:'', lifepath:'', range:'',
   petCat:'none', pet:'', bond:'',
   height:'', weight:'', eyes:'', hair:'', skin:'', build:'', appearanceNotes:'',
-  personality:{ Honor:50, Aggression:30, Compassion:70, Discipline:50, Spirituality:50, Loyalty:60, Independence:50 },
+  personality:{ Honor:50, Aggression:30, Compassion:70, Discipline:50, Spirituality:50, Loyalty:60, Independence:50, Patience: 15, Pride: 84, Temperament: 46, Mercy:99, Ambition: 35, Creativity: 8, Resilience: 100 },
+  physical:{Agility:75, Strength: 55, Endurance: 67, Reflexes: 18, Dexterity: 20, Balance: 42, Durability: 38, Speed: 7, Flexibility: 71, "Pain Tolerance": 5},
+  mental:{"Tactical Intelligence": 89, Perception: 4, "Battle Awareness": 69, Memory: 88, Adaptability: 12, Willpower: 100, Deception: 3, Leadership: 50, Intimidation: 100 },
   flaws:[],
   backstoryMode:'freewrite', backstoryFree:'',
   bsNation:'', bsTraining:'', bsTrauma:'', bsMentor:'', bsRival:'', bsGoal:'', bsSecret:'', bsTone:''
@@ -7179,6 +7269,8 @@ var editingId = null;
 /* ── INIT ── */
 function init(){
   renderPersonalitySliders();
+  renderPhysicalSliders();
+  renderMentalSliders();
   bindPillGroups();
   bindSubTabs();
   bindBackstoryTabs();
@@ -7294,6 +7386,48 @@ function renderPersonalitySliders(){
     s.addEventListener('input', function(){
       state.personality[this.dataset.trait] = parseInt(this.value);
       document.getElementById('sv-'+this.dataset.trait).textContent = this.value;
+    });
+  });
+}
+
+/* ── PHYSICAL SLIDERS ── */
+function renderPhysicalSliders(){
+  var container = document.getElementById('cc-physical-sliders');
+  var html = '';
+  PHYSICAL_TRAITS.forEach(function(trait){
+    var val = state.physical[trait];
+    html += '<div class="cc-slider2-row">' +
+      '<span class="cc-slider2-label">'+trait+'</span>' +
+      '<input type="range" class="cc-slider2" min="0" max="100" value="'+val+'" data-trait="'+trait+'">' +
+      '<span class="cc-slider2-val" id="svxt-'+trait+'">'+val+'</span>' +
+      '</div>';
+  });
+  container.innerHTML = html;
+  container.querySelectorAll('.cc-slider2').forEach(function(s){
+    s.addEventListener('input', function(){
+      state.physical[this.dataset.trait] = parseInt(this.value);
+      document.getElementById('svxt-'+this.dataset.trait).textContent = this.value;
+    });
+  });
+}
+
+/* ── MENTAL SLIDERS ── */
+function renderMentalSliders(){
+  var container = document.getElementById('cc-mental-sliders');
+  var html = '';
+  MENTAL_TRAITS.forEach(function(trait){
+    var val = state.mental[trait];
+    html += '<div class="cc-slider3-row">' +
+      '<span class="cc-slider3-label">'+trait+'</span>' +
+      '<input type="range" class="cc-slider3" min="0" max="100" value="'+val+'" data-trait="'+trait+'">' +
+      '<span class="cc-slider3-val" id="svxq-'+trait+'">'+val+'</span>' +
+      '</div>';
+  });
+  container.innerHTML = html;
+  container.querySelectorAll('.cc-slider3').forEach(function(s){
+    s.addEventListener('input', function(){
+      state.mental[this.dataset.trait] = parseInt(this.value);
+      document.getElementById('svxq-'+this.dataset.trait).textContent = this.value;
     });
   });
 }
@@ -7548,10 +7682,25 @@ function loadCharacterIntoForm(char){
     if(sl){ sl.value = state.personality[t]; }
     if(sv){ sv.textContent = state.personality[t]; }
   });
- 
+  /* physical sliders */
+  Object.keys(state.physical||{}).forEach(function(t){
+    var sl = document.querySelector('.cc-slider2[data-trait="'+t+'"]');
+    var sv = document.getElementById('sv-'+t);
+    if(sl){ sl.value = state.physical[t]; }
+    if(sv){ sv.textContent = state.physical[t]; }
+  });
+    /* mental sliders */
+  Object.keys(state.mental||{}).forEach(function(t){
+    var sl = document.querySelector('.cc-slider3[data-trait="'+t+'"]');
+    var sv = document.getElementById('sv-'+t);
+    if(sl){ sl.value = state.mental[t]; }
+    if(sv){ sv.textContent = state.mental[t]; }
+  });
   document.querySelector('[data-cctab="create"]').click();
   showToast('Editing: ' + state.givenName);
 }
+
+
  
 function restorePill(group, val){
   if(!val) return;
@@ -7645,6 +7794,18 @@ function randomizeCharacter(){
     state.personality[s.dataset.trait] = v;
     var sv = document.getElementById('sv-'+s.dataset.trait);
     if(sv) sv.textContent = v;
+    
+    var vxt = Math.round(Math.random()*100);
+    s.value = vxt;
+    state.physical[s.dataset.trait] = vxt;
+    var svxt = document.getElementById('svxt-'+s.dataset.trait);
+    if(svxt) svxt.textContent = vxt;
+    
+    var vxq = Math.round(Math.random()*100);
+    s.value = vxq;
+    state.mental[s.dataset.trait] = vxq;
+    var svxq = document.getElementById('svxq-'+s.dataset.trait);
+    if(svxq) svxq.textContent = vxq;
   });
   showToast('Character randomized!');
 }
@@ -7669,7 +7830,9 @@ function clearForm(silent){
   state.temperament=''; state.lifepath=''; state.range='';
   state.petCat='none'; state.pet=''; state.bond='';
   state.height=''; state.weight=''; state.eyes=''; state.hair=''; state.skin=''; state.build=''; state.appearanceNotes='';
-  state.personality={ Honor:50,Aggression:30,Compassion:70,Discipline:50,Spirituality:50,Loyalty:60,Independence:50 };
+  state.personality={ Honor:50, Aggression:30, Compassion:70, Discipline:50, Spirituality:50, Loyalty:60, Independence:50, Patience: 15, Pride: 84, Temperament: 46, Mercy:99, Ambition: 35, Creativity: 8, Resilience: 100 };
+  state.physical={Agility:75, Strength: 55, Endurance: 67, Reflexes: 18, Dexterity: 20, Balance: 42, Durability: 38, Speed: 7, Flexibility: 71, "Pain Tolerance": 5};
+  state.mental={"Tactical Intelligence": 89, Perception: 4, "Battle Awareness": 69, Memory: 88, Adaptability: 12, Willpower: 100, Deception: 3, Leadership: 50, Intimidation:100};
   state.flaws=[];
   state.backstoryFree=''; state.bsNation=''; state.bsTraining=''; state.bsTrauma='';
   state.bsMentor=''; state.bsRival=''; state.bsGoal=''; state.bsSecret=''; state.bsTone='';
@@ -7686,6 +7849,8 @@ function clearForm(silent){
   document.getElementById('cc-pet-picker').style.display='none';
   updateSpecialties();
   renderPersonalitySliders();
+  renderPhysicalSliders();  
+  renderMentalSliders();
   /* restore "None" pet pill */
   var nonePill = document.querySelector('.cc-pill[data-group="petcat"][data-val="none"]');
   if(nonePill){ nonePill.classList.add('selected'); state.petCat='none'; }
