@@ -272,7 +272,7 @@
     }
   });
 
-  /* ── "View" button on shared character cards → friend modal ─────── */
+  /* ── "View" button on shared character cards → character modal ─── */
   document.addEventListener('click', function (e) {
     var btn = e.target.closest('[data-view-shared-char]');
     if (!btn) return;
@@ -284,13 +284,150 @@
       if (typeof window.viewFriendCharacters === 'function') {
         window.viewFriendCharacters(uid, char);
       } else {
-        // Fallback: show basic info in an alert if modal not available
-        console.log('[charShare] viewFriendCharacters not available yet', char);
+        console.warn('[charShare] viewFriendCharacters not available');
       }
     } catch (err) {
       console.warn('[charShare] view shared char parse error', err);
     }
   });
+
+  /* ══════════════════════════════════════════════════════════════════
+     PUBLIC API: viewFriendCharacters — show friend's shared character
+  ══════════════════════════════════════════════════════════════════ */
+  window.viewFriendCharacters = function (friendUserId, characterData) {
+    if (!characterData) return;
+
+    var modal = document.createElement('div');
+    modal.className = 'fc-char-modal';
+    modal.style.cssText = [
+      'position: fixed; top: 0; left: 0; right: 0; bottom: 0;',
+      'background: rgba(0,0,0,0.85); z-index: 9999;',
+      'display: flex; align-items: center; justify-content: center;',
+      'padding: 20px; overflow-y: auto;'
+    ].join('');
+
+    var container = document.createElement('div');
+    container.style.cssText = [
+      'background: var(--bg-primary); border: 1px solid var(--border);',
+      'border-radius: var(--radius); max-width: 600px; width: 100%;',
+      'max-height: 90vh; overflow-y: auto;',
+      'padding: 20px; position: relative;'
+    ].join('');
+
+    var closeBtn = document.createElement('button');
+    closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+    closeBtn.style.cssText = [
+      'position: absolute; top: 12px; right: 12px;',
+      'background: var(--bg-card); border: 1px solid var(--border);',
+      'border-radius: 4px; width: 32px; height: 32px;',
+      'cursor: pointer; display: flex; align-items: center; justify-content: center;',
+      'color: var(--text-secondary); transition: all 0.2s;'
+    ].join('');
+    closeBtn.onmouseenter = function () {
+      this.style.borderColor = 'var(--zen)';
+      this.style.color = 'var(--zen)';
+    };
+    closeBtn.onmouseleave = function () {
+      this.style.borderColor = 'var(--border)';
+      this.style.color = 'var(--text-secondary)';
+    };
+    closeBtn.addEventListener('click', function () {
+      modal.remove();
+    });
+
+    var charImg = characterData.imageData
+      ? '<img src="data:' + characterData.imageMime + ';base64,' + characterData.imageData + '" ' +
+        'alt="' + esc(characterData.givenName) + '" ' +
+        'style="width: 100%; border-radius: var(--radius); margin-bottom: 16px; border: 1px solid var(--border);">'
+      : '';
+
+    var elementEmoji = getElementEmoji(characterData.bending || 'non-bender');
+    var bending = characterData.bending
+      ? (characterData.bending.charAt(0).toUpperCase() + characterData.bending.slice(1))
+      : 'Non-Bender';
+
+    var masteryBadge = characterData.mastery
+      ? '<span style="display: inline-block; margin-left: 8px; padding: 2px 8px; border-radius: 99px; ' +
+        'font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; ' +
+        'border: 1px solid var(--border); color: var(--text-secondary);">' +
+        esc(characterData.mastery) + '</span>'
+      : '';
+
+    var traits = [];
+    if (characterData.strike) traits.push(characterData.strike);
+    if (characterData.advantage) traits.push(characterData.advantage);
+    if (characterData.ally) traits.push(characterData.ally);
+
+    var traitsHtml = traits.length
+      ? '<div style="margin: 12px 0; font-size: 0.78rem; color: var(--text-secondary);">' +
+        traits.map(function (t) {
+          return '<span style="display: inline-block; background: var(--bg-card); border: 1px solid var(--border); ' +
+            'border-radius: 4px; padding: 4px 8px; margin-right: 6px; margin-bottom: 6px; text-transform: capitalize;">' +
+            esc(t) + '</span>';
+        }).join('') +
+        '</div>'
+      : '';
+
+    var backstoryHtml = '';
+    if (characterData.bsNation || characterData.bsTraining || characterData.backstoryFree) {
+      backstoryHtml = '<div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 0.8rem;">' +
+        '<p style="color: var(--text-muted); margin: 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Background</p>';
+      if (characterData.bsNation) {
+        backstoryHtml += '<div style="margin-bottom: 8px;"><strong>Nation:</strong> ' + esc(characterData.bsNation) + '</div>';
+      }
+      if (characterData.bsTraining) {
+        backstoryHtml += '<div style="margin-bottom: 8px;"><strong>Training:</strong> ' + esc(characterData.bsTraining) + '</div>';
+      }
+      if (characterData.backstoryFree) {
+        backstoryHtml += '<div style="margin-bottom: 8px;"><strong>Story:</strong></div><p style="margin: 6px 0; color: var(--text-secondary);">' + esc(characterData.backstoryFree).replace(/\n/g, '<br>') + '</p>';
+      }
+      backstoryHtml += '</div>';
+    }
+
+    var detailsHtml = '';
+    if (characterData.height || characterData.weight || characterData.eyes || characterData.hair) {
+      detailsHtml = '<div style="margin-top: 12px; font-size: 0.78rem; color: var(--text-secondary);">';
+      if (characterData.height) detailsHtml += '<div>Height: ' + esc(characterData.height) + '</div>';
+      if (characterData.weight) detailsHtml += '<div>Weight: ' + esc(characterData.weight) + '</div>';
+      if (characterData.eyes) detailsHtml += '<div>Eyes: ' + esc(characterData.eyes) + '</div>';
+      if (characterData.hair) detailsHtml += '<div>Hair: ' + esc(characterData.hair) + '</div>';
+      detailsHtml += '</div>';
+    }
+
+    container.innerHTML =
+      charImg +
+      '<button style="position: absolute; top: 12px; right: 12px; background: var(--bg-card); border: 1px solid var(--border); ' +
+      'border-radius: 4px; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; ' +
+      'justify-content: center; color: var(--text-secondary); transition: all 0.2s; font-size: 1rem;">' +
+      '<i class="fas fa-times"></i></button>' +
+      '<div style="font-family: \'Cinzel\', serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 4px;">' +
+        esc(characterData.givenName || 'Unnamed') +
+        (characterData.nickName ? ' <span style="color: var(--text-muted); font-weight: 400; font-size: 0.75rem;">"' + esc(characterData.nickName) + '"</span>' : '') +
+      '</div>' +
+      '<div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 12px;">' +
+        '<span>' + elementEmoji + ' ' + bending + '</span>' +
+        masteryBadge +
+      '</div>' +
+      traitsHtml +
+      detailsHtml +
+      backstoryHtml +
+      '<div style="margin-top: 16px; font-size: 0.8rem; color: var(--text-muted);">' +
+        '<i class="fas fa-user-circle" style="margin-right: 6px;"></i>Shared with the community' +
+      '</div>';
+
+    // Wire close button
+    container.querySelector('button').addEventListener('click', function () {
+      modal.remove();
+    });
+
+    // Close on overlay click
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) modal.remove();
+    });
+
+    modal.appendChild(container);
+    document.body.appendChild(modal);
+  };
 
   /* ══════════════════════════════════════════════════════════════════
      CSS — share button hover state (injected once)
