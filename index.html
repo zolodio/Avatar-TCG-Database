@@ -8081,7 +8081,6 @@ function renderRoster(){
     list.innerHTML = '<div style="text-align:center;padding:40px 0;color:var(--text-muted);font-size:0.82rem;"><i class="fas fa-users" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:10px;"></i>No characters yet — create your first one!</div>';
     return;
   }
-  list.addEventListener('click', rosterListClickHandler);
   list.innerHTML = chars.map(function(char){
     var imgHtml = char.imageData
       ? '<img src="data:'+char.imageMime+';base64,'+char.imageData+'" alt="'+esc(char.givenName)+'" style="width:44px;height:44px;border-radius:8px;object-fit:cover;border:1px solid var(--border);flex-shrink:0;">'
@@ -8101,32 +8100,25 @@ function renderRoster(){
     '</div>';
   }).join('');
  
-}
-
-   function rosterListClickHandler(e) {
-     var editBtn = e.target.closest('.cc-char-action.edit');
-     var delBtn = e.target.closest('.cc-char-action.del');
-     
-     if(editBtn) {
-       e.stopPropagation();
-       e.preventDefault();
-       var ch = getCharacters().find(function(c){return String(c.id)===String(this.dataset.id);}.bind(this));
+  list.querySelectorAll('.cc-char-action.edit').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      var ch = getCharacters().find(function(c){return String(c.id)===String(this.dataset.id);}.bind(this));
       if(ch) loadCharacterIntoForm(ch);
-       return;
-     }
-     
-     if(delBtn) {
-       e.stopPropagation();
-       e.preventDefault();
-       var id = this.dataset.id;
+    });
+  });
+  list.querySelectorAll('.cc-char-action.del').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      var id = this.dataset.id;
       if(!confirm('Delete this character? This cannot be undone.')) return;
       var chars = getCharacters().filter(function(c){return String(c.id)!==String(id);});
       localStorage.setItem('aqst_characters', JSON.stringify(chars));
       renderRoster();
       showToast('Character deleted.');
-       return;
-     }
-   }
+    });
+  });
+}
  
 /* ── RANDOMIZE ── */
 var NAMES_A = ['Bai','Zhen','Kai','Lei','Mei','Tao','Jin','Suki','Raya','Shen','Po','Chen','Shen','Sky'];
