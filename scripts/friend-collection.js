@@ -57,7 +57,24 @@
     }
   }
 
-  // ── PATCH: renderCardsInCommon (progression.js) ───────────────
+  // ── fetch friend's shared characters from `shared_characters` ────
+  async function fetchFriendSharedCharacters(userId) {
+    if (!sb() || !userId) return [];
+    try {
+      var res = await sb()
+        .from('shared_characters')
+        .select('data, updated_at')
+        .eq('user_id', userId)
+        .order('updated_at', { ascending: false });
+      if (res.error) throw res.error;
+      return (res.data || []).map(function (r) { return r.data; }).filter(Boolean);
+    } catch (e) {
+      console.warn('[friend-collection] fetchFriendSharedCharacters failed:', e.message || e);
+      return [];
+    }
+  }
+
+
   // Override the broken version that queried user_cards.
   window.renderCardsInCommon = async function (friendUserId) {
     var myCol   = window.collection || {};
@@ -137,7 +154,8 @@
 
   var _modal   = null;   // DOM element
   var _overlay = null;
-  var _state   = { userId: null, username: '', mode: 'physical', data: null, search: '', rarity: 'all' };
+  var _state   = { userId: null, username: '', mode: 'physical', data: null, search: '', rarity: 'all',
+                   charData: null /* shared_characters rows for this friend */ };
 
   function ensureModal() {
     if (_modal) return;
@@ -182,21 +200,55 @@
   }
 
   // ── open entry point ─────────────────────────────────────────
-  window.viewFriendCollection = async function (userId, username) {
+  window.viewFriendCollection = async function (userId, username, startMode) {
     ensureModal();
     _state.userId   = userId;
     _state.username = username || 'Friend';
-    _state.mode     = 'physical';
+    _state.mode     = startMode || 'physical';
     _state.data     = null;
+    _state.charData = null;
     _state.search   = '';
     _state.rarity   = 'all';
 
     _overlay.style.display = 'flex';
     renderModal('<div style="text-align:center;padding:40px;color:var(--text-muted);">' +
       '<i class="fas fa-circle-notch fa-spin" style="font-size:1.5rem;margin-bottom:12px;display:block;"></i>' +
-      'Loading ' + esc(username) + '\'s collection…</div>');
+      'Loading ' + esc(username) + '\'s profile…</div>');
 
-    _state.data = await fetchFriendCollections(userId);
+    // Fetch cards and characters in parallel
+    var results = await Promise.all([
+      fetchFriendCollections(userId),
+      fetchFriendSharedCharacters(userId)
+    ]);
+    _state.data     = results[0];
+    _state.charData = results[1];
+    renderModalContent();
+  };
+
+  // ── open directly to Characters tab (called from character-sharing.js) ─
+  window.viewFriendCharacters = async function (userId, highlightChar) {
+    // highlightChar may be a full character object passed from the shared list
+    var username = 'Friend';
+    // Try to get a name from the character itself
+    if (highlightChar && highlightChar.givenName) {
+      username = 'a Friend'; // we don't have the username at this point
+    }
+    ensureModal();
+    _state.userId   = userId;
+    _state.username = username;
+    _state.mode     = 'characters';
+    _state.data     = { physical: {}, digital: {} };
+    _state.charData = null;
+    _state.search   = '';
+    _state.rarity   = 'all';
+
+    _overlay.style.display = 'flex';
+    renderModal('<div style="text-align:center;padding:40px;color:var(--text-muted);">' +
+      '<i class="fas fa-circle-notch fa-spin" style="font-size:1.5rem;margin-bottom:12px;display:block;"></i>' +
+      'Loading characters…</div>');
+
+    _state.charData = await fetchFriendSharedCharacters(userId);
+    // If we got a name from the characters, use the first one's owner label
     renderModalContent();
   };
 
@@ -220,6 +272,12 @@
   }
 
   function renderModalContent() {
+    // ── Characters mode ──────────────────────────────────────────
+    if (_state.mode === 'characters') {
+      renderCharactersContent();
+      return;
+    }
+
     var data     = _state.data || { physical: {}, digital: {} };
     var col      = _state.mode === 'physical' ? data.physical : data.digital;
     var allC     = cards();
@@ -251,7 +309,7 @@
       '<div style="position:sticky;top:0;z-index:10;background:var(--bg-secondary);' +
         'padding:12px 18px 10px;border-bottom:1px solid var(--border);">' +
 
-        // Physical / Digital toggle
+        // Physical / Digital / Characters toggle
         '<div style="display:flex;gap:6px;margin-bottom:10px;">' +
           makeToggleBtn('physical', modePhys,
             '<i class="fas fa-clone" style="transform:scale(.75,1.175)"></i> Physical',
@@ -259,6 +317,9 @@
           makeToggleBtn('digital', !modePhys,
             '<i class="fas fa-cloud-download-alt"></i> Digital',
             digCount + ' cards') +
+          makeToggleBtn('characters', false,
+            '<i class="fas fa-users"></i> Characters',
+            (_state.charData ? _state.charData.length : '…') + ' shared') +
         '</div>' +
 
         // Search
@@ -304,10 +365,25 @@
 
     document.querySelectorAll('.fcv-mode-btn').forEach(function (b) {
       b.addEventListener('click', function () {
-        _state.mode   = this.dataset.mode;
+        var newMode = this.dataset.mode;
         _state.search = '';
         _state.rarity = 'all';
-        renderModalContent();
+
+        if (newMode === 'characters') {
+          _state.mode = 'characters';
+          // Load char data if not yet fetched
+          if (_state.charData === null) {
+            _state.charData = [];
+            fetchFriendSharedCharacters(_state.userId).then(function (chars) {
+              _state.charData = chars;
+              renderModalContent();
+            });
+          }
+          renderModalContent();
+        } else {
+          _state.mode = newMode;
+          renderModalContent();
+        }
       });
     });
 
@@ -328,6 +404,126 @@
         }
       });
     }
+  }
+
+  // ════════════════════════════════════════════════════════════════
+  //  CHARACTERS TAB — renders shared characters for this friend
+  // ════════════════════════════════════════════════════════════════
+
+  function fcvEsc(s) { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function fcvEmoji(el) {
+    var m = { water:'💧', earth:'🪨', fire:'🔥', air:'🌬️', 'non-bender':'⚔️', spirit:'✨' };
+    return m[el] || '🌀';
+  }
+
+  function renderCharactersContent() {
+    var chars = _state.charData || [];
+
+    // Toggle row — Characters tab is active
+    var data      = _state.data || { physical: {}, digital: {} };
+    var physCount = Object.keys(data.physical).filter(function (n) { return (data.physical[n]||0)>0; }).length;
+    var digCount  = Object.keys(data.digital).filter(function (n) { return (data.digital[n]||0)>0; }).length;
+
+    var html =
+      '<div style="position:sticky;top:0;z-index:10;background:var(--bg-secondary);' +
+        'padding:12px 18px 10px;border-bottom:1px solid var(--border);">' +
+        '<div style="display:flex;gap:6px;margin-bottom:10px;">' +
+          makeToggleBtn('physical', false,
+            '<i class="fas fa-clone" style="transform:scale(.75,1.175)"></i> Physical',
+            physCount + ' cards') +
+          makeToggleBtn('digital', false,
+            '<i class="fas fa-cloud-download-alt"></i> Digital',
+            digCount + ' cards') +
+          makeToggleBtn('characters', true,
+            '<i class="fas fa-users"></i> Characters',
+            chars.length + ' shared') +
+        '</div>' +
+      '</div>';
+
+    if (!chars.length) {
+      html +=
+        '<div style="text-align:center;padding:50px 20px;color:var(--text-muted);">' +
+        '<i class="fas fa-users" style="font-size:2.5rem;opacity:0.2;display:block;margin-bottom:14px;"></i>' +
+        '<p style="font-size:0.85rem;">' + fcvEsc(_state.username) + ' hasn\'t shared any characters yet.</p>' +
+        '</div>';
+    } else {
+      html += '<div style="padding:14px 18px 20px;display:flex;flex-direction:column;gap:10px;">';
+      chars.forEach(function (char) {
+        if (!char) return;
+        var imgHtml = char.imageData
+          ? '<img src="data:' + char.imageMime + ';base64,' + char.imageData + '"' +
+            ' alt="' + fcvEsc(char.givenName) + '"' +
+            ' style="width:52px;height:52px;border-radius:8px;object-fit:cover;border:1px solid var(--border);flex-shrink:0;">'
+          : '<div style="width:52px;height:52px;border-radius:8px;background:var(--bg-surface);' +
+            'border:1px solid var(--border);display:flex;align-items:center;justify-content:center;' +
+            'font-size:1.4rem;flex-shrink:0;">' + fcvEmoji(char.bending) + '</div>';
+
+        var bend = char.bending
+          ? (char.bending.charAt(0).toUpperCase() + char.bending.slice(1))
+          : 'Non-Bender';
+        var sub = [bend, char.mastery || '', char.strike || '', char.advantage || '', char.ally || '']
+          .filter(Boolean).join(' · ');
+
+        // Personality highlights (top 3 non-empty sliders)
+        var persLines = [];
+        if (char.personality) {
+          Object.keys(char.personality).forEach(function (k) {
+            var v = char.personality[k];
+            if (v !== '' && v !== undefined) persLines.push({ k: k, v: Number(v) });
+          });
+          persLines.sort(function (a, b) { return b.v - a.v; });
+          persLines = persLines.slice(0, 3);
+        }
+
+        var persHtml = persLines.length
+          ? '<div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;">' +
+            persLines.map(function (p) {
+              return '<span style="font-size:0.6rem;font-weight:700;padding:2px 8px;border-radius:99px;' +
+                'background:rgba(180,77,223,0.1);border:1px solid rgba(180,77,223,0.25);color:var(--zen);">' +
+                fcvEsc(p.k) + ' ' + p.v +
+                '</span>';
+            }).join('') +
+            '</div>'
+          : '';
+
+        var backstory = char.backstoryFree
+          ? '<div style="margin-top:8px;font-size:0.73rem;color:var(--text-muted);line-height:1.5;' +
+            'border-left:2px solid var(--border);padding-left:9px;font-style:italic;">' +
+            fcvEsc((char.backstoryFree || '').slice(0, 200)) +
+            (char.backstoryFree.length > 200 ? '…' : '') +
+            '</div>'
+          : '';
+
+        html +=
+          '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);' +
+            'padding:12px 14px;display:flex;gap:12px;align-items:flex-start;">' +
+            imgHtml +
+            '<div style="flex:1;min-width:0;">' +
+              '<div style="font-family:\'Cinzel\',serif;font-weight:700;font-size:0.88rem;">' +
+                fcvEsc(char.givenName || 'Unnamed') +
+                (char.nickName ? ' <span style="color:var(--text-muted);font-weight:400;font-size:0.72rem;">"' + fcvEsc(char.nickName) + '"</span>' : '') +
+              '</div>' +
+              '<div style="font-size:0.68rem;color:var(--text-muted);margin-top:2px;">' + fcvEsc(sub) + '</div>' +
+              persHtml +
+              backstory +
+            '</div>' +
+          '</div>';
+      });
+      html += '</div>';
+    }
+
+    renderModal(html);
+
+    // Wire the toggle buttons in this mode too
+    document.querySelectorAll('.fcv-mode-btn').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var newMode = this.dataset.mode;
+        _state.search = '';
+        _state.rarity = 'all';
+        _state.mode   = newMode;
+        renderModalContent();
+      });
+    });
   }
 
   function makeToggleBtn(mode, active, label, sub) {
