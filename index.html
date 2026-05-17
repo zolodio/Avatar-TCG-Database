@@ -2003,7 +2003,6 @@ body {
 <div class="tab-nav">
   <button class="tab-btn active" data-tab="physical-cards"><i class="fas fa-chart-line"></i> Physical Cards</button>
   <button class="tab-btn" data-tab="digital-collection"><i class="fas fa-cloud-download-alt"></i> Digital Collection</button>
-  <button class="tab-btn" data-tab="deckbuilder"><i class="fas fa-align-justify"></i> Deck Builder</button>
   <button class="tab-btn" data-tab="media"><i class="fas fa-film"></i> Media</button>
   <button class="tab-btn" data-tab="profile"><i class="fas fa-user"></i> Together</button>
   <button class="tab-btn" data-tab="collect"><i class="fas fa-shopping-bag"></i> Collect</button>
@@ -2691,6 +2690,7 @@ body {
     <button class="tab-btn-nested active" data-nested-tab="digital-main">Collection</button>
     <button class="tab-btn-nested" data-nested-tab="digital-pack-rip-estimators">Pack Rip Estimators</button>
     <button class="tab-btn-nested" data-nested-tab="digital-redeem">Redeem</button>
+    <button class="tab-btn-nested" data-nested-tab="digital-deckbuilder">Deck Builder</button>
   </div>
 
   <div id="nested-digital-main" class="nested-tab-content active">
@@ -2856,19 +2856,18 @@ body {
       <div id="redemption-message" style="min-height: 24px; font-size: 0.85rem; border-radius: 6px; padding: 8px 12px; margin-bottom: 16px; display: none;"></div>
     </div>
   </div>
-</div>
 
-<!-- DECK BUILDER TAB -->
-<div class="tab-content" id="tab-deckbuilder">
-  <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
-    <i class="fas fa-align-justify" style="font-size: 3rem; color: var(--promo); margin-bottom: 16px;"></i>
-    <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Deck Builder</h3>
-    <p style="color: var(--text-secondary);">Deck Building with Compatibility Rules for Online Gameplay and Trading</p>
-    <p style="color: var(--text-secondary);">Coming Soon...</p>
+  <div id="nested-digital-deckbuilder" class="nested-tab-content" style="display:none;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
+      <i class="fas fa-align-justify" style="font-size: 3rem; color: var(--promo); margin-bottom: 16px;"></i>
+      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Deck Builder</h3>
+      <p style="color: var(--text-secondary);">Deck Building with Compatibility Rules for Online Gameplay and Trading</p>
+      <p style="color: var(--text-secondary);">Coming Soon...</p>
+    </div>
   </div>
 </div>
 
-<!-- MEDIA TAB -->
+<!-- PROFILE TAB -->
 <div class="tab-content" id="tab-profile">
   <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:18px;">
     <div id="auth-logged-out">
