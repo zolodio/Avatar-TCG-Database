@@ -2001,17 +2001,26 @@ body {
 
 <!-- TAB NAVIGATION -->
 <div class="tab-nav">
-  <button class="tab-btn active" data-tab="home"><i class="fas fa-clone" style="transform: scale(.75,1.175)"></i> Card Collection</button>
-  <button class="tab-btn" data-tab="portfolio"><i class="fas fa-chart-line"></i> Physical Portfolio</button>
+  <button class="tab-btn active" data-tab="physical-cards"><i class="fas fa-chart-line"></i> Physical Cards</button>
   <button class="tab-btn" data-tab="digital-collection"><i class="fas fa-cloud-download-alt"></i> Digital Collection</button>
+  <button class="tab-btn" data-tab="deckbuilder"><i class="fas fa-align-justify"></i> Deck Builder</button>
   <button class="tab-btn" data-tab="media"><i class="fas fa-film"></i> Media</button>
   <button class="tab-btn" data-tab="profile"><i class="fas fa-user"></i> Together</button>
   <button class="tab-btn" data-tab="collect"><i class="fas fa-shopping-bag"></i> Collect</button>
   <button class="tab-btn" data-tab="creations"><i class="fas fa-scroll"></i> Creations</button>
 </div>
 
-<!-- CARD COLLECTION TAB -->
-<div class="tab-content active" id="tab-home">
+<!-- PHYSICAL CARDS TAB -->
+<div class="tab-content active" id="tab-physical-cards">
+  <div class="tab-nav-nested">
+    <button class="tab-btn-nested active" data-nested-tab="collection"><i class="fas fa-clone" style="transform: scale(.75,1.175)"></i> Collection</button>
+    <button class="tab-btn-nested" data-nested-tab="pack-rip-estimators">Pack Rip Estimators</button>
+    <button class="tab-btn-nested" data-nested-tab="graph">Graph</button>
+    <button class="tab-btn-nested" data-nested-tab="save-code-portfolio">Save Code</button>
+  </div>
+
+  <!-- COLLECTION NESTED TAB -->
+  <div id="nested-collection" class="nested-tab-content active">
 <div style="margin-bottom: 18px;">
   <button id="statsToggleBtn" onclick="(function(){
     var body = document.getElementById('statsCollapsible');
@@ -2085,6 +2094,106 @@ body {
 
 <div class="card-grid" id="cardGrid"></div>
 <div class="empty-state" id="emptyState" style="display:none;"><p>No cards match your search</p></div>
+  </div>
+
+  <!-- PACK RIP ESTIMATORS NESTED TAB -->
+  <div id="nested-pack-rip-estimators" class="nested-tab-content" style="display:none;">
+    <div class="tab-nav-nested" style="margin-bottom: 16px;">
+      <button class="tab-btn-nested active" data-subnested-tab="zen-calc">Zenemental</button>
+      <button class="tab-btn-nested" data-subnested-tab="chamber-calc">Chamber</button>
+      <button class="tab-btn-nested" data-subnested-tab="rare-calc">Rare</button>
+      <button class="tab-btn-nested" data-subnested-tab="uncommon-calc">Uncommon</button>
+      <button class="tab-btn-nested" data-subnested-tab="common-calc">Common</button>
+    </div>
+
+    <!-- ZENEMENTAL SUBNESTED TAB -->
+    <div id="subnested-zen-calc" class="nested-tab-content active">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+          <i class="fas fa-dice-d20 fa-spin" style="color:var(--zen); font-size:1.2rem;"></i>
+          <div>
+            <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Zenemental Pack Calculator</div>
+            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-in-6 pull rate &middot; Core cards only</div>
+          </div>
+        </div>
+        <div id="zenPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
+      </div>
+    </div>
+
+    <!-- CHAMBER SUBNESTED TAB -->
+    <div id="subnested-chamber-calc" class="nested-tab-content" style="display:none;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+          <i class="fas fa-window-maximize" style="color:var(--air); font-size:1.2rem; transform: scale(.9, 1.75);"></i>
+          <div>
+            <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Chamber Pack Calculator</div>
+            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-per-pack &middot; Core cards only</div>
+          </div>
+        </div>
+        <div id="chamberPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
+      </div>
+    </div>
+
+    <!-- RARE SUBNESTED TAB -->
+    <div id="subnested-rare-calc" class="nested-tab-content" style="display:none;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+          <i class="fas fa-star fa-spin" style="color:var(--water); font-size:1.2rem;"></i>
+          <div>
+            <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Rare Pack Calculator</div>
+            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-per-pack &middot; Core cards only</div>
+          </div>
+        </div>
+        <div id="rarePackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
+      </div>
+    </div>
+
+    <!-- UNCOMMON SUBNESTED TAB -->
+    <div id="subnested-uncommon-calc" class="nested-tab-content" style="display:none;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+          <i class="fas fa-circle" style="color:var(--earth); font-size:1.2rem;"></i>
+          <div>
+            <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Uncommon Pack Calculator</div>
+            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">3-per-pack &middot; Core cards only</div>
+          </div>
+        </div>
+        <div id="uncommonPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
+      </div>
+    </div>
+
+    <!-- COMMON SUBNESTED TAB -->
+    <div id="subnested-common-calc" class="nested-tab-content" style="display:none;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+          <i class="far fa-circle" style="color:var(--text-secondary); font-size:1.2rem;"></i>
+          <div>
+            <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Common Pack Calculator</div>
+            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">5-per-pack &middot; Core cards only</div>
+          </div>
+        </div>
+        <div id="commonPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRAPH NESTED TAB -->
+  <div id="nested-graph" class="nested-tab-content" style="display:none;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
+      <i class="fas fa-chart-line" style="font-size: 2.5rem; color: var(--earth); margin-bottom: 14px;"></i>
+      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 6px; font-size:1rem;">Portfolio Graph</h3>
+      <p style="color: var(--text-secondary); font-size:0.85rem;">Visualize your collection value over time &mdash; coming soon</p>
+    </div>
+  </div>
+
+  <!-- SAVE CODE NESTED TAB -->
+  <div id="nested-save-code-portfolio" class="nested-tab-content" style="display:none;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px;">
+      <div class="save-code-header"><span class="save-code-label">Current Save Code:</span></div>
+      <div id="saveCodeDisplayPortfolio"></div>
+      <div class="save-code-hint">Select the code above to copy it manually</div>
+    </div>
+  </div>
 </div>
 
 <!-- MEDIA TAB -->
@@ -2576,116 +2685,12 @@ body {
 
 </div><!-- /tab-media -->
 
-<!-- PORTFOLIO TAB -->
-<div class="tab-content" id="tab-portfolio">
-  <div class="tab-nav-nested">
-    <button class="tab-btn-nested active" data-nested-tab="zen-calc">Zenemental</button>
-    <button class="tab-btn-nested" data-nested-tab="chamber-calc">Chamber</button>
-    <button class="tab-btn-nested" data-nested-tab="rare-calc">Rare</button>
-    <button class="tab-btn-nested" data-nested-tab="uncommon-calc">Uncommon</button>
-    <button class="tab-btn-nested" data-nested-tab="common-calc">Common</button>
-    <button class="tab-btn-nested" data-nested-tab="graph">Graph</button>
-    <button class="tab-btn-nested" data-nested-tab="card-values">Card Values</button>
-    <button class="tab-btn-nested" data-nested-tab="save-code-portfolio">Save Code</button>
-  </div>
-
-  <div id="nested-save-code-portfolio" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px;">
-      <div class="save-code-header"><span class="save-code-label">Current Save Code:</span></div>
-      <div id="saveCodeDisplayPortfolio"></div>
-      <div class="save-code-hint">Select the code above to copy it manually</div>
-    </div>
-  </div>
-
-  <div id="nested-zen-calc" class="nested-tab-content active">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
-      <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
-        <i class="fas fa-dice-d20 fa-spin" style="color:var(--zen); font-size:1.2rem;"></i>
-        <div>
-          <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Zenemental Pack Calculator</div>
-          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-in-6 pull rate &middot; Core cards only</div>
-        </div>
-      </div>
-      <div id="zenPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
-    </div>
-  </div>
-
-  <div id="nested-chamber-calc" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
-      <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
-        <i class="fas fa-window-maximize" style="color:var(--air); font-size:1.2rem; transform: scale(.9, 1.75);"></i>
-        <div>
-          <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Chamber Pack Calculator</div>
-          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-per-pack &middot; Core cards only</div>
-        </div>
-      </div>
-      <div id="chamberPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
-    </div>
-  </div>
-
-  <div id="nested-rare-calc" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
-      <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
-        <i class="fas fa-star fa-spin" style="color:var(--water); font-size:1.2rem;"></i>
-        <div>
-          <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Rare Pack Calculator</div>
-          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-per-pack &middot; Core cards only</div>
-        </div>
-      </div>
-      <div id="rarePackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
-    </div>
-  </div>
-
-  <div id="nested-uncommon-calc" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
-      <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
-        <i class="fas fa-circle" style="color:var(--earth); font-size:1.2rem;"></i>
-        <div>
-          <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Uncommon Pack Calculator</div>
-          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">3-per-pack &middot; Core cards only</div>
-        </div>
-      </div>
-      <div id="uncommonPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
-    </div>
-  </div>
-
-  <div id="nested-common-calc" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
-      <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
-        <i class="far fa-circle" style="color:var(--text-secondary); font-size:1.2rem;"></i>
-        <div>
-          <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Common Pack Calculator</div>
-          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">5-per-pack &middot; Core cards only</div>
-        </div>
-      </div>
-      <div id="commonPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
-    </div>
-  </div>
-
-  <div id="nested-graph" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
-      <i class="fas fa-chart-line" style="font-size: 2.5rem; color: var(--earth); margin-bottom: 14px;"></i>
-      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 6px; font-size:1rem;">Portfolio Graph</h3>
-      <p style="color: var(--text-secondary); font-size:0.85rem;">Visualize your collection value over time &mdash; coming soon</p>
-    </div>
-  </div>
-
-  <div id="nested-card-values" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
-      <i class="fas fa-coins" style="font-size: 3rem; color: var(--promo); margin-bottom: 16px;"></i>
-      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Card Values</h3>
-      <p style="color: var(--text-secondary);">View current market values for cards</p>
-      <p style="color: var(--text-secondary);">Coming Soon...</p>
-    </div>
-  </div>
-</div>
-
 <!-- DIGITAL TAB -->
 <div id="tab-digital-collection" class="tab-content">
   <div class="tab-nav-nested">
     <button class="tab-btn-nested active" data-nested-tab="digital-main">Collection</button>
+    <button class="tab-btn-nested" data-nested-tab="digital-pack-rip-estimators">Pack Rip Estimators</button>
     <button class="tab-btn-nested" data-nested-tab="digital-redeem">Redeem</button>
-    <button class="tab-btn-nested" data-nested-tab="digital-deckbuilder">Deck Builder</button>
   </div>
 
   <div id="nested-digital-main" class="nested-tab-content active">
@@ -2753,6 +2758,87 @@ body {
     </div>
   </div>
 
+  <!-- DIGITAL PACK RIP ESTIMATORS NESTED TAB -->
+  <div id="nested-digital-pack-rip-estimators" class="nested-tab-content" style="display:none;">
+    <div class="tab-nav-nested" style="margin-bottom: 16px;">
+      <button class="tab-btn-nested active" data-subnested-tab="digital-zen-calc">Zenemental</button>
+      <button class="tab-btn-nested" data-subnested-tab="digital-chamber-calc">Chamber</button>
+      <button class="tab-btn-nested" data-subnested-tab="digital-rare-calc">Rare</button>
+      <button class="tab-btn-nested" data-subnested-tab="digital-uncommon-calc">Uncommon</button>
+      <button class="tab-btn-nested" data-subnested-tab="digital-common-calc">Common</button>
+    </div>
+
+    <!-- ZENEMENTAL SUBNESTED TAB -->
+    <div id="subnested-digital-zen-calc" class="nested-tab-content active">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+          <i class="fas fa-dice-d20 fa-spin" style="color:var(--zen); font-size:1.2rem;"></i>
+          <div>
+            <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Zenemental Pack Calculator</div>
+            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-in-6 pull rate &middot; Digital cards</div>
+          </div>
+        </div>
+        <div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><p>Digital pack estimator coming soon...</p></div>
+      </div>
+    </div>
+
+    <!-- CHAMBER SUBNESTED TAB -->
+    <div id="subnested-digital-chamber-calc" class="nested-tab-content" style="display:none;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+          <i class="fas fa-window-maximize" style="color:var(--air); font-size:1.2rem; transform: scale(.9, 1.75);"></i>
+          <div>
+            <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Chamber Pack Calculator</div>
+            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-per-pack &middot; Digital cards</div>
+          </div>
+        </div>
+        <div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><p>Digital pack estimator coming soon...</p></div>
+      </div>
+    </div>
+
+    <!-- RARE SUBNESTED TAB -->
+    <div id="subnested-digital-rare-calc" class="nested-tab-content" style="display:none;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+          <i class="fas fa-star fa-spin" style="color:var(--water); font-size:1.2rem;"></i>
+          <div>
+            <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Rare Pack Calculator</div>
+            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-per-pack &middot; Digital cards</div>
+          </div>
+        </div>
+        <div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><p>Digital pack estimator coming soon...</p></div>
+      </div>
+    </div>
+
+    <!-- UNCOMMON SUBNESTED TAB -->
+    <div id="subnested-digital-uncommon-calc" class="nested-tab-content" style="display:none;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+          <i class="fas fa-circle" style="color:var(--earth); font-size:1.2rem;"></i>
+          <div>
+            <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Uncommon Pack Calculator</div>
+            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">3-per-pack &middot; Digital cards</div>
+          </div>
+        </div>
+        <div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><p>Digital pack estimator coming soon...</p></div>
+      </div>
+    </div>
+
+    <!-- COMMON SUBNESTED TAB -->
+    <div id="subnested-digital-common-calc" class="nested-tab-content" style="display:none;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+          <i class="far fa-circle" style="color:var(--text-secondary); font-size:1.2rem;"></i>
+          <div>
+            <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Common Pack Calculator</div>
+            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">5-per-pack &middot; Digital cards</div>
+          </div>
+        </div>
+        <div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><p>Digital pack estimator coming soon...</p></div>
+      </div>
+    </div>
+  </div>
+
   <div id="nested-digital-redeem" class="nested-tab-content" style="display: none;">
     <div class="digital-redemption-panel">
       <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
@@ -2770,18 +2856,19 @@ body {
       <div id="redemption-message" style="min-height: 24px; font-size: 0.85rem; border-radius: 6px; padding: 8px 12px; margin-bottom: 16px; display: none;"></div>
     </div>
   </div>
+</div>
 
-  <div id="nested-digital-deckbuilder" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
-      <i class="fas fa-align-justify" style="font-size: 3rem; color: var(--promo); margin-bottom: 16px;"></i>
-      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Deck Builder</h3>
-      <p style="color: var(--text-secondary);">Deck Building with Compatibility Rules for Online Gameplay and Trading</p>
-      <p style="color: var(--text-secondary);">Coming Soon...</p>
-    </div>
+<!-- DECK BUILDER TAB -->
+<div class="tab-content" id="tab-deckbuilder">
+  <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
+    <i class="fas fa-align-justify" style="font-size: 3rem; color: var(--promo); margin-bottom: 16px;"></i>
+    <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Deck Builder</h3>
+    <p style="color: var(--text-secondary);">Deck Building with Compatibility Rules for Online Gameplay and Trading</p>
+    <p style="color: var(--text-secondary);">Coming Soon...</p>
   </div>
 </div>
 
-<!-- PROFILE TAB -->
+<!-- MEDIA TAB -->
 <div class="tab-content" id="tab-profile">
   <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:18px;">
     <div id="auth-logged-out">
@@ -3136,33 +3223,40 @@ body {
   </div>
   </div>
 <div class="tab-content" id="tab-creations">
-  <!-- BEGIN CREATIONS TAB CONTENT (paste inside tab-content div) -->
-<div id="cc-app">
- 
-  <!-- Sub-tab navigation -->
-  <div class="cc-tabs" id="ccTabs">
-    <button class="cc-tab active" data-cctab="create">&#10010; Create</button>
-    <button class="cc-tab" data-cctab="roster">&#9876; My Characters</button>
+  <!-- Main nested tabs for Creations -->
+  <div class="tab-nav-nested">
+    <button class="tab-btn-nested active" data-nested-tab="creations-characters">Characters</button>
+    <button class="tab-btn-nested" data-nested-tab="creations-cards">Cards</button>
+    <button class="tab-btn-nested" data-nested-tab="creations-freeform">Free Form</button>
   </div>
- 
-  <!-- ── CREATE PANEL ── -->
-  <div id="cctab-create">
- 
-    <!-- Action bar -->
-    <div class="cc-action-bar">
-      <button class="cc-btn cc-btn-primary" id="cc-save-btn">
-        <i class="fas fa-save"></i> Save Character
-      </button>
-      <button class="cc-btn cc-btn-secondary" id="cc-random-btn">
-        <i class="fas fa-dice"></i> Randomize
-      </button>
-      <button class="cc-btn cc-btn-secondary" id="cc-clear-btn">
-        <i class="fas fa-eraser"></i> Clear Form
-      </button>
+
+  <!-- CHARACTERS NESTED TAB -->
+  <div id="nested-creations-characters" class="nested-tab-content active">
+    <!-- Sub-tab navigation for Characters -->
+    <div class="cc-tabs" id="ccTabs" style="margin-bottom: 16px;">
+      <button class="cc-tab active" data-cctab="create">&#10010; Create</button>
+      <button class="cc-tab" data-cctab="my-characters">&#9876; My Characters</button>
+      <button class="cc-tab" data-cctab="friends-shared">&#10003; Friends' Shared</button>
     </div>
- 
-    <!-- 1. NAME -->
-    <div class="cc-section">
+   
+    <!-- ── CREATE PANEL ── -->
+    <div id="cctab-create">
+   
+      <!-- Action bar -->
+      <div class="cc-action-bar">
+        <button class="cc-btn cc-btn-primary" id="cc-save-btn">
+          <i class="fas fa-save"></i> Save Character
+        </button>
+        <button class="cc-btn cc-btn-secondary" id="cc-random-btn">
+          <i class="fas fa-dice"></i> Randomize
+        </button>
+        <button class="cc-btn cc-btn-secondary" id="cc-clear-btn">
+          <i class="fas fa-eraser"></i> Clear Form
+        </button>
+      </div>
+   
+      <!-- 1. NAME -->
+      <div class="cc-section">
       <div class="cc-section-title"><i class="fas fa-signature"></i> Name</div>
       <div class="cc-row">
         <div class="cc-field">
@@ -3525,8 +3619,8 @@ body {
  
   </div><!-- /create panel -->
  
-  <!-- ── ROSTER PANEL ── -->
-  <div id="cctab-roster" style="display:none;">
+  <!-- ── MY CHARACTERS PANEL ── -->
+  <div id="cctab-my-characters" style="display:none;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
       <div style="font-family:'Cinzel',serif;font-weight:700;font-size:0.95rem;">Saved Characters</div>
       <span id="cc-roster-count" style="font-size:0.72rem;color:var(--text-muted);"></span>
@@ -3538,11 +3632,69 @@ body {
       </div>
     </div>
     </div>
+
+  <!-- ── FRIENDS' SHARED PANEL ── -->
+  <div id="cctab-friends-shared" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <div style="font-family:'Cinzel',serif;font-weight:700;font-size:0.95rem;">Friends' Shared Characters</div>
+      <span style="font-size:0.72rem;color:var(--text-muted);">Community creations</span>
+    </div>
+    <div id="cc-shared-list">
+      <div style="text-align:center;padding:40px 0;color:var(--text-muted);font-size:0.82rem;">
+        <i class="fas fa-share-alt" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:10px;"></i>
+        No shared characters yet — check back soon!
+      </div>
+    </div>
+  </div>
  
 </div><!-- /cc-app -->
  
 <div class="cc-toast" id="cc-toast"></div>
-</div>  
+  </div><!-- /nested-creations-characters -->
+
+  <!-- CARDS NESTED TAB -->
+  <div id="nested-creations-cards" class="nested-tab-content" style="display:none;">
+    <!-- Sub-tab navigation for Cards -->
+    <div class="cc-tabs" id="cardsTabs" style="margin-bottom: 16px;">
+      <button class="cc-tab active" data-cctab="cards-create">&#10010; Create</button>
+      <button class="cc-tab" data-cctab="cards-my-cards">&#9876; My Cards</button>
+      <button class="cc-tab" data-cctab="cards-friends-shared">&#10003; Friends' Shared</button>
+    </div>
+
+    <!-- ── CREATE PANEL ── -->
+    <div id="cctab-cards-create" style="text-align: center; padding: 40px 20px;">
+      <i class="fas fa-wand-magic-sparkles" style="font-size: 2.5rem; color: var(--zen); margin-bottom: 16px;"></i>
+      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px; font-size: 1.1rem;">Create Custom Card</h3>
+      <p style="color: var(--text-secondary); font-size: 0.9rem;">Design and customize your own Avatar TCG cards</p>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 12px; font-style: italic;">Coming soon...</p>
+    </div>
+
+    <!-- ── MY CARDS PANEL ── -->
+    <div id="cctab-cards-my-cards" style="display:none; text-align: center; padding: 40px 20px;">
+      <i class="fas fa-layer-group" style="font-size: 2.5rem; color: var(--water); margin-bottom: 16px;"></i>
+      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px; font-size: 1.1rem;">My Cards</h3>
+      <p style="color: var(--text-secondary); font-size: 0.9rem;">View and manage all your custom card creations</p>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 12px; font-style: italic;">Coming soon...</p>
+    </div>
+
+    <!-- ── FRIENDS' SHARED PANEL ── -->
+    <div id="cctab-cards-friends-shared" style="display:none; text-align: center; padding: 40px 20px;">
+      <i class="fas fa-handshake" style="font-size: 2.5rem; color: var(--earth); margin-bottom: 16px;"></i>
+      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px; font-size: 1.1rem;">Friends' Shared Cards</h3>
+      <p style="color: var(--text-secondary); font-size: 0.9rem;">Browse custom cards created and shared by your friends</p>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 12px; font-style: italic;">Coming soon...</p>
+    </div>
+  </div><!-- /nested-creations-cards -->
+
+  <!-- FREE FORM NESTED TAB -->
+  <div id="nested-creations-freeform" class="nested-tab-content" style="display:none;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 40px 20px; text-align: center;">
+      <i class="fas fa-pen-fancy" style="font-size: 3rem; color: var(--air); margin-bottom: 16px;"></i>
+      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px; font-size: 1.1rem;">Free Form Writing</h3>
+      <p style="color: var(--text-secondary); font-size: 0.9rem;">Create custom stories, lore, and creative content</p>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 12px; font-style: italic;">Coming soon...</p>
+    </div>
+  </div>
 </div>
 </div><!-- /.app-container -->
 
@@ -4139,6 +4291,34 @@ function initTabs() {
       parent.querySelectorAll('.trade-subtab-content').forEach(function(c) { c.style.display = 'none'; });
       var content = parent.querySelector('#trade-' + subtabName);
       if (content) content.style.display = 'block';
+    });
+  });
+
+  /* Handle subnested tabs (third level) */
+  document.querySelectorAll('.tab-btn-nested[data-subnested-tab]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var subnestedName = this.getAttribute('data-subnested-tab');
+      var parent = this.closest('.nested-tab-content');
+      if (!parent) return;
+      parent.querySelectorAll('.tab-btn-nested[data-subnested-tab]').forEach(function(b) { b.classList.remove('active'); });
+      this.classList.add('active');
+      parent.querySelectorAll('.nested-tab-content').forEach(function(c) { c.style.display = 'none'; });
+      var content = parent.querySelector('#subnested-' + subnestedName);
+      if (content) content.style.display = 'block';
+
+      var packTabMap = {
+        'zen-calc':      'zenemental',
+        'chamber-calc':  'chamber',
+        'rare-calc':     'rare',
+        'uncommon-calc': 'uncommon',
+        'common-calc':   'common',
+        'digital-zen-calc':      'zenemental',
+        'digital-chamber-calc':  'chamber',
+        'digital-rare-calc':     'rare',
+        'digital-uncommon-calc': 'uncommon',
+        'digital-common-calc':   'common'
+      };
+      if (packTabMap[subnestedName]) updatePackCounter(packTabMap[subnestedName]);
     });
   });
 }
@@ -7440,8 +7620,9 @@ function bindSubTabs(){
     document.querySelectorAll('#ccTabs .cc-tab').forEach(function(b){b.classList.remove('active');});
     btn.classList.add('active');
     document.getElementById('cctab-create').style.display = btn.dataset.cctab === 'create' ? '' : 'none';
-    document.getElementById('cctab-roster').style.display = btn.dataset.cctab === 'roster' ? '' : 'none';
-    if(btn.dataset.cctab === 'roster') renderRoster();
+    document.getElementById('cctab-my-characters').style.display = btn.dataset.cctab === 'my-characters' ? '' : 'none';
+    document.getElementById('cctab-friends-shared').style.display = btn.dataset.cctab === 'friends-shared' ? '' : 'none';
+    if(btn.dataset.cctab === 'my-characters') renderRoster();
   });
 }
  
@@ -7592,8 +7773,8 @@ function saveCharacter(){
   localStorage.setItem('aqst_characters', JSON.stringify(chars));
   editingId = null;
   showToast(editingId ? 'Character updated!' : '✅ Character saved!');
-  /* switch to roster */
-  document.querySelector('[data-cctab="roster"]').click();
+  /* switch to my characters tab */
+  document.querySelector('[data-cctab="my-characters"]').click();
 }
  
 /* ── LOAD ── */
