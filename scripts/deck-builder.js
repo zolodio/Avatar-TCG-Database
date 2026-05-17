@@ -2242,7 +2242,7 @@ async function init() {
   };
 
   document.addEventListener('DOMContentLoaded', function () {
-    var trigger = document.querySelector('[data-tab="deckbuilder"]');
+    var trigger = document.querySelector('[data-nested-tab="digital-deckbuilder"]');
     if (!trigger) return;
     var initialized = false;
     trigger.addEventListener('click', function () {
