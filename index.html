@@ -3447,14 +3447,21 @@ body {
     <!-- 7. PHYSICAL DESCRIPTION -->
     <div class="cc-section">
       <div class="cc-section-title"><i class="fas fa-user-alt"></i> Physical Description</div>
+      <div class="cc-field" style="margin-bottom:14px;">
+        <label class="cc-label">Measurement Units</label>
+        <div class="cc-pill-group">
+          <div class="cc-pill generic selected" data-group="units" data-val="english">English (ft/in, lbs)</div>
+          <div class="cc-pill generic" data-group="units" data-val="metric">Metric (cm, kg)</div>
+        </div>
+      </div>
       <div class="cc-row">
         <div class="cc-field">
           <label class="cc-label">Height</label>
-          <input class="cc-input" id="cc-height" placeholder='e.g. 5&apos;8" / 172cm'>
+          <input class="cc-input" id="cc-height" placeholder='e.g. 5&apos;8" or 172 cm'>
         </div>
         <div class="cc-field">
           <label class="cc-label">Weight</label>
-          <input class="cc-input" id="cc-weight" placeholder="e.g. 145 lbs / 66kg">
+          <input class="cc-input" id="cc-weight" placeholder="e.g. 145 lbs or 66 kg">
         </div>
       </div>
       <div class="cc-row">
@@ -7616,7 +7623,7 @@ var state = {
   strike:'', advantage:'', ally:'',
   temperament:'', lifepath:'', range:'',
   petCat:'none', pet:'', bond:'',
-  height:'', weight:'', eyes:'', hair:'', skin:'', build:'', appearanceNotes:'',
+  units:'english', height:'', weight:'', eyes:'', hair:'', skin:'', build:'', appearanceNotes:'',
   personality:{ Honor:50, Aggression:30, Compassion:70, Discipline:50, Spirituality:50, Loyalty:60, Independence:50, Patience: 15, Pride: 84, Temperament: 46, Mercy:99, Ambition: 35, Creativity: 8, Resilience: 100 },
   physical:{Agility:75, Strength: 55, Endurance: 67, Reflexes: 18, Dexterity: 20, Balance: 42, Durability: 38, Speed: 7, Flexibility: 71, "Pain Tolerance": 5},
   mental:{"Tactical Intelligence": 89, Perception: 4, "Battle Awareness": 69, Memory: 88, Adaptability: 12, Willpower: 100, Deception: 3, Leadership: 50, Intimidation: 100 },
@@ -7680,6 +7687,26 @@ function bindPillGroups(){
       });
       this.classList.add('selected-'+group);
       state[group] = val;
+    });
+  });
+  /* special handler for units pill */
+  document.querySelectorAll('.cc-pill[data-group="units"]').forEach(function(pill){
+    pill.addEventListener('click', function(){
+      var newUnit = this.dataset.val;
+      var oldUnit = state.units;
+      if(newUnit === oldUnit) return;
+      state.units = newUnit;
+      // Reformat height/weight if they exist
+      var heightEl = document.getElementById('cc-height');
+      var weightEl = document.getElementById('cc-weight');
+      if(heightEl && heightEl.value){
+        heightEl.value = formatHeight(newUnit === 'metric');
+        state.height = heightEl.value;
+      }
+      if(weightEl && weightEl.value){
+        weightEl.value = formatWeight(newUnit === 'metric');
+        state.weight = weightEl.value;
+      }
     });
   });
 }
@@ -8120,17 +8147,62 @@ function renderRoster(){
   });
 }
  
+/* ── HEIGHT/WEIGHT FORMATTING ── */
+function formatHeight(isMetric){
+  if(isMetric){
+    // Metric: random between 150-200 cm
+    var cm = Math.floor(Math.random() * 51) + 150;
+    return cm + ' cm';
+  } else {
+    // English: random between 5'0" and 6'6"
+    var feet = Math.floor(Math.random() * 2) + 5;
+    var inches = Math.floor(Math.random() * 12);
+    return feet + '\'' + (inches < 10 ? '0' : '') + inches + '"';
+  }
+}
+
+function formatWeight(isMetric){
+  if(isMetric){
+    // Metric: random between 50-100 kg
+    var kg = Math.floor(Math.random() * 51) + 50;
+    return kg + ' kg';
+  } else {
+    // English: random between 100-250 lbs
+    var lbs = Math.floor(Math.random() * 151) + 100;
+    return lbs + ' lbs';
+  }
+}
+
 /* ── RANDOMIZE ── */
 var NAMES_A = ['Bai','Zhen','Kai','Lei','Mei','Tao','Jin','Suki','Raya','Shen','Po','Chen','Shen','Sky'];
 var NAMES_B = ['Fong','Xin','Long','Shi','Yun','Wei','Hao','Peng','Yao','Dan','Po','Feng','Boi','Lee','Zhen','Zhi','Qi','Xen'];
+var NICKNAMES = ['Storm','Blade','Flame','Frost','Echo','Scar','Whisper','Viper','Shadow','Hawk','Steel','Tide','Inferno','Spirit'];
 var ELEMENTS = ['water','earth','fire','air','non-bender'];
 var STRIKES  = ['bull','fox','lion'];
 var ADVS     = ['mind','body','spirit'];
 var ALLIES   = ['light','shadow','dark'];
+var RANGES   = ['close','mid','long','support','control'];
+var PET_CATS = ['none','standard','hybrid','mount','spirit'];
+var BONDS    = ['wild','trained','loyal','spirit-bound'];
+var FLAWS_OPTIONS = ['arrogant','impulsive','distrustful','reckless','idealistic','vengeful','stubborn','hot-tempered','naive','overconfident','self-righteous','emotionally-guarded','venomous-tongue'];
+var BS_NATIONS = ['Fire Nation','Earth Kingdom','Water Tribe (Northern)','Water Tribe (Southern)','Air Nomads','Spirit World','United Republic / Republic City','Unknown / Stateless'];
+var BS_TONES = ['hopeful','dark','epic','political','tragic'];
+var HAIR_COLORS = ['black','brown','dark brown','auburn','gray','white'];
+var EYE_COLORS = ['brown','black','gray','amber','blue','green'];
+var SKIN_TONES = ['olive','fair','bronze','dark','warm','cool'];
+var APPEARANCE_DESCRIPTORS = ['scar across face','burn marks','graceful bearing','muscular frame','delicate features','weathered look','youthful appearance','intense eyes','calm demeanor','fierce expression'];
  
 function randomizeCharacter(){
   clearForm(true);
   document.getElementById('cc-given-name').value = pick(NAMES_A)+' '+pick(NAMES_B);
+  
+  // Randomize nickname
+  var nickEl = document.getElementById('cc-nick-name');
+  if(nickEl){
+    nickEl.value = pick(NICKNAMES);
+    state.nickName = nickEl.value;
+  }
+  
   var el = pick(ELEMENTS);
   clickPill('bending', el);
   setTimeout(function(){
@@ -8149,26 +8221,167 @@ function randomizeCharacter(){
   clickPill('temperament', pick(['aggressive','defensive','tactical','passive']));
   clickPill('lifepath',    pick(['open-palm','closed-fist']));
   clickPill('build',       pick(['lean','muscular','stocky','slender']));
-  var slider = document.querySelectorAll('.cc-slider');
-  slider.forEach(function(s){
+  
+  // Randomize tactical range
+  clickPill('range', pick(RANGES));
+  
+  // Randomize pet/companion
+  var petCat = pick(PET_CATS);
+  clickPill('petcat', petCat);
+  setTimeout(function(){
+    if(petCat !== 'none' && PET_OPTIONS[petCat]){
+      var selectedPet = pick(PET_OPTIONS[petCat]);
+      var petSelect = document.getElementById('cc-pet-select');
+      if(petSelect){
+        petSelect.value = selectedPet;
+        state.pet = selectedPet;
+      }
+      clickPill('bond', pick(BONDS));
+    }
+    state.petCat = petCat;
+  }, 60);
+  
+  // Randomize physical description - with proper unit formatting
+  var isMetric = state.units === 'metric';
+  var heightEl = document.getElementById('cc-height');
+  if(heightEl){
+    heightEl.value = formatHeight(isMetric);
+    state.height = heightEl.value;
+  }
+  var weightEl = document.getElementById('cc-weight');
+  if(weightEl){
+    weightEl.value = formatWeight(isMetric);
+    state.weight = weightEl.value;
+  }
+  var eyeEl = document.getElementById('cc-eyes');
+  if(eyeEl){
+    eyeEl.value = pick(EYE_COLORS);
+    state.eyes = eyeEl.value;
+  }
+  var hairEl = document.getElementById('cc-hair');
+  if(hairEl){
+    hairEl.value = pick(HAIR_COLORS);
+    state.hair = hairEl.value;
+  }
+  var skinEl = document.getElementById('cc-skin');
+  if(skinEl){
+    skinEl.value = pick(SKIN_TONES);
+    state.skin = skinEl.value;
+  }
+  var appEl = document.getElementById('cc-appearance-notes');
+  if(appEl){
+    appEl.value = pick(APPEARANCE_DESCRIPTORS);
+    state.appearanceNotes = appEl.value;
+  }
+  
+  // Randomize flaws (multi-select)
+  var flawsPills = document.querySelectorAll('.cc-pill[data-group="flaws"]');
+  var flawCount = Math.floor(Math.random()*3)+1; // 1-3 flaws
+  var selectedFlaws = [];
+  for(var i=0; i<flawCount; i++){
+    var randomFlaw = pick(FLAWS_OPTIONS);
+    if(selectedFlaws.indexOf(randomFlaw) === -1){ // avoid duplicates
+      selectedFlaws.push(randomFlaw);
+      for(var j=0; j<flawsPills.length; j++){
+        if(flawsPills[j].dataset.val === randomFlaw){
+          flawsPills[j].click();
+          break;
+        }
+      }
+    }
+  }
+  state.flaws = selectedFlaws;
+  
+  // Randomize personality sliders
+  var personalitySliders = document.querySelectorAll('.cc-slider[data-trait]');
+  personalitySliders.forEach(function(s){
     var v = Math.round(Math.random()*100);
     s.value = v;
     state.personality[s.dataset.trait] = v;
     var sv = document.getElementById('sv-'+s.dataset.trait);
     if(sv) sv.textContent = v;
-    
-    var vxt = Math.round(Math.random()*100);
-    s.value = vxt;
-    state.physical[s.dataset.trait] = vxt;
-    var svxt = document.getElementById('svxt-'+s.dataset.trait);
-    if(svxt) svxt.textContent = vxt;
-    
-    var vxq = Math.round(Math.random()*100);
-    s.value = vxq;
-    state.mental[s.dataset.trait] = vxq;
-    var svxq = document.getElementById('svxq-'+s.dataset.trait);
-    if(svxq) svxq.textContent = vxq;
   });
+  
+  // Randomize physical sliders
+  var physicalSliders = document.querySelectorAll('.cc-slider2[data-trait]');
+  physicalSliders.forEach(function(s){
+    var v = Math.round(Math.random()*100);
+    s.value = v;
+    state.physical[s.dataset.trait] = v;
+    var sv = document.getElementById('svxt-'+s.dataset.trait);
+    if(sv) sv.textContent = v;
+  });
+  
+  // Randomize mental sliders
+  var mentalSliders = document.querySelectorAll('.cc-slider3[data-trait]');
+  mentalSliders.forEach(function(s){
+    var v = Math.round(Math.random()*100);
+    s.value = v;
+    state.mental[s.dataset.trait] = v;
+    var sv = document.getElementById('svxq-'+s.dataset.trait);
+    if(sv) sv.textContent = v;
+  });
+  
+  // Randomize backstory - switch to template and fill all fields
+  setTimeout(function(){
+    // Click "Use Template" tab
+    var templateTab = document.querySelector('.cc-tab[data-bstab="template"]');
+    if(templateTab) templateTab.click();
+    
+    // Randomize nation
+    var nationEl = document.getElementById('cc-bs-nation');
+    if(nationEl){
+      nationEl.value = pick(BS_NATIONS);
+      state.bsNation = nationEl.value;
+    }
+    
+    // Randomize training
+    var trainingEl = document.getElementById('cc-bs-training');
+    if(trainingEl){
+      trainingEl.value = 'Trained under ' + pick(['a military general', 'a master bender', 'monks in isolation', 'street performers', 'a mysterious sage']);
+      state.bsTraining = trainingEl.value;
+    }
+    
+    // Randomize trauma
+    var traumaEl = document.getElementById('cc-bs-trauma');
+    if(traumaEl){
+      traumaEl.value = 'Witnessed ' + pick(['the loss of their home', 'betrayal by a trusted ally', 'a great catastrophe', 'the death of a mentor', 'their nation\'s downfall']);
+      state.bsTrauma = traumaEl.value;
+    }
+    
+    // Randomize mentor
+    var mentorEl = document.getElementById('cc-bs-mentor');
+    if(mentorEl){
+      mentorEl.value = pick(['A retired master who taught discipline', 'A wandering sage with ancient wisdom', 'A mysterious figure from the past', 'A former rival turned ally', 'A spiritual guide']);
+      state.bsMentor = mentorEl.value;
+    }
+    
+    // Randomize rival
+    var rivalEl = document.getElementById('cc-bs-rival');
+    if(rivalEl){
+      rivalEl.value = pick(['A former friend with opposing ideals', 'A skilled opponent seeking revenge', 'Someone from their past seeking redemption', 'A fellow warrior with conflicting goals', 'A family member with different values']);
+      state.bsRival = rivalEl.value;
+    }
+    
+    // Randomize goal
+    var goalEl = document.getElementById('cc-bs-goal');
+    if(goalEl){
+      goalEl.value = pick(['To restore what was lost', 'To master their bending', 'To protect the innocent', 'To uncover hidden truths', 'To achieve balance', 'To prove their worth', 'To find redemption']);
+      state.bsGoal = goalEl.value;
+    }
+    
+    // Randomize secret
+    var secretEl = document.getElementById('cc-bs-secret');
+    if(secretEl){
+      secretEl.value = pick(['Harbors doubts about their true identity', 'Hiding a forbidden relationship', 'Concealing a shameful past action', 'Seeking something thought to be lost', 'Made a dangerous deal with the wrong person']);
+      state.bsSecret = secretEl.value;
+    }
+    
+    // Randomize tone
+    clickPill('bstone', pick(BS_TONES));
+    state.bsTone = state.bstone || '';
+  }, 100);
+  
   showToast('Character randomized!');
 }
  
@@ -8191,7 +8404,7 @@ function clearForm(silent){
   state.strike=''; state.advantage=''; state.ally='';
   state.temperament=''; state.lifepath=''; state.range='';
   state.petCat='none'; state.pet=''; state.bond='';
-  state.height=''; state.weight=''; state.eyes=''; state.hair=''; state.skin=''; state.build=''; state.appearanceNotes='';
+  state.units='english'; state.height=''; state.weight=''; state.eyes=''; state.hair=''; state.skin=''; state.build=''; state.appearanceNotes='';
   state.personality={ Honor:'', Aggression:'', Compassion:'', Discipline:'', Spirituality:'', Loyalty:'', Independence:'', Patience: '', Pride: '', Temperament: '', Mercy:'', Ambition: '', Creativity: '', Resilience: '' };
   state.physical={Agility:'', Strength: '', Endurance: '', Reflexes: '', Dexterity: '', Balance: '', Durability: '', Speed: '', Flexibility: '', "Pain Tolerance": ''};
   state.mental={"Tactical Intelligence": '', Perception: '', "Battle Awareness": '', Memory: '', Adaptability: '', Willpower: '', Deception: '', Leadership: '', Intimidation:''};
@@ -8213,9 +8426,11 @@ function clearForm(silent){
   renderPersonalitySliders();
   renderPhysicalSliders();  
   renderMentalSliders();
-  /* restore "None" pet pill */
+  /* restore "None" pet pill and "English" units pill */
   var nonePill = document.querySelector('.cc-pill[data-group="petcat"][data-val="none"]');
   if(nonePill){ nonePill.classList.add('selected'); state.petCat='none'; }
+  var englishPill = document.querySelector('.cc-pill[data-group="units"][data-val="english"]');
+  if(englishPill){ englishPill.classList.add('selected'); state.units='english'; }
   if(!silent) showToast('Form cleared.');
 }
  
@@ -8254,7 +8469,6 @@ init();
 <script src="scripts/characters-sync.js"></script>
 <script src="scripts/character-sharing.js"></script>
 <script src="scripts/friend-collection.js"></script> 
-<script src="scripts/character-modal.js"></script>	
-<script src="character-randomizer.js"></script>	
+<script src="scripts/character-modal.js"></script>
 </body>
 </html>
