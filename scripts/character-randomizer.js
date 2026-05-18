@@ -1,14 +1,20 @@
 /**
  * AVATAR BENDING UNIVERSE CHARACTER CREATOR
- * Comprehensive Randomization System
- * 
- * Handles all field types:
- * - Text inputs & textareas
- * - Single-select pills
- * - Multi-select pills (flaws)
- * - Sliders (personality, physical, mental)
- * - Dropdowns (nation, pet)
- * - Dependent fields (specialties based on bending)
+ * Comprehensive Randomization System — fixed
+ *
+ * Key fixes vs. original:
+ *  • randomizePillSelect no longer dispatches synthetic click events.
+ *    Synthetic clicks were re-triggering app handlers that reset dependent
+ *    fields (pet dropdown, specialty list, etc.).  Dependent side-effects
+ *    are now handled explicitly inside randomizeCharacter().
+ *  • randomizeSliders fires an `input` event after each value change so
+ *    linked display labels update immediately.
+ *  • Flaws use a data-attribute-agnostic selector (any .cc-pill inside the
+ *    group), with an optional cap of 3.
+ *  • Backstory template: the "Use template" toggle is activated automatically
+ *    before randomizing the template fields.
+ *  • Pet values are written last, after the pill class has been set, so the
+ *    pet dropdown and bond pill are never overwritten by a stale handler.
  */
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -16,149 +22,152 @@
 // ════════════════════════════════════════════════════════════════════════════
 
 const RANDOMIZE_DATA = {
-  // NAMES
   givenNames: {
-    fireNation: ['Zuko', 'Azula', 'Ozai', 'Ursa', 'Iroh', 'Azulon', 'Kiyi', 'Rin', 'Rui', 'Shoji', 'Kwan', 'Lee', 'Ren', 'Toph', 'Roku'],
-    earthKingdom: ['Toph', 'Bumi', 'Long Feng', 'Oka', 'Jet', 'Smellerbee', 'Sokka', 'Katara', 'Suki', 'Ty Lee', 'The Boulder', 'The Big Badger'],
-    waterTribe: ['Katara', 'Sokka', 'Yue', 'Amon', 'Tarrlok', 'Tonraq', 'Korra', 'Senna', 'Eska', 'Desna', 'Unalaq'],
-    airNomads: ['Aang', 'Appa', 'Momo', 'Gyatso', 'Bumi', 'Ikki', 'Jinora', 'Meelo', 'Rohan', 'Opal'],
-    spiritWorld: ['Koh', 'Hei Bai', 'Aye Aye', 'Wan Shi Tong', 'Vaatu', 'Raava', 'Tui', 'La'],
-    generic: ['Suki', 'Ty Lee', 'Ying', 'Wei', 'Ming', 'Chit Sang', 'Haru', 'Jiang', 'Kai', 'Desai']
+    fireNation:   ['Zuko','Azula','Ozai','Ursa','Iroh','Azulon','Kiyi','Rin','Rui','Shoji','Kwan','Lee','Ren','Roku'],
+    earthKingdom: ['Toph','Bumi','Long Feng','Oka','Jet','Smellerbee','Ty Lee','The Boulder'],
+    waterTribe:   ['Katara','Sokka','Yue','Amon','Tarrlok','Tonraq','Korra','Senna','Eska','Desna','Unalaq'],
+    airNomads:    ['Aang','Gyatso','Ikki','Jinora','Meelo','Rohan','Opal'],
+    spiritWorld:  ['Koh','Hei Bai','Wan Shi Tong','Vaatu','Raava'],
+    generic:      ['Suki','Ying','Wei','Ming','Chit Sang','Haru','Jiang','Kai','Desai','Mira','Fang','Lo','Li','Ryo']
   },
 
   nicknames: [
-    'The Blue Spirit',
-    'The Phoenix King',
-    'The Dragon of the West',
-    'The Blind Bandit',
-    'Combustion Kid',
-    'The Swamp Monster',
-    'The Boulder',
-    'Sparky Sparky Boom Man',
-    'Twinkle Toes',
-    'Sokka the Strategist',
-    'The Water Tribe Warrior',
-    'The Blind Swordmaster',
-    'Spirit Warrior',
-    'The Last Airbender',
-    'Avatar'
+    'The Blue Spirit','The Phoenix King','The Dragon of the West','The Blind Bandit',
+    'Combustion Kid','The Swamp Monster','The Boulder','Sparky Sparky Boom Man',
+    'Twinkle Toes','Sokka the Strategist','The Water Tribe Warrior',
+    'The Blind Swordmaster','Spirit Warrior','The Last Airbender','Avatar'
   ],
 
-  // PHYSICAL DESCRIPTIONS
   heights: [
-    '4\'10"', '4\'11"', '5\'0"', '5\'1"', '5\'2"', '5\'3"', '5\'4"', '5\'5"',
-    '5\'6"', '5\'7"', '5\'8"', '5\'9"', '5\'10"', '5\'11"', '6\'0"', '6\'1"', '6\'2"'
+    '4\'10"','4\'11"','5\'0"','5\'1"','5\'2"','5\'3"','5\'4"','5\'5"',
+    '5\'6"','5\'7"','5\'8"','5\'9"','5\'10"','5\'11"','6\'0"','6\'1"','6\'2"'
   ],
 
   weights: [
-    '110 lbs', '120 lbs', '130 lbs', '140 lbs', '150 lbs', '160 lbs', '170 lbs',
-    '180 lbs', '190 lbs', '200 lbs', '210 lbs', '220 lbs'
+    '110 lbs','120 lbs','130 lbs','140 lbs','150 lbs','160 lbs','170 lbs',
+    '180 lbs','190 lbs','200 lbs','210 lbs','220 lbs'
   ],
 
   eyeColors: [
-    'amber', 'golden', 'silver', 'steel blue', 'ocean blue', 'grey', 'coal black',
-    'jade green', 'emerald', 'pale blue', 'dark brown', 'copper', 'violet'
+    'amber','golden','silver','steel blue','ocean blue','grey','coal black',
+    'jade green','emerald','pale blue','dark brown','copper','violet'
   ],
 
   hairColors: [
-    'jet black', 'dark brown', 'auburn', 'copper red', 'platinum white', 'silver',
-    'ash grey', 'midnight blue', 'raven black', 'honey brown', 'dark orange'
+    'jet black','dark brown','auburn','copper red','platinum white','silver',
+    'ash grey','midnight blue','raven black','honey brown','dark orange'
   ],
 
   skinTones: [
-    'pale', 'fair', 'light tan', 'warm tan', 'olive', 'bronze', 'warm brown',
-    'deep brown', 'dark brown', 'mahogany', 'rich chocolate'
+    'pale','fair','light tan','warm tan','olive','bronze','warm brown',
+    'deep brown','dark brown','mahogany','rich chocolate'
   ],
 
-  // APPEARANCE DETAILS
   appearanceDetails: [
-    'A thin scar across the cheek',
-    'Intricate warrior tattoos along the arms',
-    'A spiraling scar on the back',
-    'Ritual body paint markings',
-    'Calloused hands from bending training',
-    'A burn mark on the face',
-    'Ornate jewelry and bracelets',
-    'Traditional nation clothing',
-    'A topknot tied with silk ribbon',
-    'Bandaged knuckles from combat',
-    'A wolf tail pelt across the shoulders',
-    'Earthbender rings on each hand',
-    'Waterbender tribal tattoos',
-    'Fire Nation royal insignia',
-    'Air Nomad arrows on arms',
-    'Scars from past battles',
-    'An air of quiet intensity',
-    'Elaborate armor plating'
+    'A thin scar across the cheek.',
+    'Intricate warrior tattoos along the arms.',
+    'A spiraling scar on the back.',
+    'Ritual body paint markings.',
+    'Calloused hands from bending training.',
+    'A burn mark on the face.',
+    'Ornate jewelry and bracelets.',
+    'Traditional nation clothing.',
+    'A topknot tied with silk ribbon.',
+    'Bandaged knuckles from combat.',
+    'A wolf tail pelt across the shoulders.',
+    'Earthbender rings on each hand.',
+    'Waterbender tribal tattoos.',
+    'Fire Nation royal insignia.',
+    'Air Nomad arrows on the forehead.',
+    'Scars from past battles.',
+    'An air of quiet intensity.',
+    'Elaborate armor plating.'
   ],
 
-  // BACKSTORY ELEMENTS
+  backstoryNations: [
+    'Fire Nation','Earth Kingdom','Water Tribe (Northern)','Water Tribe (Southern)',
+    'Air Nomads','Spirit World','United Republic / Republic City','Unknown / Stateless'
+  ],
+
   backstoryTraumas: [
-    'Watched their village destroyed',
-    'Separated from family during war',
-    'Betrayed by a trusted mentor',
-    'Survived an assassination attempt',
-    'Lost their bending temporarily',
-    'Caused an accident that hurt others',
-    'Exiled from their nation',
-    'Kidnapped by enemy forces',
-    'Watched their master fall in battle',
-    'Discovered they were someone else\'s child',
-    'Failed a crucial test',
-    'Lost their place in society'
+    'Watched their village destroyed.',
+    'Separated from family during war.',
+    'Betrayed by a trusted mentor.',
+    'Survived an assassination attempt.',
+    'Lost their bending temporarily.',
+    'Caused an accident that hurt others.',
+    'Exiled from their nation.',
+    'Kidnapped by enemy forces.',
+    'Watched their master fall in battle.',
+    'Discovered they were not who they thought.',
+    'Failed a crucial test of character.',
+    'Lost their place in society.'
+  ],
+
+  backstoryTraining: [
+    'Trained under a retired master in hiding.',
+    'Learned from a warrior of an enemy nation.',
+    'Mentored by a monk seeking redemption.',
+    'Drilled by a general with unconventional methods.',
+    'Self-taught through trial and survival.',
+    'Guided by a traveling teacher of mysterious origin.',
+    'Shaped by a former rival turned ally.',
+    'Instructed through dreams by a spirit guide.',
+    'Trained alongside a sibling who believed in them.',
+    'Hardened by a fighter they once defeated.'
   ],
 
   backstoryMentors: [
-    'A retired master in hiding',
-    'A warrior from an enemy nation',
-    'A monk seeking redemption',
-    'A general with unconventional methods',
-    'A traveling teacher with mysterious origins',
-    'A former rival turned ally',
-    'A spirit guide',
-    'A sibling who believed in them',
-    'A fighter they defeated and respected',
-    'An old warrior living in exile'
+    'A retired master in hiding.',
+    'A warrior from an enemy nation.',
+    'A monk seeking redemption.',
+    'A general with unconventional methods.',
+    'A traveling teacher with mysterious origins.',
+    'A former rival turned ally.',
+    'A spirit guide.',
+    'A sibling who believed in them.',
+    'A fighter they defeated and respected.',
+    'An old warrior living in exile.'
   ],
 
   backstoryRivals: [
-    'A childhood friend turned enemy',
-    'Someone seeking the same goal',
-    'A sibling competing for recognition',
-    'A warrior from an opposing faction',
-    'Someone who saved them once, then betrayed them',
-    'A prodigy they can never quite match',
-    'Their sworn enemy',
-    'Someone chasing them for revenge',
-    'A rival trained by the same master'
+    'A childhood friend turned enemy.',
+    'Someone seeking the same goal.',
+    'A sibling competing for recognition.',
+    'A warrior from an opposing faction.',
+    'Someone who saved them once, then betrayed them.',
+    'A prodigy they can never quite match.',
+    'Their sworn enemy.',
+    'Someone chasing them for revenge.',
+    'A rival trained by the same master.'
   ],
 
   backstoryGoals: [
-    'Restore honor to their family',
-    'Master their bending beyond limits',
-    'Find a lost loved one',
-    'Prevent a war',
-    'Discover their true heritage',
-    'Become the strongest fighter',
-    'Protect their nation',
-    'Seek redemption for past failures',
-    'Bridge two warring nations',
-    'Unlock a forbidden technique',
-    'Prove their worth to skeptics',
-    'Escape a dark past'
+    'Restore honor to their family.',
+    'Master their bending beyond known limits.',
+    'Find a lost loved one.',
+    'Prevent a war before it starts.',
+    'Discover their true heritage.',
+    'Become the strongest fighter alive.',
+    'Protect their nation at any cost.',
+    'Seek redemption for past failures.',
+    'Bridge two warring nations.',
+    'Unlock a forbidden technique.',
+    'Prove their worth to skeptics.',
+    'Escape a dark past.'
   ],
 
   backstorySecrets: [
-    'They\'re secretly from an enemy nation',
-    'Their mentor was their enemy',
-    'They caused a tragedy they hide',
-    'They\'re more powerful than they admit',
-    'They don\'t want to be a bender anymore',
-    'They\'re in love with someone forbidden',
-    'They were born of two opposing nations',
-    'They made an oath they regret',
-    'They\'re running from someone dangerous',
-    'They know something that could change everything'
+    'They\'re secretly from an enemy nation.',
+    'Their mentor was their enemy in disguise.',
+    'They caused a tragedy they\'ve hidden ever since.',
+    'They\'re more powerful than they admit.',
+    'They no longer want to be a bender.',
+    'They\'re in love with someone forbidden.',
+    'They were born of two opposing nations.',
+    'They made an oath they deeply regret.',
+    'They\'re running from someone very dangerous.',
+    'They know something that could change everything.'
   ]
 };
 
@@ -167,327 +176,362 @@ const RANDOMIZE_DATA = {
 // ════════════════════════════════════════════════════════════════════════════
 
 const SPECIALTIES = {
-  'water': ['Healing', 'Bloodbending', 'Waterbending', 'Ice Armor', 'Swamp Bending'],
-  'earth': ['Earthbending', 'Metalbending', 'Lavabending', 'Seismic Sensing', 'Sand Bending'],
-  'fire': ['Firebending', 'Lightning', 'Blue Fire', 'Flight (with airship)', 'Combustion'],
-  'air': ['Airbending', 'Spiritual Connection', 'Air Scooter', 'Spiraling Motion', 'Defense'],
-  'spirit': ['Spirit Projection', 'Spirit Manipulation', 'Spiritual Healing', 'Astral Walking']
+  water:   ['Healing','Bloodbending','Ice Armor','Swamp Bending','Steam Redirection'],
+  earth:   ['Metalbending','Lavabending','Seismic Sensing','Sand Bending','Crystal Bending'],
+  fire:    ['Lightning','Blue Fire','Combustion','Breath of Fire','Redirection'],
+  air:     ['Spiritual Connection','Air Scooter','Spiraling Motion','Sound Manipulation','Flight'],
+  spirit:  ['Spirit Projection','Spirit Manipulation','Spiritual Healing','Astral Walking','Energybending']
 };
 
 // ════════════════════════════════════════════════════════════════════════════
-// CORE RANDOMIZE FUNCTION
-// ════════════════════════════════════════════════════════════════════════════
-
-function randomizeCharacter() {
-  // Text inputs
-  randomizeTextField('cc-given-name', RANDOMIZE_DATA.givenNames.generic);
-  randomizeTextField('cc-nick-name', RANDOMIZE_DATA.nicknames);
-  randomizeTextField('cc-height', RANDOMIZE_DATA.heights);
-  randomizeTextField('cc-weight', RANDOMIZE_DATA.weights);
-  randomizeTextField('cc-eyes', RANDOMIZE_DATA.eyeColors);
-  randomizeTextField('cc-hair', RANDOMIZE_DATA.hairColors);
-  randomizeTextField('cc-skin', RANDOMIZE_DATA.skinTones);
-  randomizeTextField('cc-appearance-notes', RANDOMIZE_DATA.appearanceDetails, 2);
-
-  // Pill selections (single-select)
-  randomizePillSelect('cc-bending-group', ['water', 'earth', 'fire', 'air', 'spirit', 'non-bender']);
-  const selectedBending = document.querySelector('#cc-bending-group .cc-pill.selected')?.dataset.val;
-  
-  // Update specialties based on bending
-  if (selectedBending && SPECIALTIES[selectedBending]) {
-    updateSpecialtyOptions(selectedBending);
-    randomizePillSelect('cc-specialty-group', SPECIALTIES[selectedBending].map(s => s.toLowerCase()));
-  }
-
-  randomizePillSelect('cc-mastery-group', ['novice', 'adept', 'master', 'grandmaster']);
-  randomizePillSelect('cc-temperament-group', ['aggressive', 'defensive', 'tactical', 'passive', 'chaotic', 'disciplined']);
-  randomizePillSelect('cc-lifepath-group', ['open-palm', 'closed-fist']);
-  randomizePillSelect('cc-range-group', ['close', 'mid', 'long', 'support', 'control']);
-  randomizePillSelect('cc-build-group', ['lean', 'muscular', 'stocky', 'slender']);
-
-  // Quickstrike traits (single-select for each)
-  randomizePillSelect('cc-strike-group', ['bull', 'fox', 'lion']);
-  randomizePillSelect('cc-advantage-group', ['mind', 'body', 'spirit']);
-  randomizePillSelect('cc-ally-group', ['light', 'shadow', 'dark']);
-
-  // Pet selection
-  randomizePillSelect('cc-pet-cat-group', ['none', 'standard', 'hybrid', 'mount', 'spirit']);
-  const petCat = document.querySelector('#cc-pet-cat-group .cc-pill.selected')?.dataset.val;
-  if (petCat && petCat !== 'none') {
-    const petSelect = document.getElementById('cc-pet-select');
-    const options = Array.from(petSelect.options).slice(1); // Skip default
-    if (options.length > 0) {
-      const randomPet = options[Math.floor(Math.random() * options.length)];
-      petSelect.value = randomPet.value;
-    }
-    randomizePillSelect('cc-bond-group', ['wild', 'trained', 'loyal', 'spirit-bound']);
-  }
-
-  // Multi-select flaws (random 1-3)
-  const flawCount = Math.floor(Math.random() * 3) + 1;
-  randomizeMultiSelect('cc-flaws-group', flawCount);
-
-  // Backstory elements
-  randomizeTextField('cc-bs-nation', ['Fire Nation', 'Earth Kingdom', 'Water Tribe (Northern)', 'Water Tribe (Southern)', 'Air Nomads', 'Spirit World', 'United Republic / Republic City', 'Unknown / Stateless']);
-  randomizeTextField('cc-bs-training', RANDOMIZE_DATA.backstoryMentors);
-  randomizeTextField('cc-bs-trauma', RANDOMIZE_DATA.backstoryTraumas);
-  randomizeTextField('cc-bs-mentor', RANDOMIZE_DATA.backstoryMentors);
-  randomizeTextField('cc-bs-rival', RANDOMIZE_DATA.backstoryRivals);
-  randomizeTextField('cc-bs-goal', RANDOMIZE_DATA.backstoryGoals);
-  randomizeTextField('cc-bs-secret', RANDOMIZE_DATA.backstorySecrets);
-  randomizePillSelect('cc-bs-tone-group', ['hopeful', 'dark', 'epic', 'political', 'tragic']);
-
-  // Sliders - Personality traits
-  randomizeSliders('cc-personality-sliders');
-
-  // Sliders - Physical traits
-  randomizeSliders('cc-physical-sliders');
-
-  // Sliders - Mental traits
-  randomizeSliders('cc-mental-sliders');
-
-  // Show success toast
-  showToast('✦ Character randomized!');
-}
-
-// ════════════════════════════════════════════════════════════════════════════
-// HELPER FUNCTIONS
+// PILL HELPERS
 // ════════════════════════════════════════════════════════════════════════════
 
 /**
- * Randomize a text input or select dropdown
+ * Set exactly one pill as selected by value, WITHOUT dispatching synthetic
+ * click events (which trigger app-level side-effect handlers).
+ * Returns the matched pill element or null.
  */
-function randomizeTextField(fieldId, dataArray, count = 1) {
-  const field = document.getElementById(fieldId);
-  if (!field) return;
-
-  if (field.tagName === 'SELECT') {
-    // Dropdown
-    const options = Array.from(field.options).slice(1); // Skip default
-    if (options.length > 0) {
-      const random = options[Math.floor(Math.random() * options.length)];
-      field.value = random.value;
-    }
-  } else if (field.tagName === 'TEXTAREA') {
-    // Textarea - join multiple items
-    const selected = [];
-    for (let i = 0; i < count; i++) {
-      selected.push(dataArray[Math.floor(Math.random() * dataArray.length)]);
-    }
-    field.value = selected.join('. ') + (count > 1 ? '.' : '');
-  } else {
-    // Text input
-    field.value = dataArray[Math.floor(Math.random() * dataArray.length)];
-  }
-}
-
-/**
- * Randomize pill selection (single-select)
- */
-function randomizePillSelect(groupId, options) {
+function setPill(groupId, value) {
   const group = document.getElementById(groupId);
-  if (!group) return;
-
+  if (!group) return null;
   const pills = group.querySelectorAll('.cc-pill');
-  
-  // Clear all selections
-  pills.forEach(pill => pill.classList.remove('selected'));
-
-  // Select random pill
-  if (options.length > 0) {
-    const randomOption = options[Math.floor(Math.random() * options.length)];
-    const targetPill = Array.from(pills).find(pill => pill.dataset.val === randomOption);
-    if (targetPill) {
-      targetPill.classList.add('selected');
-      // Trigger change event for dependent updates
-      targetPill.dispatchEvent(new Event('click', { bubbles: true }));
-    }
-  }
+  let matched = null;
+  pills.forEach(pill => {
+    const active = pill.dataset.val === value;
+    pill.classList.toggle('selected', active);
+    if (active) matched = pill;
+  });
+  return matched;
 }
 
 /**
- * Randomize multi-select (flaws)
+ * Pick a random value from options, set the pill, return the chosen value.
  */
-function randomizeMultiSelect(groupId, count) {
+function randomPill(groupId, options) {
+  if (!options || !options.length) return null;
+  const value = options[Math.floor(Math.random() * options.length)];
+  setPill(groupId, value);
+  return value;
+}
+
+/**
+ * Toggle N randomly-chosen pills on inside a group (multi-select).
+ * Works on any .cc-pill inside the group regardless of data attributes.
+ */
+function randomMultiPills(groupId, count) {
   const group = document.getElementById(groupId);
   if (!group) return;
-
-  const pills = Array.from(group.querySelectorAll('.cc-pill[data-multi="1"]'));
-  
-  // Clear all selections
-  pills.forEach(pill => pill.classList.remove('selected'));
-
-  // Shuffle and select N items
+  const pills = Array.from(group.querySelectorAll('.cc-pill'));
+  pills.forEach(p => p.classList.remove('selected'));
   const shuffled = pills.sort(() => Math.random() - 0.5);
-  const toSelect = shuffled.slice(0, Math.min(count, shuffled.length));
-  toSelect.forEach(pill => pill.classList.add('selected'));
+  shuffled.slice(0, Math.min(count, shuffled.length))
+          .forEach(p => p.classList.add('selected'));
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// FIELD HELPERS
+// ════════════════════════════════════════════════════════════════════════════
+
+function pick(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function setField(id, value) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.value = value;
+  // Notify any listeners that track the field
+  el.dispatchEvent(new Event('input', { bubbles: true }));
+  el.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
+function setSelectRandom(id) {
+  const el = document.getElementById(id);
+  if (!el) return null;
+  const options = Array.from(el.options).filter(o => o.value);
+  if (!options.length) return null;
+  const chosen = pick(options);
+  el.value = chosen.value;
+  el.dispatchEvent(new Event('change', { bubbles: true }));
+  return chosen.value;
 }
 
 /**
- * Update specialty options based on selected bending
- */
-function updateSpecialtyOptions(bending) {
-  const group = document.getElementById('cc-specialty-group');
-  if (!group) return;
-
-  const specialties = SPECIALTIES[bending] || [];
-  
-  // Clear existing pills
-  group.innerHTML = '';
-
-  // Add new specialty pills
-  specialties.forEach(specialty => {
-    const pill = document.createElement('div');
-    pill.className = 'cc-pill generic';
-    pill.dataset.group = 'specialty';
-    pill.dataset.val = specialty.toLowerCase();
-    pill.textContent = specialty;
-    group.appendChild(pill);
-  });
-
-  // Re-initialize pill click handlers if needed
-  initializePillHandlers();
-}
-
-/**
- * Randomize all sliders in a container
+ * Randomize all range sliders inside a container and fire `input` so
+ * any linked display labels (e.g. <output> or a sibling span) update.
  */
 function randomizeSliders(containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
-
-  const sliders = container.querySelectorAll('input[type="range"]');
-  sliders.forEach(slider => {
-    // Random value within range
+  container.querySelectorAll('input[type="range"]').forEach(slider => {
     const min = parseInt(slider.min) || 0;
     const max = parseInt(slider.max) || 100;
     slider.value = Math.floor(Math.random() * (max - min + 1)) + min;
-    
-    // Update display if there's a linked output
-    const label = slider.nextElementSibling;
-    if (label && label.classList.contains('slider-value')) {
-      label.textContent = slider.value;
-    }
-  });
-}
-
-/**
- * Show a toast notification
- */
-function showToast(message) {
-  const toast = document.getElementById('cc-toast');
-  if (toast) {
-    toast.textContent = message;
-    toast.style.opacity = '1';
-    toast.style.visibility = 'visible';
-    
-    setTimeout(() => {
-      toast.style.opacity = '0';
-      toast.style.visibility = 'hidden';
-    }, 2000);
-  }
-}
-
-/**
- * Initialize pill click handlers (call this after updating specialties)
- */
-function initializePillHandlers() {
-  document.querySelectorAll('.cc-pill').forEach(pill => {
-    if (!pill.dataset.multi) {
-      // Single-select
-      pill.addEventListener('click', function() {
-        const group = this.parentElement;
-        group.querySelectorAll('.cc-pill').forEach(p => p.classList.remove('selected'));
-        this.classList.add('selected');
-      });
-    } else {
-      // Multi-select
-      pill.addEventListener('click', function() {
-        this.classList.toggle('selected');
-      });
-    }
+    // Fire both events — some UIs listen to `input`, some to `change`
+    slider.dispatchEvent(new Event('input',  { bubbles: true }));
+    slider.dispatchEvent(new Event('change', { bubbles: true }));
   });
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// INITIALIZATION
+// SPECIALTY LIST REBUILD
 // ════════════════════════════════════════════════════════════════════════════
 
-document.addEventListener('DOMContentLoaded', function() {
-  const randomBtn = document.getElementById('cc-random-btn');
-  if (randomBtn) {
-    randomBtn.addEventListener('click', randomizeCharacter);
-  }
-
-  // Initialize pill handlers
-  initializePillHandlers();
-
-  // Specialty update on bending change
-  const bendingGroup = document.getElementById('cc-bending-group');
-  if (bendingGroup) {
-    bendingGroup.addEventListener('click', function(e) {
-      if (e.target.classList.contains('cc-pill')) {
-        const bending = e.target.dataset.val;
-        if (bending && bending !== 'non-bender' && SPECIALTIES[bending]) {
-          updateSpecialtyOptions(bending);
-        }
-      }
+function updateSpecialtyOptions(bending) {
+  const group = document.getElementById('cc-specialty-group');
+  if (!group) return;
+  const specialties = SPECIALTIES[bending] || [];
+  group.innerHTML = '';
+  specialties.forEach(specialty => {
+    const pill = document.createElement('div');
+    pill.className = 'cc-pill generic';
+    pill.dataset.group = 'specialty';
+    pill.dataset.val   = specialty.toLowerCase();
+    pill.textContent   = specialty;
+    group.appendChild(pill);
+  });
+  // Re-attach single-select handlers for the new pills
+  group.querySelectorAll('.cc-pill').forEach(pill => {
+    pill.addEventListener('click', function () {
+      group.querySelectorAll('.cc-pill').forEach(p => p.classList.remove('selected'));
+      this.classList.add('selected');
     });
-  }
-});
+  });
+}
 
 // ════════════════════════════════════════════════════════════════════════════
-// CLEAR FORM FUNCTION
+// BACKSTORY TEMPLATE TOGGLE
+// ════════════════════════════════════════════════════════════════════════════
+
+/**
+ * If the backstory section has a "use template" toggle button / checkbox,
+ * activate it so the template fields become visible before we populate them.
+ */
+function ensureBackstoryTemplateVisible() {
+  // Common patterns: a button with data-toggle, a checkbox, or a pill
+  const toggleBtn = document.querySelector(
+    '#cc-bs-template-toggle, [data-toggle="bs-template"], .cc-bs-template-btn'
+  );
+  if (toggleBtn) {
+    // Only click if it doesn't already appear active
+    if (!toggleBtn.classList.contains('active') && !toggleBtn.checked) {
+      toggleBtn.click();
+    }
+    return;
+  }
+  // Fallback: look for a hidden template section and show it directly
+  const templateSection = document.querySelector(
+    '#cc-bs-template-section, .cc-bs-template-fields'
+  );
+  if (templateSection && templateSection.style.display === 'none') {
+    templateSection.style.display = '';
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// MAIN RANDOMIZE FUNCTION
+// ════════════════════════════════════════════════════════════════════════════
+
+function randomizeCharacter() {
+
+  // ── Identity ──────────────────────────────────────────────────────────────
+  setField('cc-given-name', pick(RANDOMIZE_DATA.givenNames.generic));
+  setField('cc-nick-name',  pick(RANDOMIZE_DATA.nicknames));
+
+  // ── Physical Description ──────────────────────────────────────────────────
+  setField('cc-height', pick(RANDOMIZE_DATA.heights));
+  setField('cc-weight', pick(RANDOMIZE_DATA.weights));
+  setField('cc-eyes',   pick(RANDOMIZE_DATA.eyeColors));
+  setField('cc-hair',   pick(RANDOMIZE_DATA.hairColors));
+  setField('cc-skin',   pick(RANDOMIZE_DATA.skinTones));
+  setField('cc-appearance-notes', pick(RANDOMIZE_DATA.appearanceDetails));
+
+  // Build (pill, no side-effects expected)
+  randomPill('cc-build-group', ['lean', 'muscular', 'stocky', 'slender']);
+
+  // ── Bending & Specialties ─────────────────────────────────────────────────
+  const bending = randomPill(
+    'cc-bending-group',
+    ['water', 'earth', 'fire', 'air', 'spirit', 'non-bender']
+  );
+
+  // Rebuild specialty list to match the chosen bending, then pick one
+  if (bending && bending !== 'non-bender' && SPECIALTIES[bending]) {
+    updateSpecialtyOptions(bending);
+    const specialtyVals = SPECIALTIES[bending].map(s => s.toLowerCase());
+    randomPill('cc-specialty-group', specialtyVals);
+  } else {
+    // Non-bender: clear specialties
+    const group = document.getElementById('cc-specialty-group');
+    if (group) group.innerHTML = '';
+  }
+
+  // ── Combat / Bending Profile ──────────────────────────────────────────────
+  randomPill('cc-mastery-group',     ['novice', 'adept', 'master', 'grandmaster']);
+  randomPill('cc-temperament-group', ['aggressive', 'defensive', 'tactical', 'passive', 'chaotic', 'disciplined']);
+  randomPill('cc-lifepath-group',    ['open-palm', 'closed-fist']);
+  randomPill('cc-range-group',       ['close', 'mid', 'long', 'support', 'control']);
+
+  // ── Quickstrike Traits ────────────────────────────────────────────────────
+  randomPill('cc-strike-group',    ['bull', 'fox', 'lion']);
+  randomPill('cc-advantage-group', ['mind', 'body', 'spirit']);
+  randomPill('cc-ally-group',      ['light', 'shadow', 'dark']);
+
+  // ── Pet — set category pill first, THEN populate dependent fields ─────────
+  // Do NOT dispatch synthetic click events here; just set class directly.
+  const petOptions = ['none', 'standard', 'hybrid', 'mount', 'spirit'];
+  const petCat = randomPill('cc-pet-cat-group', petOptions);
+
+  if (petCat && petCat !== 'none') {
+    // Populate the pet name dropdown (pick any non-empty option)
+    setSelectRandom('cc-pet-select');
+    // Bond pill — set directly, no side-effects
+    randomPill('cc-bond-group', ['wild', 'trained', 'loyal', 'spirit-bound']);
+  } else {
+    // Explicitly reset pet fields when category is "none"
+    const petSelect = document.getElementById('cc-pet-select');
+    if (petSelect) {
+      petSelect.value = '';
+      petSelect.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    setPill('cc-bond-group', null); // deselect all
+  }
+
+  // ── Flaws (multi-select, 1–3 random) ─────────────────────────────────────
+  const flawCount = Math.floor(Math.random() * 3) + 1;
+  randomMultiPills('cc-flaws-group', flawCount);
+
+  // ── Sliders ───────────────────────────────────────────────────────────────
+  randomizeSliders('cc-personality-sliders');
+  randomizeSliders('cc-physical-sliders');
+  randomizeSliders('cc-mental-sliders');
+
+  // ── Backstory ─────────────────────────────────────────────────────────────
+  // Ensure the template section is visible before writing to it
+  ensureBackstoryTemplateVisible();
+
+  setField('cc-bs-nation',    pick(RANDOMIZE_DATA.backstoryNations));
+  setField('cc-bs-training',  pick(RANDOMIZE_DATA.backstoryTraining));
+  setField('cc-bs-trauma',    pick(RANDOMIZE_DATA.backstoryTraumas));
+  setField('cc-bs-mentor',    pick(RANDOMIZE_DATA.backstoryMentors));
+  setField('cc-bs-rival',     pick(RANDOMIZE_DATA.backstoryRivals));
+  setField('cc-bs-goal',      pick(RANDOMIZE_DATA.backstoryGoals));
+  setField('cc-bs-secret',    pick(RANDOMIZE_DATA.backstorySecrets));
+
+  randomPill('cc-bs-tone-group', ['hopeful', 'dark', 'epic', 'political', 'tragic']);
+
+  // ── Done ──────────────────────────────────────────────────────────────────
+  showToast('✦ Character randomized!');
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// CLEAR FORM
 // ════════════════════════════════════════════════════════════════════════════
 
 function clearCharacterForm() {
-  // Text inputs
-  const textInputs = [
-    'cc-given-name', 'cc-nick-name', 'cc-height', 'cc-weight',
-    'cc-eyes', 'cc-hair', 'cc-skin', 'cc-appearance-notes',
-    'cc-backstory-free', 'cc-bs-training', 'cc-bs-trauma',
-    'cc-bs-mentor', 'cc-bs-rival', 'cc-bs-goal', 'cc-bs-secret'
+  const textFields = [
+    'cc-given-name','cc-nick-name','cc-height','cc-weight',
+    'cc-eyes','cc-hair','cc-skin','cc-appearance-notes',
+    'cc-backstory-free','cc-bs-nation','cc-bs-training','cc-bs-trauma',
+    'cc-bs-mentor','cc-bs-rival','cc-bs-goal','cc-bs-secret'
   ];
+  textFields.forEach(id => setField(id, ''));
 
-  textInputs.forEach(id => {
-    const field = document.getElementById(id);
-    if (field) field.value = '';
-  });
+  // Deselect all pills, then restore "none" default for pet category
+  document.querySelectorAll('.cc-pill').forEach(p => p.classList.remove('selected'));
+  setPill('cc-pet-cat-group', 'none');
 
-  // Clear all pills
-  document.querySelectorAll('.cc-pill').forEach(pill => pill.classList.remove('selected'));
-  // Re-select defaults
-  document.querySelector('[data-val="none"]')?.classList.add('selected');
-
-  // Reset sliders
+  // Reset sliders to midpoint
   document.querySelectorAll('input[type="range"]').forEach(slider => {
-    slider.value = slider.defaultValue || 50;
+    slider.value = slider.defaultValue !== undefined ? slider.defaultValue : 50;
+    slider.dispatchEvent(new Event('input',  { bubbles: true }));
+    slider.dispatchEvent(new Event('change', { bubbles: true }));
   });
 
-  // Clear image
-  const imgPreview = document.getElementById('cc-img-preview');
+  // Reset image
+  const imgPreview     = document.getElementById('cc-img-preview');
   const imgPlaceholder = document.getElementById('cc-img-placeholder');
-  const imgClearBtn = document.getElementById('cc-img-clear');
-  if (imgPreview) {
-    imgPreview.src = '';
-    imgPreview.style.display = 'none';
-  }
+  const imgClearBtn    = document.getElementById('cc-img-clear');
+  if (imgPreview)     { imgPreview.src = ''; imgPreview.style.display = 'none'; }
   if (imgPlaceholder) imgPlaceholder.style.display = 'flex';
-  if (imgClearBtn) imgClearBtn.disabled = true;
+  if (imgClearBtn)    imgClearBtn.disabled = true;
 
-  // Reset dropdowns
-  ['cc-pet-select', 'cc-bs-nation'].forEach(id => {
-    const field = document.getElementById(id);
-    if (field) field.value = '';
-  });
+  // Reset pet dropdown
+  const petSelect = document.getElementById('cc-pet-select');
+  if (petSelect) {
+    petSelect.value = '';
+    petSelect.dispatchEvent(new Event('change', { bubbles: true }));
+  }
 
   showToast('Form cleared');
 }
 
-// Hook up clear button
-document.addEventListener('DOMContentLoaded', function() {
+// ════════════════════════════════════════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════════════════════════════════════════
+
+function showToast(message) {
+  const toast = document.getElementById('cc-toast');
+  if (!toast) return;
+  toast.textContent = message;
+  toast.style.opacity    = '1';
+  toast.style.visibility = 'visible';
+  clearTimeout(toast._hideTimer);
+  toast._hideTimer = setTimeout(() => {
+    toast.style.opacity    = '0';
+    toast.style.visibility = 'hidden';
+  }, 2200);
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// PILL CLICK HANDLERS (initial setup + re-init for dynamic pills)
+// ════════════════════════════════════════════════════════════════════════════
+
+function initializePillHandlers() {
+  document.querySelectorAll('.cc-pill').forEach(pill => {
+    // Guard: don't double-bind
+    if (pill.dataset.handlerBound) return;
+    pill.dataset.handlerBound = '1';
+
+    if (pill.dataset.multi) {
+      pill.addEventListener('click', function () {
+        this.classList.toggle('selected');
+      });
+    } else {
+      pill.addEventListener('click', function () {
+        const group = this.closest('[id]') || this.parentElement;
+        group.querySelectorAll('.cc-pill').forEach(p => p.classList.remove('selected'));
+        this.classList.add('selected');
+      });
+    }
+  });
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Wire buttons
+  const randomBtn = document.getElementById('cc-random-btn');
+  if (randomBtn) randomBtn.addEventListener('click', randomizeCharacter);
+
   const clearBtn = document.getElementById('cc-clear-btn');
-  if (clearBtn) {
-    clearBtn.addEventListener('click', clearCharacterForm);
+  if (clearBtn) clearBtn.addEventListener('click', clearCharacterForm);
+
+  initializePillHandlers();
+
+  // Rebuild specialty list when the user manually changes bending
+  const bendingGroup = document.getElementById('cc-bending-group');
+  if (bendingGroup) {
+    bendingGroup.addEventListener('click', function (e) {
+      const pill = e.target.closest('.cc-pill');
+      if (!pill) return;
+      const bending = pill.dataset.val;
+      if (bending && bending !== 'non-bender' && SPECIALTIES[bending]) {
+        updateSpecialtyOptions(bending);
+      }
+    });
   }
 });
