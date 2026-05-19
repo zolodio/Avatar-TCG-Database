@@ -7961,6 +7961,16 @@ function collectFormState(){
   state.bsSecret  = document.getElementById('cc-bs-secret').value;
   var genArea = document.getElementById('cc-backstory-generated');
   if(genArea && genArea.value) state.backstoryFree = genArea.value;
+
+  /* Sync pill-driven fields whose data-group names differ from state keys */
+  var petCatPill = document.querySelector('.cc-pill[data-group="petcat"].selected');
+  state.petCat = petCatPill ? petCatPill.dataset.val : 'none';
+  var petSel = document.getElementById('cc-pet-select');
+  state.pet  = (petSel && state.petCat !== 'none') ? (petSel.value || '') : '';
+  var bondPill = document.querySelector('.cc-pill[data-group="bond"].selected');
+  state.bond = bondPill ? bondPill.dataset.val : '';
+  var bsTonePill = document.querySelector('.cc-pill[data-group="bstone"].selected');
+  state.bsTone = bsTonePill ? bsTonePill.dataset.val : '';
 }
  
 function saveCharacter(){
