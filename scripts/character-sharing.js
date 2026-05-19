@@ -232,89 +232,109 @@
     var container = document.getElementById('cc-shared-list');
     if (!container) { console.warn('[charShare] #cc-shared-list not found'); return; }
 
-    // Show loading state
+    // Loading spinner
     container.innerHTML =
-      '<div class="cc-shared-loading" style="text-align:center;padding:32px 16px;' +
-      'color:rgba(255,255,255,0.35);font-size:0.82rem;">Loading shared characters…</div>';
+      '<div style="text-align:center;padding:30px;color:var(--text-muted);font-size:0.82rem;">' +
+      '<i class="fas fa-circle-notch fa-spin" style="font-size:1.5rem;display:block;margin-bottom:10px;"></i>' +
+      'Loading shared characters…</div>';
 
     if (!sb()) {
       container.innerHTML =
-        '<div class="cc-shared-empty" style="text-align:center;padding:32px 16px;' +
-        'color:rgba(255,255,255,0.35);font-size:0.82rem;">Sign in to see shared characters.</div>';
+        '<div style="text-align:center;padding:40px 0;color:var(--text-muted);font-size:0.82rem;">' +
+        '<i class="fas fa-lock" style="font-size:2rem;opacity:0.25;display:block;margin-bottom:10px;"></i>' +
+        'Sign in to see what your community is sharing.</div>';
       return;
     }
 
-    var res = await sb()
-      .from(SB_TABLE)
-      .select('id, user_id, data, updated_at')
-      .order('updated_at', { ascending: false });
+    try {
+      // Exclude the signed-in user's own rows so they only see others' characters
+      var uid = await getUserId();
+      var query = sb()
+        .from(SB_TABLE)
+        .select('id, user_id, data, updated_at')
+        .order('updated_at', { ascending: false })
+        .limit(60);
+      if (uid) query = query.neq('user_id', uid);
 
-    if (res.error) {
-      console.warn('[charShare] loadFriendsShared error', res.error);
-      container.innerHTML =
-        '<div class="cc-shared-empty" style="text-align:center;padding:32px 16px;' +
-        'color:rgba(255,255,255,0.35);font-size:0.82rem;">Could not load shared characters.</div>';
-      return;
-    }
+      var res = await query;
+      if (res.error) throw res.error;
 
-    var rows = res.data || [];
+      var rows = res.data || [];
 
-    if (!rows.length) {
-      container.innerHTML =
-        '<div class="cc-shared-empty" style="text-align:center;padding:40px 16px;' +
-        'color:rgba(255,255,255,0.3);font-size:0.85rem;line-height:1.7;">' +
-        '✨ No characters have been shared yet.<br>Be the first to share one!</div>';
-      return;
-    }
+      if (!rows.length) {
+        container.innerHTML =
+          '<div style="text-align:center;padding:40px 0;color:var(--text-muted);font-size:0.82rem;">' +
+          '<i class="fas fa-share-alt" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:10px;"></i>' +
+          'No shared characters yet — be the first to share one!</div>';
+        return;
+      }
 
-    // Populate the global cache that character-modal.js uses as fallback (pattern b)
-    window._sharedCharCache = window._sharedCharCache || {};
+      // Populate the global cache that character-modal.js uses as fallback (pattern b)
+      window._sharedCharCache = window._sharedCharCache || {};
 
-    var html = '';
-    rows.forEach(function (row) {
-      var char = row.data || {};
-      var id   = String(row.id || char.id || '');
+      container.innerHTML = rows.map(function (row) {
+        var char = row.data || {};
+        var id   = String(row.id || char.id || '');
 
-      // Register in cache
-      if (id) window._sharedCharCache[id] = char;
+        // Register in cache for modal's pattern-b lookup
+        if (id) window._sharedCharCache[id] = char;
 
-      var el   = char.element || 'non-bender';
-      var emoji = getElementEmoji(el);
-      var name = esc((char.givenName || '') + (char.familyName ? ' ' + char.familyName : '') || 'Unnamed');
-      var nick = char.nickname ? esc('"' + char.nickname + '"') : '';
-      var mastery = esc(char.mastery || '');
+        // Portrait: real image if saved, otherwise element emoji avatar
+        var imgHtml = char.imageData
+          ? '<img src="data:' + char.imageMime + ';base64,' + char.imageData + '"' +
+            ' alt="' + esc(char.givenName) + '"' +
+            ' style="width:44px;height:44px;border-radius:8px;object-fit:cover;' +
+            'border:1px solid var(--border);flex-shrink:0;">'
+          : '<div class="cc-char-avatar">' + getElementEmoji(char.bending) + '</div>';
 
-      // Embed the full character JSON on the card (pattern a for hookSharedList)
-      // and on the View button for our own handler — JSON-encode once, escape for HTML attr.
-      var charJson = esc(JSON.stringify(char));
+        // Sub-line: bending · strike · advantage · ally
+        var bend = char.bending
+          ? (char.bending.charAt(0).toUpperCase() + char.bending.slice(1))
+          : 'Non-Bender';
+        var sub = [bend, char.strike || '', char.advantage || '', char.ally || '']
+          .filter(Boolean).join(' · ');
 
-      html +=
-        '<div class="cc-char-card" data-id="' + esc(id) + '" data-char="' + charJson + '">' +
-          '<div class="cc-char-card-inner">' +
-            '<div class="cc-char-avatar">' + emoji + '</div>' +
-            '<div class="cc-char-info">' +
-              '<div class="cc-char-name">' + name + '</div>' +
-              (nick ? '<div class="cc-char-nick">' + nick + '</div>' : '') +
-              '<div class="cc-char-meta">' +
-                '<span class="cc-char-element cc-el-' + esc(el) + '">' + emoji + ' ' + esc(el) + '</span>' +
-                (mastery ? '<span class="cc-char-mastery"> · ' + mastery + '</span>' : '') +
-              '</div>' +
+        var masteryBadge = char.mastery
+          ? '<span style="display:inline-block;margin-left:6px;padding:1px 7px;border-radius:99px;' +
+            'font-size:0.58rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;' +
+            'border:1px solid var(--border);color:var(--text-muted);">' +
+            esc(char.mastery) + '</span>'
+          : '';
+
+        // Embed char JSON on card (pattern a) and on the View button for our delegated handler
+        var charJson = JSON.stringify(char).replace(/'/g, '&#39;');
+
+        return '<div class="cc-char-card" data-id="' + esc(id) + '" data-char=\'' + charJson + '\' style="cursor:default;">' +
+          imgHtml +
+          '<div class="cc-char-info">' +
+            '<div class="cc-char-name">' +
+              esc(char.givenName || 'Unnamed') +
+              (char.nickName ? ' <span style="color:var(--text-muted);font-weight:400;font-size:0.72rem;">"' + esc(char.nickName) + '"</span>' : '') +
+              masteryBadge +
             '</div>' +
-            '<div class="cc-char-actions">' +
-              '<button ' +
-                'class="cc-char-action view-shared-char-btn" ' +
-                'data-id="' + esc(id) + '" ' +
-                'data-char="' + charJson + '" ' +
-                'title="View character details">' +
-                '<i class="fas fa-eye"></i> View' +
-              '</button>' +
-            '</div>' +
+            '<div class="cc-char-sub">' + esc(sub) + '</div>' +
+          '</div>' +
+          '<div class="cc-char-actions">' +
+            '<button ' +
+              'class="cc-char-action view-shared-char-btn" ' +
+              'data-id="' + esc(id) + '" ' +
+              'data-char=\'' + charJson + '\' ' +
+              'title="View character details" ' +
+              'style="color:var(--zen);border-color:rgba(180,77,223,0.35);">' +
+              '<i class="fas fa-eye"></i> View' +
+            '</button>' +
           '</div>' +
         '</div>';
-    });
+      }).join('');
 
-    container.innerHTML = html;
-    console.log('[charShare] loadFriendsShared rendered', rows.length, 'character(s)');
+      console.log('[charShare] loadFriendsShared rendered', rows.length, 'character(s)');
+
+    } catch (err) {
+      console.warn('[charShare] loadFriendsShared error', err);
+      container.innerHTML =
+        '<div style="text-align:center;padding:40px 0;color:var(--text-muted);">' +
+        'Could not load shared characters.</div>';
+    }
   }
 
   /* ══════════════════════════════════════════════════════════════════
