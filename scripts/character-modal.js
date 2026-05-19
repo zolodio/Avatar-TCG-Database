@@ -556,13 +556,14 @@
     }
 
     // Companion
-    if (char.pet && char.petCat && char.petCat !== 'none') {
+    var petCat = char.petCat || char.petcat || 'none';
+    if (char.pet && petCat !== 'none') {
       html += sectionLabel('🐾', 'Companion');
       html += '<div class="cdm-block" style="display:flex;align-items:center;gap:14px;">' +
         '<div style="width:52px;height:52px;border-radius:14px;background:rgba(232,182,50,0.15);border:1px solid rgba(232,182,50,0.3);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;">🐾</div>' +
         '<div>' +
           '<div style="font-weight:800;font-size:0.95rem;color:#fff;">' + esc(char.pet) + '</div>' +
-          '<div style="font-size:0.7rem;color:rgba(255,255,255,0.4);margin-top:3px;">' + cap(char.petCat) + (char.bond ? ' · Bond: ' + cap(char.bond) : '') + '</div>' +
+          '<div style="font-size:0.7rem;color:rgba(255,255,255,0.4);margin-top:3px;">' + cap(petCat) + (char.bond ? ' · Bond: ' + cap(char.bond) : '') + '</div>' +
         '</div>' +
       '</div>';
     }
@@ -767,6 +768,15 @@
       });
     }
 
+    // Narrative tone badge (bsTone)
+    var tone = char.bsTone || char.bstone || '';
+    if (tone) {
+      var toneColors = { hopeful:'#3db86c', dark:'#8b5cf6', epic:'#e8532e', political:'#2e8ce8', tragic:'#e04848' };
+      var tc = toneColors[tone] || 'rgba(255,255,255,0.5)';
+      html += sectionLabel('🎭', 'Narrative Tone');
+      html += '<div class="cdm-tags"><span class="cdm-chip" style="color:' + tc + ';background:' + tc + '1a;border-color:' + tc + '44;">' + cap(tone) + '</span></div>';
+    }
+
     if (!html) html = emptyState('No backstory written yet. Use the Create tab to add one.');
     document.getElementById('cdm-panel-backstory').innerHTML = html;
   }
@@ -864,6 +874,25 @@
   function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
   function avg(arr) { return arr.reduce(function(a,b){return a+b;},0) / arr.length; }
 
+  /* ══════════════════════════════════════════════════════════════════
+     NORMALIZE — backfill fields saved under the wrong key name
+  ══════════════════════════════════════════════════════════════════ */
+  function normalizeChar(char) {
+    var c = Object.assign({}, char); // shallow clone — don't mutate the stored object
+    // petCat vs petcat: HTML pill uses data-group="petcat" (lowercase) so older saves
+    // may have written c.petcat instead of c.petCat (camelCase).
+    if ((!c.petCat || c.petCat === 'none') && c.petcat && c.petcat !== 'none') {
+      c.petCat = c.petcat;
+    }
+    // bsTone vs bstone: same pattern with the backstory-tone pill.
+    if (!c.bsTone && c.bstone) {
+      c.bsTone = c.bstone;
+    }
+    // bond: ensure it's a string
+    if (c.bond == null) c.bond = '';
+    return c;
+  }
+
   function getChars() {
     try { return JSON.parse(localStorage.getItem('aqst_characters')||'[]'); } catch(e) { return []; }
   }
@@ -881,7 +910,7 @@
       if (!card) return;
       var id   = card.dataset.id;
       var char = getChars().find(function(c){ return String(c.id) === String(id); });
-      if (char) openModal(char);
+      if (char) openModal(normalizeChar(char));
     });
 
     // Also watch for Supabase-pulled characters synced after page load
