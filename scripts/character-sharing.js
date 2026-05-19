@@ -2,6 +2,10 @@
 // Adds a Share button to each "My Characters" roster card.
 // Shared characters are stored in the `shared_characters` Supabase table
 // and displayed in the "Friends' Shared" tab and in the friend profile modal.
+//
+// NEW: loadFriendsShared() fetches all shared characters from Supabase and
+//      renders them in #cc-shared-list. Each card gets a "View" button that
+//      opens the character detail modal (character-modal.js) for that character.
 
 (function () {
   'use strict';
@@ -178,130 +182,171 @@
   });
 
   /* ══════════════════════════════════════════════════════════════════
-     FRIENDS' SHARED PANEL (#cc-shared-list)
+     VIEW BUTTON — delegated handler for #cc-shared-list "View" buttons.
+     Reads the character JSON stored on the button's data-char attribute
+     and calls the modal API exposed by character-modal.js.
+     (The modal's own hookSharedList also handles card-body clicks via
+      data-char / window._sharedCharCache, so both paths work.)
   ══════════════════════════════════════════════════════════════════ */
 
-  async function loadFriendsShared() {
-    var list = document.getElementById('cc-shared-list');
-    if (!list) return;
-
-    if (!sb()) {
-      list.innerHTML =
-        '<div style="text-align:center;padding:40px 0;color:var(--text-muted);font-size:0.82rem;">' +
-        '<i class="fas fa-lock" style="font-size:2rem;opacity:0.25;display:block;margin-bottom:10px;"></i>' +
-        'Sign in to see what your community is sharing.</div>';
-      return;
-    }
-
-    list.innerHTML =
-      '<div style="text-align:center;padding:30px;color:var(--text-muted);font-size:0.82rem;">' +
-      '<i class="fas fa-circle-notch fa-spin" style="font-size:1.5rem;display:block;margin-bottom:10px;"></i>' +
-      'Loading shared characters…</div>';
-
-    try {
-      var uid = await getUserId();
-      var query = sb().from(SB_TABLE)
-        .select('data, user_id, updated_at')
-        .order('updated_at', { ascending: false })
-        .limit(60);
-
-      if (uid) query = query.neq('user_id', uid); // don't show own shared chars here
-
-      var res = await query;
-      if (res.error) throw res.error;
-
-      if (!res.data || !res.data.length) {
-        list.innerHTML =
-          '<div style="text-align:center;padding:40px 0;color:var(--text-muted);font-size:0.82rem;">' +
-          '<i class="fas fa-share-alt" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:10px;"></i>' +
-          'No shared characters yet — be the first to share one!</div>';
-        return;
-      }
-
-      list.innerHTML = res.data.map(function (row) {
-        var char = row.data || {};
-        var imgHtml = char.imageData
-          ? '<img src="data:' + char.imageMime + ';base64,' + char.imageData + '"' +
-            ' alt="' + esc(char.givenName) + '"' +
-            ' style="width:44px;height:44px;border-radius:8px;object-fit:cover;border:1px solid var(--border);flex-shrink:0;">'
-          : '<div class="cc-char-avatar">' + getElementEmoji(char.bending) + '</div>';
-
-        var bend = char.bending
-          ? (char.bending.charAt(0).toUpperCase() + char.bending.slice(1))
-          : 'Non-Bender';
-        var sub = [bend, char.strike || '', char.advantage || '', char.ally || ''].filter(Boolean).join(' · ');
-        var masteryBadge = char.mastery
-          ? '<span style="display:inline-block;margin-left:6px;padding:1px 7px;border-radius:99px;font-size:0.58rem;font-weight:700;' +
-            'text-transform:uppercase;letter-spacing:0.06em;border:1px solid var(--border);color:var(--text-muted);">' +
-            esc(char.mastery) + '</span>'
-          : '';
-
-        return '<div class="cc-char-card" style="cursor:default;">' +
-          imgHtml +
-          '<div class="cc-char-info">' +
-            '<div class="cc-char-name">' +
-              esc(char.givenName || 'Unnamed') +
-              (char.nickName ? ' <span style="color:var(--text-muted);font-weight:400;font-size:0.72rem;">"' + esc(char.nickName) + '"</span>' : '') +
-              masteryBadge +
-            '</div>' +
-            '<div class="cc-char-sub">' + esc(sub) + '</div>' +
-          '</div>' +
-          '<div class="cc-char-actions">' +
-            '<button class="cc-char-action" ' +
-              'data-view-shared-char="1" ' +
-              'data-shared-uid="' + esc(String(row.user_id)) + '" ' +
-              'data-shared-char=\'' + JSON.stringify(char).replace(/'/g, '&#39;') + '\' ' +
-              'style="color:var(--zen);border-color:rgba(180,77,223,0.35);">' +
-              '<i class="fas fa-eye"></i> View' +
-            '</button>' +
-          '</div>' +
-        '</div>';
-      }).join('');
-
-    } catch (err) {
-      console.warn('[charShare] loadFriendsShared error', err);
-      list.innerHTML =
-        '<div style="text-align:center;padding:40px 0;color:var(--text-muted);">Could not load shared characters.</div>';
-    }
-  }
-
-  /* ── Wire tab click to load ────────────────────────────────────── */
   document.addEventListener('click', function (e) {
-    if (e.target.closest('[data-cctab="friends-shared"]')) {
-      setTimeout(loadFriendsShared, 100);
-    }
-  });
-
-  /* ── "View" button on shared character cards → friend modal ─────── */
-  document.addEventListener('click', function (e) {
-    var btn = e.target.closest('[data-view-shared-char]');
+    var btn = e.target.closest('.view-shared-char-btn');
     if (!btn) return;
     e.stopPropagation();
 
-    try {
-      var char = JSON.parse(btn.dataset.sharedChar || '{}');
-      var uid  = btn.dataset.sharedUid;
-      if (typeof window.viewFriendCharacters === 'function') {
-        window.viewFriendCharacters(uid, char);
-      } else {
-        // Fallback: show basic info in an alert if modal not available
-        console.log('[charShare] viewFriendCharacters not available yet', char);
-      }
-    } catch (err) {
-      console.warn('[charShare] view shared char parse error', err);
+    var char = null;
+
+    // Primary: JSON embedded on the button itself
+    if (btn.dataset.char) {
+      try { char = JSON.parse(btn.dataset.char); } catch (err) { char = null; }
+    }
+
+    // Fallback: look up the cache by id (populated by loadFriendsShared)
+    if (!char && btn.dataset.id && window._sharedCharCache) {
+      char = window._sharedCharCache[btn.dataset.id] || null;
+    }
+
+    if (!char) { console.warn('[charShare] View: could not resolve character data'); return; }
+
+    if (typeof window.openCharDetailModal === 'function') {
+      window.openCharDetailModal(char);
+    } else {
+      console.warn('[charShare] window.openCharDetailModal not available — is character-modal.js loaded?');
     }
   });
 
   /* ══════════════════════════════════════════════════════════════════
-     CSS — share button hover state (injected once)
+     LOAD FRIENDS' SHARED — fetches all rows from `shared_characters`
+     and renders them into #cc-shared-list.
+
+     Each card:
+       • has data-id and data-char (full JSON) for character-modal.js hooks
+       • registers the character in window._sharedCharCache
+       • gets a "View" button (.view-shared-char-btn) that opens the modal
+
+     Call this when the "Friends' Shared" tab becomes active, e.g.:
+       window.charSharing.loadFriendsShared();
+  ══════════════════════════════════════════════════════════════════ */
+
+  async function loadFriendsShared() {
+    var container = document.getElementById('cc-shared-list');
+    if (!container) { console.warn('[charShare] #cc-shared-list not found'); return; }
+
+    // Show loading state
+    container.innerHTML =
+      '<div class="cc-shared-loading" style="text-align:center;padding:32px 16px;' +
+      'color:rgba(255,255,255,0.35);font-size:0.82rem;">Loading shared characters…</div>';
+
+    if (!sb()) {
+      container.innerHTML =
+        '<div class="cc-shared-empty" style="text-align:center;padding:32px 16px;' +
+        'color:rgba(255,255,255,0.35);font-size:0.82rem;">Sign in to see shared characters.</div>';
+      return;
+    }
+
+    var res = await sb()
+      .from(SB_TABLE)
+      .select('id, user_id, data, updated_at')
+      .order('updated_at', { ascending: false });
+
+    if (res.error) {
+      console.warn('[charShare] loadFriendsShared error', res.error);
+      container.innerHTML =
+        '<div class="cc-shared-empty" style="text-align:center;padding:32px 16px;' +
+        'color:rgba(255,255,255,0.35);font-size:0.82rem;">Could not load shared characters.</div>';
+      return;
+    }
+
+    var rows = res.data || [];
+
+    if (!rows.length) {
+      container.innerHTML =
+        '<div class="cc-shared-empty" style="text-align:center;padding:40px 16px;' +
+        'color:rgba(255,255,255,0.3);font-size:0.85rem;line-height:1.7;">' +
+        '✨ No characters have been shared yet.<br>Be the first to share one!</div>';
+      return;
+    }
+
+    // Populate the global cache that character-modal.js uses as fallback (pattern b)
+    window._sharedCharCache = window._sharedCharCache || {};
+
+    var html = '';
+    rows.forEach(function (row) {
+      var char = row.data || {};
+      var id   = String(row.id || char.id || '');
+
+      // Register in cache
+      if (id) window._sharedCharCache[id] = char;
+
+      var el   = char.element || 'non-bender';
+      var emoji = getElementEmoji(el);
+      var name = esc((char.givenName || '') + (char.familyName ? ' ' + char.familyName : '') || 'Unnamed');
+      var nick = char.nickname ? esc('"' + char.nickname + '"') : '';
+      var mastery = esc(char.mastery || '');
+
+      // Embed the full character JSON on the card (pattern a for hookSharedList)
+      // and on the View button for our own handler — JSON-encode once, escape for HTML attr.
+      var charJson = esc(JSON.stringify(char));
+
+      html +=
+        '<div class="cc-char-card" data-id="' + esc(id) + '" data-char="' + charJson + '">' +
+          '<div class="cc-char-card-inner">' +
+            '<div class="cc-char-avatar">' + emoji + '</div>' +
+            '<div class="cc-char-info">' +
+              '<div class="cc-char-name">' + name + '</div>' +
+              (nick ? '<div class="cc-char-nick">' + nick + '</div>' : '') +
+              '<div class="cc-char-meta">' +
+                '<span class="cc-char-element cc-el-' + esc(el) + '">' + emoji + ' ' + esc(el) + '</span>' +
+                (mastery ? '<span class="cc-char-mastery"> · ' + mastery + '</span>' : '') +
+              '</div>' +
+            '</div>' +
+            '<div class="cc-char-actions">' +
+              '<button ' +
+                'class="cc-char-action view-shared-char-btn" ' +
+                'data-id="' + esc(id) + '" ' +
+                'data-char="' + charJson + '" ' +
+                'title="View character details">' +
+                '<i class="fas fa-eye"></i> View' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    });
+
+    container.innerHTML = html;
+    console.log('[charShare] loadFriendsShared rendered', rows.length, 'character(s)');
+  }
+
+  /* ══════════════════════════════════════════════════════════════════
+     CSS — share button hover state + view button styles (injected once)
   ══════════════════════════════════════════════════════════════════ */
   (function injectStyles() {
     if (document.getElementById('char-sharing-styles')) return;
     var s = document.createElement('style');
     s.id = 'char-sharing-styles';
     s.textContent = [
+      /* Share button */
       '.share-char-btn:hover { border-color: var(--zen) !important; color: var(--zen) !important; background: rgba(180,77,223,0.1) !important; }',
       '.share-char-btn.unshare:hover { border-color: var(--danger) !important; color: var(--danger) !important; background: rgba(224,72,72,0.08) !important; }',
+
+      /* View button — sits in the shared list, distinct from share/delete actions */
+      '.view-shared-char-btn {',
+      '  display: inline-flex; align-items: center; gap: 5px;',
+      '  padding: 5px 12px; border-radius: 8px;',
+      '  font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em;',
+      '  border: 1px solid rgba(255,255,255,0.18);',
+      '  background: rgba(255,255,255,0.05);',
+      '  color: rgba(255,255,255,0.65);',
+      '  cursor: pointer;',
+      '  transition: border-color 0.18s, color 0.18s, background 0.18s, transform 0.15s;',
+      '}',
+      '.view-shared-char-btn:hover {',
+      '  border-color: var(--zen, #b44ddf) !important;',
+      '  color: var(--zen, #b44ddf) !important;',
+      '  background: rgba(180,77,223,0.12) !important;',
+      '  transform: translateY(-1px);',
+      '}',
+      '.view-shared-char-btn:active { transform: translateY(0); }',
     ].join('\n');
     document.head.appendChild(s);
   })();
@@ -315,9 +360,9 @@
 
   /* ── Public API ────────────────────────────────────────────────── */
   window.charSharing = {
-    shareCharacter:   shareCharacter,
-    unshareCharacter: unshareCharacter,
-    loadFriendsShared: loadFriendsShared
+    shareCharacter:    shareCharacter,
+    unshareCharacter:  unshareCharacter,
+    loadFriendsShared: loadFriendsShared   // ← now implemented
   };
 
   console.log('[character-sharing.js] loaded ✓');
