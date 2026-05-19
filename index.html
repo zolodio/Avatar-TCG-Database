@@ -7831,6 +7831,7 @@ function bindSubTabs(){
     document.getElementById('cctab-my-characters').style.display = btn.dataset.cctab === 'my-characters' ? '' : 'none';
     document.getElementById('cctab-friends-shared').style.display = btn.dataset.cctab === 'friends-shared' ? '' : 'none';
     if(btn.dataset.cctab === 'my-characters') renderRoster();
+    if(btn.dataset.cctab === 'friends-shared' && window.charSharing) window.charSharing.loadFriendsShared();
   });
 }
  
