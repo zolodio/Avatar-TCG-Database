@@ -8255,9 +8255,67 @@ function formatWeight(isMetric){
 }
 
 /* ── RANDOMIZE ── */
-var NAMES_A = ['Bai','Zhen','Kai','Lei','Mei','Tao','Jin','Suki','Raya','Shen','Po','Chen','Shen','Sky'];
-var NAMES_B = ['Fong','Xin','Long','Shi','Yun','Wei','Hao','Peng','Yao','Dan','Po','Feng','Boi','Lee','Zhen','Zhi','Qi','Xen'];
-var NICKNAMES = ['Storm','Blade','Flame','Frost','Echo','Scar','Whisper','Viper','Shadow','Hawk','Steel','Tide','Inferno','Spirit'];
+var NAMES_A = [
+  // Water Tribe–leaning
+  'Kiva','Noru','Sena','Talik','Misu','Anju','Koda','Nami','Tariq','Iska',
+  'Sura','Makoji','Nukka','Kallik','Yara','Henua','Palu','Siku','Tavik',
+
+  // Earth Kingdom–leaning
+  'Ren','Bao','Lian','Jiro','Huan','Min','Qiao','Fen','Tarin','Rokuo',
+  'Jessa','Hiro','Nalin','Bei','Korin','Luto','Shira','Toma','Rinlo',
+
+  // Fire Nation–leaning
+  'Raiko','Azun','Kaito','Rensa','Takao','Zorin','Hikari','Kenzo','Airi',
+  'Daichi','Reina','Soryu','Akari','Ryota','Haru','Kaien','Tetsu','Junko',
+
+  // Air Nomad–leaning (softer phonetics)
+  'Aru','Tashi','Nima','Pemae','Lobsin','Kelsa','Jampa','Sonu','Rinzen',
+  'Bodhi','Anila','Gyari','Sumiya','Kavi','Tenra','Miren','Zopa','Yali',
+
+  // Republic City / Mixed Era
+  'Arin','Kasen','Mira','Soren','Kato','Rylan','Veya','Jalen','Nero',
+  'Zavi','Liora','Tarin','Kaida','Mirae','Zalen','Hirox','Viren'
+];
+var NAMES_B = [
+  // Earth Kingdom–style
+  'Guo','Zai','Rong','Han','Jian','Luo','Zhen','Cai','Wen','Kang',
+  'Ru','Bai','Shao','Lin','Xiu','Ping','Tor','Gai','Fen','Chao',
+
+  // Fire Nation–style
+  'Kazuo','Rai','Shenko','Ishida','Mori','Tanaka','Ryuu','Kenzai',
+  'Okami','Sato','Hoshin','Kairo','Renji','Daigo','Torin','Hayato',
+
+  // Water Tribe–style
+  'Kavik','Naluk','Tuluk','Ivalu','Kaneq','Suraq','Maktu','Unari',
+  'Tassik','Oorin','Navuk','Taliq','Anuki','Kairuk',
+
+  // Air Nomad (rare surname use, but post-war variants)
+  'Windrunner','Skybloom','Cloudstep','Mistvale','Highwind','Stormdrift',
+
+  // Republic City / Industrial era
+  'Vance','Rowe','Dalen','Soren','Kess','Vale','Renn','Makoz',
+  'Torren','Zay','Rook','Halden','Varo'
+];
+var NICKNAMES = [
+  // Element-inspired
+  'Ember','Torrent','Quake','Zephyr','Cinder','Glacier','Ashfall',
+  'Dust','Tempest','Drift','Blaze','Ripple','Monsoon','Boulder',
+  'Static','Gale','Tremor','Flare','Frostbite','Wildfire',
+
+  // Combat-style
+  'Ironclad','Quickstrike','Redhand','Silvershard','Blackwind',
+  'Ghoststep','Stonewall','Sunstorm','Nightcurrent','Crimson Arc',
+  'Blue Ember','Cold Current','Silent Spark','Thunder Palm',
+
+  // Spiritual/Mystic
+  'Spiritbound','Moonveil','Skyseer','Voidwalker','Starfire',
+  'Dreamwake','Soulcurrent','Lightfoot','Mistborn','Harmonic',
+  'Lantern','Astral','Dawnwhisper','Cloudbreaker',
+
+  // Pro-bending / Arena vibe
+  'Triple Threat','Backdraft','Undertow','Flashpoint',
+  'Overhand','Slipstream','High Kick','Breaker','Crosswind'
+];
 var ELEMENTS = ['water','earth','fire','air','non-bender'];
 var STRIKES  = ['bull','fox','lion'];
 var ADVS     = ['mind','body','spirit'];
@@ -8268,10 +8326,91 @@ var BONDS    = ['wild','trained','loyal','spirit-bound'];
 var FLAWS_OPTIONS = ['arrogant','impulsive','distrustful','reckless','idealistic','vengeful','stubborn','hot-tempered','naive','overconfident','self-righteous','emotionally-guarded','venomous-tongue'];
 var BS_NATIONS = ['Fire Nation','Earth Kingdom','Water Tribe (Northern)','Water Tribe (Southern)','Air Nomads','Spirit World','United Republic / Republic City','Unknown / Stateless'];
 var BS_TONES = ['hopeful','dark','epic','political','tragic'];
-var HAIR_COLORS = ['black','brown','dark brown','auburn','gray','white'];
-var EYE_COLORS = ['brown','black','gray','amber','blue','green'];
-var SKIN_TONES = ['olive','fair','bronze','dark','warm','cool'];
-var APPEARANCE_DESCRIPTORS = ['scar across face','burn marks','graceful bearing','muscular frame','delicate features','weathered look','youthful appearance','intense eyes','calm demeanor','fierce expression'];
+var HAIR_COLORS = [
+  // Core natural tones (all nations)
+  'jet black','soft black','ink black','dark brown','deep brown',
+  'warm brown','ash brown','chestnut','mahogany','auburn',
+  'copper','dark auburn','light brown','sandy brown',
+  'silver-gray','iron gray','snow white','cream white',
+
+  // Water Tribe–leaning
+  'blue-black','midnight black','cool brown',
+
+  // Fire Nation–leaning
+  'dark red-brown','ember red','smoke-tinted black',
+
+  // Earth Kingdom–leaning
+  'dust brown','earth brown','clay brown',
+
+  // Republic City / modern era subtle dye trends
+  'subtle crimson streaks','silver streaked','undyed gray tips',
+  'faded indigo tint','ashen tips'
+];
+var EYE_COLORS = [
+  // Common tones
+  'dark brown','deep brown','light brown','black',
+  'gray','steel gray','storm gray',
+  'amber','golden amber','honey amber',
+  'blue','deep blue','ice blue',
+  'green','dark green','olive green',
+
+  // Rare but canon-consistent variations
+  'pale gray','smoky blue','sea green','gold-flecked brown',
+  'silver-blue','icy gray',
+
+  // Spiritual / harmonic convergence-adjacent (very rare)
+  'lavender tint','faint silver glow','soft violet hue'
+];
+var SKIN_TONES = [
+  // Very fair range (Air Nomads / some Fire Nation)
+  'porcelain','pale','light warm','light cool','fair',
+
+  // Medium range (Earth Kingdom / Fire Nation)
+  'light olive','olive','warm beige','neutral beige',
+  'sun-kissed','golden tan','bronze','deep bronze',
+
+  // Darker range (Water Tribe / Earth Kingdom regions)
+  'rich brown','deep brown','cool dark','warm dark',
+  'mahogany','umber','weathered tan',
+
+  // Environmental effects
+  'wind-chapped','sun-weathered','sea-worn',
+  'desert-touched','frost-kissed'
+];
+var APPEARANCE_DESCRIPTORS = [
+  // Physical traits
+  'scar across cheek','thin lip scar','burn-scarred forearm',
+  'calloused hands','broad shoulders','lean build',
+  'compact and agile','towering presence','long-limbed',
+  'athletic frame','wiry strength','steady posture',
+
+  // Facial presence
+  'sharp jawline','soft features','freckled nose',
+  'arched brows','piercing gaze','observant eyes',
+  'heavy-lidded stare','subtle smirk','stone-faced composure',
+
+  // Bearing / energy
+  'calm demeanor','fierce expression','quiet intensity',
+  'measured movements','restless stance','grounded posture',
+  'fluid motions','precise gestures','deliberate stride',
+  'confident aura','guarded expression','warm smile',
+
+  // Cultural markers
+  'traditional topknot','braided crown','shaved sides',
+  'warrior’s knot','simple monk cut','loose shoulder-length hair',
+  'decorative beadwork in hair','tribal markings',
+  'faint spirit vine tattoo','ceremonial face paint',
+
+  // Battle history
+  'healed blade wound','faded burn marks',
+  'knuckles wrapped in cloth','training bruises',
+  'weather-beaten features','old duel scar',
+
+  // Spiritual cues
+  'serene gaze','distant stare','attuned presence',
+  'quietly radiant','unreadable expression',
+  'moonlit calm','stormlike intensity'
+];
  
 function randomizeCharacter(){
   clearForm(true);
@@ -8417,46 +8556,151 @@ function randomizeCharacter(){
     }
     
     // Randomize training
-    var trainingEl = document.getElementById('cc-bs-training');
-    if(trainingEl){
-      trainingEl.value = 'Trained under ' + pick(['a military general', 'a master bender', 'monks in isolation', 'street performers', 'a mysterious sage']);
-      state.bsTraining = trainingEl.value;
-    }
+var trainingEl = document.getElementById('cc-bs-training');
+if(trainingEl){
+  trainingEl.value = 'Trained under ' + pick([
+    'a decorated military general',
+    'a reclusive bending master',
+    'monks in high mountain isolation',
+    'traveling circus performers',
+    'a mysterious spirit sage',
+    'a former arena champion',
+    'an underground resistance fighter',
+    'a disciplined temple elder',
+    'a disgraced royal instructor',
+    'a battlefield tactician',
+    'a retired city guard captain',
+    'a desert caravan protector',
+    'a healer from the northern waters',
+    'a strict academy headmaster',
+    'an exiled noble turned hermit',
+    'a lightning specialist',
+    'a metalworking artisan',
+    'a spiritual medium attuned to the Spirit World',
+    'a veteran of the Hundred Year War',
+    'a quiet master who valued patience above power'
+  ]);
+  state.bsTraining = trainingEl.value;
+}
     
     // Randomize trauma
-    var traumaEl = document.getElementById('cc-bs-trauma');
-    if(traumaEl){
-      traumaEl.value = 'Witnessed ' + pick(['the loss of their home', 'betrayal by a trusted ally', 'a great catastrophe', 'the death of a mentor', 'their nation\'s downfall']);
-      state.bsTrauma = traumaEl.value;
-    }
+var traumaEl = document.getElementById('cc-bs-trauma');
+if(traumaEl){
+  traumaEl.value = 'Witnessed ' + pick([
+    'the burning of their village',
+    'the loss of their home to war',
+    'betrayal by a trusted ally',
+    'a devastating spirit outbreak',
+    'the fall of their family’s honor',
+    'the destruction of a sacred site',
+    'their mentor’s final battle',
+    'a failed rescue mission',
+    'civil unrest in their homeland',
+    'a catastrophic bending accident',
+    'the collapse of their city district',
+    'their sibling’s exile',
+    'a spirit vine surge gone wrong',
+    'a public disgrace that shattered their reputation',
+    'a duel that ended in tragedy',
+    'the forced relocation of their people',
+    'the quiet disappearance of someone they loved'
+  ]);
+  state.bsTrauma = traumaEl.value;
+}
     
     // Randomize mentor
-    var mentorEl = document.getElementById('cc-bs-mentor');
-    if(mentorEl){
-      mentorEl.value = pick(['A retired master who taught discipline', 'A wandering sage with ancient wisdom', 'A mysterious figure from the past', 'A former rival turned ally', 'A spiritual guide']);
-      state.bsMentor = mentorEl.value;
-    }
+var mentorEl = document.getElementById('cc-bs-mentor');
+if(mentorEl){
+  mentorEl.value = pick([
+    'A retired master who taught discipline above all',
+    'A wandering sage who spoke in riddles',
+    'A former rival who became an unlikely teacher',
+    'A stoic guardian of a sacred site',
+    'A pro-bending veteran with a strict code',
+    'A blind elder with unmatched perception',
+    'A spiritual guide who walked between worlds',
+    'A hardened general who valued strategy',
+    'A pacifist healer who preached restraint',
+    'An engineer who blended science with bending',
+    'A nomadic monk who emphasized detachment',
+    'A disgraced noble seeking redemption',
+    'A quiet artisan who mastered subtle techniques',
+    'A former outlaw who taught survival first',
+    'A scholar obsessed with ancient bending scrolls'
+  ]);
+  state.bsMentor = mentorEl.value;
+}
     
     // Randomize rival
-    var rivalEl = document.getElementById('cc-bs-rival');
-    if(rivalEl){
-      rivalEl.value = pick(['A former friend with opposing ideals', 'A skilled opponent seeking revenge', 'Someone from their past seeking redemption', 'A fellow warrior with conflicting goals', 'A family member with different values']);
-      state.bsRival = rivalEl.value;
-    }
+var rivalEl = document.getElementById('cc-bs-rival');
+if(rivalEl){
+  rivalEl.value = pick([
+    'A childhood friend with opposing ideals',
+    'A former teammate turned adversary',
+    'A skilled duelist seeking revenge',
+    'A sibling who chose a different path',
+    'A prodigy who surpassed them early on',
+    'A rival from the academy',
+    'A revolutionary with extreme beliefs',
+    'A spirit-touched warrior with unstable power',
+    'A disciplined officer enforcing harsh laws',
+    'A rogue bender challenging tradition',
+    'A masked competitor from the arena circuit',
+    'A former ally who exposed their weakness',
+    'A tactician who always stays one step ahead',
+    'A hunter tracking them for past actions',
+    'A charismatic leader pulling others to their side'
+  ]);
+  state.bsRival = rivalEl.value;
+}
     
     // Randomize goal
-    var goalEl = document.getElementById('cc-bs-goal');
-    if(goalEl){
-      goalEl.value = pick(['To restore what was lost', 'To master their bending', 'To protect the innocent', 'To uncover hidden truths', 'To achieve balance', 'To prove their worth', 'To find redemption']);
-      state.bsGoal = goalEl.value;
-    }
+var goalEl = document.getElementById('cc-bs-goal');
+if(goalEl){
+  goalEl.value = pick([
+    'To restore what was lost',
+    'To master a forbidden technique',
+    'To protect their homeland',
+    'To uncover hidden truths of the past',
+    'To bring balance where chaos reigns',
+    'To prove their worth to their family',
+    'To redeem a past mistake',
+    'To unite divided factions',
+    'To rebuild a fallen city district',
+    'To surpass their former mentor',
+    'To prevent another war',
+    'To explore the Spirit World',
+    'To defend the weak from corruption',
+    'To challenge outdated traditions',
+    'To leave behind a lasting legacy',
+    'To discover their true identity',
+    'To atone for a battle gone wrong'
+  ]);
+  state.bsGoal = goalEl.value;
+}
     
     // Randomize secret
-    var secretEl = document.getElementById('cc-bs-secret');
-    if(secretEl){
-      secretEl.value = pick(['Harbors doubts about their true identity', 'Hiding a forbidden relationship', 'Concealing a shameful past action', 'Seeking something thought to be lost', 'Made a dangerous deal with the wrong person']);
-      state.bsSecret = secretEl.value;
-    }
+var secretEl = document.getElementById('cc-bs-secret');
+if(secretEl){
+  secretEl.value = pick([
+    'Harbors doubts about their bending ability',
+    'Is hiding a forbidden relationship',
+    'Once lost control and hurt someone unintentionally',
+    'Made a dangerous deal to gain power',
+    'Possesses knowledge they should not have',
+    'Is secretly spirit-touched',
+    'Is related to a disgraced figure',
+    'Helped their rival once in secret',
+    'Was responsible for a past failure',
+    'Knows the truth behind a historical lie',
+    'Has suppressed a powerful ability',
+    'Is being watched by unseen forces',
+    'Carries a relic tied to an ancient conflict',
+    'Plans to abandon their current path',
+    'Fears they may repeat their mentor’s mistakes'
+  ]);
+  state.bsSecret = secretEl.value;
+}
     
     // Randomize tone
     clickPill('bstone', pick(BS_TONES));
@@ -8552,7 +8796,7 @@ init();
 <script src="scripts/friend-collection.js"></script> 
 <script src="scripts/character-modal.js"></script>
 
-<!-- ══════════════ THEME SYSTEM ══════════════ -->
+<!-- ══════════════ THEME SYSTEM (EXPANDED 16 WALLPAPERS) ══════════════ -->
 <style>
 /* Theme card hover states */
 .theme-option-card:hover {
@@ -8688,6 +8932,94 @@ init();
       checkColor: '#e8532e'
     },
 
+    wallpaper2: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper2.png',
+      vars: {
+        '--bg-primary':       '#0a0810',
+        '--bg-secondary':     '#12101a',
+        '--bg-card':          '#1a1428',
+        '--bg-card-hover':    '#241c3a',
+        '--bg-surface':       '#15111f',
+        '--text-primary':     '#e6e0f0',
+        '--text-secondary':   '#8a7a9f',
+        '--text-muted':       '#5a4a70',
+        '--border':           '#2a1a40',
+        '--border-light':     '#3a2a54',
+        '--accent':           '#b44ddf',
+        '--accent-hover':     '#c45aee',
+        '--zen':              '#b44ddf',
+        '--zeny':             '#b44ddf',
+        '--zen-glow':         '#d16bff',
+        '--promo':            '#d060f0',
+        '--promo-glow':       '#e078ff',
+        '--fire':             '#c85030',
+        '--fire-glow':        '#e07050',
+        '--water':            '#6080c0',
+        '--water-glow':       '#7898ff',
+        '--earth':            '#7a60a0',
+        '--earth-glow':       '#9878c0',
+        '--air':              '#b090d0',
+        '--air-glow':         '#d0a8ff',
+        '--success':          '#7a60c0',
+        '--danger':           '#d04848',
+        '--shadow-lg':        '0 8px 32px rgba(20,0,40,0.5)',
+        '--shadow-md':        '0 4px 16px rgba(20,0,40,0.35)',
+        '--common-bg':        'rgba(138,122,159,0.12)',
+        '--uncommon-bg':      '  rgba(122,96,160,0.1)',
+        '--rare-bg':          'rgba(180,77,223,0.1)',
+        '--zen-bg':           'rgba(180,77,223,0.1)',
+        '--zeny-bg':          'rgba(208,96,240,0.1)',
+        '--promo-bg':         'rgba(208,96,240,0.1)',
+        '--owned-overlay':    'rgba(122,96,192,0.12)',
+      },
+      bodyBg: '#030001',
+      checkColor: '#b44ddf'
+    },
+
+    wallpaper3: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper3.png',
+      vars: {
+        '--bg-primary':       '#0d0510',
+        '--bg-secondary':     '#1a0a1a',
+        '--bg-card':          '#251530',
+        '--bg-card-hover':    '#342045',
+        '--bg-surface':       '#1f0d25',
+        '--text-primary':     '#f0e0f0',
+        '--text-secondary':   '#a08a9a',
+        '--text-muted':       '#705a70',
+        '--border':           '#3a1a40',
+        '--border-light':     '#542a60',
+        '--accent':           '#d050a0',
+        '--accent-hover':     '#e060b0',
+        '--zen':              '#d050a0',
+        '--zeny':             '#d050a0',
+        '--zen-glow':         '#ff70d0',
+        '--promo':            '#f080b0',
+        '--promo-glow':       '#ff98c8',
+        '--fire':             '#c04030',
+        '--fire-glow':        '#e05860',
+        '--water':            '#5080d0',
+        '--water-glow':       '#6898ff',
+        '--earth':            '#8060a0',
+        '--earth-glow':       '#a078c0',
+        '--air':              '#d0a0d0',
+        '--air-glow':         '#f0b8e8',
+        '--success':          '#9070c0',
+        '--danger':           '#d04848',
+        '--shadow-lg':        '0 8px 32px rgba(40,0,20,0.5)',
+        '--shadow-md':        '0 4px 16px rgba(40,0,20,0.35)',
+        '--common-bg':        'rgba(160,138,154,0.12)',
+        '--uncommon-bg':      'rgba(128,96,160,0.1)',
+        '--rare-bg':          'rgba(208,80,160,0.1)',
+        '--zen-bg':           'rgba(208,80,160,0.1)',
+        '--zeny-bg':          'rgba(240,128,176,0.1)',
+        '--promo-bg':         'rgba(240,128,176,0.1)',
+        '--owned-overlay':    'rgba(144,112,192,0.12)',
+      },
+      bodyBg: '#050002',
+      checkColor: '#d050a0'
+    },
+
     wallpaper4: {
       wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper4.png',
       vars: {
@@ -8732,6 +9064,182 @@ init();
       checkColor: '#2e8ce8'
     },
 
+    wallpaper5: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper5.png',
+      vars: {
+        '--bg-primary':       '#030c0f',
+        '--bg-secondary':     '#061820',
+        '--bg-card':          '#0a2030',
+        '--bg-card-hover':    '#102c42',
+        '--bg-surface':       '#081c2a',
+        '--text-primary':     '#d8f0ff',
+        '--text-secondary':   '#5aabb8',
+        '--text-muted':       '#2a7080',
+        '--border':           '#0a3850',
+        '--border-light':     '#145070',
+        '--accent':           '#00c8ff',
+        '--accent-hover':     '#1ed8ff',
+        '--zen':              '#00c8ff',
+        '--zeny':             '#00c8ff',
+        '--zen-glow':         '#40d8ff',
+        '--promo':            '#70e8ff',
+        '--promo-glow':       '#98f0ff',
+        '--fire':             '#d8572e',
+        '--fire-glow':        '#f8703d',
+        '--water':            '#00c8ff',
+        '--water-glow':       '#1ed8ff',
+        '--earth':            '#2ab8a0',
+        '--earth-glow':       '#48d0b8',
+        '--air':              '#a8e8ff',
+        '--air-glow':         '#c8f0ff',
+        '--success':          '#00d8b8',
+        '--danger':           '#d84848',
+        '--shadow-lg':        '0 8px 32px rgba(0,30,50,0.6)',
+        '--shadow-md':        '0 4px 16px rgba(0,30,50,0.45)',
+        '--common-bg':        'rgba(90,171,184,0.12)',
+        '--uncommon-bg':      'rgba(42,184,160,0.1)',
+        '--rare-bg':          'rgba(0,200,255,0.1)',
+        '--zen-bg':           'rgba(0,200,255,0.1)',
+        '--zeny-bg':          'rgba(112,232,255,0.1)',
+        '--promo-bg':         'rgba(112,232,255,0.1)',
+        '--owned-overlay':    'rgba(0,216,184,0.12)',
+      },
+      bodyBg: '#000508',
+      checkColor: '#00c8ff'
+    },
+
+    wallpaper6: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper6.png',
+      vars: {
+        '--bg-primary':       '#08080f',
+        '--bg-secondary':     '#11121d',
+        '--bg-card':          '#1a1a2d',
+        '--bg-card-hover':    '#26263f',
+        '--bg-surface':       '#161628',
+        '--text-primary':     '#e6e6ff',
+        '--text-secondary':   '#8888bb',
+        '--text-muted':       '#5555aa',
+        '--border':           '#26264d',
+        '--border-light':     '#3a3a66',
+        '--accent':           '#7070ff',
+        '--accent-hover':     '#8888ff',
+        '--zen':              '#7070ff',
+        '--zeny':             '#7070ff',
+        '--zen-glow':         '#9090ff',
+        '--promo':            '#b0b0ff',
+        '--promo-glow':       '#d0d0ff',
+        '--fire':             '#ff6040',
+        '--fire-glow':        '#ff8060',
+        '--water':            '#5080ff',
+        '--water-glow':       '#7098ff',
+        '--earth':            '#6080d0',
+        '--earth-glow':       '#7a98ff',
+        '--air':              '#c0c0ff',
+        '--air-glow':         '#e0e0ff',
+        '--success':          '#6080ff',
+        '--danger':           '#ff5050',
+        '--shadow-lg':        '0 8px 32px rgba(10,10,30,0.6)',
+        '--shadow-md':        '0 4px 16px rgba(10,10,30,0.45)',
+        '--common-bg':        'rgba(136,136,187,0.12)',
+        '--uncommon-bg':      'rgba(96,128,208,0.1)',
+        '--rare-bg':          'rgba(112,112,255,0.1)',
+        '--zen-bg':           'rgba(112,112,255,0.1)',
+        '--zeny-bg':          'rgba(176,176,255,0.1)',
+        '--promo-bg':         'rgba(176,176,255,0.1)',
+        '--owned-overlay':    'rgba(96,128,255,0.12)',
+      },
+      bodyBg: '#020205',
+      checkColor: '#7070ff'
+    },
+
+    wallpaper7: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper7.png',
+      vars: {
+        '--bg-primary':       '#0f0a08',
+        '--bg-secondary':     '#1a1410',
+        '--bg-card':          '#241c18',
+        '--bg-card-hover':    '#302820',
+        '--bg-surface':       '#1c1610',
+        '--text-primary':     '#f0e8d8',
+        '--text-secondary':   '#a89878',
+        '--text-muted':       '#7a6848',
+        '--border':           '#3a2a18',
+        '--border-light':     '#524020',
+        '--accent':           '#d8a040',
+        '--accent-hover':     '#e8b050',
+        '--zen':              '#d8a040',
+        '--zeny':             '#d8a040',
+        '--zen-glow':         '#f0b860',
+        '--promo':            '#f0c858',
+        '--promo-glow':       '#ffd878',
+        '--fire':             '#e8502e',
+        '--fire-glow':        '#f8703d',
+        '--water':            '#8a8868',
+        '--water-glow':       '#a8a680',
+        '--earth':            '#a09070',
+        '--earth-glow':       '#c8a888',
+        '--air':              '#e8d0a0',
+        '--air-glow':         '#f8e0b8',
+        '--success':          '#c8a840',
+        '--danger':           '#d84848',
+        '--shadow-lg':        '0 8px 32px rgba(30,20,0,0.6)',
+        '--shadow-md':        '0 4px 16px rgba(30,20,0,0.45)',
+        '--common-bg':        'rgba(168,152,120,0.12)',
+        '--uncommon-bg':      'rgba(160,144,104,0.1)',
+        '--rare-bg':          'rgba(216,160,64,0.1)',
+        '--zen-bg':           'rgba(216,160,64,0.1)',
+        '--zeny-bg':          'rgba(240,200,88,0.1)',
+        '--promo-bg':         'rgba(240,200,88,0.1)',
+        '--owned-overlay':    'rgba(200,168,64,0.12)',
+      },
+      bodyBg: '#060402',
+      checkColor: '#d8a040'
+    },
+
+    wallpaper8: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper8.png',
+      vars: {
+        '--bg-primary':       '#0a0f08',
+        '--bg-secondary':     '#121a10',
+        '--bg-card':          '#1a2418',
+        '--bg-card-hover':    '#263020',
+        '--bg-surface':       '#161e14',
+        '--text-primary':     '#e0f0d8',
+        '--text-secondary':   '#7aa878',
+        '--text-muted':       '#4a7040',
+        '--border':           '#1a3a18',
+        '--border-light':     '#2a5028',
+        '--accent':           '#68c040',
+        '--accent-hover':     '#78d050',
+        '--zen':              '#68c040',
+        '--zeny':             '#68c040',
+        '--zen-glow':         '#88e060',
+        '--promo':            '#a8d840',
+        '--promo-glow':       '#c0f050',
+        '--fire':             '#d8482e',
+        '--fire-glow':        '#f8683d',
+        '--water':            '#5aa870',
+        '--water-glow':       '#70c088',
+        '--earth':            '#68c040',
+        '--earth-glow':       '#78d050',
+        '--air':              '#d0f080',
+        '--air-glow':         '#e0f898',
+        '--success':          '#50d850',
+        '--danger':           '#c84840',
+        '--shadow-lg':        '0 8px 32px rgba(0,20,0,0.55)',
+        '--shadow-md':        '0 4px 16px rgba(0,20,0,0.4)',
+        '--common-bg':        'rgba(122,168,120,0.12)',
+        '--uncommon-bg':      'rgba(104,192,64,0.1)',
+        '--rare-bg':          'rgba(104,192,64,0.15)',
+        '--zen-bg':           'rgba(104,192,64,0.1)',
+        '--zeny-bg':          'rgba(168,216,64,0.1)',
+        '--promo-bg':         'rgba(168,216,64,0.1)',
+        '--owned-overlay':    'rgba(80,216,80,0.12)',
+      },
+      bodyBg: '#020501',
+      checkColor: '#68c040'
+    },
+
     wallpaper9: {
       wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper9.png',
       vars: {
@@ -8774,6 +9282,314 @@ init();
       },
       bodyBg: '#020501',
       checkColor: '#5cb85c'
+    },
+
+    wallpaper10: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper10.png',
+      vars: {
+        '--bg-primary':       '#050b08',
+        '--bg-secondary':     '#0a1810',
+        '--bg-card':          '#0f2418',
+        '--bg-card-hover':    '#183020',
+        '--bg-surface':       '#0c1e14',
+        '--text-primary':     '#d8f0e0',
+        '--text-secondary':   '#68a878',
+        '--text-muted':       '#407050',
+        '--border':           '#184028',
+        '--border-light':     '#225838',
+        '--accent':           '#40d880',
+        '--accent-hover':     '#50e890',
+        '--zen':              '#40d880',
+        '--zeny':             '#40d880',
+        '--zen-glow':         '#60f0a0',
+        '--promo':            '#90e870',
+        '--promo-glow':       '#a8f888',
+        '--fire':             '#d8402e',
+        '--fire-glow':        '#f8603d',
+        '--water':            '#50b880',
+        '--water-glow':       '#68d898',
+        '--earth':            '#40d880',
+        '--earth-glow':       '#50e890',
+        '--air':              '#c8e890',
+        '--air-glow':         '#d8f8a8',
+        '--success':          '#30e870',
+        '--danger':           '#c84040',
+        '--shadow-lg':        '0 8px 32px rgba(0,20,10,0.55)',
+        '--shadow-md':        '0 4px 16px rgba(0,20,10,0.4)',
+        '--common-bg':        'rgba(104,168,120,0.12)',
+        '--uncommon-bg':      'rgba(64,216,128,0.1)',
+        '--rare-bg':          'rgba(64,216,128,0.15)',
+        '--zen-bg':           'rgba(64,216,128,0.1)',
+        '--zeny-bg':          'rgba(144,232,112,0.1)',
+        '--promo-bg':         'rgba(144,232,112,0.1)',
+        '--owned-overlay':    'rgba(48,232,128,0.12)',
+      },
+      bodyBg: '#020502',
+      checkColor: '#40d880'
+    },
+
+    wallpaper11: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper11.png',
+      vars: {
+        '--bg-primary':       '#080a0f',
+        '--bg-secondary':     '#10141f',
+        '--bg-card':          '#191f30',
+        '--bg-card-hover':    '#252d42',
+        '--bg-surface':       '#141a28',
+        '--text-primary':     '#e8ecf0',
+        '--text-secondary':   '#8a9ab8',
+        '--text-muted':       '#5a7080',
+        '--border':           '#222c48',
+        '--border-light':     '#2e4060',
+        '--accent':           '#5090d8',
+        '--accent-hover':     '#60a0e8',
+        '--zen':              '#5090d8',
+        '--zeny':             '#5090d8',
+        '--zen-glow':         '#70b0ff',
+        '--promo':            '#a0c8f0',
+        '--promo-glow':       '#b8d8ff',
+        '--fire':             '#e8522e',
+        '--fire-glow':        '#f8703d',
+        '--water':            '#5090d8',
+        '--water-glow':       '#60a0e8',
+        '--earth':            '#5a8cb0',
+        '--earth-glow':       '#70a8c8',
+        '--air':              '#b0d8f0',
+        '--air-glow':         '#c8e8ff',
+        '--success':          '#40b0d8',
+        '--danger':           '#d84848',
+        '--shadow-lg':        '0 8px 32px rgba(5,10,25,0.6)',
+        '--shadow-md':        '0 4px 16px rgba(5,10,25,0.45)',
+        '--common-bg':        'rgba(138,154,184,0.12)',
+        '--uncommon-bg':      'rgba(90,140,176,0.1)',
+        '--rare-bg':          'rgba(80,144,216,0.1)',
+        '--zen-bg':           'rgba(80,144,216,0.1)',
+        '--zeny-bg':          'rgba(160,200,240,0.1)',
+        '--promo-bg':         'rgba(160,200,240,0.1)',
+        '--owned-overlay':    'rgba(64,176,216,0.12)',
+      },
+      bodyBg: '#030508',
+      checkColor: '#5090d8'
+    },
+
+    wallpaper12: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper12.png',
+      vars: {
+        '--bg-primary':       '#0f0810',
+        '--bg-secondary':     '#1a101f',
+        '--bg-card':          '#241830',
+        '--bg-card-hover':    '#32203f',
+        '--bg-surface':       '#1c1228',
+        '--text-primary':     '#f0e8f8',
+        '--text-secondary':   '#9880a8',
+        '--text-muted':       '#6a5080',
+        '--border':           '#322050',
+        '--border-light':     '#483068',
+        '--accent':           '#c060e0',
+        '--accent-hover':     '#d070f0',
+        '--zen':              '#c060e0',
+        '--zeny':             '#c060e0',
+        '--zen-glow':         '#d878ff',
+        '--promo':            '#e08ff0',
+        '--promo-glow':       '#f0a8ff',
+        '--fire':             '#d8482e',
+        '--fire-glow':        '#f8683d',
+        '--water':            '#6080d8',
+        '--water-glow':       '#7898f0',
+        '--earth':            '#9070c8',
+        '--earth-glow':       '#b088e0',
+        '--air':              '#d8b0f0',
+        '--air-glow':         '#f0c8ff',
+        '--success':          '#a870d8',
+        '--danger':           '#d04848',
+        '--shadow-lg':        '0 8px 32px rgba(20,5,30,0.6)',
+        '--shadow-md':        '0 4px 16px rgba(20,5,30,0.45)',
+        '--common-bg':        'rgba(152,128,168,0.12)',
+        '--uncommon-bg':      'rgba(144,112,200,0.1)',
+        '--rare-bg':          'rgba(192,96,224,0.1)',
+        '--zen-bg':           'rgba(192,96,224,0.1)',
+        '--zeny-bg':          'rgba(224,144,240,0.1)',
+        '--promo-bg':         'rgba(224,144,240,0.1)',
+        '--owned-overlay':    'rgba(160,128,216,0.12)',
+      },
+      bodyBg: '#050203',
+      checkColor: '#c060e0'
+    },
+
+    wallpaper13: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper13.png',
+      vars: {
+        '--bg-primary':       '#0e0a05',
+        '--bg-secondary':     '#19140a',
+        '--bg-card':          '#241c10',
+        '--bg-card-hover':    '#302818',
+        '--bg-surface':       '#1c1408',
+        '--text-primary':     '#f2e8d8',
+        '--text-secondary':   '#a89070',
+        '--text-muted':       '#7a5840',
+        '--border':           '#3a2610',
+        '--border-light':     '#543818',
+        '--accent':           '#e89030',
+        '--accent-hover':     '#f8a840',
+        '--zen':              '#e89030',
+        '--zeny':             '#e89030',
+        '--zen-glow':         '#ffa850',
+        '--promo':            '#f8b840',
+        '--promo-glow':       '#ffc860',
+        '--fire':             '#e8502e',
+        '--fire-glow':        '#f8703d',
+        '--water':            '#9a8060',
+        '--water-glow':       '#b89878',
+        '--earth':            '#b89860',
+        '--earth-glow':       '#d0b078',
+        '--air':              '#f0d8a8',
+        '--air-glow':         '#ffe0c0',
+        '--success':          '#d89840',
+        '--danger':           '#d84848',
+        '--shadow-lg':        '0 8px 32px rgba(30,15,0,0.6)',
+        '--shadow-md':        '0 4px 16px rgba(30,15,0,0.45)',
+        '--common-bg':        'rgba(168,144,112,0.12)',
+        '--uncommon-bg':      'rgba(184,152,96,0.1)',
+        '--rare-bg':          'rgba(232,144,48,0.1)',
+        '--zen-bg':           'rgba(232,144,48,0.1)',
+        '--zeny-bg':          'rgba(248,184,64,0.1)',
+        '--promo-bg':         'rgba(248,184,64,0.1)',
+        '--owned-overlay':    'rgba(216,152,64,0.12)',
+      },
+      bodyBg: '#060402',
+      checkColor: '#e89030'
+    },
+
+    wallpaper14: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper14.png',
+      vars: {
+        '--bg-primary':       '#060c0a',
+        '--bg-secondary':     '#0c1814',
+        '--bg-card':          '#142420',
+        '--bg-card-hover':    '#1a3030',
+        '--bg-surface':       '#0f1c18',
+        '--text-primary':     '#d8f0f0',
+        '--text-secondary':   '#5a9898',
+        '--text-muted':       '#2a6868',
+        '--border':           '#0e3838',
+        '--border-light':     '#185858',
+        '--accent':           '#30d0c8',
+        '--accent-hover':     '#40e0d8',
+        '--zen':              '#30d0c8',
+        '--zeny':             '#30d0c8',
+        '--zen-glow':         '#50e0d8',
+        '--promo':            '#70f0e8',
+        '--promo-glow':       '#98fffF',
+        '--fire':             '#d8482e',
+        '--fire-glow':        '#f8683d',
+        '--water':            '#50d0c0',
+        '--water-glow':       '#68e0d0',
+        '--earth':            '#30d0c8',
+        '--earth-glow':       '#40e0d8',
+        '--air':              '#a8f0f0',
+        '--air-glow':         '#c8fff8',
+        '--success':          '#00e0d0',
+        '--danger':           '#d84848',
+        '--shadow-lg':        '0 8px 32px rgba(0,25,20,0.55)',
+        '--shadow-md':        '0 4px 16px rgba(0,25,20,0.4)',
+        '--common-bg':        'rgba(90,152,152,0.12)',
+        '--uncommon-bg':      'rgba(48,208,200,0.1)',
+        '--rare-bg':          'rgba(48,208,200,0.15)',
+        '--zen-bg':           'rgba(48,208,200,0.1)',
+        '--zeny-bg':          'rgba(112,240,232,0.1)',
+        '--promo-bg':         'rgba(112,240,232,0.1)',
+        '--owned-overlay':    'rgba(48,224,208,0.12)',
+      },
+      bodyBg: '#020504',
+      checkColor: '#30d0c8'
+    },
+
+    wallpaper15: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper15.png',
+      vars: {
+        '--bg-primary':       '#0a0a10',
+        '--bg-secondary':     '#14141f',
+        '--bg-card':          '#1d1d2f',
+        '--bg-card-hover':    '#2a2a42',
+        '--bg-surface':       '#16161f',
+        '--text-primary':     '#e8e8ff',
+        '--text-secondary':   '#8a8ab8',
+        '--text-muted':       '#5a5a88',
+        '--border':           '#2a2a4a',
+        '--border-light':     '#3d3d5a',
+        '--accent':           '#6b7dff',
+        '--accent-hover':     '#7d8dff',
+        '--zen':              '#6b7dff',
+        '--zeny':             '#6b7dff',
+        '--zen-glow':         '#8b9dff',
+        '--promo':            '#a8b8ff',
+        '--promo-glow':       '#c8d0ff',
+        '--fire':             '#ff6040',
+        '--fire-glow':        '#ff8060',
+        '--water':            '#5a8dff',
+        '--water-glow':       '#7aadff',
+        '--earth':            '#6d80d8',
+        '--earth-glow':       '#8598f0',
+        '--air':              '#c0c8ff',
+        '--air-glow':         '#dcdeff',
+        '--success':          '#60a0ff',
+        '--danger':           '#ff5050',
+        '--shadow-lg':        '0 8px 32px rgba(10,10,30,0.6)',
+        '--shadow-md':        '0 4px 16px rgba(10,10,30,0.45)',
+        '--common-bg':        'rgba(138,138,184,0.12)',
+        '--uncommon-bg':      'rgba(109,128,216,0.1)',
+        '--rare-bg':          'rgba(107,125,255,0.1)',
+        '--zen-bg':           'rgba(107,125,255,0.1)',
+        '--zeny-bg':          'rgba(168,184,255,0.1)',
+        '--promo-bg':         'rgba(168,184,255,0.1)',
+        '--owned-overlay':    'rgba(107,157,255,0.12)',
+      },
+      bodyBg: '#020205',
+      checkColor: '#6b7dff'
+    },
+
+    wallpaper16: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper16.png',
+      vars: {
+        '--bg-primary':       '#0d0608',
+        '--bg-secondary':     '#1a0f12',
+        '--bg-card':          '#241618',
+        '--bg-card-hover':    '#301c20',
+        '--bg-surface':       '#1c1214',
+        '--text-primary':     '#f0e0e8',
+        '--text-secondary':   '#a07878',
+        '--text-muted':       '#704040',
+        '--border':           '#3a1818',
+        '--border-light':     '#542828',
+        '--accent':           '#e05878',
+        '--accent-hover':     '#f07090',
+        '--zen':              '#e05878',
+        '--zeny':             '#e05878',
+        '--zen-glow':         '#ff7898',
+        '--promo':            '#f08898',
+        '--promo-glow':       '#ffa0b0',
+        '--fire':             '#d8482e',
+        '--fire-glow':        '#f8683d',
+        '--water':            '#6080c0',
+        '--water-glow':       '#7898e0',
+        '--earth':            '#a05870',
+        '--earth-glow':       '#c07090',
+        '--air':              '#e0b0c8',
+        '--air-glow':         '#f0c8e0',
+        '--success':          '#c04880',
+        '--danger':           '#d84848',
+        '--shadow-lg':        '0 8px 32px rgba(30,5,15,0.6)',
+        '--shadow-md':        '0 4px 16px rgba(30,5,15,0.45)',
+        '--common-bg':        'rgba(160,120,120,0.12)',
+        '--uncommon-bg':      'rgba(160,88,112,0.1)',
+        '--rare-bg':          'rgba(224,88,120,0.1)',
+        '--zen-bg':           'rgba(224,88,120,0.1)',
+        '--zeny-bg':          'rgba(240,136,152,0.1)',
+        '--promo-bg':         'rgba(240,136,152,0.1)',
+        '--owned-overlay':    'rgba(192,120,144,0.12)',
+      },
+      bodyBg: '#050203',
+      checkColor: '#e05878'
     }
 
   };
