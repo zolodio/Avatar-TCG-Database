@@ -1,6 +1,6 @@
 // scripts/characters-sync.js
 // Syncs the Creations character roster to/from the Supabase 'characters' table.
-// No changes needed to the existing IIFE — this intercepts localStorage writes.
+// Also fetches and renders friends' shared characters into #cc-shared-list.
 
 (function () {
   'use strict';
@@ -133,13 +133,165 @@
     if (uid && uid !== _lastUid) {
       _lastUid = uid;
       await syncFromCloud(uid);
+      await loadSharedCharacters(uid);        // ← also load friends' characters
     } else if (!uid && _lastUid) {
-      _lastUid = null; // logged out — local data stays until next login
+      _lastUid = null;
+      renderSharedList([]);                   // ← clear shared list on logout
     }
   }, 3000);
 
+  /* ══════════════════════════════════════════════════════════════════
+     FRIENDS' SHARED CHARACTERS
+  ══════════════════════════════════════════════════════════════════ */
+
+  /**
+   * Fetch all characters belonging to the current user's friends and
+   * render them into #cc-shared-list as standard .cc-char-card elements
+   * with data-char set to the full character JSON.
+   *
+   * Table assumptions (adjust to match your actual schema):
+   *   friendships  — user_id TEXT, friend_id TEXT, status TEXT ('accepted')
+   *   profiles     — user_id TEXT, username TEXT
+   *   characters   — user_id TEXT, data JSONB
+   *
+   * If your friendship table uses different column names (e.g. requester_id /
+   * addressee_id), update the two .eq() / .or() calls in getFriendIds below.
+   */
+
+  async function getFriendIds(uid) {
+    var sb = window.sb;
+    if (!sb) return [];
+
+    // Query both directions: rows where we are user_id OR friend_id
+    var res = await sb
+      .from('friendships')
+      .select('user_id, friend_id')
+      .eq('status', 'accepted')
+      .or('user_id.eq.' + uid + ',friend_id.eq.' + uid);
+
+    if (res.error || !res.data || !res.data.length) return [];
+
+    return res.data.map(function (row) {
+      return row.user_id === uid ? row.friend_id : row.user_id;
+    });
+  }
+
+  async function loadSharedCharacters(uid) {
+    var sb = window.sb;
+    if (!sb || !uid) return;
+
+    var friendIds = await getFriendIds(uid);
+    if (!friendIds.length) {
+      renderSharedList([]);
+      return;
+    }
+
+    // Fetch all characters for those friends in one query
+    var charRes = await sb
+      .from('characters')
+      .select('user_id, data')
+      .in('user_id', friendIds);
+
+    if (charRes.error || !charRes.data || !charRes.data.length) {
+      renderSharedList([]);
+      return;
+    }
+
+    // Fetch usernames for attribution — one profile query for all friend IDs
+    var profileRes = await sb
+      .from('profiles')
+      .select('user_id, username')
+      .in('user_id', friendIds);
+
+    var usernameMap = {};
+    if (profileRes.data) {
+      profileRes.data.forEach(function (p) {
+        usernameMap[p.user_id] = p.username;
+      });
+    }
+
+    // Attach the owner's username to each character object for display
+    var chars = charRes.data
+      .map(function (row) {
+        var c = Object.assign({}, row.data);
+        c._ownerUsername = usernameMap[row.user_id] || 'Friend';
+        return c;
+      })
+      .filter(function (c) { return c && c.givenName; })
+      .sort(function (a, b) {
+        return (b.updatedAt || b.createdAt || 0) - (a.updatedAt || a.createdAt || 0);
+      });
+
+    renderSharedList(chars);
+    console.log('[charSync] loaded', chars.length, 'shared characters');
+  }
+
+  /* ── render shared list ───────────────────────────────────────── */
+
+  function esc(s) {
+    return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function getElementEmoji(bending) {
+    var map = { water:'💧', earth:'🪨', fire:'🔥', air:'🌬️', spirit:'✨' };
+    return map[bending] || '⚔️';
+  }
+
+  function renderSharedList(chars) {
+    var list = document.getElementById('cc-shared-list');
+    if (!list) return;
+
+    if (!chars.length) {
+      list.innerHTML =
+        '<div style="text-align:center;padding:40px 0;color:var(--text-muted);font-size:0.82rem;">' +
+          '<i class="fas fa-share-alt" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:10px;"></i>' +
+          'No shared characters yet — check back soon!' +
+        '</div>';
+      return;
+    }
+
+    list.innerHTML = chars.map(function (char) {
+      var imgHtml = char.imageData
+        ? '<img src="data:' + esc(char.imageMime) + ';base64,' + char.imageData +
+          '" alt="' + esc(char.givenName) + '" ' +
+          'style="width:44px;height:44px;border-radius:8px;object-fit:cover;' +
+          'border:1px solid var(--border);flex-shrink:0;">'
+        : '<div class="cc-char-avatar">' + getElementEmoji(char.bending) + '</div>';
+
+      var bend = char.bending
+        ? char.bending.charAt(0).toUpperCase() + char.bending.slice(1)
+        : 'Non-Bender';
+      var sub = [bend, char.strike || '', char.advantage || '', char.ally || '']
+        .filter(Boolean).join(' · ');
+
+      // Embed the full character object as JSON so character-modal.js can read it
+      // directly from the DOM without needing a separate lookup.
+      var dataChar = esc(JSON.stringify(char));
+
+      return '<div class="cc-char-card" data-char="' + dataChar + '" ' +
+               'style="cursor:pointer;">' +
+               imgHtml +
+               '<div class="cc-char-info">' +
+                 '<div class="cc-char-name">' + esc(char.givenName) +
+                   (char.nickName
+                     ? ' <span style="color:var(--text-muted);font-weight:400;font-size:0.72rem;">&ldquo;' + esc(char.nickName) + '&rdquo;</span>'
+                     : '') +
+                 '</div>' +
+                 '<div class="cc-char-sub">' + esc(sub) + '</div>' +
+                 '<div style="font-size:0.65rem;color:var(--text-muted);margin-top:2px;">' +
+                   '<i class="fas fa-user" style="margin-right:3px;opacity:0.5;"></i>' +
+                   esc(char._ownerUsername) +
+                 '</div>' +
+               '</div>' +
+             '</div>';
+    }).join('');
+  }
+
   /* ── public API ───────────────────────────────────────────────── */
-  window.charSync = { syncFromCloud: syncFromCloud };
+  window.charSync = {
+    syncFromCloud:        syncFromCloud,
+    loadSharedCharacters: loadSharedCharacters
+  };
 
   console.log('[characters-sync.js] loaded ✓');
 })();

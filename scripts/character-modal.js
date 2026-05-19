@@ -917,6 +917,49 @@
     new MutationObserver(function() {
       // Nothing extra needed — delegation handles dynamic cards
     }).observe(list, { childList: true, subtree: true });
+
+    hookSharedList();
+  }
+
+  /* ══════════════════════════════════════════════════════════════════
+     SHARED LIST HOOK — delegated click on #cc-shared-list
+     Characters-sync.js should either:
+       (a) embed the character object as JSON in data-char on each card, OR
+       (b) populate window._sharedCharCache = { [id]: charObject, … }
+     Both patterns are supported below.
+  ══════════════════════════════════════════════════════════════════ */
+  function hookSharedList() {
+    var sharedList = document.getElementById('cc-shared-list');
+    if (!sharedList) {
+      // cc-shared-list may not exist yet if the DOM isn't ready — retry
+      setTimeout(hookSharedList, 600);
+      return;
+    }
+
+    sharedList.addEventListener('click', function (e) {
+      if (e.target.closest('.cc-char-action')) return;
+      var card = e.target.closest('.cc-char-card');
+      if (!card) return;
+
+      var char = null;
+
+      // Pattern (a): character JSON embedded directly on the card element
+      if (card.dataset.char) {
+        try { char = JSON.parse(card.dataset.char); } catch (err) { char = null; }
+      }
+
+      // Pattern (b): window._sharedCharCache keyed by data-id
+      if (!char && card.dataset.id && window._sharedCharCache) {
+        char = window._sharedCharCache[card.dataset.id] || null;
+      }
+
+      if (char) openModal(normalizeChar(char));
+    });
+
+    // Re-hook if characters-sync replaces the inner HTML after a fetch
+    new MutationObserver(function () {
+      // Delegation handles any newly rendered cards automatically
+    }).observe(sharedList, { childList: true, subtree: true });
   }
 
   /* ── ESC to close ── */
