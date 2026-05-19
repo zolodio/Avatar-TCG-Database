@@ -2957,60 +2957,7 @@ body {
         <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:16px;line-height:1.5;">Choose a wallpaper to personalize your experience. The color scheme adapts automatically to match the vibe.</div>
 
         <div id="theme-picker-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
-
-          <!-- DEFAULT THEME -->
-          <div class="theme-option-card selected-theme" data-theme="default" onclick="applyTheme('default')" style="cursor:pointer;border-radius:10px;border:2px solid var(--zen);overflow:hidden;position:relative;transition:all 0.25s;box-shadow:0 0 16px rgba(180,77,223,0.35);">
-            <div style="width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,#0a0c14 0%,#111525 50%,#171c30 100%);position:relative;overflow:hidden;">
-              <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 30% 60%,rgba(180,77,223,0.25) 0%,transparent 65%);"></div>
-              <div style="position:absolute;bottom:6px;left:8px;right:8px;display:flex;gap:4px;">
-                <div style="flex:1;height:4px;border-radius:2px;background:rgba(180,77,223,0.7);"></div>
-                <div style="flex:1;height:4px;border-radius:2px;background:rgba(74,125,255,0.5);"></div>
-                <div style="flex:1;height:4px;border-radius:2px;background:rgba(240,201,70,0.4);"></div>
-              </div>
-            </div>
-            <div style="padding:8px 10px;background:var(--bg-secondary);">
-              <div style="font-family:'Cinzel',serif;font-weight:700;font-size:0.72rem;color:var(--text-primary);">Void Spirit</div>
-              <div style="font-size:0.62rem;color:var(--text-muted);margin-top:1px;">Default · Dark navy &amp; purple</div>
-            </div>
-            <div id="theme-check-default" style="position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:var(--zen);display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:#fff;box-shadow:0 2px 8px rgba(180,77,223,0.5);">✓</div>
-          </div>
-
-          <!-- WALLPAPER 1 -->
-          <div class="theme-option-card" data-theme="wallpaper1" onclick="applyTheme('wallpaper1')" style="cursor:pointer;border-radius:10px;border:2px solid var(--border);overflow:hidden;position:relative;transition:all 0.25s;">
-            <div style="width:100%;aspect-ratio:16/9;overflow:hidden;background:#1a0805;">
-              <img src="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper1.png" alt="Fire Nation" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
-            </div>
-            <div style="padding:8px 10px;background:var(--bg-secondary);">
-              <div style="font-family:'Cinzel',serif;font-weight:700;font-size:0.72rem;color:var(--text-primary);">Fire Nation</div>
-              <div style="font-size:0.62rem;color:var(--text-muted);margin-top:1px;">Wallpaper 1 · Crimson &amp; ember</div>
-            </div>
-            <div id="theme-check-wallpaper1" style="position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:#e8532e;display:none;align-items:center;justify-content:font-size:0.65rem;color:#fff;box-shadow:0 2px 8px rgba(232,83,46,0.5);align-items:center;justify-content:center;font-size:0.65rem;">✓</div>
-          </div>
-
-          <!-- WALLPAPER 4 -->
-          <div class="theme-option-card" data-theme="wallpaper4" onclick="applyTheme('wallpaper4')" style="cursor:pointer;border-radius:10px;border:2px solid var(--border);overflow:hidden;position:relative;transition:all 0.25s;">
-            <div style="width:100%;aspect-ratio:16/9;overflow:hidden;background:#04101a;">
-              <img src="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper4.png" alt="Water Tribe" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
-            </div>
-            <div style="padding:8px 10px;background:var(--bg-secondary);">
-              <div style="font-family:'Cinzel',serif;font-weight:700;font-size:0.72rem;color:var(--text-primary);">Water Tribe</div>
-              <div style="font-size:0.62rem;color:var(--text-muted);margin-top:1px;">Wallpaper 4 · Arctic deep blue</div>
-            </div>
-            <div id="theme-check-wallpaper4" style="position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:#2e8ce8;display:none;align-items:center;justify-content:center;font-size:0.65rem;color:#fff;box-shadow:0 2px 8px rgba(46,140,232,0.5);">✓</div>
-          </div>
-
-          <!-- WALLPAPER 9 -->
-          <div class="theme-option-card" data-theme="wallpaper9" onclick="applyTheme('wallpaper9')" style="cursor:pointer;border-radius:10px;border:2px solid var(--border);overflow:hidden;position:relative;transition:all 0.25s;">
-            <div style="width:100%;aspect-ratio:16/9;overflow:hidden;background:#060f04;">
-              <img src="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper9.png" alt="Earth Kingdom" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
-            </div>
-            <div style="padding:8px 10px;background:var(--bg-secondary);">
-              <div style="font-family:'Cinzel',serif;font-weight:700;font-size:0.72rem;color:var(--text-primary);">Earth Kingdom</div>
-              <div style="font-size:0.62rem;color:var(--text-muted);margin-top:1px;">Wallpaper 9 · Stone &amp; jade</div>
-            </div>
-            <div id="theme-check-wallpaper9" style="position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:#5cb85c;display:none;align-items:center;justify-content:center;font-size:0.65rem;color:#fff;box-shadow:0 2px 8px rgba(92,184,92,0.5);">✓</div>
-          </div>
-
+          <!-- Populated dynamically by renderThemePicker() in the theme script below -->
         </div>
 
         <div style="margin-top:12px;padding:10px 12px;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;gap:8px;">
@@ -8841,11 +8788,56 @@ init();
 
 <script>
 (function() {
-  /* ─── THEME DEFINITIONS ─── */
+
+  /* ═══════════════════════════════════════════════════════════════════
+     THEME LABELS — EDIT THIS TABLE TO RENAME / REORDER THEMES
+     ─────────────────────────────────────────────────────────────────
+     Each row:  [ 'THEMES key',  'Display Name',  'Subtitle line' ]
+
+     • To rename a theme:    change the Display Name or Subtitle.
+     • To reorder themes:    drag rows up / down.
+     • To add a new theme:   add a row here AND add a matching entry
+                             in the THEMES object further below.
+     • To remove a theme:    delete the row here AND in THEMES.
+     • The THEMES key ties this table to the THEMES object below.
+  ═══════════════════════════════════════════════════════════════════ */
+  var THEME_META = [
+    // key              Display Name       Subtitle
+    [ 'default',    'Spirit',          'Default · Spirit World'           ],
+    [ 'wallpaper1', 'Fire',            'Fire Nation · Crimson & ember'    ],
+    [ 'wallpaper2', 'Dai Li',          'Secret Police · Deep violet'      ],
+    [ 'wallpaper3', 'Princess Yue',    'Northern Water Tribe · Magenta'   ],
+    [ 'wallpaper4', 'Water',           'Water Tribe · Arctic deep blue'   ],
+    [ 'wallpaper5', 'Deep Ocean',      'Abyss · Midnight cyan'            ],
+    [ 'wallpaper6', 'Dark',            'Void · Deep indigo'               ],
+    [ 'wallpaper7', 'Air',             'Air Nomads · Golden amber'        ],
+    [ 'wallpaper8', 'Ba Sing Se',      'Earth Kingdom · Neon green'       ],
+    [ 'wallpaper9', 'Earth',           'Earth Kingdom · Stone & jade'     ],
+    [ 'wallpaper10','Lion Turtle',     'Ancient Guardian · Emerald deep'  ],
+    [ 'wallpaper11','Republic City',   'United Republic · Steel city blue'],
+    [ 'wallpaper12','Moon Spirit',     'Tui & La · Violet eclipse'        ],
+    [ 'wallpaper13','Air Temple',      'Sky Bison Route · Warm saffron'   ],
+    [ 'wallpaper14','Wan Shi Tong',    'Spirit Library · Deep teal'       ],
+    [ 'wallpaper15','Light',           'Harmonic Convergence · Bright'    ],
+    [ 'wallpaper16','Nickelodeon',     'Nick Branding · Hot pink & rose'  ],
+  ];
+
+  /* ═══════════════════════════════════════════════════════════════════
+     THEME DEFINITIONS — EDIT VARS HERE TO CHANGE COLORS
+     ─────────────────────────────────────────────────────────────────
+     Each theme object has:
+       wallpaperUrl  — background image shown full-screen on the page
+       vars          — CSS custom properties applied to :root
+       bodyBg        — fallback body background color
+       checkColor    — accent color shown on the selected card badge
+
+     To tweak a theme's color scheme: find its key below and edit vars.
+     The key must match a row in THEME_META above.
+  ═══════════════════════════════════════════════════════════════════ */
   var THEMES = {
 
     default: {
-      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/Current-Development/BKGRND.png',
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/Current-Development/BKGRND.jpg',
       vars: {
         '--bg-primary':       '#0a0c14',
         '--bg-secondary':     '#111525',
@@ -9593,6 +9585,46 @@ init();
     }
 
   };
+
+  /* ─── RENDER THEME PICKER ───────────────────────────────────────
+     Builds theme cards from THEME_META + THEMES. To add, rename, or
+     reorder themes just edit the THEME_META table above — no HTML to
+     touch.
+  ─────────────────────────────────────────────────────────────────── */
+  function hexToRgbaLocal(hex, alpha) {
+    var r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    return 'rgba('+r+','+g+','+b+','+alpha+')';
+  }
+
+  function renderThemePicker() {
+    var grid = document.getElementById('theme-picker-grid');
+    if (!grid) return;
+    grid.innerHTML = THEME_META.map(function(row) {
+      var key = row[0], name = row[1], sub = row[2];
+      var theme = THEMES[key];
+      if (!theme) return '';
+      var check = theme.checkColor || '#b44ddf';
+      var shadow = hexToRgbaLocal(check, 0.5);
+      return (
+        '<div class="theme-option-card" data-theme="'+key+'" onclick="applyTheme(\''+key+'\')" '+
+        'style="cursor:pointer;border-radius:10px;border:2px solid var(--border);overflow:hidden;position:relative;transition:all 0.25s;">'+
+          '<div style="width:100%;aspect-ratio:16/9;overflow:hidden;background:#000;">'+
+            '<img src="'+theme.wallpaperUrl+'" alt="'+name+'" '+
+            'style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">'+
+          '</div>'+
+          '<div style="padding:8px 10px;background:var(--bg-secondary);">'+
+            '<div style="font-family:\'Cinzel\',serif;font-weight:700;font-size:0.72rem;color:var(--text-primary);">'+name+'</div>'+
+            '<div style="font-size:0.62rem;color:var(--text-muted);margin-top:1px;">'+sub+'</div>'+
+          '</div>'+
+          '<div id="theme-check-'+key+'" '+
+          'style="position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;'+
+          'background:'+check+';display:none;align-items:center;justify-content:center;'+
+          'font-size:0.65rem;color:#fff;box-shadow:0 2px 8px '+shadow+';">✓</div>'+
+        '</div>'
+      );
+    }).join('');
+  }
+  renderThemePicker();
 
   /* ─── APPLY THEME ─── */
   window.applyTheme = function(themeKey) {
