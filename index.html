@@ -9608,8 +9608,9 @@ init();
       return (
         '<div class="theme-option-card" data-theme="'+key+'" onclick="applyTheme(\''+key+'\')" '+
         'style="cursor:pointer;border-radius:10px;border:2px solid var(--border);overflow:hidden;position:relative;transition:all 0.25s;">'+
-          '<div style="width:100%;aspect-ratio:16/9;overflow:hidden;background:#000;">'+
+          '<div class="theme-thumbnail-container" style="width:100%;aspect-ratio:16/9;overflow:hidden;background:#000;position:relative;">'+
             '<img src="'+theme.wallpaperUrl+'" alt="'+name+'" '+
+            'class="theme-thumbnail-img" data-theme-key="'+key+'" '+
             'style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">'+
           '</div>'+
           '<div style="padding:8px 10px;background:var(--bg-secondary);">'+
@@ -9623,7 +9624,45 @@ init();
         '</div>'
       );
     }).join('');
+    
+    /* Attach dynamic styling to thumbnail images */
+    setTimeout(function() {
+      document.querySelectorAll('.theme-thumbnail-img').forEach(function(img) {
+        if (img.complete) {
+          /* Image already cached/loaded */
+          applyDynamicThumbnailStyles(img);
+        }
+        img.onload = function() {
+          applyDynamicThumbnailStyles(img);
+        };
+      });
+    }, 50);
   }
+  
+  /* Apply dynamic aspect ratio styles to theme picker thumbnails */
+  function applyDynamicThumbnailStyles(img) {
+    if (!img || img.naturalHeight === 0 || img.naturalWidth === 0) {
+      return;
+    }
+    
+    var isPortrait = img.naturalHeight > img.naturalWidth;
+    var container = img.closest('.theme-thumbnail-container');
+    
+    if (!container) return;
+    
+    if (isPortrait) {
+      /* Portrait: contain, adjust container to portrait aspect ratio */
+      img.style.objectFit = 'contain';
+      img.style.objectPosition = 'top center';
+      container.style.aspectRatio = String(img.naturalWidth / img.naturalHeight);
+    } else {
+      /* Landscape or square: cover, keep 16/9 or adjust to match image */
+      img.style.objectFit = 'cover';
+      img.style.objectPosition = 'top center';
+      container.style.aspectRatio = 'auto';
+    }
+  }
+  
   renderThemePicker();
 
   /* ─── DYNAMIC IMAGE STYLES BASED ON ASPECT RATIO ─── */
@@ -9707,6 +9746,16 @@ init();
       var check = document.getElementById('theme-check-' + key);
       if (check) {
         check.style.display = isSelected ? 'flex' : 'none';
+      }
+      
+      /* Reapply thumbnail styles for selected card */
+      if (isSelected) {
+        var thumbImg = card.querySelector('.theme-thumbnail-img');
+        if (thumbImg) {
+          setTimeout(function() {
+            applyDynamicThumbnailStyles(thumbImg);
+          }, 50);
+        }
       }
     });
 
