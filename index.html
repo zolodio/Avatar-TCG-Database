@@ -9626,6 +9626,34 @@ init();
   }
   renderThemePicker();
 
+  /* ─── DYNAMIC IMAGE STYLES BASED ON ASPECT RATIO ─── */
+  function applyDynamicImageStyles(img) {
+    if (!img) return;
+    
+    // Check if image dimensions are loaded
+    if (img.naturalHeight === 0 || img.naturalWidth === 0) {
+      // Wait a bit and retry if dimensions aren't ready yet
+      setTimeout(function() { applyDynamicImageStyles(img); }, 100);
+      return;
+    }
+    
+    var isPortrait = img.naturalHeight > img.naturalWidth;
+    
+    if (isPortrait) {
+      // Portrait: contain, 100% height
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'contain';
+      img.style.objectPosition = 'top center';
+    } else {
+      // Landscape or square: cover, 100vh height
+      img.style.width = '100%';
+      img.style.height = '100vh';
+      img.style.objectFit = 'cover';
+      img.style.objectPosition = 'top center';
+    }
+  }
+
   /* ─── APPLY THEME ─── */
   window.applyTheme = function(themeKey) {
     var theme = THEMES[themeKey];
@@ -9655,10 +9683,14 @@ init();
       setTimeout(function() {
         bgImg.src = theme.wallpaperUrl;
         bgImg.onload = function() {
+          applyDynamicImageStyles(bgImg);
           bgImg.style.opacity = '1';
         };
         /* Fallback in case onload doesn't fire */
-        setTimeout(function() { bgImg.style.opacity = '1'; }, 600);
+        setTimeout(function() { 
+          applyDynamicImageStyles(bgImg);
+          bgImg.style.opacity = '1'; 
+        }, 600);
       }, 200);
     }
 
@@ -9731,7 +9763,16 @@ init();
       document.body.style.backgroundColor = theme.bodyBg;
 
       var bgImg = document.querySelector('.bg-fixed-image img');
-      if (bgImg) bgImg.src = theme.wallpaperUrl;
+      if (bgImg) {
+        bgImg.src = theme.wallpaperUrl;
+        bgImg.onload = function() {
+          applyDynamicImageStyles(bgImg);
+        };
+        // Also apply styles after a short delay as fallback
+        setTimeout(function() {
+          applyDynamicImageStyles(bgImg);
+        }, 200);
+      }
 
       updateSliderAccents(theme);
 
