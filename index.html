@@ -32,6 +32,7 @@
   --air: #f0c946;
   --air-glow: #ffd966;
   --zen: #b44ddf;
+  --zeny: #b44ddf;
   --zen-glow: #d16bff;
   --promo: #e8b632;
   --promo-glow: #ffd04a;
@@ -43,6 +44,7 @@
   --uncommon-bg: rgba(92,184,92,0.1);
   --rare-bg: rgba(74,125,255,0.1);
   --zen-bg: rgba(180,77,223,0.1);
+  --zeny-bg: rgba(232,182,50,0.1);
   --promo-bg: rgba(232,182,50,0.1);
   --owned-overlay: rgba(61,184,108,0.12);
   --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
@@ -135,11 +137,21 @@ body {
 .cc-char-action.edit:hover{border-color:var(--accent);color:var(--accent);}
 .cc-char-action.del:hover{border-color:var(--danger);color:var(--danger);}
  
-/* ── Range sliders ── */
-.cc-slider{width:100%;accent-color:var(--zen);}
+/* ── Personality sliders ── */
+.cc-slider{width:100%;accent-color:var(--zen-glow);}
 .cc-slider-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
 .cc-slider-label{font-size:0.72rem;color:var(--text-secondary);width:110px;flex-shrink:0;}
-.cc-slider-val{font-size:0.72rem;font-weight:700;color:var(--zen);width:28px;text-align:right;flex-shrink:0;}
+.cc-slider-val{font-size:0.72rem;font-weight:700;color:var(--zen-glow);width:28px;text-align:right;flex-shrink:0;}
+/* ── Physical sliders ── */
+.cc-slider2{width:100%;accent-color:var(--promo);}
+.cc-slider2-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.cc-slider2-label{font-size:0.72rem;color:var(--text-secondary);width:110px;flex-shrink:0;}
+.cc-slider2-val{font-size:0.72rem;font-weight:700;color:var(--promo);width:28px;text-align:right;flex-shrink:0;}
+/* ── Mental sliders ── */
+.cc-slider3{width:100%;accent-color:var(--accent);}
+.cc-slider3-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.cc-slider3-label{font-size:0.72rem;color:var(--text-secondary);width:110px;flex-shrink:0;}
+.cc-slider3-val{font-size:0.72rem;font-weight:700;color:var(--accent);width:28px;text-align:right;flex-shrink:0;}
  
 /* ── Tabs (sub) ── */
 .cc-tabs{display:flex;gap:0;margin-bottom:16px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
@@ -1989,17 +2001,25 @@ body {
 
 <!-- TAB NAVIGATION -->
 <div class="tab-nav">
-  <button class="tab-btn active" data-tab="home"><i class="fas fa-clone" style="transform: scale(.75,1.175)"></i> Card Collection</button>
-  <button class="tab-btn" data-tab="portfolio"><i class="fas fa-chart-line"></i> Physical Portfolio</button>
-  <button class="tab-btn" data-tab="digital-collection"><i class="fas fa-cloud-download-alt"></i> Digital Collection</button>
+  <button class="tab-btn active" data-tab="physical-cards"><i class="fas fa-clone" style="transform: scale(.75,1.175)"></i> Physical Cards</button>
+  <button class="tab-btn" data-tab="digital-collection"><i class="fas fa-cloud-download-alt"></i> Digital Cards</button>
   <button class="tab-btn" data-tab="media"><i class="fas fa-film"></i> Media</button>
-  <button class="tab-btn" data-tab="profile"><i class="fas fa-user"></i> Together</button>
+  <button class="tab-btn" data-tab="profile"><i class="fas fa-users"></i> Together</button>
   <button class="tab-btn" data-tab="collect"><i class="fas fa-shopping-bag"></i> Collect</button>
   <button class="tab-btn" data-tab="creations"><i class="fas fa-scroll"></i> Creations</button>
 </div>
 
-<!-- CARD COLLECTION TAB -->
-<div class="tab-content active" id="tab-home">
+<!-- PHYSICAL CARDS TAB -->
+<div class="tab-content active" id="tab-physical-cards">
+  <div class="tab-nav-nested">
+    <button class="tab-btn-nested active" data-nested-tab="collection">Collection</button>
+    <button class="tab-btn-nested" data-nested-tab="pack-rip-estimators">Pack Rip Estimators</button>
+    <button class="tab-btn-nested" data-nested-tab="graph">Graph</button>
+    <button class="tab-btn-nested" data-nested-tab="save-code-portfolio">Save Code</button>
+  </div>
+
+  <!-- COLLECTION NESTED TAB -->
+  <div id="nested-collection" class="nested-tab-content active">
 <div style="margin-bottom: 18px;">
   <button id="statsToggleBtn" onclick="(function(){
     var body = document.getElementById('statsCollapsible');
@@ -2073,6 +2093,106 @@ body {
 
 <div class="card-grid" id="cardGrid"></div>
 <div class="empty-state" id="emptyState" style="display:none;"><p>No cards match your search</p></div>
+  </div>
+
+  <!-- PACK RIP ESTIMATORS NESTED TAB -->
+  <div id="nested-pack-rip-estimators" class="nested-tab-content" style="display:none;">
+    <div class="tab-nav-nested" style="margin-bottom: 16px;">
+      <button class="tab-btn-nested active" data-subnested-tab="zen-calc">Zenemental</button>
+      <button class="tab-btn-nested" data-subnested-tab="chamber-calc">Chamber</button>
+      <button class="tab-btn-nested" data-subnested-tab="rare-calc">Rare</button>
+      <button class="tab-btn-nested" data-subnested-tab="uncommon-calc">Uncommon</button>
+      <button class="tab-btn-nested" data-subnested-tab="common-calc">Common</button>
+    </div>
+
+    <!-- ZENEMENTAL SUBNESTED TAB -->
+    <div id="subnested-zen-calc" class="nested-tab-content active">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+          <i class="fas fa-dice-d20 fa-spin" style="color:var(--zen); font-size:1.2rem;"></i>
+          <div>
+            <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Zenemental Pack Calculator</div>
+            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-in-6 pull rate &middot; Core cards only</div>
+          </div>
+        </div>
+        <div id="zenPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
+      </div>
+    </div>
+
+    <!-- CHAMBER SUBNESTED TAB -->
+    <div id="subnested-chamber-calc" class="nested-tab-content" style="display:none;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+          <i class="fas fa-window-maximize" style="color:var(--air); font-size:1.2rem; transform: scale(.9, 1.75);"></i>
+          <div>
+            <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Chamber Pack Calculator</div>
+            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-per-pack &middot; Core cards only</div>
+          </div>
+        </div>
+        <div id="chamberPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
+      </div>
+    </div>
+
+    <!-- RARE SUBNESTED TAB -->
+    <div id="subnested-rare-calc" class="nested-tab-content" style="display:none;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+          <i class="fas fa-star fa-spin" style="color:var(--water); font-size:1.2rem;"></i>
+          <div>
+            <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Rare Pack Calculator</div>
+            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-per-pack &middot; Core cards only</div>
+          </div>
+        </div>
+        <div id="rarePackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
+      </div>
+    </div>
+
+    <!-- UNCOMMON SUBNESTED TAB -->
+    <div id="subnested-uncommon-calc" class="nested-tab-content" style="display:none;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+          <i class="fas fa-circle" style="color:var(--earth); font-size:1.2rem;"></i>
+          <div>
+            <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Uncommon Pack Calculator</div>
+            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">3-per-pack &middot; Core cards only</div>
+          </div>
+        </div>
+        <div id="uncommonPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
+      </div>
+    </div>
+
+    <!-- COMMON SUBNESTED TAB -->
+    <div id="subnested-common-calc" class="nested-tab-content" style="display:none;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+          <i class="far fa-circle" style="color:var(--text-secondary); font-size:1.2rem;"></i>
+          <div>
+            <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Common Pack Calculator</div>
+            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">5-per-pack &middot; Core cards only</div>
+          </div>
+        </div>
+        <div id="commonPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRAPH NESTED TAB -->
+  <div id="nested-graph" class="nested-tab-content" style="display:none;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
+      <i class="fas fa-chart-line" style="font-size: 2.5rem; color: var(--earth); margin-bottom: 14px;"></i>
+      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 6px; font-size:1rem;">Portfolio Graph</h3>
+      <p style="color: var(--text-secondary); font-size:0.85rem;">Visualize your collection value over time &mdash; coming soon</p>
+    </div>
+  </div>
+
+  <!-- SAVE CODE NESTED TAB -->
+  <div id="nested-save-code-portfolio" class="nested-tab-content" style="display:none;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px;">
+      <div class="save-code-header"><span class="save-code-label">Current Save Code:</span></div>
+      <div id="saveCodeDisplayPortfolio"></div>
+      <div class="save-code-hint">Select the code above to copy it manually</div>
+    </div>
+  </div>
 </div>
 
 <!-- MEDIA TAB -->
@@ -2564,114 +2684,11 @@ body {
 
 </div><!-- /tab-media -->
 
-<!-- PORTFOLIO TAB -->
-<div class="tab-content" id="tab-portfolio">
-  <div class="tab-nav-nested">
-    <button class="tab-btn-nested active" data-nested-tab="zen-calc">Zenemental</button>
-    <button class="tab-btn-nested" data-nested-tab="chamber-calc">Chamber</button>
-    <button class="tab-btn-nested" data-nested-tab="rare-calc">Rare</button>
-    <button class="tab-btn-nested" data-nested-tab="uncommon-calc">Uncommon</button>
-    <button class="tab-btn-nested" data-nested-tab="common-calc">Common</button>
-    <button class="tab-btn-nested" data-nested-tab="graph">Graph</button>
-    <button class="tab-btn-nested" data-nested-tab="card-values">Card Values</button>
-    <button class="tab-btn-nested" data-nested-tab="save-code-portfolio">Save Code</button>
-  </div>
-
-  <div id="nested-save-code-portfolio" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px;">
-      <div class="save-code-header"><span class="save-code-label">Current Save Code:</span></div>
-      <div id="saveCodeDisplayPortfolio"></div>
-      <div class="save-code-hint">Select the code above to copy it manually</div>
-    </div>
-  </div>
-
-  <div id="nested-zen-calc" class="nested-tab-content active">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
-      <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
-        <i class="fas fa-dice-d20 fa-spin" style="color:var(--zen); font-size:1.2rem;"></i>
-        <div>
-          <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Zenemental Pack Calculator</div>
-          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-in-6 pull rate &middot; Core cards only</div>
-        </div>
-      </div>
-      <div id="zenPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
-    </div>
-  </div>
-
-  <div id="nested-chamber-calc" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
-      <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
-        <i class="fas fa-window-maximize" style="color:var(--air); font-size:1.2rem; transform: scale(.9, 1.75);"></i>
-        <div>
-          <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Chamber Pack Calculator</div>
-          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-per-pack &middot; Core cards only</div>
-        </div>
-      </div>
-      <div id="chamberPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
-    </div>
-  </div>
-
-  <div id="nested-rare-calc" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
-      <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
-        <i class="fas fa-star fa-spin" style="color:var(--water); font-size:1.2rem;"></i>
-        <div>
-          <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Rare Pack Calculator</div>
-          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-per-pack &middot; Core cards only</div>
-        </div>
-      </div>
-      <div id="rarePackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
-    </div>
-  </div>
-
-  <div id="nested-uncommon-calc" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
-      <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
-        <i class="fas fa-circle" style="color:var(--earth); font-size:1.2rem;"></i>
-        <div>
-          <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Uncommon Pack Calculator</div>
-          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">3-per-pack &middot; Core cards only</div>
-        </div>
-      </div>
-      <div id="uncommonPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
-    </div>
-  </div>
-
-  <div id="nested-common-calc" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
-      <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
-        <i class="far fa-circle" style="color:var(--text-secondary); font-size:1.2rem;"></i>
-        <div>
-          <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Common Pack Calculator</div>
-          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">5-per-pack &middot; Core cards only</div>
-        </div>
-      </div>
-      <div id="commonPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading collection data&hellip;</div></div>
-    </div>
-  </div>
-
-  <div id="nested-graph" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
-      <i class="fas fa-chart-line" style="font-size: 2.5rem; color: var(--earth); margin-bottom: 14px;"></i>
-      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 6px; font-size:1rem;">Portfolio Graph</h3>
-      <p style="color: var(--text-secondary); font-size:0.85rem;">Visualize your collection value over time &mdash; coming soon</p>
-    </div>
-  </div>
-
-  <div id="nested-card-values" class="nested-tab-content" style="display:none;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
-      <i class="fas fa-coins" style="font-size: 3rem; color: var(--promo); margin-bottom: 16px;"></i>
-      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px;">Card Values</h3>
-      <p style="color: var(--text-secondary);">View current market values for cards</p>
-      <p style="color: var(--text-secondary);">Coming Soon...</p>
-    </div>
-  </div>
-</div>
-
 <!-- DIGITAL TAB -->
 <div id="tab-digital-collection" class="tab-content">
   <div class="tab-nav-nested">
     <button class="tab-btn-nested active" data-nested-tab="digital-main">Collection</button>
+    <button class="tab-btn-nested" data-nested-tab="digital-pack-rip-estimators">Pack Rip Estimators</button>
     <button class="tab-btn-nested" data-nested-tab="digital-redeem">Redeem</button>
     <button class="tab-btn-nested" data-nested-tab="digital-deckbuilder">Deck Builder</button>
   </div>
@@ -2738,6 +2755,87 @@ body {
     <div class="empty-state" id="digital-empty-state" style="display: none;">
       <i class="fas fa-inbox"></i>
       <p>No digital cards yet. Redeem codes from the Booster app to get started!</p>
+    </div>
+  </div>
+
+  <!-- DIGITAL PACK RIP ESTIMATORS NESTED TAB -->
+  <div id="nested-digital-pack-rip-estimators" class="nested-tab-content" style="display:none;">
+    <div class="tab-nav-nested" style="margin-bottom: 16px;">
+      <button class="tab-btn-nested active" data-subnested-tab="digital-zen-calc">Zenemental</button>
+      <button class="tab-btn-nested" data-subnested-tab="digital-chamber-calc">Chamber</button>
+      <button class="tab-btn-nested" data-subnested-tab="digital-rare-calc">Rare</button>
+      <button class="tab-btn-nested" data-subnested-tab="digital-uncommon-calc">Uncommon</button>
+      <button class="tab-btn-nested" data-subnested-tab="digital-common-calc">Common</button>
+    </div>
+
+    <!-- ZENEMENTAL SUBNESTED TAB -->
+    <div id="subnested-digital-zen-calc" class="nested-tab-content active">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+          <i class="fas fa-dice-d20 fa-spin" style="color:var(--zen); font-size:1.2rem;"></i>
+          <div>
+            <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Zenemental Pack Calculator</div>
+            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-in-6 pull rate &middot; Digital cards</div>
+          </div>
+        </div>
+        <div id="digitalZenPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading digital collection data&hellip;</div></div>
+      </div>
+    </div>
+
+    <!-- CHAMBER SUBNESTED TAB -->
+    <div id="subnested-digital-chamber-calc" class="nested-tab-content" style="display:none;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+          <i class="fas fa-window-maximize" style="color:var(--air); font-size:1.2rem; transform: scale(.9, 1.75);"></i>
+          <div>
+            <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Chamber Pack Calculator</div>
+            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-per-pack &middot; Digital cards</div>
+          </div>
+        </div>
+        <div id="digitalChamberPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading digital collection data&hellip;</div></div>
+      </div>
+    </div>
+
+    <!-- RARE SUBNESTED TAB -->
+    <div id="subnested-digital-rare-calc" class="nested-tab-content" style="display:none;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+          <i class="fas fa-star fa-spin" style="color:var(--water); font-size:1.2rem;"></i>
+          <div>
+            <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Rare Pack Calculator</div>
+            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">1-per-pack &middot; Digital cards</div>
+          </div>
+        </div>
+        <div id="digitalRarePackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading digital collection data&hellip;</div></div>
+      </div>
+    </div>
+
+    <!-- UNCOMMON SUBNESTED TAB -->
+    <div id="subnested-digital-uncommon-calc" class="nested-tab-content" style="display:none;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+          <i class="fas fa-circle" style="color:var(--earth); font-size:1.2rem;"></i>
+          <div>
+            <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Uncommon Pack Calculator</div>
+            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">3-per-pack &middot; Digital cards</div>
+          </div>
+        </div>
+        <div id="digitalUncommonPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading digital collection data&hellip;</div></div>
+      </div>
+    </div>
+
+    <!-- COMMON SUBNESTED TAB -->
+    <div id="subnested-digital-common-calc" class="nested-tab-content" style="display:none;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 24px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+          <i class="far fa-circle" style="color:var(--text-secondary); font-size:1.2rem;"></i>
+          <div>
+            <div style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:var(--text-primary);">Common Pack Calculator</div>
+            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">5-per-pack &middot; Digital cards</div>
+          </div>
+        </div>
+        <div id="digitalCommonPackWidget"><div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.82rem;"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>Loading digital collection data&hellip;</div></div>
+      </div>
     </div>
   </div>
 
@@ -2848,6 +2946,23 @@ body {
       <div id="profileDisplayCard" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 18px;">
         <div style="display:flex;align-items:center;justify-content:center;padding:24px 0;color:var(--text-muted);font-size:0.8rem;">
           <i class="fas fa-circle-notch fa-spin" style="margin-right:8px;"></i>Loading profile…
+        </div>
+      </div>
+
+      <!-- ══════════════ THEME CHANGER ══════════════ -->
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 18px;margin-top:14px;">
+        <div style="font-family:'Cinzel',serif;font-weight:700;font-size:0.9rem;color:var(--text-primary);margin-bottom:4px;display:flex;align-items:center;gap:8px;">
+          <i class="fas fa-palette" style="color:var(--zen);font-size:1rem;"></i> Appearance &amp; Theme
+        </div>
+        <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:16px;line-height:1.5;">Choose a wallpaper to personalize your experience. The color scheme adapts automatically to match the vibe.</div>
+
+        <div id="theme-picker-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
+          <!-- Populated dynamically by renderThemePicker() in the theme script below -->
+        </div>
+
+        <div style="margin-top:12px;padding:10px 12px;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;gap:8px;">
+          <i class="fas fa-info-circle" style="color:var(--accent);font-size:0.8rem;flex-shrink:0;"></i>
+          <div style="font-size:0.7rem;color:var(--text-muted);line-height:1.4;">Theme choice is saved locally on this device. Color accents, backgrounds, and UI elements all adapt to your selected wallpaper.</div>
         </div>
       </div>
     </div>
@@ -3124,33 +3239,40 @@ body {
   </div>
   </div>
 <div class="tab-content" id="tab-creations">
-  <!-- BEGIN CREATIONS TAB CONTENT (paste inside tab-content div) -->
-<div id="cc-app">
- 
-  <!-- Sub-tab navigation -->
-  <div class="cc-tabs" id="ccTabs">
-    <button class="cc-tab active" data-cctab="create">&#10010; Create</button>
-    <button class="cc-tab" data-cctab="roster">&#9876; My Characters</button>
+  <!-- Main nested tabs for Creations -->
+  <div class="tab-nav-nested">
+    <button class="tab-btn-nested active" data-nested-tab="creations-characters">Characters</button>
+    <button class="tab-btn-nested" data-nested-tab="creations-cards">Cards</button>
+    <button class="tab-btn-nested" data-nested-tab="creations-freeform">Free Form</button>
   </div>
- 
-  <!-- ── CREATE PANEL ── -->
-  <div id="cctab-create">
- 
-    <!-- Action bar -->
-    <div class="cc-action-bar">
-      <button class="cc-btn cc-btn-primary" id="cc-save-btn">
-        <i class="fas fa-save"></i> Save Character
-      </button>
-      <button class="cc-btn cc-btn-secondary" id="cc-random-btn">
-        <i class="fas fa-dice"></i> Randomize
-      </button>
-      <button class="cc-btn cc-btn-secondary" id="cc-clear-btn">
-        <i class="fas fa-eraser"></i> Clear Form
-      </button>
+
+  <!-- CHARACTERS NESTED TAB -->
+  <div id="nested-creations-characters" class="nested-tab-content active">
+    <!-- Sub-tab navigation for Characters -->
+    <div class="cc-tabs" id="ccTabs" style="margin-bottom: 16px;">
+      <button class="cc-tab active" data-cctab="create">&#10010; Create</button>
+      <button class="cc-tab" data-cctab="my-characters">&#9876; My Characters</button>
+      <button class="cc-tab" data-cctab="friends-shared">&#10003; Friends' Shared</button>
     </div>
- 
-    <!-- 1. NAME -->
-    <div class="cc-section">
+   
+    <!-- ── CREATE PANEL ── -->
+    <div id="cctab-create">
+   
+      <!-- Action bar -->
+      <div class="cc-action-bar">
+        <button class="cc-btn cc-btn-primary" id="cc-save-btn">
+          <i class="fas fa-save"></i> Save Character
+        </button>
+        <button class="cc-btn cc-btn-secondary" id="cc-random-btn">
+          <i class="fas fa-dice"></i> Randomize
+        </button>
+        <button class="cc-btn cc-btn-secondary" id="cc-clear-btn">
+          <i class="fas fa-eraser"></i> Clear Form
+        </button>
+      </div>
+   
+      <!-- 1. NAME -->
+      <div class="cc-section">
       <div class="cc-section-title"><i class="fas fa-signature"></i> Name</div>
       <div class="cc-row">
         <div class="cc-field">
@@ -3342,14 +3464,21 @@ body {
     <!-- 7. PHYSICAL DESCRIPTION -->
     <div class="cc-section">
       <div class="cc-section-title"><i class="fas fa-user-alt"></i> Physical Description</div>
+      <div class="cc-field" style="margin-bottom:14px;">
+        <label class="cc-label">Measurement Units</label>
+        <div class="cc-pill-group">
+          <div class="cc-pill generic selected" data-group="units" data-val="english">English (ft/in, lbs)</div>
+          <div class="cc-pill generic" data-group="units" data-val="metric">Metric (cm, kg)</div>
+        </div>
+      </div>
       <div class="cc-row">
         <div class="cc-field">
           <label class="cc-label">Height</label>
-          <input class="cc-input" id="cc-height" placeholder='e.g. 5&apos;8" / 172cm'>
+          <input class="cc-input" id="cc-height" placeholder='e.g. 5&apos;8" or 172 cm'>
         </div>
         <div class="cc-field">
           <label class="cc-label">Weight</label>
-          <input class="cc-input" id="cc-weight" placeholder="e.g. 145 lbs / 66kg">
+          <input class="cc-input" id="cc-weight" placeholder="e.g. 145 lbs or 66 kg">
         </div>
       </div>
       <div class="cc-row">
@@ -3385,8 +3514,16 @@ body {
  
     <!-- 8. PERSONALITY -->
     <div class="cc-section">
-      <div class="cc-section-title"><i class="fas fa-brain"></i> Personality Traits</div>
+      <div class="cc-section-title"><i class="fas fa-fingerprint" style="color:var(--zen)"></i> Personality Traits</div>
       <div id="cc-personality-sliders">
+        <!-- rendered by JS -->
+      </div>
+      <div class="cc-section-title"><i class="fas fa-heart-circle-exclamation" style="color:var(--promo)"></i> Physical Traits</div>
+      <div id="cc-physical-sliders">
+        <!-- rendered by JS -->
+      </div>
+      <div class="cc-section-title"><i class="fas fa-brain" style="color:var(--accent)"></i> Mental Traits</div>
+      <div id="cc-mental-sliders">
         <!-- rendered by JS -->
       </div>
       <div style="margin-top:12px;">
@@ -3397,10 +3534,40 @@ body {
           <div class="cc-pill generic" data-group="flaws" data-val="distrustful" data-multi="1">Distrustful</div>
           <div class="cc-pill generic" data-group="flaws" data-val="reckless" data-multi="1">Reckless</div>
           <div class="cc-pill generic" data-group="flaws" data-val="idealistic" data-multi="1">Idealistic</div>
+          <div class="cc-pill generic" data-group="flaws" data-val="vengeful" data-multi="1">Vengeful</div>
+<div class="cc-pill generic" data-group="flaws" data-val="stubborn" data-multi="1">Stubborn</div>
+<div class="cc-pill generic" data-group="flaws" data-val="hot-tempered" data-multi="1">Hot-Tempered</div>
+<div class="cc-pill generic" data-group="flaws" data-val="naive" data-multi="1">Naive</div>
+<div class="cc-pill generic" data-group="flaws" data-val="overconfident" data-multi="1">Overconfident</div>
+<div class="cc-pill generic" data-group="flaws" data-val="self-righteous" data-multi="1">Self-Righteous</div>
+<div class="cc-pill generic" data-group="flaws" data-val="emotionally-guarded" data-multi="1">Emotionally Guarded</div>
+<div class="cc-pill generic" data-group="flaws" data-val="venomous-tongue" data-multi="1">Venomous Tongue</div>
+<div class="cc-pill generic" data-group="flaws" data-val="manipulative" data-multi="1">Manipulative</div>
+<div class="cc-pill generic" data-group="flaws" data-val="power-hungry" data-multi="1">Power Hungry</div>
+<div class="cc-pill generic" data-group="flaws" data-val="fearful-of-failure" data-multi="1">Fear of Failure</div>
+<div class="cc-pill generic" data-group="flaws" data-val="identity-conflict" data-multi="1">Identity Conflict</div>
+<div class="cc-pill generic" data-group="flaws" data-val="emotionally-unstable" data-multi="1">Emotionally Unstable</div>
+<div class="cc-pill generic" data-group="flaws" data-val="detached" data-multi="1">Detached</div>
+<div class="cc-pill generic" data-group="flaws" data-val="overprotective" data-multi="1">Overprotective</div>
+<div class="cc-pill generic" data-group="flaws" data-val="rigid-honor-code" data-multi="1">Rigid Honor Code</div>
+<div class="cc-pill generic" data-group="flaws" data-val="secretive" data-multi="1">Secretive</div>
+<div class="cc-pill generic" data-group="flaws" data-val="obsessive" data-multi="1">Obsessive</div>
+<div class="cc-pill generic" data-group="flaws" data-val="cowardly" data-multi="1">Cowardly</div>
+<div class="cc-pill generic" data-group="flaws" data-val="vengeance-driven" data-multi="1">Vengeance Driven</div>
+<div class="cc-pill generic" data-group="flaws" data-val="emotion-first" data-multi="1">Emotion Before Logic</div>
+<div class="cc-pill generic" data-group="flaws" data-val="logic-first" data-multi="1">Logic Over Empathy</div>
+<div class="cc-pill generic" data-group="flaws" data-val="authority-dependent" data-multi="1">Authority Dependent</div>
+<div class="cc-pill generic" data-group="flaws" data-val="authority-rejecting" data-multi="1">Authority Rejecting</div>
+<div class="cc-pill generic" data-group="flaws" data-val="spiritually-disconnected" data-multi="1">Spiritually Disconnected</div>
+<div class="cc-pill generic" data-group="flaws" data-val="overly-sacrificial" data-multi="1">Overly Self-Sacrificing</div>
+<div class="cc-pill generic" data-group="flaws" data-val="jealous" data-multi="1">Jealous</div>
+<div class="cc-pill generic" data-group="flaws" data-val="territorial" data-multi="1">Territorial</div>
+<div class="cc-pill generic" data-group="flaws" data-val="unforgiving" data-multi="1">Unforgiving</div>
+<div class="cc-pill generic" data-group="flaws" data-val="vengeful-pride" data-multi="1">Wounded Pride</div>
         </div>
       </div>
     </div>
- 
+
     <!-- 9. BACKSTORY -->
     <div class="cc-section">
       <div class="cc-section-title"><i class="fas fa-scroll"></i> Backstory</div>
@@ -3475,8 +3642,8 @@ body {
  
   </div><!-- /create panel -->
  
-  <!-- ── ROSTER PANEL ── -->
-  <div id="cctab-roster" style="display:none;">
+  <!-- ── MY CHARACTERS PANEL ── -->
+  <div id="cctab-my-characters" style="display:none;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
       <div style="font-family:'Cinzel',serif;font-weight:700;font-size:0.95rem;">Saved Characters</div>
       <span id="cc-roster-count" style="font-size:0.72rem;color:var(--text-muted);"></span>
@@ -3487,16 +3654,70 @@ body {
         No characters yet — create your first one!
       </div>
     </div>
-    <div style="margin-top:18px;padding:14px;background:rgba(240,201,70,0.06);border:1px solid rgba(240,201,70,0.18);border-radius:var(--radius);">
-      <div style="font-size:0.7rem;color:var(--air);font-weight:700;margin-bottom:3px;"><i class="fas fa-cloud" style="margin-right:5px;"></i>Supabase Sync — Coming Soon</div>
-      <div style="font-size:0.68rem;color:var(--text-muted);line-height:1.5;">Characters will be saved to the cloud with duplicate detection &amp; similarity checking.</div>
+    </div>
+
+  <!-- ── FRIENDS' SHARED PANEL ── -->
+  <div id="cctab-friends-shared" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <div style="font-family:'Cinzel',serif;font-weight:700;font-size:0.95rem;">Friends' Shared Characters</div>
+      <span style="font-size:0.72rem;color:var(--text-muted);">Community creations</span>
+    </div>
+    <div id="cc-shared-list">
+      <div style="text-align:center;padding:40px 0;color:var(--text-muted);font-size:0.82rem;">
+        <i class="fas fa-share-alt" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:10px;"></i>
+        No shared characters yet — check back soon!
+      </div>
     </div>
   </div>
  
 </div><!-- /cc-app -->
  
 <div class="cc-toast" id="cc-toast"></div>
-</div>  
+  </div><!-- /nested-creations-characters -->
+
+  <!-- CARDS NESTED TAB -->
+  <div id="nested-creations-cards" class="nested-tab-content" style="display:none;">
+    <!-- Sub-tab navigation for Cards -->
+    <div class="cc-tabs" id="cardsTabs" style="margin-bottom: 16px;">
+      <button class="cc-tab active" data-cctab="cards-create">&#10010; Create</button>
+      <button class="cc-tab" data-cctab="cards-my-cards">&#9876; My Cards</button>
+      <button class="cc-tab" data-cctab="cards-friends-shared">&#10003; Friends' Shared</button>
+    </div>
+
+    <!-- ── CREATE PANEL ── -->
+    <div id="cctab-cards-create" style="text-align: center; padding: 40px 20px;">
+      <i class="fas fa-wand-magic-sparkles" style="font-size: 2.5rem; color: var(--zen); margin-bottom: 16px;"></i>
+      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px; font-size: 1.1rem;">Create Custom Card</h3>
+      <p style="color: var(--text-secondary); font-size: 0.9rem;">Design and customize your own Avatar TCG cards</p>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 12px; font-style: italic;">Coming soon...</p>
+    </div>
+
+    <!-- ── MY CARDS PANEL ── -->
+    <div id="cctab-cards-my-cards" style="display:none; text-align: center; padding: 40px 20px;">
+      <i class="fas fa-layer-group" style="font-size: 2.5rem; color: var(--water); margin-bottom: 16px;"></i>
+      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px; font-size: 1.1rem;">My Cards</h3>
+      <p style="color: var(--text-secondary); font-size: 0.9rem;">View and manage all your custom card creations</p>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 12px; font-style: italic;">Coming soon...</p>
+    </div>
+
+    <!-- ── FRIENDS' SHARED PANEL ── -->
+    <div id="cctab-cards-friends-shared" style="display:none; text-align: center; padding: 40px 20px;">
+      <i class="fas fa-handshake" style="font-size: 2.5rem; color: var(--earth); margin-bottom: 16px;"></i>
+      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px; font-size: 1.1rem;">Friends' Shared Cards</h3>
+      <p style="color: var(--text-secondary); font-size: 0.9rem;">Browse custom cards created and shared by your friends</p>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 12px; font-style: italic;">Coming soon...</p>
+    </div>
+  </div><!-- /nested-creations-cards -->
+
+  <!-- FREE FORM NESTED TAB -->
+  <div id="nested-creations-freeform" class="nested-tab-content" style="display:none;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 40px 20px; text-align: center;">
+      <i class="fas fa-pen-fancy" style="font-size: 3rem; color: var(--air); margin-bottom: 16px;"></i>
+      <h3 style="font-family: 'Cinzel', serif; color: var(--text-primary); margin-bottom: 8px; font-size: 1.1rem;">Free Form Writing</h3>
+      <p style="color: var(--text-secondary); font-size: 0.9rem;">Create custom stories, lore, and creative content</p>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 12px; font-style: italic;">Coming soon...</p>
+    </div>
+  </div>
 </div>
 </div><!-- /.app-container -->
 
@@ -4053,6 +4274,174 @@ function updateAllPackCounters() {
   });
 }
 
+/* ---- DIGITAL PACK CONFIGS ---- */
+var DIGITAL_PACK_CONFIGS = {
+  zenemental: {
+    widgetId:  'digitalZenPackWidget',
+    filterFn:  function(c) { return c.rarity === 'zenemental'; },
+    p:         1 / 6,
+    color:     'var(--zen)',
+    colorGlow: 'var(--zen-glow)',
+    checkIcon: 'fas fa-star',
+    pullDesc:  '1-in-6 pull rate'
+  },
+  chamber: {
+    widgetId:  'digitalChamberPackWidget',
+    filterFn:  function(c) { return c.type === 'chamber'; },
+    p:         1,
+    color:     'var(--air)',
+    colorGlow: 'var(--air-glow)',
+    checkIcon: 'fas fa-window-maximize',
+    pullDesc:  '1-per-pack'
+  },
+  rare: {
+    widgetId:  'digitalRarePackWidget',
+    filterFn:  function(c) { return c.rarity === 'rare' && c.type !== 'chamber'; },
+    p:         1,
+    color:     'var(--water)',
+    colorGlow: 'var(--water-glow)',
+    checkIcon: 'fas fa-star',
+    pullDesc:  '1-per-pack'
+  },
+  uncommon: {
+    widgetId:  'digitalUncommonPackWidget',
+    filterFn:  function(c) { return c.rarity === 'uncommon' && c.type !== 'chamber'; },
+    p:         3,
+    color:     'var(--earth)',
+    colorGlow: 'var(--earth-glow)',
+    checkIcon: 'fas fa-circle',
+    pullDesc:  '3-per-pack'
+  },
+  common: {
+    widgetId:  'digitalCommonPackWidget',
+    filterFn:  function(c) { return c.rarity === 'common' && c.type !== 'chamber'; },
+    p:         5,
+    color:     'var(--text-secondary)',
+    colorGlow: 'var(--text-secondary)',
+    checkIcon: 'far fa-circle',
+    pullDesc:  '5-per-pack'
+  }
+};
+
+function updateDigitalPackCounter(rarityKey) {
+  var cfg = DIGITAL_PACK_CONFIGS[rarityKey];
+  if (!cfg) return;
+  var el = document.getElementById(cfg.widgetId);
+  if (!el) return;
+
+  var dc = window.aqstDigitalCollection || {};
+
+  var cards = allCards.filter(function(c) {
+    return isPackCard(c.number) && cfg.filterFn(c);
+  });
+
+  var total     = cards.length;
+  var owned     = cards.filter(function(c) { return dc[c.number] && (dc[c.number].qty || 0) > 0; }).length;
+  var remaining = total - owned;
+  var pct       = total > 0 ? Math.round((owned / total) * 100) : 0;
+  var color     = cfg.color;
+  var n         = total;
+  var p         = cfg.p;
+
+  if (total === 0) {
+    el.innerHTML = '<div style="text-align:center;padding:20px 0;color:var(--text-muted);font-size:0.8rem;">No matching core cards found in database.</div>';
+    return;
+  }
+
+  if (remaining === 0) {
+    el.innerHTML =
+      '<div style="text-align:center;padding:24px 0;">' +
+        '<i class="' + cfg.checkIcon + '" style="font-size:2.4rem;color:' + color + ';display:block;margin-bottom:10px;"></i>' +
+        '<div style="font-family:\'Cinzel\',serif;font-size:1.05rem;color:' + color + ';font-weight:700;">Set complete!</div>' +
+        '<div style="color:var(--text-secondary);font-size:0.8rem;margin-top:6px;">You own all ' + total + ' digital core ' + rarityKey + ' cards.</div>' +
+      '</div>';
+    return;
+  }
+
+  var expected = packExpected(n, p, owned);
+
+  var statsHtml =
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px;">' +
+      '<div style="background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius);padding:12px 8px;text-align:center;">' +
+        '<div style="font-family:\'Cinzel\',serif;font-size:1.6rem;font-weight:700;color:white;">' + Math.round(expected) + '</div>' +
+        '<div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:3px;line-height:1.3;">Expected<br>packs left</div>' +
+      '</div>' +
+      '<div style="background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius);padding:12px 8px;text-align:center;">' +
+        '<div style="font-family:\'Cinzel\',serif;font-size:1.6rem;font-weight:700;color:white;">' + remaining + '</div>' +
+        '<div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:3px;line-height:1.3;">Cards<br>needed</div>' +
+      '</div>' +
+      '<div style="background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius);padding:12px 8px;text-align:center;">' +
+        '<div style="font-family:\'Cinzel\',serif;font-size:1.6rem;font-weight:700;color:white;">' + pct + '%</div>' +
+        '<div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:3px;line-height:1.3;">Set<br>complete</div>' +
+      '</div>' +
+    '</div>';
+
+  var progressHtml =
+    '<div style="margin-bottom:18px;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
+        '<span style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--text-muted);">' + rarityKey + ' progress (digital · core only)</span>' +
+        '<span style="font-family:\'Cinzel\',serif;font-size:0.85rem;font-weight:700;color:' + color + ';">' + owned + ' / ' + total + '</span>' +
+      '</div>' +
+      '<div style="height:8px;background:var(--bg-primary);border-radius:99px;overflow:hidden;">' +
+        '<div style="height:100%;border-radius:99px;background:linear-gradient(90deg,' + color + ',' + cfg.colorGlow + ');width:' + pct + '%;transition:width 0.5s cubic-bezier(0.4,0,0.2,1);"></div>' +
+      '</div>' +
+    '</div>';
+
+  var chipsHtml =
+    '<div style="margin-bottom:18px;">' +
+      '<div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--text-muted);margin-bottom:8px;">Your digital ' + rarityKey + ' core cards</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:5px;">';
+
+  cards.forEach(function(c) {
+    var have       = dc[c.number] && (dc[c.number].qty || 0) > 0;
+    var chipColor  = have ? color : 'var(--text-muted)';
+    var chipBg     = have ? 'rgba(' + colorToRgba(color) + ',0.1)' : 'var(--bg-primary)';
+    var chipBorder = have ? 'rgba(' + colorToRgba(color) + ',0.3)' : 'var(--border)';
+    chipsHtml +=
+      '<div style="display:flex;align-items:center;gap:6px;padding:5px 8px;overflow:hidden;' +
+        'background:' + chipBg + ';border:1px solid ' + chipBorder + ';border-radius:6px;">' +
+        '<i class="fas ' + (have ? 'fa-check-circle' : 'fa-circle') + '" style="font-size:0.72rem;flex-shrink:0;color:' + chipColor + ';"></i>' +
+        '<span style="font-size:0.7rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:' + (have ? 'var(--text-primary)' : 'var(--text-muted)') + ';" title="' + escapeHtml(c.name) + '">' +
+          (rarityKey === 'chamber' ? '<span style="color:var(--text-muted);font-size:0.62rem;margin-right:3px;">#' + escapeHtml(c.number) + '</span>' : '') +
+          escapeHtml(c.name) +
+        '</span>' +
+      '</div>';
+  });
+  chipsHtml += '</div></div>';
+
+  var breakdownHtml =
+    '<div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--text-muted);margin-bottom:4px;">Expected packs per new card</div>' +
+    '<div style="font-size:0.7rem;color:var(--text-muted);margin-bottom:10px;font-style:italic;line-height:1.5;">' +
+      'Formula: ' + n + '&nbsp;&divide;&nbsp;(' + formatP(p) + '&nbsp;&times;&nbsp;(' + n + '&nbsp;&minus;&nbsp;j)) packs when you have j cards.' +
+    '</div>' +
+    '<div style="background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">';
+
+  for (var j = 0; j < total; j++) {
+    var sp   = packStepExpected(n, p, j);
+    var done = j < owned;
+    breakdownHtml +=
+      '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 12px;' +
+        'border-bottom:1px solid var(--border);' + (done ? 'opacity:0.35;' : '') + '">' +
+        '<span style="font-size:0.75rem;color:var(--text-secondary);">' +
+          'Card ' + (j + 1) + ' of ' + total +
+          ' <span style="color:var(--text-muted);font-size:0.65rem;">(when you have ' + j + '/' + total + ')</span>' +
+        '</span>' +
+        '<span style="font-family:\'Cinzel\',serif;font-size:0.78rem;font-weight:700;color:' + (done ? 'var(--text-muted)' : color) + ';">' +
+          (done ? '<i class="fas fa-check" style="font-size:0.65rem;"></i>' : '~' + Math.round(sp) + ' packs') +
+        '</span>' +
+      '</div>';
+  }
+  breakdownHtml += '</div>';
+
+  el.innerHTML = statsHtml + progressHtml + chipsHtml + breakdownHtml;
+}
+
+function updateAllDigitalPackCounters() {
+  Object.keys(DIGITAL_PACK_CONFIGS).forEach(function(key) {
+    updateDigitalPackCounter(key);
+  });
+}
+
 /* ---- TAB SYSTEM ---- */
 function initTabs() {
   document.querySelectorAll('.tab-btn').forEach(function(btn) {
@@ -4068,18 +4457,30 @@ function initTabs() {
       if (!parent) return;
       parent.querySelectorAll('.tab-btn-nested[data-nested-tab]').forEach(function(b) { b.classList.remove('active'); });
       this.classList.add('active');
-      parent.querySelectorAll('.nested-tab-content').forEach(function(c) { c.style.display = 'none'; });
+      /* Only hide direct-child nested-tab-content so subnested contents inside
+         pack-rip-estimators are not wiped when that tab is first opened. */
+      Array.from(parent.children).forEach(function(c) {
+        if (c.classList.contains('nested-tab-content')) c.style.display = 'none';
+      });
       var content = parent.querySelector('#nested-' + nestedName);
-      if (content) content.style.display = 'block';
-
-      var packTabMap = {
-        'zen-calc':      'zenemental',
-        'chamber-calc':  'chamber',
-        'rare-calc':     'rare',
-        'uncommon-calc': 'uncommon',
-        'common-calc':   'common'
-      };
-      if (packTabMap[nestedName]) updatePackCounter(packTabMap[nestedName]);
+      if (content) {
+        content.style.display = 'block';
+        /* If this nested tab hosts subnested pack calculators, ensure the
+           active one is visible and its counter is refreshed immediately. */
+        var activeSubBtn = content.querySelector('.tab-btn-nested[data-subnested-tab].active');
+        if (activeSubBtn) {
+          var activeSubName = activeSubBtn.getAttribute('data-subnested-tab');
+          /* Show only that subnested panel (others already hidden by subnested handler) */
+          content.querySelectorAll('.nested-tab-content').forEach(function(sc) { sc.style.display = 'none'; });
+          var subContent = content.querySelector('#subnested-' + activeSubName);
+          if (subContent) subContent.style.display = 'block';
+          /* Trigger the right counter */
+          var physMap = { 'zen-calc':'zenemental','chamber-calc':'chamber','rare-calc':'rare','uncommon-calc':'uncommon','common-calc':'common' };
+          var digMap  = { 'digital-zen-calc':'zenemental','digital-chamber-calc':'chamber','digital-rare-calc':'rare','digital-uncommon-calc':'uncommon','digital-common-calc':'common' };
+          if (physMap[activeSubName]) updatePackCounter(physMap[activeSubName]);
+          if (digMap[activeSubName])  updateDigitalPackCounter(digMap[activeSubName]);
+        }
+      }
     });
   });
 
@@ -4093,6 +4494,37 @@ function initTabs() {
       parent.querySelectorAll('.trade-subtab-content').forEach(function(c) { c.style.display = 'none'; });
       var content = parent.querySelector('#trade-' + subtabName);
       if (content) content.style.display = 'block';
+    });
+  });
+
+  /* Handle subnested tabs (third level) */
+  document.querySelectorAll('.tab-btn-nested[data-subnested-tab]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var subnestedName = this.getAttribute('data-subnested-tab');
+      var parent = this.closest('.nested-tab-content');
+      if (!parent) return;
+      parent.querySelectorAll('.tab-btn-nested[data-subnested-tab]').forEach(function(b) { b.classList.remove('active'); });
+      this.classList.add('active');
+      parent.querySelectorAll('.nested-tab-content').forEach(function(c) { c.style.display = 'none'; });
+      var content = parent.querySelector('#subnested-' + subnestedName);
+      if (content) content.style.display = 'block';
+
+      var packTabMap = {
+        'zen-calc':      'zenemental',
+        'chamber-calc':  'chamber',
+        'rare-calc':     'rare',
+        'uncommon-calc': 'uncommon',
+        'common-calc':   'common'
+      };
+      var digitalPackTabMap = {
+        'digital-zen-calc':      'zenemental',
+        'digital-chamber-calc':  'chamber',
+        'digital-rare-calc':     'rare',
+        'digital-uncommon-calc': 'uncommon',
+        'digital-common-calc':   'common'
+      };
+      if (packTabMap[subnestedName]) updatePackCounter(packTabMap[subnestedName]);
+      if (digitalPackTabMap[subnestedName]) updateDigitalPackCounter(digitalPackTabMap[subnestedName]);
     });
   });
 }
@@ -5997,7 +6429,6 @@ init();
 <script src="scripts/progression.js"></script>
 <script src="scripts/deck-builder.js"></script>
 <script src="scripts/deck-sync.js"></script>
-<script scr="scripts/friend-collection.js"></script>
 <script scr="scripts/friend-compare.js"></script>
 <script>
 (function () {
@@ -7146,13 +7577,13 @@ init();
  
 /* ── SPECIALTY OPTIONS per element ── */
 var SPECIALTIES = {
-  'non-bender': ['Weapons Mastery','Chi Blocking','Acrobatics','Throwables & Gadgets','Engineering','Tactical Genius','Stealth','Mechanized Combat','Precision Ranged'],
-  'water': ['Bloodbending','Healing','Swamp/Plant Bending','Breathe Underwater','Ice Bending'],
-  'earth': ['Metalbending','Sandbending','Seismic Sense','Magnetization','Lavabending','Diamond Bending','Fossil Bending'],
-  'fire': ['Lightning','Colored Fire','Combustion','Plasma Bending'],
-  'air': ['Flight','Sound Bending','Breathe in Space','Super Hearing','Vacuum Creation','Echo Bending'],
-  'spirit': ['Spirit Projection','Spirit Bending','Light/Shadow Bending','Emotion Bending'],
-  '_cross': ['Light/Shadow Bending','Mudbending','Ink Bending','Weather Bending','Gravity Bending','Molecular Vibration','Chi Pulse']
+  'non-bender': ['Weapons Mastery','Chi Blocking','Acrobatics','Throwables','Gadgets','Engineering','Tactical Genius','Stealth','Mechanized Combat','Precision Ranged','Martial','Technical','Psychological','Spiritual','Beastmaster','Infiltration'],
+  'water': ['Bloodbending','Healing','Swamp/Plant Bending','Breathe Underwater','Ice Bending','Mudbending','Ink Bending','Weather Bending','Ice Memory Crystals'],
+  'earth': ['Metalbending','Sandbending','Seismic Sense','Magnetization','Lavabending','Diamond Bending','Fossil Bending','Mudbending','Ink Bending','Gravity Bending','Coral Bending','Planetary-scale Tectonic Bending'],
+  'fire': ['Lightning','Colored Fire','Combustion','Lava','Plasma Bending','Light/Shadow Bending','Radiation Bending'],
+  'air': ['Flight','Sound Bending','Breathe in Space','Super Hearing','Vacuum Creation','Echo Bending','Light/Shadow Bending','Weather Bending'],
+  'spirit': ['Spirit Projection','Spirit Bending','Light/Shadow Bending','Emotion Bending','Light/Shadow Bending','Molecular Vibration','Chi Pulse','Emotion Bending','Animal Bending','Internal Chi Overload Attacks'],
+  '_cross': []
 };
  
 var PET_OPTIONS = {
@@ -7162,7 +7593,45 @@ var PET_OPTIONS = {
   'spirit': ['Spirit Vine','Forest Mask Spirit','Spirit Dragon','Mushroom Spirit','Butterfly Spirit']
 };
  
-var PERSONALITY_TRAITS = ['Honor','Aggression','Compassion','Discipline','Spirituality','Loyalty','Independence'];
+var PERSONALITY_TRAITS = [
+  'Honor',
+  'Aggression',
+  'Compassion',
+  'Discipline',
+  'Spirituality',
+  'Loyalty',
+  'Independence',
+  'Patience',
+  'Pride',
+  'Temperament',
+  'Mercy',
+  'Ambition',
+  'Creativity',
+  'Resilience'
+];
+var PHYSICAL_TRAITS = [
+  'Agility',
+  'Strength',
+  'Endurance',
+  'Reflexes',
+  'Dexterity',
+  'Balance',
+  'Durability',
+  'Speed',
+  'Flexibility',
+  'Pain Tolerance'
+];
+var MENTAL_TRAITS = [
+  'Tactical Intelligence',
+  'Perception',
+  'Battle Awareness',
+  'Memory',
+  'Adaptability',
+  'Willpower',
+  'Deception',
+  'Leadership',
+  'Intimidation'
+];
  
 /* ── STATE ── */
 var state = {
@@ -7171,8 +7640,10 @@ var state = {
   strike:'', advantage:'', ally:'',
   temperament:'', lifepath:'', range:'',
   petCat:'none', pet:'', bond:'',
-  height:'', weight:'', eyes:'', hair:'', skin:'', build:'', appearanceNotes:'',
-  personality:{ Honor:50, Aggression:30, Compassion:70, Discipline:50, Spirituality:50, Loyalty:60, Independence:50 },
+  units:'english', height:'', weight:'', eyes:'', hair:'', skin:'', build:'', appearanceNotes:'',
+  personality:{ Honor:50, Aggression:30, Compassion:70, Discipline:50, Spirituality:50, Loyalty:60, Independence:50, Patience: 15, Pride: 84, Temperament: 46, Mercy:99, Ambition: 35, Creativity: 8, Resilience: 100 },
+  physical:{Agility:75, Strength: 55, Endurance: 67, Reflexes: 18, Dexterity: 20, Balance: 42, Durability: 38, Speed: 7, Flexibility: 71, "Pain Tolerance": 5},
+  mental:{"Tactical Intelligence": 89, Perception: 4, "Battle Awareness": 69, Memory: 88, Adaptability: 12, Willpower: 100, Deception: 3, Leadership: 50, Intimidation: 100 },
   flaws:[],
   backstoryMode:'freewrite', backstoryFree:'',
   bsNation:'', bsTraining:'', bsTrauma:'', bsMentor:'', bsRival:'', bsGoal:'', bsSecret:'', bsTone:''
@@ -7183,6 +7654,8 @@ var editingId = null;
 /* ── INIT ── */
 function init(){
   renderPersonalitySliders();
+  renderPhysicalSliders();
+  renderMentalSliders();
   bindPillGroups();
   bindSubTabs();
   bindBackstoryTabs();
@@ -7231,6 +7704,26 @@ function bindPillGroups(){
       });
       this.classList.add('selected-'+group);
       state[group] = val;
+    });
+  });
+  /* special handler for units pill */
+  document.querySelectorAll('.cc-pill[data-group="units"]').forEach(function(pill){
+    pill.addEventListener('click', function(){
+      var newUnit = this.dataset.val;
+      var oldUnit = state.units;
+      if(newUnit === oldUnit) return;
+      state.units = newUnit;
+      // Reformat height/weight if they exist
+      var heightEl = document.getElementById('cc-height');
+      var weightEl = document.getElementById('cc-weight');
+      if(heightEl && heightEl.value){
+        heightEl.value = formatHeight(newUnit === 'metric');
+        state.height = heightEl.value;
+      }
+      if(weightEl && weightEl.value){
+        weightEl.value = formatWeight(newUnit === 'metric');
+        state.weight = weightEl.value;
+      }
     });
   });
 }
@@ -7301,6 +7794,48 @@ function renderPersonalitySliders(){
     });
   });
 }
+
+/* ── PHYSICAL SLIDERS ── */
+function renderPhysicalSliders(){
+  var container = document.getElementById('cc-physical-sliders');
+  var html = '';
+  PHYSICAL_TRAITS.forEach(function(trait){
+    var val = state.physical[trait];
+    html += '<div class="cc-slider2-row">' +
+      '<span class="cc-slider2-label">'+trait+'</span>' +
+      '<input type="range" class="cc-slider2" min="0" max="100" value="'+val+'" data-trait="'+trait+'">' +
+      '<span class="cc-slider2-val" id="svxt-'+trait+'">'+val+'</span>' +
+      '</div>';
+  });
+  container.innerHTML = html;
+  container.querySelectorAll('.cc-slider2').forEach(function(s){
+    s.addEventListener('input', function(){
+      state.physical[this.dataset.trait] = parseInt(this.value);
+      document.getElementById('svxt-'+this.dataset.trait).textContent = this.value;
+    });
+  });
+}
+
+/* ── MENTAL SLIDERS ── */
+function renderMentalSliders(){
+  var container = document.getElementById('cc-mental-sliders');
+  var html = '';
+  MENTAL_TRAITS.forEach(function(trait){
+    var val = state.mental[trait];
+    html += '<div class="cc-slider3-row">' +
+      '<span class="cc-slider3-label">'+trait+'</span>' +
+      '<input type="range" class="cc-slider3" min="0" max="100" value="'+val+'" data-trait="'+trait+'">' +
+      '<span class="cc-slider3-val" id="svxq-'+trait+'">'+val+'</span>' +
+      '</div>';
+  });
+  container.innerHTML = html;
+  container.querySelectorAll('.cc-slider3').forEach(function(s){
+    s.addEventListener('input', function(){
+      state.mental[this.dataset.trait] = parseInt(this.value);
+      document.getElementById('svxq-'+this.dataset.trait).textContent = this.value;
+    });
+  });
+}
  
 /* ── SUB TABS ── */
 function bindSubTabs(){
@@ -7310,8 +7845,10 @@ function bindSubTabs(){
     document.querySelectorAll('#ccTabs .cc-tab').forEach(function(b){b.classList.remove('active');});
     btn.classList.add('active');
     document.getElementById('cctab-create').style.display = btn.dataset.cctab === 'create' ? '' : 'none';
-    document.getElementById('cctab-roster').style.display = btn.dataset.cctab === 'roster' ? '' : 'none';
-    if(btn.dataset.cctab === 'roster') renderRoster();
+    document.getElementById('cctab-my-characters').style.display = btn.dataset.cctab === 'my-characters' ? '' : 'none';
+    document.getElementById('cctab-friends-shared').style.display = btn.dataset.cctab === 'friends-shared' ? '' : 'none';
+    if(btn.dataset.cctab === 'my-characters') renderRoster();
+    if(btn.dataset.cctab === 'friends-shared' && window.charSharing) window.charSharing.loadFriendsShared();
   });
 }
  
@@ -7442,6 +7979,16 @@ function collectFormState(){
   state.bsSecret  = document.getElementById('cc-bs-secret').value;
   var genArea = document.getElementById('cc-backstory-generated');
   if(genArea && genArea.value) state.backstoryFree = genArea.value;
+
+  /* Sync pill-driven fields whose data-group names differ from state keys */
+  var petCatPill = document.querySelector('.cc-pill[data-group="petcat"].selected');
+  state.petCat = petCatPill ? petCatPill.dataset.val : 'none';
+  var petSel = document.getElementById('cc-pet-select');
+  state.pet  = (petSel && state.petCat !== 'none') ? (petSel.value || '') : '';
+  var bondPill = document.querySelector('.cc-pill[data-group="bond"].selected');
+  state.bond = bondPill ? bondPill.dataset.val : '';
+  var bsTonePill = document.querySelector('.cc-pill[data-group="bstone"].selected');
+  state.bsTone = bsTonePill ? bsTonePill.dataset.val : '';
 }
  
 function saveCharacter(){
@@ -7462,8 +8009,8 @@ function saveCharacter(){
   localStorage.setItem('aqst_characters', JSON.stringify(chars));
   editingId = null;
   showToast(editingId ? 'Character updated!' : '✅ Character saved!');
-  /* switch to roster */
-  document.querySelector('[data-cctab="roster"]').click();
+  /* switch to my characters tab */
+  document.querySelector('[data-cctab="my-characters"]').click();
 }
  
 /* ── LOAD ── */
@@ -7552,10 +8099,25 @@ function loadCharacterIntoForm(char){
     if(sl){ sl.value = state.personality[t]; }
     if(sv){ sv.textContent = state.personality[t]; }
   });
- 
+  /* physical sliders */
+Object.keys(state.physical||{}).forEach(function(t){
+    var sl = document.querySelector('.cc-slider2[data-trait="'+t+'"]');
+    var sv = document.getElementById('svxt-'+t);   // ← was 'sv-'
+    if(sl){ sl.value = state.physical[t]; }
+    if(sv){ sv.textContent = state.physical[t]; }
+});
+/* mental sliders */
+Object.keys(state.mental||{}).forEach(function(t){
+    var sl = document.querySelector('.cc-slider3[data-trait="'+t+'"]');
+    var sv = document.getElementById('svxq-'+t);   // ← was 'sv-'
+    if(sl){ sl.value = state.mental[t]; }
+    if(sv){ sv.textContent = state.mental[t]; }
+});
   document.querySelector('[data-cctab="create"]').click();
   showToast('Editing: ' + state.givenName);
 }
+
+
  
 function restorePill(group, val){
   if(!val) return;
@@ -7613,17 +8175,201 @@ function renderRoster(){
   });
 }
  
+/* ── HEIGHT/WEIGHT FORMATTING ── */
+function formatHeight(isMetric){
+  if(isMetric){
+    // Metric: random between 150-200 cm
+    var cm = Math.floor(Math.random() * 51) + 150;
+    return cm + ' cm';
+  } else {
+    // English: random between 5'0" and 6'6"
+    var feet = Math.floor(Math.random() * 2) + 5;
+    var inches = Math.floor(Math.random() * 12);
+    return feet + '\'' + (inches < 10 ? '0' : '') + inches + '"';
+  }
+}
+
+function formatWeight(isMetric){
+  if(isMetric){
+    // Metric: random between 50-100 kg
+    var kg = Math.floor(Math.random() * 51) + 50;
+    return kg + ' kg';
+  } else {
+    // English: random between 100-250 lbs
+    var lbs = Math.floor(Math.random() * 151) + 100;
+    return lbs + ' lbs';
+  }
+}
+
 /* ── RANDOMIZE ── */
-var NAMES_A = ['Bai','Zhen','Kai','Lei','Mei','Tao','Jin','Suki','Raya','Shen'];
-var NAMES_B = ['Fong','Xin','Long','Shi','Yun','Wei','Hao','Peng','Yao','Dan'];
+var NAMES_A = [
+  // Water Tribe–leaning
+  'Kiva','Noru','Sena','Talik','Misu','Anju','Koda','Nami','Tariq','Iska',
+  'Sura','Makoji','Nukka','Kallik','Yara','Henua','Palu','Siku','Tavik',
+
+  // Earth Kingdom–leaning
+  'Ren','Bao','Lian','Jiro','Huan','Min','Qiao','Fen','Tarin','Rokuo',
+  'Jessa','Hiro','Nalin','Bei','Korin','Luto','Shira','Toma','Rinlo',
+
+  // Fire Nation–leaning
+  'Raiko','Azun','Kaito','Rensa','Takao','Zorin','Hikari','Kenzo','Airi',
+  'Daichi','Reina','Soryu','Akari','Ryota','Haru','Kaien','Tetsu','Junko',
+
+  // Air Nomad–leaning (softer phonetics)
+  'Aru','Tashi','Nima','Pemae','Lobsin','Kelsa','Jampa','Sonu','Rinzen',
+  'Bodhi','Anila','Gyari','Sumiya','Kavi','Tenra','Miren','Zopa','Yali',
+
+  // Republic City / Mixed Era
+  'Arin','Kasen','Mira','Soren','Kato','Rylan','Veya','Jalen','Nero',
+  'Zavi','Liora','Tarin','Kaida','Mirae','Zalen','Hirox','Viren'
+];
+var NAMES_B = [
+  // Earth Kingdom–style
+  'Guo','Zai','Rong','Han','Jian','Luo','Zhen','Cai','Wen','Kang',
+  'Ru','Bai','Shao','Lin','Xiu','Ping','Tor','Gai','Fen','Chao',
+
+  // Fire Nation–style
+  'Kazuo','Rai','Shenko','Ishida','Mori','Tanaka','Ryuu','Kenzai',
+  'Okami','Sato','Hoshin','Kairo','Renji','Daigo','Torin','Hayato',
+
+  // Water Tribe–style
+  'Kavik','Naluk','Tuluk','Ivalu','Kaneq','Suraq','Maktu','Unari',
+  'Tassik','Oorin','Navuk','Taliq','Anuki','Kairuk',
+
+  // Air Nomad (rare surname use, but post-war variants)
+  'Windrunner','Skybloom','Cloudstep','Mistvale','Highwind','Stormdrift',
+
+  // Republic City / Industrial era
+  'Vance','Rowe','Dalen','Soren','Kess','Vale','Renn','Makoz',
+  'Torren','Zay','Rook','Halden','Varo'
+];
+var NICKNAMES = [
+  // Element-inspired
+  'Ember','Torrent','Quake','Zephyr','Cinder','Glacier','Ashfall',
+  'Dust','Tempest','Drift','Blaze','Ripple','Monsoon','Boulder',
+  'Static','Gale','Tremor','Flare','Frostbite','Wildfire',
+
+  // Combat-style
+  'Ironclad','Quickstrike','Redhand','Silvershard','Blackwind',
+  'Ghoststep','Stonewall','Sunstorm','Nightcurrent','Crimson Arc',
+  'Blue Ember','Cold Current','Silent Spark','Thunder Palm',
+
+  // Spiritual/Mystic
+  'Spiritbound','Moonveil','Skyseer','Voidwalker','Starfire',
+  'Dreamwake','Soulcurrent','Lightfoot','Mistborn','Harmonic',
+  'Lantern','Astral','Dawnwhisper','Cloudbreaker',
+
+  // Pro-bending / Arena vibe
+  'Triple Threat','Backdraft','Undertow','Flashpoint',
+  'Overhand','Slipstream','High Kick','Breaker','Crosswind'
+];
 var ELEMENTS = ['water','earth','fire','air','non-bender'];
 var STRIKES  = ['bull','fox','lion'];
 var ADVS     = ['mind','body','spirit'];
 var ALLIES   = ['light','shadow','dark'];
+var RANGES   = ['close','mid','long','support','control'];
+var PET_CATS = ['none','standard','hybrid','mount','spirit'];
+var BONDS    = ['wild','trained','loyal','spirit-bound'];
+var FLAWS_OPTIONS = ['arrogant','impulsive','distrustful','reckless','idealistic','vengeful','stubborn','hot-tempered','naive','overconfident','self-righteous','emotionally-guarded','venomous-tongue'];
+var BS_NATIONS = ['Fire Nation','Earth Kingdom','Water Tribe (Northern)','Water Tribe (Southern)','Air Nomads','Spirit World','United Republic / Republic City','Unknown / Stateless'];
+var BS_TONES = ['hopeful','dark','epic','political','tragic'];
+var HAIR_COLORS = [
+  // Core natural tones (all nations)
+  'jet black','soft black','ink black','dark brown','deep brown',
+  'warm brown','ash brown','chestnut','mahogany','auburn',
+  'copper','dark auburn','light brown','sandy brown',
+  'silver-gray','iron gray','snow white','cream white',
+
+  // Water Tribe–leaning
+  'blue-black','midnight black','cool brown',
+
+  // Fire Nation–leaning
+  'dark red-brown','ember red','smoke-tinted black',
+
+  // Earth Kingdom–leaning
+  'dust brown','earth brown','clay brown',
+
+  // Republic City / modern era subtle dye trends
+  'subtle crimson streaks','silver streaked','undyed gray tips',
+  'faded indigo tint','ashen tips'
+];
+var EYE_COLORS = [
+  // Common tones
+  'dark brown','deep brown','light brown','black',
+  'gray','steel gray','storm gray',
+  'amber','golden amber','honey amber',
+  'blue','deep blue','ice blue',
+  'green','dark green','olive green',
+
+  // Rare but canon-consistent variations
+  'pale gray','smoky blue','sea green','gold-flecked brown',
+  'silver-blue','icy gray',
+
+  // Spiritual / harmonic convergence-adjacent (very rare)
+  'lavender tint','faint silver glow','soft violet hue'
+];
+var SKIN_TONES = [
+  // Very fair range (Air Nomads / some Fire Nation)
+  'porcelain','pale','light warm','light cool','fair',
+
+  // Medium range (Earth Kingdom / Fire Nation)
+  'light olive','olive','warm beige','neutral beige',
+  'sun-kissed','golden tan','bronze','deep bronze',
+
+  // Darker range (Water Tribe / Earth Kingdom regions)
+  'rich brown','deep brown','cool dark','warm dark',
+  'mahogany','umber','weathered tan',
+
+  // Environmental effects
+  'wind-chapped','sun-weathered','sea-worn',
+  'desert-touched','frost-kissed'
+];
+var APPEARANCE_DESCRIPTORS = [
+  // Physical traits
+  'scar across cheek','thin lip scar','burn-scarred forearm',
+  'calloused hands','broad shoulders','lean build',
+  'compact and agile','towering presence','long-limbed',
+  'athletic frame','wiry strength','steady posture',
+
+  // Facial presence
+  'sharp jawline','soft features','freckled nose',
+  'arched brows','piercing gaze','observant eyes',
+  'heavy-lidded stare','subtle smirk','stone-faced composure',
+
+  // Bearing / energy
+  'calm demeanor','fierce expression','quiet intensity',
+  'measured movements','restless stance','grounded posture',
+  'fluid motions','precise gestures','deliberate stride',
+  'confident aura','guarded expression','warm smile',
+
+  // Cultural markers
+  'traditional topknot','braided crown','shaved sides',
+  'warrior’s knot','simple monk cut','loose shoulder-length hair',
+  'decorative beadwork in hair','tribal markings',
+  'faint spirit vine tattoo','ceremonial face paint',
+
+  // Battle history
+  'healed blade wound','faded burn marks',
+  'knuckles wrapped in cloth','training bruises',
+  'weather-beaten features','old duel scar',
+
+  // Spiritual cues
+  'serene gaze','distant stare','attuned presence',
+  'quietly radiant','unreadable expression',
+  'moonlit calm','stormlike intensity'
+];
  
 function randomizeCharacter(){
   clearForm(true);
   document.getElementById('cc-given-name').value = pick(NAMES_A)+' '+pick(NAMES_B);
+  
+  // Randomize nickname
+  var nickEl = document.getElementById('cc-nick-name');
+  if(nickEl){
+    nickEl.value = pick(NICKNAMES);
+    state.nickName = nickEl.value;
+  }
+  
   var el = pick(ELEMENTS);
   clickPill('bending', el);
   setTimeout(function(){
@@ -7642,14 +8388,272 @@ function randomizeCharacter(){
   clickPill('temperament', pick(['aggressive','defensive','tactical','passive']));
   clickPill('lifepath',    pick(['open-palm','closed-fist']));
   clickPill('build',       pick(['lean','muscular','stocky','slender']));
-  var slider = document.querySelectorAll('.cc-slider');
-  slider.forEach(function(s){
+  
+  // Randomize tactical range
+  clickPill('range', pick(RANGES));
+  
+  // Randomize pet/companion
+  var petCat = pick(PET_CATS);
+  clickPill('petcat', petCat);
+  setTimeout(function(){
+    if(petCat !== 'none' && PET_OPTIONS[petCat]){
+      var selectedPet = pick(PET_OPTIONS[petCat]);
+      var petSelect = document.getElementById('cc-pet-select');
+      if(petSelect){
+        petSelect.value = selectedPet;
+        state.pet = selectedPet;
+      }
+      clickPill('bond', pick(BONDS));
+    }
+    state.petCat = petCat;
+  }, 60);
+  
+  // Randomize physical description - with proper unit formatting
+  var isMetric = state.units === 'metric';
+  var heightEl = document.getElementById('cc-height');
+  if(heightEl){
+    heightEl.value = formatHeight(isMetric);
+    state.height = heightEl.value;
+  }
+  var weightEl = document.getElementById('cc-weight');
+  if(weightEl){
+    weightEl.value = formatWeight(isMetric);
+    state.weight = weightEl.value;
+  }
+  var eyeEl = document.getElementById('cc-eyes');
+  if(eyeEl){
+    eyeEl.value = pick(EYE_COLORS);
+    state.eyes = eyeEl.value;
+  }
+  var hairEl = document.getElementById('cc-hair');
+  if(hairEl){
+    hairEl.value = pick(HAIR_COLORS);
+    state.hair = hairEl.value;
+  }
+  var skinEl = document.getElementById('cc-skin');
+  if(skinEl){
+    skinEl.value = pick(SKIN_TONES);
+    state.skin = skinEl.value;
+  }
+  var appEl = document.getElementById('cc-appearance-notes');
+  if(appEl){
+    appEl.value = pick(APPEARANCE_DESCRIPTORS);
+    state.appearanceNotes = appEl.value;
+  }
+  
+  // Randomize flaws (multi-select)
+  var flawsPills = document.querySelectorAll('.cc-pill[data-group="flaws"]');
+  var flawCount = Math.floor(Math.random()*3)+1; // 1-3 flaws
+  var selectedFlaws = [];
+  for(var i=0; i<flawCount; i++){
+    var randomFlaw = pick(FLAWS_OPTIONS);
+    if(selectedFlaws.indexOf(randomFlaw) === -1){ // avoid duplicates
+      selectedFlaws.push(randomFlaw);
+      for(var j=0; j<flawsPills.length; j++){
+        if(flawsPills[j].dataset.val === randomFlaw){
+          flawsPills[j].click();
+          break;
+        }
+      }
+    }
+  }
+  state.flaws = selectedFlaws;
+  
+  // Randomize personality sliders
+  var personalitySliders = document.querySelectorAll('.cc-slider[data-trait]');
+  personalitySliders.forEach(function(s){
     var v = Math.round(Math.random()*100);
     s.value = v;
     state.personality[s.dataset.trait] = v;
     var sv = document.getElementById('sv-'+s.dataset.trait);
     if(sv) sv.textContent = v;
   });
+  
+  // Randomize physical sliders
+  var physicalSliders = document.querySelectorAll('.cc-slider2[data-trait]');
+  physicalSliders.forEach(function(s){
+    var v = Math.round(Math.random()*100);
+    s.value = v;
+    state.physical[s.dataset.trait] = v;
+    var sv = document.getElementById('svxt-'+s.dataset.trait);
+    if(sv) sv.textContent = v;
+  });
+  
+  // Randomize mental sliders
+  var mentalSliders = document.querySelectorAll('.cc-slider3[data-trait]');
+  mentalSliders.forEach(function(s){
+    var v = Math.round(Math.random()*100);
+    s.value = v;
+    state.mental[s.dataset.trait] = v;
+    var sv = document.getElementById('svxq-'+s.dataset.trait);
+    if(sv) sv.textContent = v;
+  });
+  
+  // Randomize backstory - switch to template and fill all fields
+  setTimeout(function(){
+    // Click "Use Template" tab
+    var templateTab = document.querySelector('.cc-tab[data-bstab="template"]');
+    if(templateTab) templateTab.click();
+    
+    // Randomize nation
+    var nationEl = document.getElementById('cc-bs-nation');
+    if(nationEl){
+      nationEl.value = pick(BS_NATIONS);
+      state.bsNation = nationEl.value;
+    }
+    
+    // Randomize training
+var trainingEl = document.getElementById('cc-bs-training');
+if(trainingEl){
+  trainingEl.value = 'Trained under ' + pick([
+    'a decorated military general',
+    'a reclusive bending master',
+    'monks in high mountain isolation',
+    'traveling circus performers',
+    'a mysterious spirit sage',
+    'a former arena champion',
+    'an underground resistance fighter',
+    'a disciplined temple elder',
+    'a disgraced royal instructor',
+    'a battlefield tactician',
+    'a retired city guard captain',
+    'a desert caravan protector',
+    'a healer from the northern waters',
+    'a strict academy headmaster',
+    'an exiled noble turned hermit',
+    'a lightning specialist',
+    'a metalworking artisan',
+    'a spiritual medium attuned to the Spirit World',
+    'a veteran of the Hundred Year War',
+    'a quiet master who valued patience above power'
+  ]);
+  state.bsTraining = trainingEl.value;
+}
+    
+    // Randomize trauma
+var traumaEl = document.getElementById('cc-bs-trauma');
+if(traumaEl){
+  traumaEl.value = 'Witnessed ' + pick([
+    'the burning of their village',
+    'the loss of their home to war',
+    'betrayal by a trusted ally',
+    'a devastating spirit outbreak',
+    'the fall of their family’s honor',
+    'the destruction of a sacred site',
+    'their mentor’s final battle',
+    'a failed rescue mission',
+    'civil unrest in their homeland',
+    'a catastrophic bending accident',
+    'the collapse of their city district',
+    'their sibling’s exile',
+    'a spirit vine surge gone wrong',
+    'a public disgrace that shattered their reputation',
+    'a duel that ended in tragedy',
+    'the forced relocation of their people',
+    'the quiet disappearance of someone they loved'
+  ]);
+  state.bsTrauma = traumaEl.value;
+}
+    
+    // Randomize mentor
+var mentorEl = document.getElementById('cc-bs-mentor');
+if(mentorEl){
+  mentorEl.value = pick([
+    'A retired master who taught discipline above all',
+    'A wandering sage who spoke in riddles',
+    'A former rival who became an unlikely teacher',
+    'A stoic guardian of a sacred site',
+    'A pro-bending veteran with a strict code',
+    'A blind elder with unmatched perception',
+    'A spiritual guide who walked between worlds',
+    'A hardened general who valued strategy',
+    'A pacifist healer who preached restraint',
+    'An engineer who blended science with bending',
+    'A nomadic monk who emphasized detachment',
+    'A disgraced noble seeking redemption',
+    'A quiet artisan who mastered subtle techniques',
+    'A former outlaw who taught survival first',
+    'A scholar obsessed with ancient bending scrolls'
+  ]);
+  state.bsMentor = mentorEl.value;
+}
+    
+    // Randomize rival
+var rivalEl = document.getElementById('cc-bs-rival');
+if(rivalEl){
+  rivalEl.value = pick([
+    'A childhood friend with opposing ideals',
+    'A former teammate turned adversary',
+    'A skilled duelist seeking revenge',
+    'A sibling who chose a different path',
+    'A prodigy who surpassed them early on',
+    'A rival from the academy',
+    'A revolutionary with extreme beliefs',
+    'A spirit-touched warrior with unstable power',
+    'A disciplined officer enforcing harsh laws',
+    'A rogue bender challenging tradition',
+    'A masked competitor from the arena circuit',
+    'A former ally who exposed their weakness',
+    'A tactician who always stays one step ahead',
+    'A hunter tracking them for past actions',
+    'A charismatic leader pulling others to their side'
+  ]);
+  state.bsRival = rivalEl.value;
+}
+    
+    // Randomize goal
+var goalEl = document.getElementById('cc-bs-goal');
+if(goalEl){
+  goalEl.value = pick([
+    'To restore what was lost',
+    'To master a forbidden technique',
+    'To protect their homeland',
+    'To uncover hidden truths of the past',
+    'To bring balance where chaos reigns',
+    'To prove their worth to their family',
+    'To redeem a past mistake',
+    'To unite divided factions',
+    'To rebuild a fallen city district',
+    'To surpass their former mentor',
+    'To prevent another war',
+    'To explore the Spirit World',
+    'To defend the weak from corruption',
+    'To challenge outdated traditions',
+    'To leave behind a lasting legacy',
+    'To discover their true identity',
+    'To atone for a battle gone wrong'
+  ]);
+  state.bsGoal = goalEl.value;
+}
+    
+    // Randomize secret
+var secretEl = document.getElementById('cc-bs-secret');
+if(secretEl){
+  secretEl.value = pick([
+    'Harbors doubts about their bending ability',
+    'Is hiding a forbidden relationship',
+    'Once lost control and hurt someone unintentionally',
+    'Made a dangerous deal to gain power',
+    'Possesses knowledge they should not have',
+    'Is secretly spirit-touched',
+    'Is related to a disgraced figure',
+    'Helped their rival once in secret',
+    'Was responsible for a past failure',
+    'Knows the truth behind a historical lie',
+    'Has suppressed a powerful ability',
+    'Is being watched by unseen forces',
+    'Carries a relic tied to an ancient conflict',
+    'Plans to abandon their current path',
+    'Fears they may repeat their mentor’s mistakes'
+  ]);
+  state.bsSecret = secretEl.value;
+}
+    
+    // Randomize tone
+    clickPill('bstone', pick(BS_TONES));
+    state.bsTone = state.bstone || '';
+  }, 100);
+  
   showToast('Character randomized!');
 }
  
@@ -7672,8 +8676,10 @@ function clearForm(silent){
   state.strike=''; state.advantage=''; state.ally='';
   state.temperament=''; state.lifepath=''; state.range='';
   state.petCat='none'; state.pet=''; state.bond='';
-  state.height=''; state.weight=''; state.eyes=''; state.hair=''; state.skin=''; state.build=''; state.appearanceNotes='';
-  state.personality={ Honor:50,Aggression:30,Compassion:70,Discipline:50,Spirituality:50,Loyalty:60,Independence:50 };
+  state.units='english'; state.height=''; state.weight=''; state.eyes=''; state.hair=''; state.skin=''; state.build=''; state.appearanceNotes='';
+  state.personality={ Honor:'', Aggression:'', Compassion:'', Discipline:'', Spirituality:'', Loyalty:'', Independence:'', Patience: '', Pride: '', Temperament: '', Mercy:'', Ambition: '', Creativity: '', Resilience: '' };
+  state.physical={Agility:'', Strength: '', Endurance: '', Reflexes: '', Dexterity: '', Balance: '', Durability: '', Speed: '', Flexibility: '', "Pain Tolerance": ''};
+  state.mental={"Tactical Intelligence": '', Perception: '', "Battle Awareness": '', Memory: '', Adaptability: '', Willpower: '', Deception: '', Leadership: '', Intimidation:''};
   state.flaws=[];
   state.backstoryFree=''; state.bsNation=''; state.bsTraining=''; state.bsTrauma='';
   state.bsMentor=''; state.bsRival=''; state.bsGoal=''; state.bsSecret=''; state.bsTone='';
@@ -7690,9 +8696,13 @@ function clearForm(silent){
   document.getElementById('cc-pet-picker').style.display='none';
   updateSpecialties();
   renderPersonalitySliders();
-  /* restore "None" pet pill */
+  renderPhysicalSliders();  
+  renderMentalSliders();
+  /* restore "None" pet pill and "English" units pill */
   var nonePill = document.querySelector('.cc-pill[data-group="petcat"][data-val="none"]');
   if(nonePill){ nonePill.classList.add('selected'); state.petCat='none'; }
+  var englishPill = document.querySelector('.cc-pill[data-group="units"][data-val="english"]');
+  if(englishPill){ englishPill.classList.add('selected'); state.units='english'; }
   if(!silent) showToast('Form cleared.');
 }
  
@@ -7729,5 +8739,1105 @@ init();
 })();
 </script>
 <script src="scripts/characters-sync.js"></script>
+<script src="scripts/character-sharing.js"></script>
+<script src="scripts/friend-collection.js"></script> 
+<script src="scripts/character-modal.js"></script>
+
+<!-- ══════════════ THEME SYSTEM (EXPANDED 16 WALLPAPERS) ══════════════ -->
+<style>
+/* Theme card hover states */
+.theme-option-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4) !important;
+}
+.theme-option-card.selected-theme {
+  border-color: var(--accent) !important;
+}
+
+/* Smooth CSS variable transitions */
+:root {
+  transition:
+    --bg-primary 0s,
+    --bg-secondary 0s,
+    --bg-card 0s;
+}
+
+/* Theme transition overlay */
+#theme-transition-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9998;
+  transition: opacity 0.25s ease;
+}
+#theme-transition-overlay.flash {
+  opacity: 0.55;
+}
+
+/* Selected check badge fix */
+.theme-check-badge {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+</style>
+
+<div id="theme-transition-overlay"></div>
+
+<script>
+(function() {
+
+  /* ═══════════════════════════════════════════════════════════════════
+     THEME LABELS — EDIT THIS TABLE TO RENAME / REORDER THEMES
+     ─────────────────────────────────────────────────────────────────
+     Each row:  [ 'THEMES key',  'Display Name',  'Subtitle line' ]
+
+     • To rename a theme:    change the Display Name or Subtitle.
+     • To reorder themes:    drag rows up / down.
+     • To add a new theme:   add a row here AND add a matching entry
+                             in the THEMES object further below.
+     • To remove a theme:    delete the row here AND in THEMES.
+     • The THEMES key ties this table to the THEMES object below.
+  ═══════════════════════════════════════════════════════════════════ */
+  var THEME_META = [
+    // key              Display Name       Subtitle
+    [ 'default',    'Spirit',          'Default · Spirit World'           ],
+    [ 'wallpaper1', 'Fire',            'Fire Nation · Crimson & ember'    ],
+    [ 'wallpaper2', 'Dai Li',          'Secret Police · Deep violet'      ],
+    [ 'wallpaper3', 'Princess Yue',    'Northern Water Tribe · Magenta'   ],
+    [ 'wallpaper4', 'Water',           'Water Tribe · Arctic deep blue'   ],
+    [ 'wallpaper5', 'Deep Ocean',      'Abyss · Midnight cyan'            ],
+    [ 'wallpaper6', 'Dark',            'Void · Deep indigo'               ],
+    [ 'wallpaper7', 'Air',             'Air Nomads · Golden amber'        ],
+    [ 'wallpaper8', 'Ba Sing Se',      'Earth Kingdom · Neon green'       ],
+    [ 'wallpaper9', 'Earth',           'Earth Kingdom · Stone & jade'     ],
+    [ 'wallpaper10','Lion Turtle',     'Ancient Guardian · Emerald deep'  ],
+    [ 'wallpaper11','Republic City',   'United Republic · Steel city blue'],
+    [ 'wallpaper12','Moon Spirit',     'Tui & La · Violet eclipse'        ],
+    [ 'wallpaper13','Air Temple',      'Sky Bison Route · Warm saffron'   ],
+    [ 'wallpaper14','Wan Shi Tong',    'Spirit Library · Deep teal'       ],
+    [ 'wallpaper15','Light',           'Harmonic Convergence · Bright'    ],
+    [ 'wallpaper16','Nickelodeon',     'Nick Branding · Hot pink & rose'  ],
+  ];
+
+  /* ═══════════════════════════════════════════════════════════════════
+     THEME DEFINITIONS — EDIT VARS HERE TO CHANGE COLORS
+     ─────────────────────────────────────────────────────────────────
+     Each theme object has:
+       wallpaperUrl  — background image shown full-screen on the page
+       vars          — CSS custom properties applied to :root
+       bodyBg        — fallback body background color
+       checkColor    — accent color shown on the selected card badge
+
+     To tweak a theme's color scheme: find its key below and edit vars.
+     The key must match a row in THEME_META above.
+  ═══════════════════════════════════════════════════════════════════ */
+  var THEMES = {
+
+    default: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/Current-Development/BKGRND.png',
+      vars: {
+        '--bg-primary':       '#0a0c14',
+        '--bg-secondary':     '#111525',
+        '--bg-card':          '#171c30',
+        '--bg-card-hover':    '#1e2541',
+        '--bg-surface':       '#1a2035',
+        '--text-primary':     '#e8e6f0',
+        '--text-secondary':   '#8b8fa8',
+        '--text-muted':       '#5a5e78',
+        '--border':           '#252a42',
+        '--border-light':     '#2f3555',
+        '--accent':           '#4a7dff',
+        '--accent-hover':     '#5d8cff',
+        '--zen':              '#b44ddf',
+        '--zeny':             '#b44ddf',
+        '--zen-glow':         '#d16bff',
+        '--promo':            '#e8b632',
+        '--promo-glow':       '#ffd04a',
+        '--fire':             '#e8532e',
+        '--fire-glow':        '#ff6b3d',
+        '--water':            '#2e8ce8',
+        '--water-glow':       '#3da5ff',
+        '--earth':            '#5cb85c',
+        '--earth-glow':       '#6fd86f',
+        '--air':              '#f0c946',
+        '--air-glow':         '#ffd966',
+        '--success':          '#3db86c',
+        '--danger':           '#e04848',
+        '--shadow-lg':        '0 8px 32px rgba(0,0,0,0.4)',
+        '--shadow-md':        '0 4px 16px rgba(0,0,0,0.3)',
+        '--common-bg':        'rgba(138,142,168,0.12)',
+        '--uncommon-bg':      'rgba(92,184,92,0.1)',
+        '--rare-bg':          'rgba(74,125,255,0.1)',
+        '--zen-bg':           'rgba(180,77,223,0.1)',
+        '--zeny-bg':          'rgba(232,182,50,0.1)',
+        '--promo-bg':         'rgba(232,182,50,0.1)',
+        '--owned-overlay':    'rgba(61,184,108,0.12)',
+      },
+      bodyBg: '#000000',
+      checkColor: '#b44ddf'
+    },
+
+    wallpaper1: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper1.png',
+      vars: {
+        '--bg-primary':       '#0f0603',
+        '--bg-secondary':     '#1a0a05',
+        '--bg-card':          '#221008',
+        '--bg-card-hover':    '#2e160a',
+        '--bg-surface':       '#1e0d06',
+        '--text-primary':     '#f2e8e0',
+        '--text-secondary':   '#a8836a',
+        '--text-muted':       '#6b4a34',
+        '--border':           '#3a1a0d',
+        '--border-light':     '#562a16',
+        '--accent':           '#e8532e',
+        '--accent-hover':     '#ff6b3d',
+        '--zen':              '#e8532e',
+        '--zeny':             '#e8532e',
+        '--zen-glow':         '#ff7d52',
+        '--promo':            '#f0a830',
+        '--promo-glow':       '#ffc04a',
+        '--fire':             '#e8532e',
+        '--fire-glow':        '#ff6b3d',
+        '--water':            '#c09060',
+        '--water-glow':       '#d4a878',
+        '--earth':            '#8a6040',
+        '--earth-glow':       '#a87c58',
+        '--air':              '#f0c946',
+        '--air-glow':         '#ffd966',
+        '--success':          '#c87830',
+        '--danger':           '#e04848',
+        '--shadow-lg':        '0 8px 32px rgba(30,5,0,0.6)',
+        '--shadow-md':        '0 4px 16px rgba(30,5,0,0.45)',
+        '--common-bg':        'rgba(168,131,106,0.12)',
+        '--uncommon-bg':      'rgba(138,96,64,0.1)',
+        '--rare-bg':          'rgba(232,83,46,0.1)',
+        '--zen-bg':           'rgba(232,83,46,0.1)',
+        '--zeny-bg':          'rgba(240,168,48,0.1)',
+        '--promo-bg':         'rgba(240,168,48,0.1)',
+        '--owned-overlay':    'rgba(200,120,48,0.12)',
+      },
+      bodyBg: '#060200',
+      checkColor: '#e8532e'
+    },
+
+    wallpaper2: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper2.png',
+      vars: {
+        '--bg-primary':       '#0a0810',
+        '--bg-secondary':     '#12101a',
+        '--bg-card':          '#1a1428',
+        '--bg-card-hover':    '#241c3a',
+        '--bg-surface':       '#15111f',
+        '--text-primary':     '#e6e0f0',
+        '--text-secondary':   '#8a7a9f',
+        '--text-muted':       '#5a4a70',
+        '--border':           '#2a1a40',
+        '--border-light':     '#3a2a54',
+        '--accent':           '#b44ddf',
+        '--accent-hover':     '#c45aee',
+        '--zen':              '#b44ddf',
+        '--zeny':             '#b44ddf',
+        '--zen-glow':         '#d16bff',
+        '--promo':            '#d060f0',
+        '--promo-glow':       '#e078ff',
+        '--fire':             '#c85030',
+        '--fire-glow':        '#e07050',
+        '--water':            '#6080c0',
+        '--water-glow':       '#7898ff',
+        '--earth':            '#7a60a0',
+        '--earth-glow':       '#9878c0',
+        '--air':              '#b090d0',
+        '--air-glow':         '#d0a8ff',
+        '--success':          '#7a60c0',
+        '--danger':           '#d04848',
+        '--shadow-lg':        '0 8px 32px rgba(20,0,40,0.5)',
+        '--shadow-md':        '0 4px 16px rgba(20,0,40,0.35)',
+        '--common-bg':        'rgba(138,122,159,0.12)',
+        '--uncommon-bg':      '  rgba(122,96,160,0.1)',
+        '--rare-bg':          'rgba(180,77,223,0.1)',
+        '--zen-bg':           'rgba(180,77,223,0.1)',
+        '--zeny-bg':          'rgba(208,96,240,0.1)',
+        '--promo-bg':         'rgba(208,96,240,0.1)',
+        '--owned-overlay':    'rgba(122,96,192,0.12)',
+      },
+      bodyBg: '#030001',
+      checkColor: '#b44ddf'
+    },
+
+    wallpaper3: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper3.png',
+      vars: {
+        '--bg-primary':       '#0d0510',
+        '--bg-secondary':     '#1a0a1a',
+        '--bg-card':          '#251530',
+        '--bg-card-hover':    '#342045',
+        '--bg-surface':       '#1f0d25',
+        '--text-primary':     '#f0e0f0',
+        '--text-secondary':   '#a08a9a',
+        '--text-muted':       '#705a70',
+        '--border':           '#3a1a40',
+        '--border-light':     '#542a60',
+        '--accent':           '#d050a0',
+        '--accent-hover':     '#e060b0',
+        '--zen':              '#d050a0',
+        '--zeny':             '#d050a0',
+        '--zen-glow':         '#ff70d0',
+        '--promo':            '#f080b0',
+        '--promo-glow':       '#ff98c8',
+        '--fire':             '#c04030',
+        '--fire-glow':        '#e05860',
+        '--water':            '#5080d0',
+        '--water-glow':       '#6898ff',
+        '--earth':            '#8060a0',
+        '--earth-glow':       '#a078c0',
+        '--air':              '#d0a0d0',
+        '--air-glow':         '#f0b8e8',
+        '--success':          '#9070c0',
+        '--danger':           '#d04848',
+        '--shadow-lg':        '0 8px 32px rgba(40,0,20,0.5)',
+        '--shadow-md':        '0 4px 16px rgba(40,0,20,0.35)',
+        '--common-bg':        'rgba(160,138,154,0.12)',
+        '--uncommon-bg':      'rgba(128,96,160,0.1)',
+        '--rare-bg':          'rgba(208,80,160,0.1)',
+        '--zen-bg':           'rgba(208,80,160,0.1)',
+        '--zeny-bg':          'rgba(240,128,176,0.1)',
+        '--promo-bg':         'rgba(240,128,176,0.1)',
+        '--owned-overlay':    'rgba(144,112,192,0.12)',
+      },
+      bodyBg: '#050002',
+      checkColor: '#d050a0'
+    },
+
+    wallpaper4: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper4.png',
+      vars: {
+        '--bg-primary':       '#03080f',
+        '--bg-secondary':     '#06111e',
+        '--bg-card':          '#0a1828',
+        '--bg-card-hover':    '#102035',
+        '--bg-surface':       '#091522',
+        '--text-primary':     '#e0eef8',
+        '--text-secondary':   '#6a9ab8',
+        '--text-muted':       '#3a6080',
+        '--border':           '#0e2438',
+        '--border-light':     '#163654',
+        '--accent':           '#2e8ce8',
+        '--accent-hover':     '#3da5ff',
+        '--zen':              '#2e8ce8',
+        '--zeny':             '#2e8ce8',
+        '--zen-glow':         '#5ab8ff',
+        '--promo':            '#90d0f0',
+        '--promo-glow':       '#aadfff',
+        '--fire':             '#e8532e',
+        '--fire-glow':        '#ff6b3d',
+        '--water':            '#2e8ce8',
+        '--water-glow':       '#3da5ff',
+        '--earth':            '#4a9090',
+        '--earth-glow':       '#60b0b0',
+        '--air':              '#b8e0f8',
+        '--air-glow':         '#d0eeff',
+        '--success':          '#30b8c8',
+        '--danger':           '#e04848',
+        '--shadow-lg':        '0 8px 32px rgba(0,10,30,0.6)',
+        '--shadow-md':        '0 4px 16px rgba(0,10,30,0.45)',
+        '--common-bg':        'rgba(106,154,184,0.12)',
+        '--uncommon-bg':      'rgba(74,144,144,0.1)',
+        '--rare-bg':          'rgba(46,140,232,0.1)',
+        '--zen-bg':           'rgba(46,140,232,0.1)',
+        '--zeny-bg':          'rgba(144,208,240,0.1)',
+        '--promo-bg':         'rgba(144,208,240,0.1)',
+        '--owned-overlay':    'rgba(48,184,200,0.12)',
+      },
+      bodyBg: '#010508',
+      checkColor: '#2e8ce8'
+    },
+
+    wallpaper5: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper5.png',
+      vars: {
+        '--bg-primary':       '#030c0f',
+        '--bg-secondary':     '#061820',
+        '--bg-card':          '#0a2030',
+        '--bg-card-hover':    '#102c42',
+        '--bg-surface':       '#081c2a',
+        '--text-primary':     '#d8f0ff',
+        '--text-secondary':   '#5aabb8',
+        '--text-muted':       '#2a7080',
+        '--border':           '#0a3850',
+        '--border-light':     '#145070',
+        '--accent':           '#00c8ff',
+        '--accent-hover':     '#1ed8ff',
+        '--zen':              '#00c8ff',
+        '--zeny':             '#00c8ff',
+        '--zen-glow':         '#40d8ff',
+        '--promo':            '#70e8ff',
+        '--promo-glow':       '#98f0ff',
+        '--fire':             '#d8572e',
+        '--fire-glow':        '#f8703d',
+        '--water':            '#00c8ff',
+        '--water-glow':       '#1ed8ff',
+        '--earth':            '#2ab8a0',
+        '--earth-glow':       '#48d0b8',
+        '--air':              '#a8e8ff',
+        '--air-glow':         '#c8f0ff',
+        '--success':          '#00d8b8',
+        '--danger':           '#d84848',
+        '--shadow-lg':        '0 8px 32px rgba(0,30,50,0.6)',
+        '--shadow-md':        '0 4px 16px rgba(0,30,50,0.45)',
+        '--common-bg':        'rgba(90,171,184,0.12)',
+        '--uncommon-bg':      'rgba(42,184,160,0.1)',
+        '--rare-bg':          'rgba(0,200,255,0.1)',
+        '--zen-bg':           'rgba(0,200,255,0.1)',
+        '--zeny-bg':          'rgba(112,232,255,0.1)',
+        '--promo-bg':         'rgba(112,232,255,0.1)',
+        '--owned-overlay':    'rgba(0,216,184,0.12)',
+      },
+      bodyBg: '#000508',
+      checkColor: '#00c8ff'
+    },
+
+    wallpaper6: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper6.png',
+      vars: {
+        '--bg-primary':       '#08080f',
+        '--bg-secondary':     '#11121d',
+        '--bg-card':          '#1a1a2d',
+        '--bg-card-hover':    '#26263f',
+        '--bg-surface':       '#161628',
+        '--text-primary':     '#e6e6ff',
+        '--text-secondary':   '#8888bb',
+        '--text-muted':       '#5555aa',
+        '--border':           '#26264d',
+        '--border-light':     '#3a3a66',
+        '--accent':           '#7070ff',
+        '--accent-hover':     '#8888ff',
+        '--zen':              '#7070ff',
+        '--zeny':             '#7070ff',
+        '--zen-glow':         '#9090ff',
+        '--promo':            '#b0b0ff',
+        '--promo-glow':       '#d0d0ff',
+        '--fire':             '#ff6040',
+        '--fire-glow':        '#ff8060',
+        '--water':            '#5080ff',
+        '--water-glow':       '#7098ff',
+        '--earth':            '#6080d0',
+        '--earth-glow':       '#7a98ff',
+        '--air':              '#c0c0ff',
+        '--air-glow':         '#e0e0ff',
+        '--success':          '#6080ff',
+        '--danger':           '#ff5050',
+        '--shadow-lg':        '0 8px 32px rgba(10,10,30,0.6)',
+        '--shadow-md':        '0 4px 16px rgba(10,10,30,0.45)',
+        '--common-bg':        'rgba(136,136,187,0.12)',
+        '--uncommon-bg':      'rgba(96,128,208,0.1)',
+        '--rare-bg':          'rgba(112,112,255,0.1)',
+        '--zen-bg':           'rgba(112,112,255,0.1)',
+        '--zeny-bg':          'rgba(176,176,255,0.1)',
+        '--promo-bg':         'rgba(176,176,255,0.1)',
+        '--owned-overlay':    'rgba(96,128,255,0.12)',
+      },
+      bodyBg: '#020205',
+      checkColor: '#7070ff'
+    },
+
+    wallpaper7: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper7.png',
+      vars: {
+        '--bg-primary':       '#0f0a08',
+        '--bg-secondary':     '#1a1410',
+        '--bg-card':          '#241c18',
+        '--bg-card-hover':    '#302820',
+        '--bg-surface':       '#1c1610',
+        '--text-primary':     '#f0e8d8',
+        '--text-secondary':   '#a89878',
+        '--text-muted':       '#7a6848',
+        '--border':           '#3a2a18',
+        '--border-light':     '#524020',
+        '--accent':           '#d8a040',
+        '--accent-hover':     '#e8b050',
+        '--zen':              '#d8a040',
+        '--zeny':             '#d8a040',
+        '--zen-glow':         '#f0b860',
+        '--promo':            '#f0c858',
+        '--promo-glow':       '#ffd878',
+        '--fire':             '#e8502e',
+        '--fire-glow':        '#f8703d',
+        '--water':            '#8a8868',
+        '--water-glow':       '#a8a680',
+        '--earth':            '#a09070',
+        '--earth-glow':       '#c8a888',
+        '--air':              '#e8d0a0',
+        '--air-glow':         '#f8e0b8',
+        '--success':          '#c8a840',
+        '--danger':           '#d84848',
+        '--shadow-lg':        '0 8px 32px rgba(30,20,0,0.6)',
+        '--shadow-md':        '0 4px 16px rgba(30,20,0,0.45)',
+        '--common-bg':        'rgba(168,152,120,0.12)',
+        '--uncommon-bg':      'rgba(160,144,104,0.1)',
+        '--rare-bg':          'rgba(216,160,64,0.1)',
+        '--zen-bg':           'rgba(216,160,64,0.1)',
+        '--zeny-bg':          'rgba(240,200,88,0.1)',
+        '--promo-bg':         'rgba(240,200,88,0.1)',
+        '--owned-overlay':    'rgba(200,168,64,0.12)',
+      },
+      bodyBg: '#060402',
+      checkColor: '#d8a040'
+    },
+
+    wallpaper8: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper8.png',
+      vars: {
+        '--bg-primary':       '#0a0f08',
+        '--bg-secondary':     '#121a10',
+        '--bg-card':          '#1a2418',
+        '--bg-card-hover':    '#263020',
+        '--bg-surface':       '#161e14',
+        '--text-primary':     '#e0f0d8',
+        '--text-secondary':   '#7aa878',
+        '--text-muted':       '#4a7040',
+        '--border':           '#1a3a18',
+        '--border-light':     '#2a5028',
+        '--accent':           '#68c040',
+        '--accent-hover':     '#78d050',
+        '--zen':              '#68c040',
+        '--zeny':             '#68c040',
+        '--zen-glow':         '#88e060',
+        '--promo':            '#a8d840',
+        '--promo-glow':       '#c0f050',
+        '--fire':             '#d8482e',
+        '--fire-glow':        '#f8683d',
+        '--water':            '#5aa870',
+        '--water-glow':       '#70c088',
+        '--earth':            '#68c040',
+        '--earth-glow':       '#78d050',
+        '--air':              '#d0f080',
+        '--air-glow':         '#e0f898',
+        '--success':          '#50d850',
+        '--danger':           '#c84840',
+        '--shadow-lg':        '0 8px 32px rgba(0,20,0,0.55)',
+        '--shadow-md':        '0 4px 16px rgba(0,20,0,0.4)',
+        '--common-bg':        'rgba(122,168,120,0.12)',
+        '--uncommon-bg':      'rgba(104,192,64,0.1)',
+        '--rare-bg':          'rgba(104,192,64,0.15)',
+        '--zen-bg':           'rgba(104,192,64,0.1)',
+        '--zeny-bg':          'rgba(168,216,64,0.1)',
+        '--promo-bg':         'rgba(168,216,64,0.1)',
+        '--owned-overlay':    'rgba(80,216,80,0.12)',
+      },
+      bodyBg: '#020501',
+      checkColor: '#68c040'
+    },
+
+    wallpaper9: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper9.png',
+      vars: {
+        '--bg-primary':       '#040b03',
+        '--bg-secondary':     '#091508',
+        '--bg-card':          '#0e1e0c',
+        '--bg-card-hover':    '#152810',
+        '--bg-surface':       '#0b1a09',
+        '--text-primary':     '#e0f0d8',
+        '--text-secondary':   '#6a9858',
+        '--text-muted':       '#3c6030',
+        '--border':           '#152810',
+        '--border-light':     '#1e3e18',
+        '--accent':           '#5cb85c',
+        '--accent-hover':     '#6fd86f',
+        '--zen':              '#5cb85c',
+        '--zeny':             '#5cb85c',
+        '--zen-glow':         '#7ae87a',
+        '--promo':            '#c8d840',
+        '--promo-glow':       '#d8ec58',
+        '--fire':             '#e8532e',
+        '--fire-glow':        '#ff6b3d',
+        '--water':            '#60b870',
+        '--water-glow':       '#78d888',
+        '--earth':            '#5cb85c',
+        '--earth-glow':       '#6fd86f',
+        '--air':              '#d8e840',
+        '--air-glow':         '#e8f558',
+        '--success':          '#40c858',
+        '--danger':           '#c05030',
+        '--shadow-lg':        '0 8px 32px rgba(0,15,0,0.55)',
+        '--shadow-md':        '0 4px 16px rgba(0,15,0,0.4)',
+        '--common-bg':        'rgba(106,152,88,0.12)',
+        '--uncommon-bg':      'rgba(92,184,92,0.1)',
+        '--rare-bg':          'rgba(92,184,92,0.15)',
+        '--zen-bg':           'rgba(92,184,92,0.1)',
+        '--zeny-bg':          'rgba(200,216,64,0.1)',
+        '--promo-bg':         'rgba(200,216,64,0.1)',
+        '--owned-overlay':    'rgba(64,200,88,0.12)',
+      },
+      bodyBg: '#020501',
+      checkColor: '#5cb85c'
+    },
+
+    wallpaper10: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper10.png',
+      vars: {
+        '--bg-primary':       '#050b08',
+        '--bg-secondary':     '#0a1810',
+        '--bg-card':          '#0f2418',
+        '--bg-card-hover':    '#183020',
+        '--bg-surface':       '#0c1e14',
+        '--text-primary':     '#d8f0e0',
+        '--text-secondary':   '#68a878',
+        '--text-muted':       '#407050',
+        '--border':           '#184028',
+        '--border-light':     '#225838',
+        '--accent':           '#40d880',
+        '--accent-hover':     '#50e890',
+        '--zen':              '#40d880',
+        '--zeny':             '#40d880',
+        '--zen-glow':         '#60f0a0',
+        '--promo':            '#90e870',
+        '--promo-glow':       '#a8f888',
+        '--fire':             '#d8402e',
+        '--fire-glow':        '#f8603d',
+        '--water':            '#50b880',
+        '--water-glow':       '#68d898',
+        '--earth':            '#40d880',
+        '--earth-glow':       '#50e890',
+        '--air':              '#c8e890',
+        '--air-glow':         '#d8f8a8',
+        '--success':          '#30e870',
+        '--danger':           '#c84040',
+        '--shadow-lg':        '0 8px 32px rgba(0,20,10,0.55)',
+        '--shadow-md':        '0 4px 16px rgba(0,20,10,0.4)',
+        '--common-bg':        'rgba(104,168,120,0.12)',
+        '--uncommon-bg':      'rgba(64,216,128,0.1)',
+        '--rare-bg':          'rgba(64,216,128,0.15)',
+        '--zen-bg':           'rgba(64,216,128,0.1)',
+        '--zeny-bg':          'rgba(144,232,112,0.1)',
+        '--promo-bg':         'rgba(144,232,112,0.1)',
+        '--owned-overlay':    'rgba(48,232,128,0.12)',
+      },
+      bodyBg: '#020502',
+      checkColor: '#40d880'
+    },
+
+    wallpaper11: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper11.png',
+      vars: {
+        '--bg-primary':       '#080a0f',
+        '--bg-secondary':     '#10141f',
+        '--bg-card':          '#191f30',
+        '--bg-card-hover':    '#252d42',
+        '--bg-surface':       '#141a28',
+        '--text-primary':     '#e8ecf0',
+        '--text-secondary':   '#8a9ab8',
+        '--text-muted':       '#5a7080',
+        '--border':           '#222c48',
+        '--border-light':     '#2e4060',
+        '--accent':           '#5090d8',
+        '--accent-hover':     '#60a0e8',
+        '--zen':              '#5090d8',
+        '--zeny':             '#5090d8',
+        '--zen-glow':         '#70b0ff',
+        '--promo':            '#a0c8f0',
+        '--promo-glow':       '#b8d8ff',
+        '--fire':             '#e8522e',
+        '--fire-glow':        '#f8703d',
+        '--water':            '#5090d8',
+        '--water-glow':       '#60a0e8',
+        '--earth':            '#5a8cb0',
+        '--earth-glow':       '#70a8c8',
+        '--air':              '#b0d8f0',
+        '--air-glow':         '#c8e8ff',
+        '--success':          '#40b0d8',
+        '--danger':           '#d84848',
+        '--shadow-lg':        '0 8px 32px rgba(5,10,25,0.6)',
+        '--shadow-md':        '0 4px 16px rgba(5,10,25,0.45)',
+        '--common-bg':        'rgba(138,154,184,0.12)',
+        '--uncommon-bg':      'rgba(90,140,176,0.1)',
+        '--rare-bg':          'rgba(80,144,216,0.1)',
+        '--zen-bg':           'rgba(80,144,216,0.1)',
+        '--zeny-bg':          'rgba(160,200,240,0.1)',
+        '--promo-bg':         'rgba(160,200,240,0.1)',
+        '--owned-overlay':    'rgba(64,176,216,0.12)',
+      },
+      bodyBg: '#030508',
+      checkColor: '#5090d8'
+    },
+
+    wallpaper12: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper12.png',
+      vars: {
+        '--bg-primary':       '#0f0810',
+        '--bg-secondary':     '#1a101f',
+        '--bg-card':          '#241830',
+        '--bg-card-hover':    '#32203f',
+        '--bg-surface':       '#1c1228',
+        '--text-primary':     '#f0e8f8',
+        '--text-secondary':   '#9880a8',
+        '--text-muted':       '#6a5080',
+        '--border':           '#322050',
+        '--border-light':     '#483068',
+        '--accent':           '#c060e0',
+        '--accent-hover':     '#d070f0',
+        '--zen':              '#c060e0',
+        '--zeny':             '#c060e0',
+        '--zen-glow':         '#d878ff',
+        '--promo':            '#e08ff0',
+        '--promo-glow':       '#f0a8ff',
+        '--fire':             '#d8482e',
+        '--fire-glow':        '#f8683d',
+        '--water':            '#6080d8',
+        '--water-glow':       '#7898f0',
+        '--earth':            '#9070c8',
+        '--earth-glow':       '#b088e0',
+        '--air':              '#d8b0f0',
+        '--air-glow':         '#f0c8ff',
+        '--success':          '#a870d8',
+        '--danger':           '#d04848',
+        '--shadow-lg':        '0 8px 32px rgba(20,5,30,0.6)',
+        '--shadow-md':        '0 4px 16px rgba(20,5,30,0.45)',
+        '--common-bg':        'rgba(152,128,168,0.12)',
+        '--uncommon-bg':      'rgba(144,112,200,0.1)',
+        '--rare-bg':          'rgba(192,96,224,0.1)',
+        '--zen-bg':           'rgba(192,96,224,0.1)',
+        '--zeny-bg':          'rgba(224,144,240,0.1)',
+        '--promo-bg':         'rgba(224,144,240,0.1)',
+        '--owned-overlay':    'rgba(160,128,216,0.12)',
+      },
+      bodyBg: '#050203',
+      checkColor: '#c060e0'
+    },
+
+    wallpaper13: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper13.png',
+      vars: {
+        '--bg-primary':       '#0e0a05',
+        '--bg-secondary':     '#19140a',
+        '--bg-card':          '#241c10',
+        '--bg-card-hover':    '#302818',
+        '--bg-surface':       '#1c1408',
+        '--text-primary':     '#f2e8d8',
+        '--text-secondary':   '#a89070',
+        '--text-muted':       '#7a5840',
+        '--border':           '#3a2610',
+        '--border-light':     '#543818',
+        '--accent':           '#e89030',
+        '--accent-hover':     '#f8a840',
+        '--zen':              '#e89030',
+        '--zeny':             '#e89030',
+        '--zen-glow':         '#ffa850',
+        '--promo':            '#f8b840',
+        '--promo-glow':       '#ffc860',
+        '--fire':             '#e8502e',
+        '--fire-glow':        '#f8703d',
+        '--water':            '#9a8060',
+        '--water-glow':       '#b89878',
+        '--earth':            '#b89860',
+        '--earth-glow':       '#d0b078',
+        '--air':              '#f0d8a8',
+        '--air-glow':         '#ffe0c0',
+        '--success':          '#d89840',
+        '--danger':           '#d84848',
+        '--shadow-lg':        '0 8px 32px rgba(30,15,0,0.6)',
+        '--shadow-md':        '0 4px 16px rgba(30,15,0,0.45)',
+        '--common-bg':        'rgba(168,144,112,0.12)',
+        '--uncommon-bg':      'rgba(184,152,96,0.1)',
+        '--rare-bg':          'rgba(232,144,48,0.1)',
+        '--zen-bg':           'rgba(232,144,48,0.1)',
+        '--zeny-bg':          'rgba(248,184,64,0.1)',
+        '--promo-bg':         'rgba(248,184,64,0.1)',
+        '--owned-overlay':    'rgba(216,152,64,0.12)',
+      },
+      bodyBg: '#060402',
+      checkColor: '#e89030'
+    },
+
+    wallpaper14: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper14.png',
+      vars: {
+        '--bg-primary':       '#060c0a',
+        '--bg-secondary':     '#0c1814',
+        '--bg-card':          '#142420',
+        '--bg-card-hover':    '#1a3030',
+        '--bg-surface':       '#0f1c18',
+        '--text-primary':     '#d8f0f0',
+        '--text-secondary':   '#5a9898',
+        '--text-muted':       '#2a6868',
+        '--border':           '#0e3838',
+        '--border-light':     '#185858',
+        '--accent':           '#30d0c8',
+        '--accent-hover':     '#40e0d8',
+        '--zen':              '#30d0c8',
+        '--zeny':             '#30d0c8',
+        '--zen-glow':         '#50e0d8',
+        '--promo':            '#70f0e8',
+        '--promo-glow':       '#98fffF',
+        '--fire':             '#d8482e',
+        '--fire-glow':        '#f8683d',
+        '--water':            '#50d0c0',
+        '--water-glow':       '#68e0d0',
+        '--earth':            '#30d0c8',
+        '--earth-glow':       '#40e0d8',
+        '--air':              '#a8f0f0',
+        '--air-glow':         '#c8fff8',
+        '--success':          '#00e0d0',
+        '--danger':           '#d84848',
+        '--shadow-lg':        '0 8px 32px rgba(0,25,20,0.55)',
+        '--shadow-md':        '0 4px 16px rgba(0,25,20,0.4)',
+        '--common-bg':        'rgba(90,152,152,0.12)',
+        '--uncommon-bg':      'rgba(48,208,200,0.1)',
+        '--rare-bg':          'rgba(48,208,200,0.15)',
+        '--zen-bg':           'rgba(48,208,200,0.1)',
+        '--zeny-bg':          'rgba(112,240,232,0.1)',
+        '--promo-bg':         'rgba(112,240,232,0.1)',
+        '--owned-overlay':    'rgba(48,224,208,0.12)',
+      },
+      bodyBg: '#020504',
+      checkColor: '#30d0c8'
+    },
+
+    wallpaper15: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper15.png',
+      vars: {
+        '--bg-primary':       '#0a0a10',
+        '--bg-secondary':     '#14141f',
+        '--bg-card':          '#1d1d2f',
+        '--bg-card-hover':    '#2a2a42',
+        '--bg-surface':       '#16161f',
+        '--text-primary':     '#e8e8ff',
+        '--text-secondary':   '#8a8ab8',
+        '--text-muted':       '#5a5a88',
+        '--border':           '#2a2a4a',
+        '--border-light':     '#3d3d5a',
+        '--accent':           '#6b7dff',
+        '--accent-hover':     '#7d8dff',
+        '--zen':              '#6b7dff',
+        '--zeny':             '#6b7dff',
+        '--zen-glow':         '#8b9dff',
+        '--promo':            '#a8b8ff',
+        '--promo-glow':       '#c8d0ff',
+        '--fire':             '#ff6040',
+        '--fire-glow':        '#ff8060',
+        '--water':            '#5a8dff',
+        '--water-glow':       '#7aadff',
+        '--earth':            '#6d80d8',
+        '--earth-glow':       '#8598f0',
+        '--air':              '#c0c8ff',
+        '--air-glow':         '#dcdeff',
+        '--success':          '#60a0ff',
+        '--danger':           '#ff5050',
+        '--shadow-lg':        '0 8px 32px rgba(10,10,30,0.6)',
+        '--shadow-md':        '0 4px 16px rgba(10,10,30,0.45)',
+        '--common-bg':        'rgba(138,138,184,0.12)',
+        '--uncommon-bg':      'rgba(109,128,216,0.1)',
+        '--rare-bg':          'rgba(107,125,255,0.1)',
+        '--zen-bg':           'rgba(107,125,255,0.1)',
+        '--zeny-bg':          'rgba(168,184,255,0.1)',
+        '--promo-bg':         'rgba(168,184,255,0.1)',
+        '--owned-overlay':    'rgba(107,157,255,0.12)',
+      },
+      bodyBg: '#020205',
+      checkColor: '#6b7dff'
+    },
+
+    wallpaper16: {
+      wallpaperUrl: 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/TESTING-STOREFRONT/themes/wallpaper16.png',
+      vars: {
+        '--bg-primary':       '#0d0608',
+        '--bg-secondary':     '#1a0f12',
+        '--bg-card':          '#241618',
+        '--bg-card-hover':    '#301c20',
+        '--bg-surface':       '#1c1214',
+        '--text-primary':     '#f0e0e8',
+        '--text-secondary':   '#a07878',
+        '--text-muted':       '#704040',
+        '--border':           '#3a1818',
+        '--border-light':     '#542828',
+        '--accent':           '#e05878',
+        '--accent-hover':     '#f07090',
+        '--zen':              '#e05878',
+        '--zeny':             '#e05878',
+        '--zen-glow':         '#ff7898',
+        '--promo':            '#f08898',
+        '--promo-glow':       '#ffa0b0',
+        '--fire':             '#d8482e',
+        '--fire-glow':        '#f8683d',
+        '--water':            '#6080c0',
+        '--water-glow':       '#7898e0',
+        '--earth':            '#a05870',
+        '--earth-glow':       '#c07090',
+        '--air':              '#e0b0c8',
+        '--air-glow':         '#f0c8e0',
+        '--success':          '#c04880',
+        '--danger':           '#d84848',
+        '--shadow-lg':        '0 8px 32px rgba(30,5,15,0.6)',
+        '--shadow-md':        '0 4px 16px rgba(30,5,15,0.45)',
+        '--common-bg':        'rgba(160,120,120,0.12)',
+        '--uncommon-bg':      'rgba(160,88,112,0.1)',
+        '--rare-bg':          'rgba(224,88,120,0.1)',
+        '--zen-bg':           'rgba(224,88,120,0.1)',
+        '--zeny-bg':          'rgba(240,136,152,0.1)',
+        '--promo-bg':         'rgba(240,136,152,0.1)',
+        '--owned-overlay':    'rgba(192,120,144,0.12)',
+      },
+      bodyBg: '#050203',
+      checkColor: '#e05878'
+    }
+
+  };
+
+  /* ─── RENDER THEME PICKER ───────────────────────────────────────
+     Builds theme cards from THEME_META + THEMES. To add, rename, or
+     reorder themes just edit the THEME_META table above — no HTML to
+     touch.
+  ─────────────────────────────────────────────────────────────────── */
+  function hexToRgbaLocal(hex, alpha) {
+    var r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    return 'rgba('+r+','+g+','+b+','+alpha+')';
+  }
+
+  function renderThemePicker() {
+    var grid = document.getElementById('theme-picker-grid');
+    if (!grid) return;
+    grid.innerHTML = THEME_META.map(function(row) {
+      var key = row[0], name = row[1], sub = row[2];
+      var theme = THEMES[key];
+      if (!theme) return '';
+      var check = theme.checkColor || '#b44ddf';
+      var shadow = hexToRgbaLocal(check, 0.5);
+      return (
+        '<div class="theme-option-card" data-theme="'+key+'" onclick="applyTheme(\''+key+'\')" '+
+        'style="cursor:pointer;border-radius:10px;border:2px solid var(--border);overflow:hidden;position:relative;transition:all 0.25s;">'+
+          '<div class="theme-thumbnail-container" style="width:100%;aspect-ratio:16/9;overflow:hidden;background:#000;position:relative;">'+
+            '<img src="'+theme.wallpaperUrl+'" alt="'+name+'" '+
+            'class="theme-thumbnail-img" data-theme-key="'+key+'" '+
+            'style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">'+
+          '</div>'+
+          '<div style="padding:8px 10px;background:var(--bg-secondary);">'+
+            '<div style="font-family:\'Cinzel\',serif;font-weight:700;font-size:0.72rem;color:var(--text-primary);">'+name+'</div>'+
+            '<div style="font-size:0.62rem;color:var(--text-muted);margin-top:1px;">'+sub+'</div>'+
+          '</div>'+
+          '<div id="theme-check-'+key+'" '+
+          'style="position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;'+
+          'background:'+check+';display:none;align-items:center;justify-content:center;'+
+          'font-size:0.65rem;color:#fff;box-shadow:0 2px 8px '+shadow+';">✓</div>'+
+        '</div>'
+      );
+    }).join('');
+    
+    /* Attach dynamic styling to thumbnail images */
+    setTimeout(function() {
+      document.querySelectorAll('.theme-thumbnail-img').forEach(function(img) {
+        if (img.complete) {
+          /* Image already cached/loaded */
+          applyDynamicThumbnailStyles(img);
+        }
+        img.onload = function() {
+          applyDynamicThumbnailStyles(img);
+        };
+      });
+    }, 50);
+  }
+  
+  /* Apply dynamic aspect ratio styles to theme picker thumbnails */
+  function applyDynamicThumbnailStyles(img) {
+    if (!img || img.naturalHeight === 0 || img.naturalWidth === 0) {
+      return;
+    }
+    
+    var isPortrait = img.naturalHeight > img.naturalWidth;
+    
+    if (isPortrait) {
+      /* Portrait: contain to show full image */
+      img.style.objectFit = 'contain';
+      img.style.objectPosition = 'top center';
+    } else {
+      /* Landscape or square: cover to fill frame */
+      img.style.objectFit = 'cover';
+      img.style.objectPosition = 'top center';
+    }
+  }
+  
+  renderThemePicker();
+
+  /* ─── DYNAMIC IMAGE STYLES BASED ON ASPECT RATIO ─── */
+  function applyDynamicImageStyles(img) {
+    if (!img) return;
+    
+    // Check if image dimensions are loaded
+    if (img.naturalHeight === 0 || img.naturalWidth === 0) {
+      // Wait a bit and retry if dimensions aren't ready yet
+      setTimeout(function() { applyDynamicImageStyles(img); }, 100);
+      return;
+    }
+    
+    var isPortrait = img.naturalHeight > img.naturalWidth;
+    
+    if (isPortrait) {
+      // Portrait: contain, 100% height
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'contain';
+      img.style.objectPosition = 'top center';
+    } else {
+      // Landscape or square: cover, 100vh height
+      img.style.width = '100%';
+      img.style.height = '100vh';
+      img.style.objectFit = 'cover';
+      img.style.objectPosition = 'top center';
+    }
+  }
+
+  /* ─── APPLY THEME ─── */
+  window.applyTheme = function(themeKey) {
+    var theme = THEMES[themeKey];
+    if (!theme) return;
+
+    /* Flash overlay */
+    var overlay = document.getElementById('theme-transition-overlay');
+    if (overlay) {
+      overlay.classList.add('flash');
+      setTimeout(function() { overlay.classList.remove('flash'); }, 350);
+    }
+
+    /* Apply CSS variables to :root */
+    var root = document.documentElement;
+    Object.keys(theme.vars).forEach(function(prop) {
+      root.style.setProperty(prop, theme.vars[prop]);
+    });
+
+    /* Apply body background color */
+    document.body.style.backgroundColor = theme.bodyBg;
+
+    /* Swap background wallpaper image */
+    var bgImg = document.querySelector('.bg-fixed-image img');
+    if (bgImg) {
+      bgImg.style.opacity = '0';
+      bgImg.style.transition = 'opacity 0.4s ease';
+      setTimeout(function() {
+        bgImg.src = theme.wallpaperUrl;
+        bgImg.onload = function() {
+          applyDynamicImageStyles(bgImg);
+          bgImg.style.opacity = '1';
+        };
+        /* Fallback in case onload doesn't fire */
+        setTimeout(function() { 
+          applyDynamicImageStyles(bgImg);
+          bgImg.style.opacity = '1'; 
+        }, 600);
+      }, 200);
+    }
+
+    /* Update picker card borders and check badges */
+    document.querySelectorAll('.theme-option-card').forEach(function(card) {
+      var key = card.dataset.theme;
+      var isSelected = (key === themeKey);
+      card.classList.toggle('selected-theme', isSelected);
+      card.style.borderColor = isSelected ? theme.vars['--accent'] : theme.vars['--border'];
+      card.style.boxShadow = isSelected
+        ? '0 0 16px ' + hexToRgba(THEMES[themeKey].checkColor, 0.35)
+        : '';
+
+      var check = document.getElementById('theme-check-' + key);
+      if (check) {
+        check.style.display = isSelected ? 'flex' : 'none';
+      }
+      
+      /* Reapply thumbnail styles for selected card */
+      if (isSelected) {
+        var thumbImg = card.querySelector('.theme-thumbnail-img');
+        if (thumbImg) {
+          setTimeout(function() {
+            applyDynamicThumbnailStyles(thumbImg);
+          }, 50);
+        }
+      }
+    });
+
+    /* Persist selection */
+    try { localStorage.setItem('avatar-tcg-theme', themeKey); } catch(e) {}
+
+    /* Update slider accent colors */
+    updateSliderAccents(theme);
+  };
+
+  /* Recolour the accent-color on custom sliders */
+  function updateSliderAccents(theme) {
+    /* Personality sliders use --zen-glow, Physical use --promo, Mental use --accent */
+    /* They use inline accent-color; we can re-inject a style tag */
+    var existing = document.getElementById('theme-slider-override');
+    if (!existing) {
+      existing = document.createElement('style');
+      existing.id = 'theme-slider-override';
+      document.head.appendChild(existing);
+    }
+    existing.textContent =
+      '.cc-slider { accent-color: ' + theme.vars['--zen-glow'] + ' !important; }' +
+      '.cc-slider2 { accent-color: ' + theme.vars['--promo-glow'] + ' !important; }' +
+      '.cc-slider3 { accent-color: ' + theme.vars['--accent'] + ' !important; }' +
+      '.cc-tab.active { background: ' + theme.vars['--zen'] + ' !important; }' +
+      '.tab-btn.active { background: ' + theme.vars['--zen'] + ' !important; border-color: ' + theme.vars['--zen'] + ' !important; }' +
+      '.tab-btn-nested.active { color: ' + theme.vars['--zen'] + ' !important; border-bottom-color: ' + theme.vars['--zen'] + ' !important; }' +
+      '.cc-btn-primary { background: ' + theme.vars['--zen'] + ' !important; }' +
+      '.how-to-btn { background: ' + theme.vars['--zen'] + ' !important; }' +
+      '.cc-pill.generic.selected { border-color: ' + theme.vars['--zen'] + ' !important; color: ' + theme.vars['--zen'] + ' !important; }' +
+      '.filter-pill.active { background: ' + theme.vars['--zen'] + ' !important; border-color: ' + theme.vars['--accent'] + ' !important; }' +
+      '.card-item:hover { filter: drop-shadow(0 0 7px ' + theme.vars['--zen'] + ') !important; }';
+  }
+
+  /* Utility: hex → rgba */
+  function hexToRgba(hex, alpha) {
+    var r = parseInt(hex.slice(1,3),16);
+    var g = parseInt(hex.slice(3,5),16);
+    var b = parseInt(hex.slice(5,7),16);
+    return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+  }
+
+  /* ─── RESTORE SAVED THEME ON LOAD ─── */
+  (function restoreTheme() {
+    var saved;
+    try { saved = localStorage.getItem('avatar-tcg-theme'); } catch(e) {}
+    if (saved && THEMES[saved]) {
+      /* Apply immediately, no flash overlay on load */
+      var theme = THEMES[saved];
+      var root = document.documentElement;
+      Object.keys(theme.vars).forEach(function(prop) {
+        root.style.setProperty(prop, theme.vars[prop]);
+      });
+      document.body.style.backgroundColor = theme.bodyBg;
+
+      var bgImg = document.querySelector('.bg-fixed-image img');
+      if (bgImg) {
+        bgImg.src = theme.wallpaperUrl;
+        bgImg.onload = function() {
+          applyDynamicImageStyles(bgImg);
+        };
+        // Also apply styles after a short delay as fallback
+        setTimeout(function() {
+          applyDynamicImageStyles(bgImg);
+        }, 200);
+      }
+
+      updateSliderAccents(theme);
+
+      /* Mark picker card after DOM settles */
+      setTimeout(function() {
+        document.querySelectorAll('.theme-option-card').forEach(function(card) {
+          var key = card.dataset.theme;
+          var isSelected = (key === saved);
+          card.classList.toggle('selected-theme', isSelected);
+          card.style.borderColor = isSelected ? theme.vars['--accent'] : theme.vars['--border'];
+          card.style.boxShadow = isSelected
+            ? '0 0 16px ' + hexToRgba(THEMES[saved].checkColor, 0.35)
+            : '';
+          var check = document.getElementById('theme-check-' + key);
+          if (check) check.style.display = isSelected ? 'flex' : 'none';
+        });
+      }, 300);
+    }
+  })();
+
+})();
+</script>
 </body>
 </html>
