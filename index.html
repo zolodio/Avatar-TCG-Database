@@ -9646,20 +9646,15 @@ init();
     }
     
     var isPortrait = img.naturalHeight > img.naturalWidth;
-    var container = img.closest('.theme-thumbnail-container');
-    
-    if (!container) return;
     
     if (isPortrait) {
-      /* Portrait: contain, adjust container to portrait aspect ratio */
+      /* Portrait: contain to show full image */
       img.style.objectFit = 'contain';
       img.style.objectPosition = 'top center';
-      container.style.aspectRatio = String(img.naturalWidth / img.naturalHeight);
     } else {
-      /* Landscape or square: cover, keep 16/9 or adjust to match image */
+      /* Landscape or square: cover to fill frame */
       img.style.objectFit = 'cover';
       img.style.objectPosition = 'top center';
-      container.style.aspectRatio = 'auto';
     }
   }
   
