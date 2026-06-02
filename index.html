@@ -1982,6 +1982,172 @@ body {
   padding: 0 1px;
   line-height: 1;
 }
+
+/* ══════════════════════════════════════════════════
+   LOSER REWARD MODAL
+   ══════════════════════════════════════════════════ */
+.loser-reward-overlay {
+  position: fixed; inset: 0; z-index: 2000;
+  background: rgba(0,0,0,0.88);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+  animation: lrFadeIn 0.25s ease;
+}
+@keyframes lrFadeIn { from { opacity:0; } to { opacity:1; } }
+.loser-reward-modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  max-width: 440px; width: 100%;
+  max-height: 92vh; overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 80px rgba(0,0,0,0.7);
+  animation: lrSlideUp 0.28s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes lrSlideUp { from { transform: translateY(24px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+.loser-reward-header {
+  background: linear-gradient(135deg, #141428 0%, #1e1e38 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 22px 52px 18px 20px;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  text-align: center;
+}
+.loser-reward-badge {
+  font-family: 'Cinzel', serif;
+  font-size: 0.82rem; font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 3px; text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.loser-reward-subtitle {
+  font-size: 0.82rem; color: var(--text-muted);
+  line-height: 1.5; max-width: 300px; margin: 0 auto;
+}
+.loser-reward-close {
+  position: absolute; top: 13px; right: 13px;
+  background: none; border: 1px solid var(--border);
+  color: var(--text-muted); cursor: pointer;
+  border-radius: 50%; width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.78rem; transition: all 0.18s; line-height: 1;
+}
+.loser-reward-close:hover { border-color: var(--danger); color: var(--danger); }
+.loser-reward-card-wrap { padding: 18px 18px 4px; }
+.loser-reward-loading {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  padding: 44px 0; color: var(--text-muted); font-size: 0.88rem;
+}
+.loser-reward-loading i { font-size: 1.8rem; }
+.loser-reward-card-content { display: flex; flex-direction: column; gap: 16px; }
+.loser-reward-img-wrap {
+  position: relative; border-radius: var(--radius);
+  overflow: hidden; width: 100%; max-width: 210px;
+  margin: 0 auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  border: 1px solid var(--border-light);
+}
+.loser-reward-img { width: 100%; display: block; }
+.loser-reward-img-placeholder {
+  width: 100%; aspect-ratio: 3/4;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px; color: var(--text-muted); font-size: 0.78rem;
+  background: var(--bg-surface);
+}
+.loser-reward-img-placeholder i { font-size: 2rem; opacity: 0.4; }
+.loser-reward-card-info { padding: 0 2px; }
+.loser-reward-card-name {
+  font-family: 'Cinzel', serif; font-size: 1.05rem; font-weight: 700;
+  color: var(--text-primary); margin-bottom: 8px; text-align: center;
+}
+.loser-reward-card-meta {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  justify-content: center; margin-bottom: 14px;
+}
+.loser-reward-stats {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  display: flex; flex-wrap: wrap; gap: 16px;
+  margin-bottom: 12px; justify-content: center;
+}
+.loser-reward-stat { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.loser-reward-stat-label {
+  font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-muted); font-weight: 700;
+}
+.loser-reward-stat-value {
+  font-family: 'Cinzel', serif; font-size: 1rem; font-weight: 700;
+  color: var(--text-primary);
+}
+.loser-reward-rules {
+  font-size: 0.83rem; color: var(--text-secondary);
+  line-height: 1.55; margin-bottom: 10px;
+  background: var(--bg-surface); border-radius: var(--radius);
+  padding: 10px 13px; border-left: 3px solid var(--border-light);
+}
+.loser-reward-flavor {
+  font-size: 0.76rem; color: var(--text-muted);
+  font-style: italic; line-height: 1.55;
+  text-align: center; padding: 0 8px;
+}
+.loser-reward-actions {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 14px 18px 18px;
+  border-top: 1px solid var(--border);
+  margin-top: 14px;
+}
+.loser-reward-btn {
+  width: 100%; padding: 12px 16px;
+  border-radius: var(--radius); border: none;
+  font-family: 'Nunito Sans', sans-serif; font-weight: 700; font-size: 0.88rem;
+  cursor: pointer; transition: all 0.18s;
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+}
+.loser-reward-btn-add { background: var(--success); color: #fff; }
+.loser-reward-btn-add:hover { filter: brightness(1.08); }
+.loser-reward-btn-add:active { transform: scale(0.98); }
+.loser-reward-btn-trade {
+  background: var(--bg-surface); border: 1px solid var(--border);
+  color: var(--text-muted); cursor: not-allowed; opacity: 0.55;
+}
+.loser-coming-soon {
+  font-size: 0.62rem; font-weight: 700;
+  background: rgba(240,201,70,0.12);
+  border: 1px solid rgba(240,201,70,0.28);
+  color: var(--air); padding: 2px 8px; border-radius: 99px;
+}
+.loser-reward-btn-discard {
+  background: transparent; border: 1px solid rgba(224,72,72,0.3);
+  color: var(--danger);
+}
+.loser-reward-btn-discard:hover { background: rgba(224,72,72,0.08); }
+/* Discard warning */
+.loser-discard-overlay {
+  position: fixed; inset: 0; z-index: 3000;
+  background: rgba(0,0,0,0.78);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.loser-discard-box {
+  background: var(--bg-card);
+  border: 1px solid rgba(224,72,72,0.5);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px 22px;
+  max-width: 340px; width: 100%;
+  text-align: center;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.65);
+}
+.loser-discard-icon { font-size: 2.2rem; color: var(--danger); margin-bottom: 12px; }
+.loser-discard-title {
+  font-family: 'Cinzel', serif; font-size: 0.95rem; font-weight: 700;
+  color: var(--text-primary); margin-bottom: 10px;
+}
+.loser-discard-msg {
+  font-size: 0.82rem; color: var(--text-secondary);
+  line-height: 1.55; margin-bottom: 20px;
+}
+.loser-discard-actions { display: flex; gap: 10px; justify-content: center; }
 	</style>
 </head>
 <body>
@@ -9837,6 +10003,317 @@ init();
     }
   })();
 
+})();
+</script>
+<!-- LOSER REWARD MODAL -->
+<div class="loser-reward-overlay" id="loserRewardOverlay" style="display:none;">
+  <div class="loser-reward-modal">
+    <div class="loser-reward-header">
+      <div class="loser-reward-badge">🎖️ Participation Reward</div>
+      <div class="loser-reward-subtitle">Thanks for playing! You fought hard — here's a card to remember the battle.</div>
+    </div>
+    <button class="loser-reward-close" id="loserRewardClose" title="Close">✕</button>
+
+    <div class="loser-reward-card-wrap">
+      <!-- Loading state -->
+      <div class="loser-reward-loading" id="loserRewardLoading">
+        <i class="fas fa-circle-notch fa-spin"></i>
+        <span>Selecting your reward…</span>
+      </div>
+      <!-- Card content (populated by JS) -->
+      <div class="loser-reward-card-content" id="loserRewardCardContent" style="display:none;">
+        <div class="loser-reward-img-wrap">
+          <img class="loser-reward-img" id="loserRewardImg" src="" alt="" style="display:none;">
+          <div class="loser-reward-img-placeholder" id="loserRewardImgPlaceholder" style="display:none;">
+            <i class="fas fa-hat-wizard"></i><span>Image unavailable</span>
+          </div>
+        </div>
+        <div class="loser-reward-card-info">
+          <div class="loser-reward-card-name" id="loserRewardCardName"></div>
+          <div class="loser-reward-card-meta" id="loserRewardCardMeta"></div>
+          <div class="loser-reward-stats" id="loserRewardStats"></div>
+          <div class="loser-reward-rules" id="loserRewardRules"></div>
+          <div class="loser-reward-flavor" id="loserRewardFlavor"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="loser-reward-actions" id="loserRewardActions" style="display:none;">
+      <button class="loser-reward-btn loser-reward-btn-add" id="loserRewardAdd">
+        <i class="fas fa-plus-circle"></i> Add to Digital Collection
+      </button>
+      <button class="loser-reward-btn loser-reward-btn-trade" id="loserRewardTrade" disabled>
+        <i class="fas fa-exchange-alt"></i> Offer for Trade
+        <span class="loser-coming-soon">Coming soon</span>
+      </button>
+      <button class="loser-reward-btn loser-reward-btn-discard" id="loserRewardDiscard">
+        <i class="fas fa-trash-alt"></i> Discard
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- LOSER REWARD — DISCARD WARNING POPUP -->
+<div class="loser-discard-overlay" id="loserDiscardOverlay" style="display:none;">
+  <div class="loser-discard-box">
+    <div class="loser-discard-icon"><i class="fas fa-exclamation-triangle"></i></div>
+    <div class="loser-discard-title">Discard this card?</div>
+    <div class="loser-discard-msg">This card will <strong>not</strong> be added to your digital collection. Once discarded it cannot be recovered. Are you sure?</div>
+    <div class="loser-discard-actions">
+      <button class="confirm-btn confirm-cancel" id="loserDiscardCancel">Keep Card</button>
+      <button class="confirm-btn confirm-ok" id="loserDiscardConfirm" style="background:var(--danger);border-color:var(--danger);">Discard</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   LOSER REWARD MODAL
+   Triggered when the game site redirects here with:
+     #loser-reward=CARD_NUMBER
+   Shows a single random common digital card with options to
+   add to collection, trade (future), or discard.
+   ═══════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+
+  var _lrCardNumber = null;   // card number parsed from hash
+  var _lrCard       = null;   // resolved allCards entry
+
+  /* ── Hash parser ── */
+  function _parseLoserRewardHash() {
+    var hash = (window.location.hash || '');
+    var m    = hash.match(/[#&]loser-reward=([^&]+)/);
+    return m ? decodeURIComponent(m[1]) : null;
+  }
+
+  /* ── Entry point: called on load and on hashchange ── */
+  function checkForLoserReward() {
+    var num = _parseLoserRewardHash();
+    if (!num) return;
+    _lrCardNumber = num;
+    // Wipe hash without reloading so it can't be re-triggered by refresh
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+    _openLoserRewardModal();
+  }
+
+  /* ── Open the modal in loading state, then resolve the card ── */
+  function _openLoserRewardModal() {
+    var overlay = document.getElementById('loserRewardOverlay');
+    if (!overlay) return;
+    _showEl('loserRewardLoading');
+    _hideEl('loserRewardCardContent');
+    _hideEl('loserRewardActions');
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    _waitForCard();
+  }
+
+  /* ── Poll until allCards is populated (CSV may still be loading) ── */
+  function _waitForCard() {
+    var attempts = 0, max = 120; // up to 12 s
+    var iv = setInterval(function () {
+      attempts++;
+      var cards = window.allCards || [];
+      if (cards.length > 0 || attempts >= max) {
+        clearInterval(iv);
+        _resolveCard(cards);
+      }
+    }, 100);
+  }
+
+  /* ── Find the card, or fall back to a random common ── */
+  function _resolveCard(cards) {
+    _lrCard = null;
+    if (cards.length > 0 && _lrCardNumber) {
+      _lrCard = cards.find(function (c) {
+        return String(c.number) === String(_lrCardNumber);
+      });
+    }
+    // Fallback: pick a random common from 1–175
+    if (!_lrCard) {
+      var commons = cards.filter(function (c) {
+        var n = parseInt(c.number, 10);
+        return !isNaN(n) && n >= 1 && n <= 175 && c.rarity === 'common';
+      });
+      if (commons.length > 0) {
+        _lrCard = commons[Math.floor(Math.random() * commons.length)];
+      }
+    }
+    if (_lrCard) {
+      _renderRewardCard(_lrCard);
+    } else {
+      // Nothing to show — close silently
+      _closeLoserRewardModal();
+    }
+  }
+
+  /* ── Populate the modal with the card data ── */
+  function _renderRewardCard(card) {
+    // Image
+    var img  = document.getElementById('loserRewardImg');
+    var phld = document.getElementById('loserRewardImgPlaceholder');
+    if (card.imageLink) {
+      img.src = card.imageLink;
+      img.alt = card.name || '';
+      img.style.display = 'block';
+      phld.style.display = 'none';
+      img.onerror = function () { img.style.display = 'none'; phld.style.display = 'flex'; };
+    } else {
+      img.style.display = 'none';
+      phld.style.display = 'flex';
+    }
+
+    // Name
+    document.getElementById('loserRewardCardName').textContent = card.name || '—';
+
+    // Meta tags (type + rarity + number)
+    var rarityColors = {
+      common:     'var(--text-secondary)',
+      uncommon:   'var(--earth)',
+      rare:       'var(--water)',
+      zenemental: 'var(--zen)',
+      promo:      'var(--promo)'
+    };
+    var rc  = rarityColors[card.rarity] || 'var(--text-secondary)';
+    var meta = '';
+    if (card.type) {
+      meta += '<span class="modal-tag tag-' + _esc(card.type) + '">' + _esc(card.type) + '</span>';
+    }
+    if (card.rarity) {
+      meta += '<span class="modal-tag" style="color:' + rc + ';border-color:' + rc + ';background:transparent;">' + _esc(card.rarity) + '</span>';
+    }
+    if (card.number) {
+      meta += '<span class="modal-tag" style="color:var(--text-muted);border-color:var(--border);">#' + _esc(String(card.number)) + '</span>';
+    }
+    document.getElementById('loserRewardCardMeta').innerHTML = meta;
+
+    // Stats
+    var statsEl  = document.getElementById('loserRewardStats');
+    var statsHtml = '';
+    if (card.intercept && String(card.intercept).trim() !== '') {
+      statsHtml += '<div class="loser-reward-stat"><div class="loser-reward-stat-label">Intercept</div>' +
+        '<div class="loser-reward-stat-value" style="color:var(--water);">' + _esc(String(card.intercept)) + '</div></div>';
+    }
+    if (card.force && String(card.force).trim() !== '') {
+      statsHtml += '<div class="loser-reward-stat"><div class="loser-reward-stat-label">Force</div>' +
+        '<div class="loser-reward-stat-value" style="color:var(--fire);">' + _esc(String(card.force)) + '</div></div>';
+    }
+    var costParts = [];
+    if (parseInt(card.greenEnergy,10)  > 0) costParts.push('<span style="color:var(--earth);">'  + parseInt(card.greenEnergy,10)  + 'G</span>');
+    if (parseInt(card.yellowEnergy,10) > 0) costParts.push('<span style="color:var(--air);">'    + parseInt(card.yellowEnergy,10) + 'Y</span>');
+    if (parseInt(card.redEnergy,10)    > 0) costParts.push('<span style="color:var(--fire);">'   + parseInt(card.redEnergy,10)    + 'R</span>');
+    if (costParts.length > 0) {
+      statsHtml += '<div class="loser-reward-stat"><div class="loser-reward-stat-label">Cost</div>' +
+        '<div class="loser-reward-stat-value" style="font-size:0.85rem;">' + costParts.join(' ') + '</div></div>';
+    }
+    statsEl.innerHTML  = statsHtml;
+    statsEl.style.display = statsHtml ? '' : 'none';
+
+    // Rules text
+    var rulesEl = document.getElementById('loserRewardRules');
+    if (card.rulesText && card.rulesText.trim()) {
+      rulesEl.textContent   = card.rulesText;
+      rulesEl.style.display = '';
+    } else {
+      rulesEl.style.display = 'none';
+    }
+
+    // Flavor text
+    var flavorEl = document.getElementById('loserRewardFlavor');
+    if (card.flavorText && card.flavorText.trim()) {
+      flavorEl.textContent   = '\u201c' + card.flavorText + '\u201d';
+      flavorEl.style.display = '';
+    } else {
+      flavorEl.style.display = 'none';
+    }
+
+    // Reveal content
+    _hideEl('loserRewardLoading');
+    document.getElementById('loserRewardCardContent').style.display = 'flex';
+    document.getElementById('loserRewardActions').style.display = 'flex';
+  }
+
+  /* ── Close modal ── */
+  function _closeLoserRewardModal() {
+    var overlay = document.getElementById('loserRewardOverlay');
+    if (overlay) overlay.style.display = 'none';
+    document.body.style.overflow = '';
+    _lrCard = null;
+    _lrCardNumber = null;
+  }
+
+  /* ── Discard popup ── */
+  function _showDiscardWarning() {
+    var el = document.getElementById('loserDiscardOverlay');
+    if (el) el.style.display = 'flex';
+  }
+  function _hideDiscardWarning() {
+    var el = document.getElementById('loserDiscardOverlay');
+    if (el) el.style.display = 'none';
+  }
+
+  /* ── Helpers ── */
+  function _showEl(id) { var e = document.getElementById(id); if (e) e.style.display = ''; }
+  function _hideEl(id) { var e = document.getElementById(id); if (e) e.style.display = 'none'; }
+  function _esc(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  /* ── Wire buttons (runs after DOM is ready) ── */
+  function _wireButtons() {
+    // Close ×
+    var closeBtn = document.getElementById('loserRewardClose');
+    if (closeBtn) closeBtn.addEventListener('click', _closeLoserRewardModal);
+
+    // Add to Digital Collection
+    var addBtn = document.getElementById('loserRewardAdd');
+    if (addBtn) addBtn.addEventListener('click', function () {
+      if (!_lrCard) return;
+      if (typeof window.addSingleCardToDigital === 'function') {
+        window.addSingleCardToDigital(_lrCard.number);
+      } else {
+        // Fallback: show toast if the function isn't loaded yet
+        if (typeof window.showToast === 'function') window.showToast('Card added to your digital collection!');
+      }
+      _closeLoserRewardModal();
+    });
+
+    // Offer for Trade (no-op — coming soon)
+    // The button is disabled via HTML; handler is intentionally empty.
+
+    // Discard
+    var discardBtn = document.getElementById('loserRewardDiscard');
+    if (discardBtn) discardBtn.addEventListener('click', _showDiscardWarning);
+
+    // Discard warning — Keep
+    var keepBtn = document.getElementById('loserDiscardCancel');
+    if (keepBtn) keepBtn.addEventListener('click', _hideDiscardWarning);
+
+    // Discard warning — Confirm
+    var confirmBtn = document.getElementById('loserDiscardConfirm');
+    if (confirmBtn) confirmBtn.addEventListener('click', function () {
+      _hideDiscardWarning();
+      _closeLoserRewardModal();
+    });
+  }
+
+  /* ── Bootstrap ── */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () {
+      _wireButtons();
+      checkForLoserReward();
+    });
+  } else {
+    _wireButtons();
+    checkForLoserReward();
+  }
+
+  // Re-check if someone navigates back to the page with the hash still present
+  window.addEventListener('hashchange', checkForLoserReward);
 })();
 </script>
 <script src="scripts/match-results.js"></script>
