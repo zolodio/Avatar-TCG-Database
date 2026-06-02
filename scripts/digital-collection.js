@@ -729,4 +729,24 @@ window.aqstRefreshDigital = function (cloudData) {
   updateDigitalStats();
 };
 
+// Public: addSingleCardToDigital
+// Adds a single card by card number to the digital collection.
+// Called by the loser reward modal on the database site.
+window.addSingleCardToDigital = function (cardNumber) {
+  if (!cardNumber) return;
+  loadDC();
+  var now = Date.now();
+  var key = String(cardNumber);
+  if (!dc[key]) dc[key] = { qty: 0, lastAcquired: now };
+  dc[key].qty++;
+  dc[key].lastAcquired = now;
+  saveDC();
+  window.aqstDigitalCollection = dc;
+  if (initialized) {
+    renderDigitalCards();
+    updateDigitalStats();
+  }
+  showToastDC('Card added to your digital collection!');
+};
+
 })();
