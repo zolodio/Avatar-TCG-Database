@@ -102,9 +102,10 @@ function redeemPayload(payload) {
   var added = 0;
   var now   = Date.now();
   payload.c.forEach(function (num) {
-    if (!dc[num]) dc[num] = { qty: 0, lastAcquired: now };
+    if (!dc[num]) dc[num] = { qty: 0, lastAcquired: now, firstAcquired: now };
     dc[num].qty++;
     dc[num].lastAcquired = now;
+    // firstAcquired is intentionally never overwritten — it records the original add date
     added++;
   });
   saveDC();  // ← This now triggers cloud sync automatically
@@ -213,6 +214,13 @@ function redeemPayload(payload) {
     if (dcSort === 'acquired') {
       cards.sort(function (a, b) {
         return (dc[b.number].lastAcquired || 0) - (dc[a.number].lastAcquired || 0);
+      });
+    } else if (dcSort === 'date_added') {
+      cards.sort(function (a, b) {
+        // Use firstAcquired when available; fall back to lastAcquired for cards added before this field existed
+        var tA = dc[a.number].firstAcquired || dc[a.number].lastAcquired || 0;
+        var tB = dc[b.number].firstAcquired || dc[b.number].lastAcquired || 0;
+        return tB - tA; // newest first
       });
     } else if (dcSort === 'number') {
       cards.sort(function (a, b) {
@@ -737,7 +745,7 @@ window.addSingleCardToDigital = function (cardNumber) {
   loadDC();
   var now = Date.now();
   var key = String(cardNumber);
-  if (!dc[key]) dc[key] = { qty: 0, lastAcquired: now };
+  if (!dc[key]) dc[key] = { qty: 0, lastAcquired: now, firstAcquired: now };
   dc[key].qty++;
   dc[key].lastAcquired = now;
   saveDC();
