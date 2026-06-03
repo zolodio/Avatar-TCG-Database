@@ -2221,7 +2221,7 @@ body {
   <div class="search-row">
     <div class="search-box">
       <i class="fas fa-search"></i>
-      <input class="search-input" id="searchInput" placeholder="Search cards..." type="text">
+      <input class="search-input" id="searchInput" placeholder="Search cards..." type="text" autocomplete="off">
       <button class="search-clear-btn" id="searchClearBtn" title="Clear search"><i class="fas fa-times"></i></button>
     </div>
     <div class="view-toggle">
@@ -2252,6 +2252,7 @@ body {
       <option value="force">Sort: Force</option>
       <option value="energy">Sort: Energy Cost</option>
       <option value="price">Sort: Price</option>
+      <option value="date_added">Sort: Date Added</option>
     </select>
     <button class="sort-dir-btn" id="sortDirBtn" title="Ascending — click to reverse"><i class="fas fa-arrow-up-short-wide"></i></button>
   </div>
@@ -2910,6 +2911,7 @@ body {
       <div class="sort-controls">
         <select class="sort-select" id="digital-sort-by">
           <option value="acquired">Recently Added</option>
+          <option value="date_added">Date Added</option>
           <option value="number">Card Number</option>
           <option value="name">Card Name</option>
           <option value="rarity">Rarity</option>
@@ -4708,6 +4710,7 @@ function switchTab(tabName) {
 /* ---- STATE ---- */
 var allCards = [];
 var collection = {};
+var collectionTimestamps = {}; // { cardNumber: ISO timestamp } — records when each card was first added
 var compareCollection = {};
 var prices = {};
 var pricesLoaded = false;
@@ -4735,6 +4738,7 @@ var rarityColorMap = {
 
 /* ---- PERSISTENCE ---- */
 var DB_NAME = 'AvatarQSTracker', DB_STORE = 'collection', DB_KEY = 'myCollection', COOKIE_KEY = 'aqst_col';
+var TS_DB_KEY = 'myCollectionTimestamps', TS_COOKIE_KEY = 'aqst_col_ts';
 
 function openDB() {
   return new Promise(function(resolve, reject) {
@@ -4774,6 +4778,35 @@ async function loadCollection() {
   } catch (_e) {}
   try {
     var match = document.cookie.split('; ').find(function(c) { return c.startsWith(COOKIE_KEY + '='); });
+    if (match) return JSON.parse(decodeURIComponent(match.split('=').slice(1).join('=')));
+  } catch (_e2) {}
+  return {};
+}
+
+async function saveTimestamps() {
+  var data = JSON.stringify(collectionTimestamps);
+  try {
+    var db = await openDB();
+    var tx = db.transaction(DB_STORE, 'readwrite');
+    tx.objectStore(DB_STORE).put(data, TS_DB_KEY);
+    await new Promise(function(res, rej) { tx.oncomplete = res; tx.onerror = rej; });
+    db.close();
+  } catch (_e) {
+    try { document.cookie = TS_COOKIE_KEY + '=' + encodeURIComponent(data) + ';path=/;max-age=31536000;SameSite=Lax'; } catch (_e2) {}
+  }
+}
+
+async function loadTimestamps() {
+  try {
+    var db = await openDB();
+    var tx = db.transaction(DB_STORE, 'readonly');
+    var req = tx.objectStore(DB_STORE).get(TS_DB_KEY);
+    var result = await new Promise(function(res, rej) { req.onsuccess = function() { res(req.result); }; req.onerror = rej; });
+    db.close();
+    if (result) return JSON.parse(result);
+  } catch (_e) {}
+  try {
+    var match = document.cookie.split('; ').find(function(c) { return c.startsWith(TS_COOKIE_KEY + '='); });
     if (match) return JSON.parse(decodeURIComponent(match.split('=').slice(1).join('=')));
   } catch (_e2) {}
   return {};
@@ -5070,7 +5103,9 @@ function updateSaveCodeDisplay() {
 
 /* ---- FETCH & INIT ---- */
 async function init() {
-  collection = await loadCollection();
+  var loaded = await Promise.all([loadCollection(), loadTimestamps()]);
+  collection           = loaded[0];
+  collectionTimestamps = loaded[1];
 
   var results = await Promise.allSettled([
     loadPrices(),
@@ -5226,6 +5261,15 @@ else if (sortBy === 'intercept') cards.sort(function(a, b) {
     var pA = (prices[a.number] && prices[a.number].avg) || 0;
     var pB = (prices[b.number] && prices[b.number].avg) || 0;
     return dir * (pA - pB);
+  });
+  else if (sortBy === 'date_added') cards.sort(function(a, b) {
+    var tA = collectionTimestamps[a.number] ? new Date(collectionTimestamps[a.number]).getTime() : 0;
+    var tB = collectionTimestamps[b.number] ? new Date(collectionTimestamps[b.number]).getTime() : 0;
+    // Cards with no timestamp (never owned) fall to the end regardless of direction
+    if (!tA && !tB) return 0;
+    if (!tA) return 1;
+    if (!tB) return -1;
+    return dir * (tA - tB);
   });
   else cards.sort(function(a, b) {
     var numA = parseInt(a.number, 10), numB = parseInt(b.number, 10);
@@ -5607,12 +5651,33 @@ function updateModalButton(isOwned) {
 }
 
 /* ---- COLLECTION ACTIONS ---- */
-function addToCollection(n) { if (!collection[n]) collection[n] = 0; collection[n]++; onCollectionChanged(n); }
-function removeFromCollection(n) { delete collection[n]; onCollectionChanged(n); }
-function setQty(n, qty) { if (qty <= 0) delete collection[n]; else collection[n] = qty; onCollectionChanged(n); }
+function addToCollection(n) {
+  if (!collection[n]) {
+    collection[n] = 0;
+    if (!collectionTimestamps[n]) collectionTimestamps[n] = new Date().toISOString();
+  }
+  collection[n]++;
+  onCollectionChanged(n);
+}
+function removeFromCollection(n) {
+  delete collection[n];
+  delete collectionTimestamps[n];
+  onCollectionChanged(n);
+}
+function setQty(n, qty) {
+  if (qty <= 0) {
+    delete collection[n];
+    delete collectionTimestamps[n];
+  } else {
+    if (!collection[n] && !collectionTimestamps[n]) collectionTimestamps[n] = new Date().toISOString();
+    collection[n] = qty;
+  }
+  onCollectionChanged(n);
+}
 
 function onCollectionChanged(n) {
   saveCollection();
+  saveTimestamps();
 	if (window._aqst_cloudSync) window._aqst_cloudSync();
   updateStats();
   renderCards();
@@ -5683,7 +5748,9 @@ function closeCodeInputDialog() { document.getElementById('codeInputOverlay').cl
 
 function processCSVImport(text) {
   var lines = text.trim().split('\n');
+  var importNow = new Date().toISOString();
   collection = {};
+  collectionTimestamps = {};
   for (var i = 1; i < lines.length; i++) {
     var parts = [], current = '', inQuotes = false;
     for (var j = 0; j < lines[i].length; j++) {
@@ -5695,10 +5762,10 @@ function processCSVImport(text) {
     parts.push(current.trim());
     if (parts.length >= 5) {
       var num = parts[0]; var qty = parseInt(parts[4], 10) || 1;
-      if (qty > 0) collection[num] = qty;
+      if (qty > 0) { collection[num] = qty; collectionTimestamps[num] = importNow; }
     }
   }
-  saveCollection(); updateStats(); renderCards(); updateSaveCodeDisplay(); updateAllPackCounters();
+  saveTimestamps(); saveCollection(); updateStats(); renderCards(); updateSaveCodeDisplay(); updateAllPackCounters();
   showToast('Collection imported from CSV!');
 }
 
@@ -5767,9 +5834,19 @@ function setupEvents() {
     inp.focus();
   });
 
+  /* Exposed helper — call window.resetPhysicalCardSearch() from auth.js after a
+     successful login to ensure the email value never leaks into the search bar. */
+  window.resetPhysicalCardSearch = function() {
+    var inp = document.getElementById('searchInput');
+    if (inp) inp.value = '';
+    searchQuery = '';
+    document.getElementById('searchClearBtn').classList.remove('visible');
+    renderCards();
+  };
+
   document.getElementById('sortSelect').addEventListener('change', function() {
     sortBy = this.value;
-    if (['rarity', 'quantity', 'intercept', 'force', 'energy', 'price'].indexOf(sortBy) !== -1) sortDirection = 'desc';
+    if (['rarity', 'quantity', 'intercept', 'force', 'energy', 'price', 'date_added'].indexOf(sortBy) !== -1) sortDirection = 'desc';
     else sortDirection = 'asc';
     updateSortDirBtn();
     renderCards();
@@ -5973,7 +6050,7 @@ document.getElementById('modalObtainedSection').addEventListener('mouseout', fun
   document.getElementById('clearMethodOverlay').addEventListener('click', function(e) { if (e.target === this) closeClearDialog(); });
 
   document.getElementById('clearOwnOk').addEventListener('click', function() {
-    collection = {}; saveCollection(); updateStats(); buildFilters(); renderCards(); updateSaveCodeDisplay(); updateAllPackCounters();
+    collection = {}; collectionTimestamps = {}; saveTimestamps(); saveCollection(); updateStats(); buildFilters(); renderCards(); updateSaveCodeDisplay(); updateAllPackCounters();
     document.getElementById('clearOwnConfirmOverlay').classList.remove('active');
     showToast('Collection cleared');
   });
@@ -6032,7 +6109,11 @@ document.getElementById('codeInputOk').addEventListener('click', function() {
   if (!code) { errorEl.textContent = 'Please enter a save code.'; return; }
   var decoded = decodeCollectionFromCode(code);
   if (!decoded) { errorEl.textContent = 'Invalid save code. Check that you pasted the full code correctly.'; return; }
-  collection = decoded; saveCollection(); updateStats(); renderCards(); updateSaveCodeDisplay(); updateAllPackCounters();
+  collection = decoded;
+  var importNow = new Date().toISOString();
+  collectionTimestamps = {};
+  Object.keys(decoded).forEach(function(n) { collectionTimestamps[n] = importNow; });
+  saveTimestamps(); saveCollection(); updateStats(); renderCards(); updateSaveCodeDisplay(); updateAllPackCounters();
   closeCodeInputDialog();
   showToast('Collection restored from save code!');
 });
