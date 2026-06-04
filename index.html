@@ -2179,6 +2179,7 @@ body {
 <div class="tab-content active" id="tab-physical-cards">
   <div class="tab-nav-nested">
     <button class="tab-btn-nested active" data-nested-tab="collection">Collection</button>
+    <button class="tab-btn-nested" data-nested-tab="phys-stats">Stats</button>
     <button class="tab-btn-nested" data-nested-tab="pack-rip-estimators">Pack Rip Estimators</button>
     <button class="tab-btn-nested" data-nested-tab="graph">Graph</button>
     <button class="tab-btn-nested" data-nested-tab="save-code-portfolio">Save Code</button>
@@ -2186,35 +2187,9 @@ body {
 
   <!-- COLLECTION NESTED TAB -->
   <div id="nested-collection" class="nested-tab-content active">
-<div style="margin-bottom: 18px;">
-  <button id="statsToggleBtn" onclick="(function(){
-    var body = document.getElementById('statsCollapsible');
-    var icon = document.getElementById('statsToggleIcon');
-    var label = document.getElementById('statsToggleLabel');
-    var isOpen = body.style.display !== 'none';
-    body.style.display = isOpen ? 'none' : 'block';
-    icon.style.transform = isOpen ? 'rotate(-90deg)' : 'rotate(0deg)';
-    label.textContent = isOpen ? 'Expand' : 'Collapse';
-  })()"
-  style="width:100%; display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:10px 14px; cursor:pointer; font-family:'Nunito Sans',sans-serif; font-weight:700; font-size:0.8rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.08em;">
-    <span>Collection Stats</span>
-    <span style="display:flex; align-items:center; gap:6px;">
-      <span id="statsToggleLabel" style="font-size:0.65rem; color:var(--text-muted); font-weight:400; text-transform:none; letter-spacing:0;">Collapse</span>
-      <i id="statsToggleIcon" class="fas fa-chevron-down" style="font-size:0.75rem; transition:transform 0.25s;"></i>
-    </span>
-  </button>
-  <div id="statsCollapsible" style="margin-top:10px;">
-    <div class="stats-bar">
-      <div class="stat-box"><div class="stat-value" id="statOwned">0</div><div class="stat-label">/ 248 Owned</div></div>
-      <div class="stat-box"><div class="stat-value" id="statMissing">0</div><div class="stat-label">Missing</div></div>
-      <div class="stat-box"><div class="stat-value" id="statTotal">0</div><div class="stat-label">Total Cards</div></div>
-    </div>
-    <div class="progress-bar-container">
-      <div class="progress-header"><span class="progress-title">Collection Progress</span><span class="progress-pct" id="progressPct">0%</span></div>
-      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-    </div>
-    <div class="rarity-breakdown" id="rarityBreakdown"></div>
-  </div>
+<!-- Rarity filter chips remain on the collection tab for quick filtering -->
+<div style="margin-bottom:14px;">
+  <div class="rarity-breakdown" id="rarityBreakdown"></div>
 </div>
 
 <div class="controls-section">
@@ -2260,6 +2235,23 @@ body {
 
 <div class="card-grid" id="cardGrid"></div>
 <div class="empty-state" id="emptyState" style="display:none;"><p>No cards match your search</p></div>
+  </div>
+
+  <!-- STATS NESTED TAB -->
+  <div id="nested-phys-stats" class="nested-tab-content" style="display:none;">
+    <!-- Core stat boxes + progress -->
+    <div class="stats-bar" style="margin-bottom:14px;">
+      <div class="stat-box"><div class="stat-value" id="statOwned">0</div><div class="stat-label">/ 248 Owned</div></div>
+      <div class="stat-box"><div class="stat-value" id="statMissing">0</div><div class="stat-label">Missing</div></div>
+      <div class="stat-box"><div class="stat-value" id="statTotal">0</div><div class="stat-label">Total Cards</div></div>
+    </div>
+    <div class="progress-bar-container" style="margin-bottom:20px;">
+      <div class="progress-header"><span class="progress-title">Core Set Completion</span><span class="progress-pct" id="progressPct">0%</span></div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <!-- Rich stats dashboard rendered by collection-stats.js -->
+    <div id="phys-stats-dashboard"></div>
   </div>
 
   <!-- PACK RIP ESTIMATORS NESTED TAB -->
@@ -2855,32 +2847,16 @@ body {
 <div id="tab-digital-collection" class="tab-content">
   <div class="tab-nav-nested">
     <button class="tab-btn-nested active" data-nested-tab="digital-main">Collection</button>
+    <button class="tab-btn-nested" data-nested-tab="digital-stats">Stats</button>
     <button class="tab-btn-nested" data-nested-tab="digital-pack-rip-estimators">Pack Rip Estimators</button>
     <button class="tab-btn-nested" data-nested-tab="digital-redeem">Redeem</button>
     <button class="tab-btn-nested" data-nested-tab="digital-deckbuilder">Deck Builder</button>
   </div>
 
   <div id="nested-digital-main" class="nested-tab-content active">
-    <div style="margin-bottom: 18px;">
-      <button id="digitalStatsToggleBtn" onclick="(function(){
-        var body = document.getElementById('digitalStatsCollapsible');
-        var icon = document.getElementById('digitalStatsToggleIcon');
-        var label = document.getElementById('digitalStatsToggleLabel');
-        var isOpen = body.style.display !== 'none';
-        body.style.display = isOpen ? 'none' : 'block';
-        icon.style.transform = isOpen ? 'rotate(-90deg)' : 'rotate(0deg)';
-        label.textContent = isOpen ? 'Expand' : 'Collapse';
-      })()"
-      style="width:100%; display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:10px 14px; cursor:pointer; font-family:'Nunito Sans',sans-serif; font-weight:700; font-size:0.8rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.08em;">
-        <span>Digital Collection Stats</span>
-        <span style="display:flex; align-items:center; gap:6px;">
-          <span id="digitalStatsToggleLabel" style="font-size:0.65rem; color:var(--text-muted); font-weight:400; text-transform:none; letter-spacing:0;">Collapse</span>
-          <i id="digitalStatsToggleIcon" class="fas fa-chevron-down" style="font-size:0.75rem; transition:transform 0.25s;"></i>
-        </span>
-      </button>
-      <div id="digitalStatsCollapsible" style="margin-top:10px;">
-        <div class="stats-bar" id="digital-stats-bar"></div>
-      </div>
+    <!-- Rarity filter chips for digital collection -->
+    <div style="margin-bottom:14px;">
+      <div class="rarity-breakdown" id="digital-rarity-breakdown"></div>
     </div>
 
     <div class="export-row" id="digital-controls">
@@ -2924,6 +2900,14 @@ body {
       <i class="fas fa-inbox"></i>
       <p>No digital cards yet. Redeem codes from the Booster app to get started!</p>
     </div>
+  </div>
+
+  <!-- DIGITAL STATS NESTED TAB -->
+  <div id="nested-digital-stats" class="nested-tab-content" style="display:none;">
+    <!-- Core stat boxes -->
+    <div class="stats-bar" id="digital-stats-bar" style="margin-bottom:14px;"></div>
+    <!-- Rich digital stats dashboard rendered by collection-stats.js -->
+    <div id="digital-stats-dashboard"></div>
   </div>
 
   <!-- DIGITAL PACK RIP ESTIMATORS NESTED TAB -->
@@ -3396,22 +3380,6 @@ body {
           <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem; color:var(--text-secondary);">
             <input type="checkbox" class="mp-filter" data-site="letgo" checked style="cursor:pointer;">
             <span>OfferUp (LetGo)</span>
-          </label>
-          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem; color:var(--text-secondary);">
-            <input type="checkbox" class="mp-filter" data-site="whatnot" checked style="cursor:pointer;">
-            <span style="display:flex; align-items:center; gap:4px;"><i class="fas fa-broadcast-tower" style="color:#7c3aed;"></i> Whatnot</span>
-          </label>
-          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem; color:var(--text-secondary);">
-            <input type="checkbox" class="mp-filter" data-site="mercari" checked style="cursor:pointer;">
-            <span style="display:flex; align-items:center; gap:4px;"><i class="fas fa-tag" style="color:#e8163c;"></i> Mercari</span>
-          </label>
-          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem; color:var(--text-secondary);">
-            <input type="checkbox" class="mp-filter" data-site="tcgplayer" checked style="cursor:pointer;">
-            <span style="display:flex; align-items:center; gap:4px;"><i class="fas fa-layer-group" style="color:#1a9dda;"></i> TCGPlayer</span>
-          </label>
-          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem; color:var(--text-secondary);">
-            <input type="checkbox" class="mp-filter" data-site="amazon" checked style="cursor:pointer;">
-            <span style="display:flex; align-items:center; gap:4px;"><i class="fab fa-amazon" style="color:#ff9900;"></i> Amazon</span>
           </label>
         </div>
       </div>
@@ -5196,6 +5164,11 @@ function updateStats() {
     bhtml += '</div>';
   });
   breakdown.innerHTML = bhtml;
+
+  // Notify collection-stats.js dashboard to refresh if open
+  if (typeof window.refreshCollectionStatsDashboard === 'function') {
+    window.refreshCollectionStatsDashboard('physical');
+  }
 }
 
 /* ---- FILTER / SORT ---- */
@@ -6683,6 +6656,7 @@ init();
 <script src="scripts/media-player.js"></script>
 <script src="scripts/auth.js"></script>
 <script src="scripts/digital-collection.js"></script>
+<script src="scripts/collection-stats.js"></script>
 <script>
   if (typeof initDigitalCollectionTab === 'function') {
     initDigitalCollectionTab();
@@ -7790,38 +7764,6 @@ init();
       color: '#ff6b35',
       url: function () {
         return 'https://offerup.com/search?q=avatar+quickstrike&distance=50';
-      }
-    },
-    whatnot: {
-      name: 'Whatnot',
-      icon: 'fas fa-broadcast-tower',
-      color: '#7c3aed',
-      url: function () {
-        return 'https://www.whatnot.com/browse?query=avatar+quick+strike';
-      }
-    },
-    mercari: {
-      name: 'Mercari',
-      icon: 'fas fa-tag',
-      color: '#e8163c',
-      url: function () {
-        return 'https://www.mercari.com/search/?keyword=avatar+quick+strike';
-      }
-    },
-    tcgplayer: {
-      name: 'TCGPlayer',
-      icon: 'fas fa-layer-group',
-      color: '#1a9dda',
-      url: function () {
-        return 'https://www.tcgplayer.com/search/all/product?q=avatar+quick+strike';
-      }
-    },
-    amazon: {
-      name: 'Amazon',
-      icon: 'fab fa-amazon',
-      color: '#ff9900',
-      url: function () {
-        return 'https://www.amazon.com/s?k=avatar+quick+strike+tcg';
       }
     }
   };
