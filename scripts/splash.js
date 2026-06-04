@@ -26,8 +26,7 @@
     [180, 77,  223],
   ];
 
-  var LOGO_SM = 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/Current-Development/SMLOGO.png';
-  var LOGO_LG = 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/Current-Development/LGLOGO.png';
+  var LOGO_NEW = 'https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/04JUN26/NEWLOGO.png';
 
   /* ─── CSS ────────────────────────────────────────────────────── */
   var CSS = [
@@ -227,9 +226,8 @@
 
       /* Logos */
       '<div class="aqs-logos">',
-        '<img src="' + LOGO_LG + '" alt="Avatar Quick Strike TCG" onerror="this.style.display=\'none\'">',
-        '<img src="' + LOGO_SM + '" alt="Avatar Quick Strike" onerror="this.style.display=\'none\'">',
-      '</div>',
+        '<img src="' + LOGO_NEW + '" alt="Avatar Quick Strike TCG" onerror="this.style.display=\'none\'">',
+       '</div>',
 
       /* Orbital ring */
       '<div class="aqs-orb-wrap" aria-hidden="true">',
