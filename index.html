@@ -271,6 +271,237 @@ body {
   box-shadow: 0 4px 12px rgba(180,77,223,0.3);
 }
 
+/* ── Play Online! shimmer tab ── */
+@keyframes playOnlineShimmer {
+  0%,  95%, 100% { background: transparent; border-color: transparent; color: var(--text-secondary); box-shadow: none; }
+  96%  { background: rgba(74,125,255,0.08); border-color: var(--accent); color: var(--accent); box-shadow: 0 0 10px rgba(74,125,255,0.25), inset 0 0 12px rgba(74,125,255,0.08); }
+  97%  { background: rgba(74,125,255,0.18); border-color: var(--accent); color: #fff; box-shadow: 0 0 20px rgba(74,125,255,0.5), inset 0 0 18px rgba(74,125,255,0.15); }
+  98%  { background: rgba(74,125,255,0.08); border-color: var(--accent); color: var(--accent); box-shadow: 0 0 10px rgba(74,125,255,0.25), inset 0 0 12px rgba(74,125,255,0.08); }
+  99%  { background: transparent; border-color: rgba(74,125,255,0.3); color: var(--text-secondary); box-shadow: none; }
+}
+.tab-btn-play-online {
+  animation: playOnlineShimmer 23s infinite;
+  position: relative;
+  overflow: hidden;
+}
+.tab-btn-play-online::after {
+  content: '';
+  position: absolute;
+  top: -50%; left: -60%;
+  width: 30%; height: 200%;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.25) 50%, transparent 60%);
+  animation: playOnlineSweep 23s infinite;
+  pointer-events: none;
+}
+@keyframes playOnlineSweep {
+  0%, 95.9%, 100% { left: -60%; opacity: 0; }
+  96.5% { opacity: 1; left: 130%; }
+  97.5% { left: 130%; opacity: 0; }
+}
+.tab-btn-play-online.active {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 4px 12px rgba(74,125,255,0.35) !important;
+  animation: none !important;
+  color: #fff !important;
+}
+.tab-btn-play-online.active::after { display: none; }
+
+/* ── Play Now content styles ── */
+.play-hero {
+  background: linear-gradient(135deg, rgba(74,125,255,0.12) 0%, rgba(180,77,223,0.10) 100%);
+  border: 1px solid rgba(74,125,255,0.25);
+  border-radius: var(--radius-lg);
+  padding: 24px 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.play-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 50%, rgba(74,125,255,0.07) 0%, transparent 70%),
+              radial-gradient(ellipse at 70% 50%, rgba(180,77,223,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+.play-hero-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  background: linear-gradient(120deg, var(--accent) 0%, var(--zen) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+.play-hero-sub {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  max-width: 520px;
+  margin: 0 auto;
+}
+.play-modes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+@media (max-width: 520px) { .play-modes-grid { grid-template-columns: 1fr; } }
+.play-mode-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 16px;
+  text-align: center;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.play-mode-card:hover { border-color: var(--border-light); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.play-mode-card.mode-pass { border-top: 3px solid var(--earth); }
+.play-mode-card.mode-online { border-top: 3px solid var(--accent); }
+.play-mode-icon { font-size: 2.2rem; margin-bottom: 10px; display: block; }
+.play-mode-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.play-mode-desc { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5; }
+.play-section-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.play-pool-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+@media (max-width: 520px) { .play-pool-grid { grid-template-columns: 1fr; } }
+.play-pool-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 13px;
+  transition: all 0.2s;
+}
+.play-pool-card:hover { border-color: var(--border-light); }
+.play-pool-card.pool-preset { border-left: 3px solid var(--earth); }
+.play-pool-card.pool-physical { border-left: 3px solid var(--promo); }
+.play-pool-card.pool-digital { border-left: 3px solid var(--accent); }
+.play-pool-card.pool-fantasy { border-left: 3px solid var(--zen); }
+.play-pool-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 99px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 8px;
+}
+.play-pool-name {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--text-primary);
+  margin-bottom: 5px;
+}
+.play-pool-desc { font-size: 0.73rem; color: var(--text-secondary); line-height: 1.5; }
+.play-visual-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+@media (max-width: 520px) { .play-visual-grid { grid-template-columns: 1fr 1fr; } }
+.play-visual-card {
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  text-decoration: none;
+  display: block;
+  transition: all 0.2s;
+}
+.play-visual-card:hover { border-color: var(--border-light); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.play-visual-thumb {
+  width: 100%;
+  aspect-ratio: 16/10;
+  background: var(--bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.play-visual-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.play-visual-label {
+  padding: 7px 9px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-align: center;
+}
+.play-find-game-banner {
+  background: linear-gradient(135deg, rgba(46,140,232,0.1) 0%, rgba(74,125,255,0.08) 100%);
+  border: 1px solid rgba(74,125,255,0.3);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.play-find-game-banner:hover { border-color: var(--accent); background: linear-gradient(135deg, rgba(46,140,232,0.16) 0%, rgba(74,125,255,0.13) 100%); }
+.play-find-game-icon { font-size: 2rem; flex-shrink: 0; }
+.play-find-game-text {}
+.play-find-game-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--accent);
+  margin-bottom: 3px;
+}
+.play-find-game-sub { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.4; }
+.play-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: var(--radius);
+  border: none;
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.play-cta-primary { background: var(--accent); color: #fff; }
+.play-cta-primary:hover { background: var(--accent-hover); box-shadow: 0 4px 14px rgba(74,125,255,0.4); }
+.play-cta-secondary { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary); }
+.play-cta-secondary:hover { border-color: var(--zen); color: var(--zen); }
+.play-cta-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+
 /* TAB CONTENT */
 .tab-content { display: none; animation: fadeIn 0.25s ease; }
 .tab-content.active { display: block; }
@@ -2169,6 +2400,7 @@ body {
 <div class="tab-nav">
   <button class="tab-btn active" data-tab="physical-cards"><i class="fas fa-clone" style="transform: scale(.75,1.175)"></i> Physical Cards</button>
   <button class="tab-btn" data-tab="digital-collection"><i class="fas fa-cloud-download-alt"></i> Digital Cards</button>
+  <button class="tab-btn tab-btn-play-online" data-tab="play-online"><i class="fas fa-gamepad"></i> Play Online!</button>
   <button class="tab-btn" data-tab="media"><i class="fas fa-film"></i> Media</button>
   <button class="tab-btn" data-tab="profile"><i class="fas fa-users"></i> Together</button>
   <button class="tab-btn" data-tab="collect"><i class="fas fa-shopping-bag"></i> Collect</button>
@@ -2850,7 +3082,6 @@ body {
     <button class="tab-btn-nested" data-nested-tab="digital-stats">Stats</button>
     <button class="tab-btn-nested" data-nested-tab="digital-pack-rip-estimators">Pack Rip Estimators</button>
     <button class="tab-btn-nested" data-nested-tab="digital-redeem">Redeem</button>
-    <button class="tab-btn-nested" data-nested-tab="digital-deckbuilder">Deck Builder</button>
   </div>
 
   <div id="nested-digital-main" class="nested-tab-content active">
@@ -2859,7 +3090,13 @@ body {
       <div class="rarity-breakdown" id="digital-rarity-breakdown"></div>
     </div>
 
-    <div class="controls-section">
+    <div class="export-row" id="digital-controls">
+      <button class="export-btn" id="btn-digital-export-json" title="Export as JSON backup"><i class="fas fa-download"></i> Export JSON</button>
+      <button class="import-btn" id="btn-digital-import-json" title="Import from JSON backup"><i class="fas fa-upload"></i> Import JSON</button>
+      <button class="clear-btn" id="btn-digital-clear" title="Clear all digital cards"><i class="fas fa-trash"></i> Clear All</button>
+    </div>
+
+    <div class="controls-section" style="position: static; background: transparent; padding: 10px 0; margin-bottom: 8px;">
       <div class="search-row">
         <div class="search-box">
           <i class="fas fa-search"></i>
@@ -2874,12 +3111,6 @@ body {
         <button class="filter-pill" data-filter="rare">Rare</button>
         <button class="filter-pill" data-filter="zenemental">Zenemental</button>
       </div>
-    </div>
-
-    <div class="export-row" id="digital-controls">
-      <button class="export-btn" id="btn-digital-export-json" title="Export collection backup"><i class="fas fa-file-export"></i> Export</button>
-      <button class="import-btn" id="btn-digital-import-json" title="Import collection backup"><i class="fas fa-file-import"></i> Import</button>
-      <button class="clear-btn" id="btn-digital-clear" title="Clear all digital cards"><i class="fas fa-trash"></i> Clear All</button>
     </div>
 
     <div class="sort-row">
@@ -3008,7 +3239,111 @@ body {
       <div id="redemption-message" style="min-height: 24px; font-size: 0.85rem; border-radius: 6px; padding: 8px 12px; margin-bottom: 16px; display: none;"></div>
     </div>
   </div>
+</div>
 
+<!-- PLAY ONLINE TAB -->
+<div class="tab-content" id="tab-play-online">
+  <div class="tab-nav-nested">
+    <button class="tab-btn-nested active" data-nested-tab="play-now"><i class="fas fa-play-circle"></i> Play Now</button>
+    <button class="tab-btn-nested" data-nested-tab="digital-deckbuilder"><i class="fas fa-layer-group"></i> Deck Builder</button>
+  </div>
+
+  <!-- PLAY NOW sub-tab -->
+  <div id="nested-play-now" class="nested-tab-content active">
+
+    <!-- Hero banner -->
+    <div class="play-hero">
+      <div class="play-hero-title">⚡ Battle in the Avatar World</div>
+      <div class="play-hero-sub">Challenge friends across the table or across the world — using your real cards, your digital collection, or any deck you can dream up. Your battle, your rules.</div>
+    </div>
+
+    <!-- Ways to Play -->
+    <div class="play-section-title"><i class="fas fa-gamepad" style="color:var(--accent);"></i> Two Ways to Play</div>
+    <div class="play-modes-grid" style="margin-bottom:20px;">
+      <div class="play-mode-card mode-pass">
+        <span class="play-mode-icon">🤝</span>
+        <div class="play-mode-title">Pass &amp; Play</div>
+        <div class="play-mode-desc">Two players, one device. Take turns passing the screen back and forth for a quick head-to-head battle anywhere, anytime — no internet required.</div>
+      </div>
+      <div class="play-mode-card mode-online">
+        <span class="play-mode-icon">🌐</span>
+        <div class="play-mode-title">Play Online</div>
+        <div class="play-mode-desc">Face off against friends or find new rivals online. Earn digital cards and exclusive rewards, and compete in upcoming digital-only tournaments.</div>
+      </div>
+    </div>
+
+    <!-- Deck Pools -->
+    <div class="play-section-title"><i class="fas fa-layer-group" style="color:var(--zen);"></i> Choose Your Deck Pool</div>
+    <div class="play-pool-grid" style="margin-bottom:20px;">
+      <div class="play-pool-card pool-preset">
+        <div class="play-pool-badge" style="background:rgba(92,184,92,0.13);color:var(--earth);border:1px solid rgba(92,184,92,0.3);">⚡ Starter</div>
+        <div class="play-pool-name">Preset Starter Decks</div>
+        <div class="play-pool-desc">Jump straight into the action with pre-built starter decks. No collection needed — just pick a side and battle!</div>
+      </div>
+      <div class="play-pool-card pool-physical">
+        <div class="play-pool-badge" style="background:rgba(232,182,50,0.13);color:var(--promo);border:1px solid rgba(232,182,50,0.3);">🃏 Physical</div>
+        <div class="play-pool-name">Your Physical Cards</div>
+        <div class="play-pool-desc">Test-drive decks built from your real card collection before hitting a tournament or sitting down with friends. Refine your strategy before it counts.</div>
+      </div>
+      <div class="play-pool-card pool-digital">
+        <div class="play-pool-badge" style="background:rgba(74,125,255,0.13);color:var(--accent);border:1px solid rgba(74,125,255,0.3);">☁️ Digital</div>
+        <div class="play-pool-name">Digital Collection</div>
+        <div class="play-pool-desc">Battle with cards earned from website activity, gameplay milestones &amp; special promotions. Win online matches to earn even more digital cards, rewards, and entry to digital-only tournaments.</div>
+      </div>
+      <div class="play-pool-card pool-fantasy">
+        <div class="play-pool-badge" style="background:rgba(180,77,223,0.13);color:var(--zen);border:1px solid rgba(180,77,223,0.3);">🌀 Fantasy</div>
+        <div class="play-pool-name">Fantasy / Wild Mode</div>
+        <div class="play-pool-desc">Build your dream deck from the entire card pool — own the cards or not! Pure fun, no rewards. Perfect for testing wild ideas or living out your ultimate Avatar fantasy.</div>
+      </div>
+    </div>
+
+    <!-- Visual Examples -->
+    <div class="play-section-title"><i class="fas fa-photo-video" style="color:var(--air);"></i> See the Game in Action</div>
+    <div class="play-visual-grid" style="margin-bottom:8px;">
+      <a class="play-visual-card" href="https://web.archive.org/web/20080815224144/http://entertainment.upperdeck.com/avatar/en/interface.aspx" target="_blank" rel="noopener">
+        <div class="play-visual-thumb" style="background:linear-gradient(135deg,rgba(232,83,46,0.18),rgba(240,201,70,0.18));">
+          <img src="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/Current-Development/SMLOGO.png" alt="Avatar TCG" style="object-fit:contain;padding:16px;opacity:0.85;">
+        </div>
+        <div class="play-visual-label">Original Online Game ↗</div>
+      </a>
+      <a class="play-visual-card" href="https://www.youtube.com/watch?v=TNPI9iAmMZI" target="_blank" rel="noopener">
+        <div class="play-visual-thumb" style="background:linear-gradient(135deg,rgba(46,140,232,0.18),rgba(180,77,223,0.18));">
+          <span style="font-size:2.5rem;">▶️</span>
+        </div>
+        <div class="play-visual-label">Gameplay Video ↗</div>
+      </a>
+      <a class="play-visual-card" href="#" onclick="switchTab('digital-collection');setTimeout(function(){document.querySelector('[data-nested-tab=digital-redeem]').click();},100);return false;">
+        <div class="play-visual-thumb" style="background:linear-gradient(135deg,rgba(92,184,92,0.18),rgba(74,125,255,0.15));">
+          <img src="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/Current-Development/LGLOGO.png" alt="Booster App" style="object-fit:contain;padding:16px;opacity:0.8;filter:drop-shadow(0 0 6px white);">
+        </div>
+        <div class="play-visual-label">Booster App &amp; Redeem</div>
+      </a>
+    </div>
+    <div style="text-align:center;font-size:0.7rem;color:var(--text-muted);margin-bottom:20px;">Hover to preview • Click to explore each section</div>
+
+    <!-- CTA buttons -->
+    <div class="play-cta-row">
+      <button class="play-cta-btn play-cta-primary" onclick="document.querySelector('[data-nested-tab=digital-deckbuilder]').click()">
+        <i class="fas fa-layer-group"></i> Build a Deck
+      </button>
+      <a class="play-cta-btn play-cta-secondary" href="https://web.archive.org/web/20080815224144/http://entertainment.upperdeck.com/avatar/en/interface.aspx" target="_blank" rel="noopener">
+        <i class="fas fa-external-link-alt"></i> Launch Game
+      </a>
+    </div>
+
+    <!-- Find a Game banner -->
+    <div class="play-find-game-banner" onclick="switchTab('profile');setTimeout(function(){var fb=document.querySelector('[data-nested-tab=forum]');if(fb)fb.click();},120);">
+      <div class="play-find-game-icon">🗺️</div>
+      <div class="play-find-game-text">
+        <div class="play-find-game-title"><i class="fas fa-comments" style="margin-right:5px;"></i> Find a Game!</div>
+        <div class="play-find-game-sub">Head to the <strong style="color:var(--accent);">Together → Forums</strong> to arrange a match with friends or find other players looking to battle. Whether it's casual or competitive, your next opponent is waiting!</div>
+      </div>
+      <i class="fas fa-chevron-right" style="color:var(--text-muted);flex-shrink:0;font-size:0.9rem;"></i>
+    </div>
+
+  </div><!-- /nested-play-now -->
+
+  <!-- DECK BUILDER sub-tab (moved from Digital Cards) -->
   <div id="nested-digital-deckbuilder" class="nested-tab-content" style="display:none;">
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
       <i class="fas fa-align-justify" style="font-size: 3rem; color: var(--promo); margin-bottom: 16px;"></i>
@@ -3016,8 +3351,9 @@ body {
       <p style="color: var(--text-secondary);">Deck Building with Compatibility Rules for Online Gameplay and Trading</p>
       <p style="color: var(--text-secondary);">Coming Soon...</p>
     </div>
-  </div>
-</div>
+  </div><!-- /nested-digital-deckbuilder -->
+
+</div><!-- /tab-play-online -->
 
 <!-- PROFILE TAB -->
 <div class="tab-content" id="tab-profile">
