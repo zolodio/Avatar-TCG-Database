@@ -154,8 +154,8 @@ function redeemPayload(payload) {
   ───────────────────────────────────────────────────────────── */
   function updateDigitalStats() {
     var bar = document.getElementById('digital-stats-bar');
-    if (!bar) return;
 
+    var allCards    = window.allCards || [];
     var totalUnique = Object.keys(dc).length;
     var totalCards  = 0;
     var coreOwned   = 0;
@@ -166,19 +166,45 @@ function redeemPayload(payload) {
     });
     var pct = Math.round((coreOwned / 248) * 100);
 
-    bar.innerHTML =
-      '<div class="stat-box">' +
-        '<div class="stat-value">' + totalCards + '</div>' +
-        '<div class="stat-label">Total Cards</div>' +
-      '</div>' +
-      '<div class="stat-box">' +
-        '<div class="stat-value">' + totalUnique + '</div>' +
-        '<div class="stat-label">Unique Cards</div>' +
-      '</div>' +
-      '<div class="stat-box">' +
-        '<div class="stat-value">' + pct + '%</div>' +
-        '<div class="stat-label">Core Complete</div>' +
-      '</div>';
+    if (bar) {
+      bar.innerHTML =
+        '<div class="stat-box">' +
+          '<div class="stat-value">' + totalCards + '</div>' +
+          '<div class="stat-label">Total Cards</div>' +
+        '</div>' +
+        '<div class="stat-box">' +
+          '<div class="stat-value">' + totalUnique + '</div>' +
+          '<div class="stat-label">Unique Cards</div>' +
+        '</div>' +
+        '<div class="stat-box">' +
+          '<div class="stat-value">' + pct + '%</div>' +
+          '<div class="stat-label">Core Complete</div>' +
+        '</div>';
+    }
+
+    // Rarity breakdown chips (clickable filter bar on Collection tab)
+    var breakdown = document.getElementById('digital-rarity-breakdown');
+    if (breakdown) {
+      var rarities = ['common','uncommon','rare','zenemental','promo'];
+      var rarityLabels = { common:'C', uncommon:'UC', rare:'R', zenemental:'ZEN', promo:'PR' };
+      var bhtml = '';
+      rarities.forEach(function(r) {
+        var inR = allCards.filter(function(c) { return c.rarity === r; });
+        var ownedR = inR.filter(function(c) { return dc[c.number] && dc[c.number].qty > 0; }).length;
+        var isActive = dcFilter === r;
+        bhtml += '<div class="rarity-chip' + (isActive ? ' active' : '') + '" data-dc-rarity="' + r + '">';
+        bhtml += '<div class="rarity-chip-dot dot-' + r + '"></div>';
+        bhtml += '<div class="rarity-chip-count">' + ownedR + '/' + inR.length + '</div>';
+        bhtml += '<div class="rarity-chip-label">' + rarityLabels[r] + '</div>';
+        bhtml += '</div>';
+      });
+      breakdown.innerHTML = bhtml;
+    }
+
+    // Notify the stats dashboard (collection-stats.js) to refresh if open
+    if (typeof window.refreshCollectionStatsDashboard === 'function') {
+      window.refreshCollectionStatsDashboard('digital');
+    }
   }
 
   /* ─────────────────────────────────────────────────────────────
@@ -677,6 +703,28 @@ function redeemPayload(payload) {
         pill.classList.add('active');
         dcFilter = pill.getAttribute('data-filter');
         renderDigitalCards();
+        updateDigitalStats(); // refresh rarity chip active state
+      });
+    }
+
+    // Wire rarity breakdown chips (on Collection tab)
+    var breakdownEl = document.getElementById('digital-rarity-breakdown');
+    if (breakdownEl) {
+      breakdownEl.addEventListener('click', function (e) {
+        var chip = e.target.closest('.rarity-chip[data-dc-rarity]');
+        if (!chip) return;
+        var r = chip.getAttribute('data-dc-rarity');
+        // Toggle off if already active
+        dcFilter = (dcFilter === r) ? 'all' : r;
+        // Sync the text filter-pill buttons too
+        var filtersEl2 = document.getElementById('digital-filters');
+        if (filtersEl2) {
+          filtersEl2.querySelectorAll('.filter-pill').forEach(function (p) {
+            p.classList.toggle('active', p.getAttribute('data-filter') === dcFilter);
+          });
+        }
+        renderDigitalCards();
+        updateDigitalStats();
       });
     }
   }
