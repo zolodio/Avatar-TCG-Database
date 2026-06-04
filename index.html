@@ -310,6 +310,8 @@ body {
 /* ── Play Now content styles ── */
 .play-hero {
   background: linear-gradient(135deg, rgba(74,125,255,0.12) 0%, rgba(180,77,223,0.10) 100%);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
   border: 1px solid rgba(74,125,255,0.25);
   border-radius: var(--radius-lg);
   padding: 24px 20px;
@@ -332,9 +334,11 @@ body {
   font-weight: 900;
   background: linear-gradient(120deg, var(--accent) 0%, var(--zen) 100%);
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  -webkit-text-fill-color: var(--zen);
   background-clip: text;
   margin-bottom: 8px;
+  
+ 
 }
 .play-hero-sub {
   color: var(--text-secondary);
@@ -3228,7 +3232,7 @@ body {
         <i class="fas fa-ticket-alt" style="font-size: 1.5rem; color: var(--zen);"></i>
         <div>
           <h3 style="font-family: 'Cinzel', serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 2px;">Redeem Digital Pack</h3>
-          <p style="font-size: 0.75rem; color: var(--text-muted);">Paste One-Time Redemption codes from the Booster App to Add Cards to Your Digital Collection.</p>
+          <p style="font-size: 0.75rem; color: var(--text-muted);">Paste One-Time Promotional Redemption codes from  to Add Cards to Your Digital Collection.</p>
         </div>
       </div>
       <textarea id="redemption-code-input" placeholder="Paste Redmption Code Here..." style="width:100%;min-height:80px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;color:var(--text-primary);font-family:'VT323',monospace;font-size:0.85rem;resize:vertical;margin-bottom:12px;"></textarea>
@@ -3253,8 +3257,9 @@ body {
 
     <!-- Hero banner -->
     <div class="play-hero">
-      <div class="play-hero-title">⚡ Battle in the Avatar World</div>
-      <div class="play-hero-sub">Challenge friends across the table or across the world — using your real cards, your digital collection, or any deck you can dream up. Your battle, your rules.</div>
+      <div class="play-hero-title">Battle in the Bending Arena</div>
+      <div class="play-hero-sub">Challenge friends across the table or across the world — using your real cards, your digital collection, or any deck you can dream up. Play the real Quickstrike Game Online!
+      Currently in Beta Testing</div>
     </div>
 
     <!-- Ways to Play -->
@@ -3296,30 +3301,6 @@ body {
         <div class="play-pool-desc">Build your dream deck from the entire card pool — own the cards or not! Pure fun, no rewards. Perfect for testing wild ideas or living out your ultimate Avatar fantasy.</div>
       </div>
     </div>
-
-    <!-- Visual Examples -->
-    <div class="play-section-title"><i class="fas fa-photo-video" style="color:var(--air);"></i> See the Game in Action</div>
-    <div class="play-visual-grid" style="margin-bottom:8px;">
-      <a class="play-visual-card" href="https://web.archive.org/web/20080815224144/http://entertainment.upperdeck.com/avatar/en/interface.aspx" target="_blank" rel="noopener">
-        <div class="play-visual-thumb" style="background:linear-gradient(135deg,rgba(232,83,46,0.18),rgba(240,201,70,0.18));">
-          <img src="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/Current-Development/SMLOGO.png" alt="Avatar TCG" style="object-fit:contain;padding:16px;opacity:0.85;">
-        </div>
-        <div class="play-visual-label">Original Online Game ↗</div>
-      </a>
-      <a class="play-visual-card" href="https://www.youtube.com/watch?v=TNPI9iAmMZI" target="_blank" rel="noopener">
-        <div class="play-visual-thumb" style="background:linear-gradient(135deg,rgba(46,140,232,0.18),rgba(180,77,223,0.18));">
-          <span style="font-size:2.5rem;">▶️</span>
-        </div>
-        <div class="play-visual-label">Gameplay Video ↗</div>
-      </a>
-      <a class="play-visual-card" href="#" onclick="switchTab('digital-collection');setTimeout(function(){document.querySelector('[data-nested-tab=digital-redeem]').click();},100);return false;">
-        <div class="play-visual-thumb" style="background:linear-gradient(135deg,rgba(92,184,92,0.18),rgba(74,125,255,0.15));">
-          <img src="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/Current-Development/LGLOGO.png" alt="Booster App" style="object-fit:contain;padding:16px;opacity:0.8;filter:drop-shadow(0 0 6px white);">
-        </div>
-        <div class="play-visual-label">Booster App &amp; Redeem</div>
-      </a>
-    </div>
-    <div style="text-align:center;font-size:0.7rem;color:var(--text-muted);margin-bottom:20px;">Hover to preview • Click to explore each section</div>
 
     <!-- CTA buttons -->
     <div class="play-cta-row">
