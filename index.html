@@ -4427,16 +4427,8 @@ body {
           <button class="qty-btn" id="qtyPlus">+</button>
         </div>
         <div id="modalConditionRow" style="margin-bottom:12px;display:none;">
-          <label style="display:block;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:6px;">Condition</label>
-          <select id="modalCondition" style="width:100%;padding:9px 12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.85rem;font-family:'Nunito Sans',sans-serif;outline:none;transition:border-color 0.2s;box-sizing:border-box;">
-            <option value="">— Not set —</option>
-            <option value="mint">Mint</option>
-            <option value="near-mint">Near Mint</option>
-            <option value="lightly-played">Lightly Played</option>
-            <option value="moderately-played">Moderately Played</option>
-            <option value="heavily-played">Heavily Played</option>
-            <option value="damaged">Damaged</option>
-          </select>
+          <label style="display:block;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:6px;">Condition per Copy</label>
+          <div id="modalConditionList" style="display:flex;flex-direction:column;gap:6px;"></div>
         </div>
         <div class="modal-tags" id="modalTags"></div>
         <div id="modalCompareInfo"></div>
@@ -5481,7 +5473,12 @@ async function init() {
   var loaded = await Promise.all([loadCollection(), loadTimestamps(), loadConditions()]);
   collection           = loaded[0];
   collectionTimestamps = loaded[1];
-  collectionConditions = loaded[2];
+  // Migrate: old format stored a single string per card; convert to array
+  var rawConds = loaded[2];
+  Object.keys(rawConds).forEach(function(k) {
+    if (typeof rawConds[k] === 'string') rawConds[k] = rawConds[k] ? [rawConds[k]] : [];
+  });
+  collectionConditions = rawConds;
 
   var results = await Promise.allSettled([
     loadPrices(),
@@ -5684,7 +5681,7 @@ function renderCards() {
     var rarityColor = rarityColorMap[c.rarity] || 'var(--text-secondary)';
     var cardPrice = prices[c.number];
     var avgPrice = cardPrice && cardPrice.avg ? '$' + cardPrice.avg.toFixed(2) : null;
-    var cardCondition = isOwned ? (collectionConditions[c.number] || '') : '';
+    var condBag = isOwned ? (collectionConditions[c.number] || []) : [];
     var conditionLabels = {
       'mint': 'M', 'near-mint': 'NM', 'lightly-played': 'LP',
       'moderately-played': 'MP', 'heavily-played': 'HP', 'damaged': 'DMG'
@@ -5693,6 +5690,22 @@ function renderCards() {
       'mint': 'Mint', 'near-mint': 'Near Mint', 'lightly-played': 'Lightly Played',
       'moderately-played': 'Moderately Played', 'heavily-played': 'Heavily Played', 'damaged': 'Damaged'
     };
+    // Summarise bag: count each condition, build e.g. "NM ×2 · LP ×1"
+    var condSummary = (function() {
+      if (!condBag.length) return '';
+      var counts = {};
+      condBag.forEach(function(c) { if (c) counts[c] = (counts[c] || 0) + 1; });
+      var order = ['mint','near-mint','lightly-played','moderately-played','heavily-played','damaged',''];
+      return order.filter(function(k) { return counts[k]; })
+        .map(function(k) { return (conditionLabels[k] || '?') + (counts[k] > 1 ? ' ×' + counts[k] : ''); })
+        .join(' · ');
+    })();
+    // Best (lowest severity) condition for badge colour
+    var bestCond = (function() {
+      var order = ['mint','near-mint','lightly-played','moderately-played','heavily-played','damaged'];
+      for (var _i = 0; _i < order.length; _i++) { if (condBag.indexOf(order[_i]) !== -1) return order[_i]; }
+      return '';
+    })();
 
     html += '<div class="card-item' + (isOwned ? ' owned' : '') + '" data-number="' + c.number + '" style="--rarity-color:' + rarityColor + '">';
     html += '<span class="list-card-number">#' + c.number + '</span>';
@@ -5709,7 +5722,7 @@ function renderCards() {
     html += '<span class="card-number-badge">#' + c.number + '</span>';
     if (isOwned) html += '<span class="card-owned-badge"><i class="fas fa-check"></i></span>';
     if (qty > 0) html += '<span class="card-qty-badge">x' + qty + '</span>';
-    if (cardCondition) html += '<span class="card-condition-badge cond-' + cardCondition + '" title="' + (conditionFull[cardCondition] || cardCondition) + '">' + (conditionLabels[cardCondition] || cardCondition) + '</span>';
+    if (condSummary) html += '<span class="card-condition-badge cond-' + bestCond + '" title="' + condSummary + '">' + condSummary + '</span>';
     if (showCompare && compareQty > 0) html += '<span class="card-compare-badge"><i class="fas fa-user-group"></i> x' + compareQty + '</span>';
     if (avgPrice) html += '<span class="card-price-badge"><i class="fas fa-tag"></i>' + avgPrice + '</span>';
     html += '<button class="card-flip-btn" data-flip-target="' + c.number + '" title="Flip View"><i class="fas fa-rotate"></i></button>';
@@ -5720,7 +5733,7 @@ function renderCards() {
     if (showCompare && compareQty > 0) html += '<span class="list-compare-qty show"><i class="fas fa-user-group" style="font-size:0.6rem;margin-right:2px"></i>x' + compareQty + '</span>';
     html += '<span class="list-owned-icon' + (isOwned ? ' show' : '') + '"><i class="fas fa-check-circle"></i></span>';
     if (qty > 1) html += '<span class="list-qty show">x' + qty + '</span>';
-    if (cardCondition) html += '<span class="list-qty show" style="font-size:0.62rem;opacity:0.85;">' + (conditionLabels[cardCondition] || cardCondition) + '</span>';
+    if (condSummary) html += '<span class="list-qty show" style="font-size:0.62rem;opacity:0.85;">' + condSummary + '</span>';
     if (avgPrice) html += '<span class="list-price-tag show">' + avgPrice + '</span>';
     html += '<span class="list-card-arrow"><i class="fas fa-chevron-right"></i></span>';
     html += '</div>';
@@ -5735,6 +5748,95 @@ function escapeHtml(str) {
 }
 
 /* ---- MODAL ---- */
+
+  /* ── Condition list renderer ─────────────────────────────────────── */
+  var COND_ORDER = ['mint','near-mint','lightly-played','moderately-played','heavily-played','damaged'];
+  var COND_LABEL = {
+    'mint':'Mint','near-mint':'Near Mint','lightly-played':'Lightly Played',
+    'moderately-played':'Moderately Played','heavily-played':'Heavily Played','damaged':'Damaged'
+  };
+
+  function renderConditionList(cardNumber) {
+    var list = document.getElementById('modalConditionList');
+    if (!list) return;
+    var bag = collectionConditions[cardNumber] || [];
+    var qty = collection[cardNumber] || 0;
+    // Pad bag to match qty (new copies get empty string = unset)
+    while (bag.length < qty) bag.push('');
+    bag = bag.slice(0, qty);
+    collectionConditions[cardNumber] = bag;
+
+    list.innerHTML = bag.map(function(cond, idx) {
+      var sel = COND_OPTIONS.replace('value="' + cond + '"', 'value="' + cond + '" selected');
+      return (
+        '<div style="display:flex;align-items:center;gap:8px;">' +
+          '<span style="font-size:0.72rem;color:var(--text-muted);width:52px;flex-shrink:0;">Copy ' + (idx + 1) + '</span>' +
+          '<select data-cond-idx="' + idx + '" style="flex:1;padding:7px 10px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.82rem;font-family:'Nunito Sans',sans-serif;outline:none;box-sizing:border-box;">' +
+            sel +
+          '</select>' +
+        '</div>'
+      );
+    }).join('');
+
+    // Wire change handlers
+    list.querySelectorAll('select[data-cond-idx]').forEach(function(sel) {
+      sel.addEventListener('change', function() {
+        var i = parseInt(this.dataset.condIdx, 10);
+        var bag = collectionConditions[cardNumber] || [];
+        bag[i] = this.value;
+        collectionConditions[cardNumber] = bag;
+        saveConditions();
+        renderCards();
+      });
+    });
+  }
+
+  /* ── Condition-picker overlay (shown when removing one of multiple copies) ── */
+  function showConditionPicker(cardNumber, onPick) {
+    var bag = (collectionConditions[cardNumber] || []).slice();
+    // Count available conditions for display
+    var counts = {};
+    bag.forEach(function(c) { counts[c] = (counts[c] || 0) + 1; });
+
+    var optionsHtml = Object.keys(counts).map(function(c) {
+      var label = COND_LABEL[c] || (c === '' ? 'Not set' : c);
+      var count = counts[c];
+      return (
+        '<button data-cond="' + c + '" style="width:100%;padding:10px 14px;margin-bottom:6px;border-radius:var(--radius);' +
+        'border:1px solid var(--border);background:var(--bg-surface);color:var(--text-primary);' +
+        'font-family:'Nunito Sans',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;' +
+        'display:flex;justify-content:space-between;align-items:center;text-align:left;">' +
+          '<span>' + label + '</span>' +
+          (count > 1 ? '<span style="font-size:0.72rem;color:var(--text-muted);">×' + count + ' available</span>' : '') +
+        '</button>'
+      );
+    }).join('');
+
+    var overlay = document.createElement('div');
+    overlay.id = 'condPickerOverlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+    overlay.innerHTML = (
+      '<div style="background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:20px;width:100%;max-width:320px;">' +
+        '<div style="font-family:'Cinzel',serif;font-weight:700;font-size:0.9rem;margin-bottom:4px;">Which copy are you removing?</div>' +
+        '<div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:14px;">Select the condition of the copy being removed</div>' +
+        optionsHtml +
+        '<button id="condPickerCancel" style="width:100%;padding:9px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text-secondary);font-family:'Nunito Sans',sans-serif;font-size:0.82rem;cursor:pointer;margin-top:2px;">Cancel</button>' +
+      '</div>'
+    );
+
+    document.body.appendChild(overlay);
+
+    overlay.querySelectorAll('button[data-cond]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.body.removeChild(overlay);
+        onPick(this.dataset.cond);
+      });
+    });
+    document.getElementById('condPickerCancel').addEventListener('click', function() {
+      document.body.removeChild(overlay);
+    });
+  }
+
 function openModal(cardNumber, opts) {
   opts = opts || {};
   modalDigitalMode = opts.digital || false;
@@ -6016,9 +6118,8 @@ var flavorSectionEl = document.getElementById('modalFlavorSection');
   if (qtyControls) qtyControls.style.display = modalDigitalMode ? 'none' : '';
   var conditionRow = document.getElementById('modalConditionRow');
   if (conditionRow) {
-    conditionRow.style.display = modalDigitalMode ? 'none' : (isOwned ? '' : 'none');
-    var condSel = document.getElementById('modalCondition');
-    if (condSel) condSel.value = collectionConditions[card.number] || '';
+    conditionRow.style.display = (!modalDigitalMode && isOwned) ? '' : 'none';
+    if (!modalDigitalMode && isOwned) renderConditionList(card.number);
   }
   var obtainedSection = document.getElementById('modalObtainedSection');
   if (obtainedSection) obtainedSection.style.display = modalDigitalMode ? 'none' : '';
@@ -6089,8 +6190,7 @@ function onCollectionChanged(n) {
     var qty = collection[n] || 0;
     document.getElementById('qtyDisplay').textContent = qty;
     updateModalButton(qty > 0);
-    var condSel = document.getElementById('modalCondition');
-    if (condSel) condSel.value = collectionConditions[n] || '';
+    if (!modalDigitalMode && (collection[n] || 0) > 0) renderConditionList(n);
   }
 }
 
@@ -6392,37 +6492,43 @@ document.getElementById('modalObtainedSection').addEventListener('mouseout', fun
 });
 
   document.getElementById('qtyPlus').addEventListener('click', function() {
-    if (!currentModalCard) return;
-    setQty(currentModalCard.number, (collection[currentModalCard.number] || 0) + 1);
+    if (!currentModalCard || modalDigitalMode) return;
+    var n = currentModalCard.number;
+    var bag = collectionConditions[n] || [];
+    bag.push(''); // new copy starts unset
+    collectionConditions[n] = bag;
+    setQty(n, (collection[n] || 0) + 1);
+    saveConditions();
     var conditionRow = document.getElementById('modalConditionRow');
-    if (conditionRow && !modalDigitalMode) conditionRow.style.display = '';
+    if (conditionRow) conditionRow.style.display = '';
+    renderConditionList(n);
   });
   document.getElementById('qtyMinus').addEventListener('click', function() {
-    if (!currentModalCard) return;
-    var cur = collection[currentModalCard.number] || 0;
-    if (cur > 0) {
-      setQty(currentModalCard.number, cur - 1);
-      var newQty = collection[currentModalCard.number] || 0;
+    if (!currentModalCard || modalDigitalMode) return;
+    var n = currentModalCard.number;
+    var cur = collection[n] || 0;
+    if (cur <= 0) return;
+    if (cur === 1) {
+      // Last copy — remove directly, no picker needed
+      setQty(n, 0);
+      delete collectionConditions[n];
+      saveConditions();
       var conditionRow = document.getElementById('modalConditionRow');
-      if (conditionRow && newQty === 0) {
-        conditionRow.style.display = 'none';
-        delete collectionConditions[currentModalCard.number];
+      if (conditionRow) conditionRow.style.display = 'none';
+    } else {
+      // Multiple copies — ask which condition to remove
+      showConditionPicker(n, function(pickedCond) {
+        var bag = collectionConditions[n] || [];
+        var idx = bag.indexOf(pickedCond);
+        if (idx !== -1) bag.splice(idx, 1);
+        collectionConditions[n] = bag;
+        setQty(n, cur - 1);
         saveConditions();
-      }
+        renderConditionList(n);
+      });
     }
   });
 
-  document.getElementById('modalCondition').addEventListener('change', function() {
-    if (!currentModalCard || modalDigitalMode) return;
-    var val = this.value;
-    if (val) {
-      collectionConditions[currentModalCard.number] = val;
-    } else {
-      delete collectionConditions[currentModalCard.number];
-    }
-    saveConditions();
-    renderCards();
-  });
 
   document.getElementById('modalToggle').addEventListener('click', function() {
     if (!currentModalCard) return;
@@ -6444,19 +6550,39 @@ document.getElementById('modalObtainedSection').addEventListener('mouseout', fun
     }
     var isOwned = (collection[currentModalCard.number] || 0) > 0;
     if (isOwned) {
-      showConfirm('Remove "' + currentModalCard.name + '" from your collection?', function() {
-        var n = currentModalCard.number;
-        removeFromCollection(n);
-        delete collectionConditions[n];
-        saveConditions();
-        var conditionRow = document.getElementById('modalConditionRow');
-        if (conditionRow) conditionRow.style.display = 'none';
-        showToast('Removed from collection');
-      });
+      var _rn = currentModalCard.number;
+      var _rqty = collection[_rn] || 0;
+      if (_rqty === 1) {
+        showConfirm('Remove "' + currentModalCard.name + '" from your collection?', function() {
+          removeFromCollection(_rn);
+          delete collectionConditions[_rn];
+          saveConditions();
+          var conditionRow = document.getElementById('modalConditionRow');
+          if (conditionRow) conditionRow.style.display = 'none';
+          showToast('Removed from collection');
+        });
+      } else {
+        showConditionPicker(_rn, function(pickedCond) {
+          var bag = collectionConditions[_rn] || [];
+          var idx = bag.indexOf(pickedCond);
+          if (idx !== -1) bag.splice(idx, 1);
+          collectionConditions[_rn] = bag;
+          setQty(_rn, _rqty - 1);
+          saveConditions();
+          renderConditionList(_rn);
+          showToast('Removed 1 copy');
+        });
+      }
     } else {
-      addToCollection(currentModalCard.number);
+      var _n = currentModalCard.number;
+      var _bag = collectionConditions[_n] || [];
+      _bag.push('');
+      collectionConditions[_n] = _bag;
+      addToCollection(_n);
+      saveConditions();
       var conditionRow = document.getElementById('modalConditionRow');
-      if (conditionRow && !modalDigitalMode) conditionRow.style.display = '';
+      if (conditionRow) conditionRow.style.display = '';
+      renderConditionList(_n);
       showToast('Added to collection!');
     }
   });
