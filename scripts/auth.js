@@ -34,16 +34,21 @@
   }
 
   // ── Collection accessors ──────────────────────────────────────
-  function getPhysical()           { return window.collection              || {}; }
-  function getPhysicalTimestamps() { return window.collectionTimestamps    || {}; }
-  function getDigital()            { return window.aqstDigitalCollection   || {}; }
+  function getPhysical()            { return window.collection              || {}; }
+  function getPhysicalTimestamps()  { return window.collectionTimestamps    || {}; }
+  function getPhysicalConditions()  { return window.collectionConditions    || {}; }
+  function getDigital()             { return window.aqstDigitalCollection   || {}; }
 
-  function applyPhysical(data, timestamps) {
+  function applyPhysical(data, timestamps, conditions) {
     if (!data || typeof data !== 'object') return;
     window.collection = data;
     if (timestamps && typeof timestamps === 'object') {
       window.collectionTimestamps = timestamps;
       if (typeof window.saveTimestamps === 'function') window.saveTimestamps();
+    }
+    if (conditions && typeof conditions === 'object') {
+      window.collectionConditions = conditions;
+      if (typeof window.saveConditions === 'function') window.saveConditions();
     }
     if (typeof window.saveCollection        === 'function') window.saveCollection();
     if (typeof window.updateStats           === 'function') window.updateStats();
@@ -65,10 +70,11 @@ function applyDigital(data) {
     setSyncDot('syncing');
     try {
       var res = await sb.from('collections').upsert({
-        user_id:             currentUser.id,
-        physical:            getPhysical(),
-        physical_timestamps: getPhysicalTimestamps(),
-        digital:             getDigital()
+        user_id:              currentUser.id,
+        physical:             getPhysical(),
+        physical_timestamps:  getPhysicalTimestamps(),
+        physical_conditions:  getPhysicalConditions(),
+        digital:              getDigital()
       }, { onConflict: 'user_id' });
       if (res.error) throw res.error;
       setSyncDot('ok');
@@ -85,7 +91,7 @@ function applyDigital(data) {
     if (!currentUser || !sb) return null;
     try {
       var res = await sb.from('collections')
-        .select('physical, physical_timestamps, digital, updated_at')
+        .select('physical, physical_timestamps, physical_conditions, digital, updated_at')
         .eq('user_id', currentUser.id)
         .maybeSingle();
       if (res.error) throw res.error;
@@ -113,7 +119,7 @@ function applyDigital(data) {
       var cloudCount = Object.keys(cloud.physical || {}).length;
 
       if (localCount === 0 && cloudCount === 0) { setSyncDot('ok'); }
-      else if (localCount === 0) { applyPhysical(cloud.physical, cloud.physical_timestamps); applyDigital(cloud.digital); setSyncDot('ok'); }
+      else if (localCount === 0) { applyPhysical(cloud.physical, cloud.physical_timestamps, cloud.physical_conditions); applyDigital(cloud.digital); setSyncDot('ok'); }
       else if (cloudCount === 0) { await cloudPush(); }
       else {
         // Both sides have data — only show conflict dialog if they actually differ.
@@ -211,12 +217,12 @@ function applyDigital(data) {
     safe('auth-push-btn', cloudPush);
     safe('auth-pull-btn', async function () {
       var data = await cloudPull();
-      if (data) { applyPhysical(data.physical, data.physical_timestamps); applyDigital(data.digital); setSyncDot('ok'); }
+      if (data) { applyPhysical(data.physical, data.physical_timestamps, data.physical_conditions); applyDigital(data.digital); setSyncDot('ok'); }
     });
 
     safe('auth-use-cloud', function () {
       var d = window._pendingCloudData;
-      if (d) { applyPhysical(d.physical, d.physical_timestamps); applyDigital(d.digital); }
+      if (d) { applyPhysical(d.physical, d.physical_timestamps, d.physical_conditions); applyDigital(d.digital); }
       setDisplay('auth-merge-dlg', 'none'); setSyncDot('ok');
     });
     safe('auth-use-local', function () {
