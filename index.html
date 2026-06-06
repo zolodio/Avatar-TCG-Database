@@ -851,6 +851,19 @@ body {
   padding: 2px 8px; border-radius: 99px;
   backdrop-filter: blur(4px); z-index: 4;
 }
+.card-condition-badge {
+  position: absolute; top: 30px; left: 6px;
+  font-size: 0.58rem; font-weight: 700;
+  padding: 2px 7px; border-radius: 99px;
+  backdrop-filter: blur(4px); z-index: 4;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.card-condition-badge.cond-mint        { background: rgba(61,184,108,0.85);  color: #fff; }
+.card-condition-badge.cond-near-mint   { background: rgba(61,184,108,0.55);  color: #fff; }
+.card-condition-badge.cond-lightly-played   { background: rgba(240,201,70,0.75);  color: #111; }
+.card-condition-badge.cond-moderately-played { background: rgba(232,182,50,0.75); color: #111; }
+.card-condition-badge.cond-heavily-played   { background: rgba(232,83,46,0.75);  color: #fff; }
+.card-condition-badge.cond-damaged     { background: rgba(224,72,72,0.85);   color: #fff; }
 .card-compare-badge {
   position: absolute; bottom: 6px; left: 38px;
   background: rgba(0,0,0,0.75); color: var(--water);
@@ -4413,6 +4426,18 @@ body {
           <span class="qty-display" id="qtyDisplay">0</span>
           <button class="qty-btn" id="qtyPlus">+</button>
         </div>
+        <div id="modalConditionRow" style="margin-bottom:12px;display:none;">
+          <label style="display:block;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:6px;">Condition</label>
+          <select id="modalCondition" style="width:100%;padding:9px 12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.85rem;font-family:'Nunito Sans',sans-serif;outline:none;transition:border-color 0.2s;box-sizing:border-box;">
+            <option value="">— Not set —</option>
+            <option value="mint">Mint</option>
+            <option value="near-mint">Near Mint</option>
+            <option value="lightly-played">Lightly Played</option>
+            <option value="moderately-played">Moderately Played</option>
+            <option value="heavily-played">Heavily Played</option>
+            <option value="damaged">Damaged</option>
+          </select>
+        </div>
         <div class="modal-tags" id="modalTags"></div>
         <div id="modalCompareInfo"></div>
         <div id="modalPriceSection"></div>
@@ -5030,6 +5055,7 @@ function switchTab(tabName) {
 var allCards = [];
 var collection = {};
 var collectionTimestamps = {}; // { cardNumber: ISO timestamp } — records when each card was first added
+var collectionConditions = {}; // { cardNumber: conditionString } — physical card condition per card
 var compareCollection = {};
 var prices = {};
 var pricesLoaded = false;
@@ -5058,6 +5084,7 @@ var rarityColorMap = {
 /* ---- PERSISTENCE ---- */
 var DB_NAME = 'AvatarQSTracker', DB_STORE = 'collection', DB_KEY = 'myCollection', COOKIE_KEY = 'aqst_col';
 var TS_DB_KEY = 'myCollectionTimestamps', TS_COOKIE_KEY = 'aqst_col_ts';
+var COND_DB_KEY = 'myCollectionConditions', COND_COOKIE_KEY = 'aqst_col_cond';
 
 function openDB() {
   return new Promise(function(resolve, reject) {
@@ -5126,6 +5153,35 @@ async function loadTimestamps() {
   } catch (_e) {}
   try {
     var match = document.cookie.split('; ').find(function(c) { return c.startsWith(TS_COOKIE_KEY + '='); });
+    if (match) return JSON.parse(decodeURIComponent(match.split('=').slice(1).join('=')));
+  } catch (_e2) {}
+  return {};
+}
+
+async function saveConditions() {
+  var data = JSON.stringify(collectionConditions);
+  try {
+    var db = await openDB();
+    var tx = db.transaction(DB_STORE, 'readwrite');
+    tx.objectStore(DB_STORE).put(data, COND_DB_KEY);
+    await new Promise(function(res, rej) { tx.oncomplete = res; tx.onerror = rej; });
+    db.close();
+  } catch (_e) {
+    try { document.cookie = COND_COOKIE_KEY + '=' + encodeURIComponent(data) + ';path=/;max-age=31536000;SameSite=Lax'; } catch (_e2) {}
+  }
+}
+
+async function loadConditions() {
+  try {
+    var db = await openDB();
+    var tx = db.transaction(DB_STORE, 'readonly');
+    var req = tx.objectStore(DB_STORE).get(COND_DB_KEY);
+    var result = await new Promise(function(res, rej) { req.onsuccess = function() { res(req.result); }; req.onerror = rej; });
+    db.close();
+    if (result) return JSON.parse(result);
+  } catch (_e) {}
+  try {
+    var match = document.cookie.split('; ').find(function(c) { return c.startsWith(COND_COOKIE_KEY + '='); });
     if (match) return JSON.parse(decodeURIComponent(match.split('=').slice(1).join('=')));
   } catch (_e2) {}
   return {};
@@ -5422,9 +5478,10 @@ function updateSaveCodeDisplay() {
 
 /* ---- FETCH & INIT ---- */
 async function init() {
-  var loaded = await Promise.all([loadCollection(), loadTimestamps()]);
+  var loaded = await Promise.all([loadCollection(), loadTimestamps(), loadConditions()]);
   collection           = loaded[0];
   collectionTimestamps = loaded[1];
+  collectionConditions = loaded[2];
 
   var results = await Promise.allSettled([
     loadPrices(),
@@ -5627,6 +5684,15 @@ function renderCards() {
     var rarityColor = rarityColorMap[c.rarity] || 'var(--text-secondary)';
     var cardPrice = prices[c.number];
     var avgPrice = cardPrice && cardPrice.avg ? '$' + cardPrice.avg.toFixed(2) : null;
+    var cardCondition = isOwned ? (collectionConditions[c.number] || '') : '';
+    var conditionLabels = {
+      'mint': 'M', 'near-mint': 'NM', 'lightly-played': 'LP',
+      'moderately-played': 'MP', 'heavily-played': 'HP', 'damaged': 'DMG'
+    };
+    var conditionFull = {
+      'mint': 'Mint', 'near-mint': 'Near Mint', 'lightly-played': 'Lightly Played',
+      'moderately-played': 'Moderately Played', 'heavily-played': 'Heavily Played', 'damaged': 'Damaged'
+    };
 
     html += '<div class="card-item' + (isOwned ? ' owned' : '') + '" data-number="' + c.number + '" style="--rarity-color:' + rarityColor + '">';
     html += '<span class="list-card-number">#' + c.number + '</span>';
@@ -5643,6 +5709,7 @@ function renderCards() {
     html += '<span class="card-number-badge">#' + c.number + '</span>';
     if (isOwned) html += '<span class="card-owned-badge"><i class="fas fa-check"></i></span>';
     if (qty > 0) html += '<span class="card-qty-badge">x' + qty + '</span>';
+    if (cardCondition) html += '<span class="card-condition-badge cond-' + cardCondition + '" title="' + (conditionFull[cardCondition] || cardCondition) + '">' + (conditionLabels[cardCondition] || cardCondition) + '</span>';
     if (showCompare && compareQty > 0) html += '<span class="card-compare-badge"><i class="fas fa-user-group"></i> x' + compareQty + '</span>';
     if (avgPrice) html += '<span class="card-price-badge"><i class="fas fa-tag"></i>' + avgPrice + '</span>';
     html += '<button class="card-flip-btn" data-flip-target="' + c.number + '" title="Flip View"><i class="fas fa-rotate"></i></button>';
@@ -5653,6 +5720,7 @@ function renderCards() {
     if (showCompare && compareQty > 0) html += '<span class="list-compare-qty show"><i class="fas fa-user-group" style="font-size:0.6rem;margin-right:2px"></i>x' + compareQty + '</span>';
     html += '<span class="list-owned-icon' + (isOwned ? ' show' : '') + '"><i class="fas fa-check-circle"></i></span>';
     if (qty > 1) html += '<span class="list-qty show">x' + qty + '</span>';
+    if (cardCondition) html += '<span class="list-qty show" style="font-size:0.62rem;opacity:0.85;">' + (conditionLabels[cardCondition] || cardCondition) + '</span>';
     if (avgPrice) html += '<span class="list-price-tag show">' + avgPrice + '</span>';
     html += '<span class="list-card-arrow"><i class="fas fa-chevron-right"></i></span>';
     html += '</div>';
@@ -5946,6 +6014,12 @@ var flavorSectionEl = document.getElementById('modalFlavorSection');
   document.getElementById('qtyDisplay').textContent = qty;
   var qtyControls = document.querySelector('.modal-qty-controls');
   if (qtyControls) qtyControls.style.display = modalDigitalMode ? 'none' : '';
+  var conditionRow = document.getElementById('modalConditionRow');
+  if (conditionRow) {
+    conditionRow.style.display = modalDigitalMode ? 'none' : (isOwned ? '' : 'none');
+    var condSel = document.getElementById('modalCondition');
+    if (condSel) condSel.value = collectionConditions[card.number] || '';
+  }
   var obtainedSection = document.getElementById('modalObtainedSection');
   if (obtainedSection) obtainedSection.style.display = modalDigitalMode ? 'none' : '';
   updateModalButton(isOwned);
@@ -5971,6 +6045,9 @@ function updateModalButton(isOwned) {
     if (isOwned) { btn.textContent = 'Remove from Collection'; btn.className = 'modal-toggle-btn remove'; }
     else { btn.textContent = 'Add to Collection'; btn.className = 'modal-toggle-btn add'; }
   }
+  // Show condition row only when card is owned in physical mode
+  var conditionRow = document.getElementById('modalConditionRow');
+  if (conditionRow) conditionRow.style.display = (!modalDigitalMode && isOwned) ? '' : 'none';
   updateModalDividers();
 }
 
@@ -6012,6 +6089,8 @@ function onCollectionChanged(n) {
     var qty = collection[n] || 0;
     document.getElementById('qtyDisplay').textContent = qty;
     updateModalButton(qty > 0);
+    var condSel = document.getElementById('modalCondition');
+    if (condSel) condSel.value = collectionConditions[n] || '';
   }
 }
 
@@ -6315,11 +6394,34 @@ document.getElementById('modalObtainedSection').addEventListener('mouseout', fun
   document.getElementById('qtyPlus').addEventListener('click', function() {
     if (!currentModalCard) return;
     setQty(currentModalCard.number, (collection[currentModalCard.number] || 0) + 1);
+    var conditionRow = document.getElementById('modalConditionRow');
+    if (conditionRow && !modalDigitalMode) conditionRow.style.display = '';
   });
   document.getElementById('qtyMinus').addEventListener('click', function() {
     if (!currentModalCard) return;
     var cur = collection[currentModalCard.number] || 0;
-    if (cur > 0) setQty(currentModalCard.number, cur - 1);
+    if (cur > 0) {
+      setQty(currentModalCard.number, cur - 1);
+      var newQty = collection[currentModalCard.number] || 0;
+      var conditionRow = document.getElementById('modalConditionRow');
+      if (conditionRow && newQty === 0) {
+        conditionRow.style.display = 'none';
+        delete collectionConditions[currentModalCard.number];
+        saveConditions();
+      }
+    }
+  });
+
+  document.getElementById('modalCondition').addEventListener('change', function() {
+    if (!currentModalCard || modalDigitalMode) return;
+    var val = this.value;
+    if (val) {
+      collectionConditions[currentModalCard.number] = val;
+    } else {
+      delete collectionConditions[currentModalCard.number];
+    }
+    saveConditions();
+    renderCards();
   });
 
   document.getElementById('modalToggle').addEventListener('click', function() {
@@ -6342,8 +6444,21 @@ document.getElementById('modalObtainedSection').addEventListener('mouseout', fun
     }
     var isOwned = (collection[currentModalCard.number] || 0) > 0;
     if (isOwned) {
-      showConfirm('Remove "' + currentModalCard.name + '" from your collection?', function() { removeFromCollection(currentModalCard.number); showToast('Removed from collection'); });
-    } else { addToCollection(currentModalCard.number); showToast('Added to collection!'); }
+      showConfirm('Remove "' + currentModalCard.name + '" from your collection?', function() {
+        var n = currentModalCard.number;
+        removeFromCollection(n);
+        delete collectionConditions[n];
+        saveConditions();
+        var conditionRow = document.getElementById('modalConditionRow');
+        if (conditionRow) conditionRow.style.display = 'none';
+        showToast('Removed from collection');
+      });
+    } else {
+      addToCollection(currentModalCard.number);
+      var conditionRow = document.getElementById('modalConditionRow');
+      if (conditionRow && !modalDigitalMode) conditionRow.style.display = '';
+      showToast('Added to collection!');
+    }
   });
 
   document.getElementById('confirmOk').addEventListener('click', function() { if (confirmCallback) confirmCallback(); closeConfirm(); });
@@ -6374,7 +6489,7 @@ document.getElementById('modalObtainedSection').addEventListener('mouseout', fun
   document.getElementById('clearMethodOverlay').addEventListener('click', function(e) { if (e.target === this) closeClearDialog(); });
 
   document.getElementById('clearOwnOk').addEventListener('click', function() {
-    collection = {}; collectionTimestamps = {}; saveTimestamps(); saveCollection(); updateStats(); buildFilters(); renderCards(); updateSaveCodeDisplay(); updateAllPackCounters();
+    collection = {}; collectionTimestamps = {}; collectionConditions = {}; saveTimestamps(); saveConditions(); saveCollection(); updateStats(); buildFilters(); renderCards(); updateSaveCodeDisplay(); updateAllPackCounters();
     document.getElementById('clearOwnConfirmOverlay').classList.remove('active');
     showToast('Collection cleared');
   });
