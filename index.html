@@ -271,6 +271,241 @@ body {
   box-shadow: 0 4px 12px rgba(180,77,223,0.3);
 }
 
+/* ── Play Online! shimmer tab ── */
+@keyframes playOnlineShimmer {
+  0%,  95%, 100% { background: transparent; border-color: transparent; color: var(--text-secondary); box-shadow: none; }
+  96%  { background: rgba(74,125,255,0.08); border-color: var(--accent); color: var(--accent); box-shadow: 0 0 10px rgba(74,125,255,0.25), inset 0 0 12px rgba(74,125,255,0.08); }
+  97%  { background: rgba(74,125,255,0.18); border-color: var(--accent); color: #fff; box-shadow: 0 0 20px rgba(74,125,255,0.5), inset 0 0 18px rgba(74,125,255,0.15); }
+  98%  { background: rgba(74,125,255,0.08); border-color: var(--accent); color: var(--accent); box-shadow: 0 0 10px rgba(74,125,255,0.25), inset 0 0 12px rgba(74,125,255,0.08); }
+  99%  { background: transparent; border-color: rgba(74,125,255,0.3); color: var(--text-secondary); box-shadow: none; }
+}
+.tab-btn-play-online {
+  animation: playOnlineShimmer 23s infinite;
+  position: relative;
+  overflow: hidden;
+}
+.tab-btn-play-online::after {
+  content: '';
+  position: absolute;
+  top: -50%; left: -60%;
+  width: 30%; height: 200%;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.25) 50%, transparent 60%);
+  animation: playOnlineSweep 23s infinite;
+  pointer-events: none;
+}
+@keyframes playOnlineSweep {
+  0%, 95.9%, 100% { left: -60%; opacity: 0; }
+  96.5% { opacity: 1; left: 130%; }
+  97.5% { left: 130%; opacity: 0; }
+}
+.tab-btn-play-online.active {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 4px 12px rgba(74,125,255,0.35) !important;
+  animation: none !important;
+  color: #fff !important;
+}
+.tab-btn-play-online.active::after { display: none; }
+
+/* ── Play Now content styles ── */
+.play-hero {
+  background: linear-gradient(135deg, rgba(74,125,255,0.12) 0%, rgba(180,77,223,0.10) 100%);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  border: 1px solid rgba(74,125,255,0.25);
+  border-radius: var(--radius-lg);
+  padding: 24px 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.play-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 50%, rgba(74,125,255,0.07) 0%, transparent 70%),
+              radial-gradient(ellipse at 70% 50%, rgba(180,77,223,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+.play-hero-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  background: linear-gradient(120deg, var(--accent) 0%, var(--zen) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: var(--zen);
+  background-clip: text;
+  margin-bottom: 8px;
+  
+ 
+}
+.play-hero-sub {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  max-width: 520px;
+  margin: 0 auto;
+}
+.play-modes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+@media (max-width: 520px) { .play-modes-grid { grid-template-columns: 1fr; } }
+.play-mode-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 16px;
+  text-align: center;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.play-mode-card:hover { border-color: var(--border-light); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.play-mode-card.mode-pass { border-top: 3px solid var(--earth); }
+.play-mode-card.mode-online { border-top: 3px solid var(--accent); }
+.play-mode-icon { font-size: 2.2rem; margin-bottom: 10px; display: block; }
+.play-mode-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.play-mode-desc { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5; }
+.play-section-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.play-pool-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+@media (max-width: 520px) { .play-pool-grid { grid-template-columns: 1fr; } }
+.play-pool-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 13px;
+  transition: all 0.2s;
+}
+.play-pool-card:hover { border-color: var(--border-light); }
+.play-pool-card.pool-preset { border-left: 3px solid var(--earth); }
+.play-pool-card.pool-physical { border-left: 3px solid var(--promo); }
+.play-pool-card.pool-digital { border-left: 3px solid var(--accent); }
+.play-pool-card.pool-fantasy { border-left: 3px solid var(--zen); }
+.play-pool-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 99px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 8px;
+}
+.play-pool-name {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--text-primary);
+  margin-bottom: 5px;
+}
+.play-pool-desc { font-size: 0.73rem; color: var(--text-secondary); line-height: 1.5; }
+.play-visual-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+@media (max-width: 520px) { .play-visual-grid { grid-template-columns: 1fr 1fr; } }
+.play-visual-card {
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  text-decoration: none;
+  display: block;
+  transition: all 0.2s;
+}
+.play-visual-card:hover { border-color: var(--border-light); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.play-visual-thumb {
+  width: 100%;
+  aspect-ratio: 16/10;
+  background: var(--bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.play-visual-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.play-visual-label {
+  padding: 7px 9px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-align: center;
+}
+.play-find-game-banner {
+  background: linear-gradient(135deg, rgba(46,140,232,0.1) 0%, rgba(74,125,255,0.08) 100%);
+  border: 1px solid rgba(74,125,255,0.3);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.play-find-game-banner:hover { border-color: var(--accent); background: linear-gradient(135deg, rgba(46,140,232,0.16) 0%, rgba(74,125,255,0.13) 100%); }
+.play-find-game-icon { font-size: 2rem; flex-shrink: 0; }
+.play-find-game-text {}
+.play-find-game-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--accent);
+  margin-bottom: 3px;
+}
+.play-find-game-sub { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.4; }
+.play-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: var(--radius);
+  border: none;
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.play-cta-primary { background: var(--accent); color: #fff; }
+.play-cta-primary:hover { background: var(--accent-hover); box-shadow: 0 4px 14px rgba(74,125,255,0.4); }
+.play-cta-secondary { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary); }
+.play-cta-secondary:hover { border-color: var(--zen); color: var(--zen); }
+.play-cta-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+
 /* TAB CONTENT */
 .tab-content { display: none; animation: fadeIn 0.25s ease; }
 .tab-content.active { display: block; }
@@ -616,6 +851,19 @@ body {
   padding: 2px 8px; border-radius: 99px;
   backdrop-filter: blur(4px); z-index: 4;
 }
+.card-condition-badge {
+  position: absolute; top: 30px; left: 6px;
+  font-size: 0.58rem; font-weight: 700;
+  padding: 2px 7px; border-radius: 99px;
+  backdrop-filter: blur(4px); z-index: 4;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.card-condition-badge.cond-mint        { background: rgba(61,184,108,0.85);  color: #fff; }
+.card-condition-badge.cond-near-mint   { background: rgba(61,184,108,0.55);  color: #fff; }
+.card-condition-badge.cond-lightly-played   { background: rgba(240,201,70,0.75);  color: #111; }
+.card-condition-badge.cond-moderately-played { background: rgba(232,182,50,0.75); color: #111; }
+.card-condition-badge.cond-heavily-played   { background: rgba(232,83,46,0.75);  color: #fff; }
+.card-condition-badge.cond-damaged     { background: rgba(224,72,72,0.85);   color: #fff; }
 .card-compare-badge {
   position: absolute; bottom: 6px; left: 38px;
   background: rgba(0,0,0,0.75); color: var(--water);
@@ -1982,6 +2230,172 @@ body {
   padding: 0 1px;
   line-height: 1;
 }
+
+/* ══════════════════════════════════════════════════
+   LOSER REWARD MODAL
+   ══════════════════════════════════════════════════ */
+.loser-reward-overlay {
+  position: fixed; inset: 0; z-index: 2000;
+  background: rgba(0,0,0,0.88);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+  animation: lrFadeIn 0.25s ease;
+}
+@keyframes lrFadeIn { from { opacity:0; } to { opacity:1; } }
+.loser-reward-modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  max-width: 440px; width: 100%;
+  max-height: 92vh; overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 80px rgba(0,0,0,0.7);
+  animation: lrSlideUp 0.28s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes lrSlideUp { from { transform: translateY(24px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+.loser-reward-header {
+  background: linear-gradient(135deg, #141428 0%, #1e1e38 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 22px 52px 18px 20px;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  text-align: center;
+}
+.loser-reward-badge {
+  font-family: 'Cinzel', serif;
+  font-size: 0.82rem; font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 3px; text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.loser-reward-subtitle {
+  font-size: 0.82rem; color: var(--text-muted);
+  line-height: 1.5; max-width: 300px; margin: 0 auto;
+}
+.loser-reward-close {
+  position: absolute; top: 13px; right: 13px;
+  background: none; border: 1px solid var(--border);
+  color: var(--text-muted); cursor: pointer;
+  border-radius: 50%; width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.78rem; transition: all 0.18s; line-height: 1;
+}
+.loser-reward-close:hover { border-color: var(--danger); color: var(--danger); }
+.loser-reward-card-wrap { padding: 18px 18px 4px; }
+.loser-reward-loading {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  padding: 44px 0; color: var(--text-muted); font-size: 0.88rem;
+}
+.loser-reward-loading i { font-size: 1.8rem; }
+.loser-reward-card-content { display: flex; flex-direction: column; gap: 16px; }
+.loser-reward-img-wrap {
+  position: relative; border-radius: var(--radius);
+  overflow: hidden; width: 100%; max-width: 210px;
+  margin: 0 auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  border: 1px solid var(--border-light);
+}
+.loser-reward-img { width: 100%; display: block; }
+.loser-reward-img-placeholder {
+  width: 100%; aspect-ratio: 3/4;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px; color: var(--text-muted); font-size: 0.78rem;
+  background: var(--bg-surface);
+}
+.loser-reward-img-placeholder i { font-size: 2rem; opacity: 0.4; }
+.loser-reward-card-info { padding: 0 2px; }
+.loser-reward-card-name {
+  font-family: 'Cinzel', serif; font-size: 1.05rem; font-weight: 700;
+  color: var(--text-primary); margin-bottom: 8px; text-align: center;
+}
+.loser-reward-card-meta {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  justify-content: center; margin-bottom: 14px;
+}
+.loser-reward-stats {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  display: flex; flex-wrap: wrap; gap: 16px;
+  margin-bottom: 12px; justify-content: center;
+}
+.loser-reward-stat { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.loser-reward-stat-label {
+  font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-muted); font-weight: 700;
+}
+.loser-reward-stat-value {
+  font-family: 'Cinzel', serif; font-size: 1rem; font-weight: 700;
+  color: var(--text-primary);
+}
+.loser-reward-rules {
+  font-size: 0.83rem; color: var(--text-secondary);
+  line-height: 1.55; margin-bottom: 10px;
+  background: var(--bg-surface); border-radius: var(--radius);
+  padding: 10px 13px; border-left: 3px solid var(--border-light);
+}
+.loser-reward-flavor {
+  font-size: 0.76rem; color: var(--text-muted);
+  font-style: italic; line-height: 1.55;
+  text-align: center; padding: 0 8px;
+}
+.loser-reward-actions {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 14px 18px 18px;
+  border-top: 1px solid var(--border);
+  margin-top: 14px;
+}
+.loser-reward-btn {
+  width: 100%; padding: 12px 16px;
+  border-radius: var(--radius); border: none;
+  font-family: 'Nunito Sans', sans-serif; font-weight: 700; font-size: 0.88rem;
+  cursor: pointer; transition: all 0.18s;
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+}
+.loser-reward-btn-add { background: var(--success); color: #fff; }
+.loser-reward-btn-add:hover { filter: brightness(1.08); }
+.loser-reward-btn-add:active { transform: scale(0.98); }
+.loser-reward-btn-trade {
+  background: var(--bg-surface); border: 1px solid var(--border);
+  color: var(--text-muted); cursor: not-allowed; opacity: 0.55;
+}
+.loser-coming-soon {
+  font-size: 0.62rem; font-weight: 700;
+  background: rgba(240,201,70,0.12);
+  border: 1px solid rgba(240,201,70,0.28);
+  color: var(--air); padding: 2px 8px; border-radius: 99px;
+}
+.loser-reward-btn-discard {
+  background: transparent; border: 1px solid rgba(224,72,72,0.3);
+  color: var(--danger);
+}
+.loser-reward-btn-discard:hover { background: rgba(224,72,72,0.08); }
+/* Discard warning */
+.loser-discard-overlay {
+  position: fixed; inset: 0; z-index: 3000;
+  background: rgba(0,0,0,0.78);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.loser-discard-box {
+  background: var(--bg-card);
+  border: 1px solid rgba(224,72,72,0.5);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px 22px;
+  max-width: 340px; width: 100%;
+  text-align: center;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.65);
+}
+.loser-discard-icon { font-size: 2.2rem; color: var(--danger); margin-bottom: 12px; }
+.loser-discard-title {
+  font-family: 'Cinzel', serif; font-size: 0.95rem; font-weight: 700;
+  color: var(--text-primary); margin-bottom: 10px;
+}
+.loser-discard-msg {
+  font-size: 0.82rem; color: var(--text-secondary);
+  line-height: 1.55; margin-bottom: 20px;
+}
+.loser-discard-actions { display: flex; gap: 10px; justify-content: center; }
 	</style>
 </head>
 <body>
@@ -1993,8 +2407,7 @@ body {
 <div class="app-container">
 <header class="header" style="position: relative;">
   <div style="text-align: center;">
-    <div class="image-container" style="position: relative; display: inline-block;"><img alt="Avatar Quick Strike" src="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/Current-Development/SMLOGO.png" style="width: 33%; height: auto;" crossorigin="anonymous"></div>
-    <div class="image-container" style="position: relative; display: inline-block;"><img alt="Avatar Quick Strike" src="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/Current-Development/LGLOGO.png" style="width: 33%; height: auto; filter: drop-shadow(0 0 8px white);" crossorigin="anonymous"></div>
+    <div class="image-container" style="position: relative; display: inline-block;"><img alt="Avatar Quick Strike" src="https://raw.githubusercontent.com/zolodio/Avatar-TCG-Database/04JUN26/NEWLOGO.png" style="width: 33%; height: auto; filter: drop-shadow(0 0 4px white);" crossorigin="anonymous"></div>
   </div>
   <div id="headerProfileIndicator" style="position: absolute; top: 14px; right: 16px; z-index: 100; padding: 8px 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; display: none; min-width: 0; max-width: 220px;"></div>
 </header>
@@ -2003,6 +2416,7 @@ body {
 <div class="tab-nav">
   <button class="tab-btn active" data-tab="physical-cards"><i class="fas fa-clone" style="transform: scale(.75,1.175)"></i> Physical Cards</button>
   <button class="tab-btn" data-tab="digital-collection"><i class="fas fa-cloud-download-alt"></i> Digital Cards</button>
+  <button class="tab-btn tab-btn-play-online" data-tab="play-online"><i class="fas fa-gamepad"></i> Play Online!</button>
   <button class="tab-btn" data-tab="media"><i class="fas fa-film"></i> Media</button>
   <button class="tab-btn" data-tab="profile"><i class="fas fa-users"></i> Together</button>
   <button class="tab-btn" data-tab="collect"><i class="fas fa-shopping-bag"></i> Collect</button>
@@ -2013,6 +2427,7 @@ body {
 <div class="tab-content active" id="tab-physical-cards">
   <div class="tab-nav-nested">
     <button class="tab-btn-nested active" data-nested-tab="collection">Collection</button>
+    <button class="tab-btn-nested" data-nested-tab="phys-stats">Stats</button>
     <button class="tab-btn-nested" data-nested-tab="pack-rip-estimators">Pack Rip Estimators</button>
     <button class="tab-btn-nested" data-nested-tab="graph">Graph</button>
     <button class="tab-btn-nested" data-nested-tab="save-code-portfolio">Save Code</button>
@@ -2020,42 +2435,16 @@ body {
 
   <!-- COLLECTION NESTED TAB -->
   <div id="nested-collection" class="nested-tab-content active">
-<div style="margin-bottom: 18px;">
-  <button id="statsToggleBtn" onclick="(function(){
-    var body = document.getElementById('statsCollapsible');
-    var icon = document.getElementById('statsToggleIcon');
-    var label = document.getElementById('statsToggleLabel');
-    var isOpen = body.style.display !== 'none';
-    body.style.display = isOpen ? 'none' : 'block';
-    icon.style.transform = isOpen ? 'rotate(-90deg)' : 'rotate(0deg)';
-    label.textContent = isOpen ? 'Expand' : 'Collapse';
-  })()"
-  style="width:100%; display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:10px 14px; cursor:pointer; font-family:'Nunito Sans',sans-serif; font-weight:700; font-size:0.8rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.08em;">
-    <span>Collection Stats</span>
-    <span style="display:flex; align-items:center; gap:6px;">
-      <span id="statsToggleLabel" style="font-size:0.65rem; color:var(--text-muted); font-weight:400; text-transform:none; letter-spacing:0;">Collapse</span>
-      <i id="statsToggleIcon" class="fas fa-chevron-down" style="font-size:0.75rem; transition:transform 0.25s;"></i>
-    </span>
-  </button>
-  <div id="statsCollapsible" style="margin-top:10px;">
-    <div class="stats-bar">
-      <div class="stat-box"><div class="stat-value" id="statOwned">0</div><div class="stat-label">/ 248 Owned</div></div>
-      <div class="stat-box"><div class="stat-value" id="statMissing">0</div><div class="stat-label">Missing</div></div>
-      <div class="stat-box"><div class="stat-value" id="statTotal">0</div><div class="stat-label">Total Cards</div></div>
-    </div>
-    <div class="progress-bar-container">
-      <div class="progress-header"><span class="progress-title">Collection Progress</span><span class="progress-pct" id="progressPct">0%</span></div>
-      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-    </div>
-    <div class="rarity-breakdown" id="rarityBreakdown"></div>
-  </div>
+<!-- Rarity filter chips remain on the collection tab for quick filtering -->
+<div style="margin-bottom:14px;">
+  <div class="rarity-breakdown" id="rarityBreakdown"></div>
 </div>
 
 <div class="controls-section">
   <div class="search-row">
     <div class="search-box">
       <i class="fas fa-search"></i>
-      <input class="search-input" id="searchInput" placeholder="Search cards..." type="text">
+      <input class="search-input" id="searchInput" placeholder="Search cards..." type="text" autocomplete="off">
       <button class="search-clear-btn" id="searchClearBtn" title="Clear search"><i class="fas fa-times"></i></button>
     </div>
     <div class="view-toggle">
@@ -2086,6 +2475,7 @@ body {
       <option value="force">Sort: Force</option>
       <option value="energy">Sort: Energy Cost</option>
       <option value="price">Sort: Price</option>
+      <option value="date_added">Sort: Date Added</option>
     </select>
     <button class="sort-dir-btn" id="sortDirBtn" title="Ascending — click to reverse"><i class="fas fa-arrow-up-short-wide"></i></button>
   </div>
@@ -2093,6 +2483,23 @@ body {
 
 <div class="card-grid" id="cardGrid"></div>
 <div class="empty-state" id="emptyState" style="display:none;"><p>No cards match your search</p></div>
+  </div>
+
+  <!-- STATS NESTED TAB -->
+  <div id="nested-phys-stats" class="nested-tab-content" style="display:none;">
+    <!-- Core stat boxes + progress -->
+    <div class="stats-bar" style="margin-bottom:14px;">
+      <div class="stat-box"><div class="stat-value" id="statOwned">0</div><div class="stat-label">/ 248 Owned</div></div>
+      <div class="stat-box"><div class="stat-value" id="statMissing">0</div><div class="stat-label">Missing</div></div>
+      <div class="stat-box"><div class="stat-value" id="statTotal">0</div><div class="stat-label">Total Cards</div></div>
+    </div>
+    <div class="progress-bar-container" style="margin-bottom:20px;">
+      <div class="progress-header"><span class="progress-title">Core Set Completion</span><span class="progress-pct" id="progressPct">0%</span></div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <!-- Rich stats dashboard rendered by collection-stats.js -->
+    <div id="phys-stats-dashboard"></div>
   </div>
 
   <!-- PACK RIP ESTIMATORS NESTED TAB -->
@@ -2688,32 +3095,15 @@ body {
 <div id="tab-digital-collection" class="tab-content">
   <div class="tab-nav-nested">
     <button class="tab-btn-nested active" data-nested-tab="digital-main">Collection</button>
+    <button class="tab-btn-nested" data-nested-tab="digital-stats">Stats</button>
     <button class="tab-btn-nested" data-nested-tab="digital-pack-rip-estimators">Pack Rip Estimators</button>
     <button class="tab-btn-nested" data-nested-tab="digital-redeem">Redeem</button>
-    <button class="tab-btn-nested" data-nested-tab="digital-deckbuilder">Deck Builder</button>
   </div>
 
   <div id="nested-digital-main" class="nested-tab-content active">
-    <div style="margin-bottom: 18px;">
-      <button id="digitalStatsToggleBtn" onclick="(function(){
-        var body = document.getElementById('digitalStatsCollapsible');
-        var icon = document.getElementById('digitalStatsToggleIcon');
-        var label = document.getElementById('digitalStatsToggleLabel');
-        var isOpen = body.style.display !== 'none';
-        body.style.display = isOpen ? 'none' : 'block';
-        icon.style.transform = isOpen ? 'rotate(-90deg)' : 'rotate(0deg)';
-        label.textContent = isOpen ? 'Expand' : 'Collapse';
-      })()"
-      style="width:100%; display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:10px 14px; cursor:pointer; font-family:'Nunito Sans',sans-serif; font-weight:700; font-size:0.8rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.08em;">
-        <span>Digital Collection Stats</span>
-        <span style="display:flex; align-items:center; gap:6px;">
-          <span id="digitalStatsToggleLabel" style="font-size:0.65rem; color:var(--text-muted); font-weight:400; text-transform:none; letter-spacing:0;">Collapse</span>
-          <i id="digitalStatsToggleIcon" class="fas fa-chevron-down" style="font-size:0.75rem; transition:transform 0.25s;"></i>
-        </span>
-      </button>
-      <div id="digitalStatsCollapsible" style="margin-top:10px;">
-        <div class="stats-bar" id="digital-stats-bar"></div>
-      </div>
+    <!-- Rarity filter chips for digital collection -->
+    <div style="margin-bottom:14px;">
+      <div class="rarity-breakdown" id="digital-rarity-breakdown"></div>
     </div>
 
     <div class="export-row" id="digital-controls">
@@ -2744,6 +3134,7 @@ body {
       <div class="sort-controls">
         <select class="sort-select" id="digital-sort-by">
           <option value="acquired">Recently Added</option>
+          <option value="date_added">Date Added</option>
           <option value="number">Card Number</option>
           <option value="name">Card Name</option>
           <option value="rarity">Rarity</option>
@@ -2756,6 +3147,14 @@ body {
       <i class="fas fa-inbox"></i>
       <p>No digital cards yet. Redeem codes from the Booster app to get started!</p>
     </div>
+  </div>
+
+  <!-- DIGITAL STATS NESTED TAB -->
+  <div id="nested-digital-stats" class="nested-tab-content" style="display:none;">
+    <!-- Core stat boxes -->
+    <div class="stats-bar" id="digital-stats-bar" style="margin-bottom:14px;"></div>
+    <!-- Rich digital stats dashboard rendered by collection-stats.js -->
+    <div id="digital-stats-dashboard"></div>
   </div>
 
   <!-- DIGITAL PACK RIP ESTIMATORS NESTED TAB -->
@@ -2845,7 +3244,7 @@ body {
         <i class="fas fa-ticket-alt" style="font-size: 1.5rem; color: var(--zen);"></i>
         <div>
           <h3 style="font-family: 'Cinzel', serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 2px;">Redeem Digital Pack</h3>
-          <p style="font-size: 0.75rem; color: var(--text-muted);">Paste One-Time Redemption codes from the Booster App to Add Cards to Your Digital Collection.</p>
+          <p style="font-size: 0.75rem; color: var(--text-muted);">Paste One-Time Promotional Redemption codes from  to Add Cards to Your Digital Collection.</p>
         </div>
       </div>
       <textarea id="redemption-code-input" placeholder="Paste Redmption Code Here..." style="width:100%;min-height:80px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;color:var(--text-primary);font-family:'VT323',monospace;font-size:0.85rem;resize:vertical;margin-bottom:12px;"></textarea>
@@ -2856,7 +3255,91 @@ body {
       <div id="redemption-message" style="min-height: 24px; font-size: 0.85rem; border-radius: 6px; padding: 8px 12px; margin-bottom: 16px; display: none;"></div>
     </div>
   </div>
+</div>
 
+<!-- PLAY ONLINE TAB -->
+<div class="tab-content" id="tab-play-online">
+  <div class="tab-nav-nested">
+    <button class="tab-btn-nested active" data-nested-tab="play-now"><i class="fas fa-play-circle"></i> Play Now</button>
+    <button class="tab-btn-nested" data-nested-tab="digital-deckbuilder"><i class="fas fa-layer-group"></i> Deck Builder</button>
+  </div>
+
+  <!-- PLAY NOW sub-tab -->
+  <div id="nested-play-now" class="nested-tab-content active">
+
+    <!-- Hero banner -->
+    <div class="play-hero">
+      <div class="play-hero-title">Battle in the Bending Arena</div>
+      <div class="play-hero-sub">Challenge friends across the table or across the world — using your real cards, your digital collection, or any deck you can dream up. Play the real Quickstrike Game Online!
+      Currently in Beta Testing</div>
+    </div>
+
+    <!-- Ways to Play -->
+    <div class="play-section-title"><i class="fas fa-gamepad" style="color:var(--accent);"></i> Two Ways to Play</div>
+    <div class="play-modes-grid" style="margin-bottom:20px;">
+      <div class="play-mode-card mode-pass">
+        <span class="play-mode-icon">🤝</span>
+        <div class="play-mode-title">Pass &amp; Play</div>
+        <div class="play-mode-desc">Two players, one device. Take turns passing the screen back and forth for a quick head-to-head battle anywhere, anytime — no internet required.</div>
+      </div>
+      <div class="play-mode-card mode-online">
+        <span class="play-mode-icon">🌐</span>
+        <div class="play-mode-title">Play Online</div>
+        <div class="play-mode-desc">Face off against friends or find new rivals online. Earn digital cards and exclusive rewards, and compete in upcoming digital-only tournaments.</div>
+      </div>
+    </div>
+
+    <!-- Deck Pools -->
+    <div class="play-section-title"><i class="fas fa-layer-group" style="color:var(--zen);"></i> Choose Your Deck Pool</div>
+    <div class="play-pool-grid" style="margin-bottom:20px;">
+      <div class="play-pool-card pool-preset">
+        <div class="play-pool-badge" style="background:rgba(92,184,92,0.13);color:var(--earth);border:1px solid rgba(92,184,92,0.3);">⚡ Starter</div>
+        <div class="play-pool-name">Preset Starter Decks</div>
+        <div class="play-pool-desc">Jump straight into the action with pre-built starter decks. No collection needed — just pick a side and battle!</div>
+      </div>
+      <div class="play-pool-card pool-physical">
+        <div class="play-pool-badge" style="background:rgba(232,182,50,0.13);color:var(--promo);border:1px solid rgba(232,182,50,0.3);">🃏 Physical</div>
+        <div class="play-pool-name">Your Physical Cards</div>
+        <div class="play-pool-desc">Test-drive decks built from your real card collection before hitting a tournament or sitting down with friends. Refine your strategy before it counts.</div>
+      </div>
+      <div class="play-pool-card pool-digital">
+        <div class="play-pool-badge" style="background:rgba(74,125,255,0.13);color:var(--accent);border:1px solid rgba(74,125,255,0.3);">☁️ Digital</div>
+        <div class="play-pool-name">Digital Collection</div>
+        <div class="play-pool-desc">Battle with cards earned from website activity, gameplay milestones &amp; special promotions. Win online matches to earn even more digital cards, rewards, and entry to digital-only tournaments.</div>
+      </div>
+      <div class="play-pool-card pool-fantasy">
+        <div class="play-pool-badge" style="background:rgba(180,77,223,0.13);color:var(--zen);border:1px solid rgba(180,77,223,0.3);">🌀 Fantasy</div>
+        <div class="play-pool-name">Fantasy / Wild Mode</div>
+        <div class="play-pool-desc">Build your dream deck from the entire card pool — own the cards or not! Pure fun, no rewards. Perfect for testing wild ideas or living out your ultimate Avatar fantasy.</div>
+      </div>
+    </div>
+
+    <!-- CTA buttons -->
+    <div class="play-cta-row">
+      <button class="play-cta-btn play-cta-primary" onclick="document.querySelector('[data-nested-tab=digital-deckbuilder]').click()">
+        <i class="fas fa-layer-group"></i> Build a Deck
+      </button>
+<a class="play-cta-btn play-cta-secondary"
+   href="https://avatartcg.online"
+   target="_blank"
+   rel="noopener noreferrer">
+  <i class="fas fa-external-link-alt"></i> Launch Game
+</a>
+    </div>
+
+    <!-- Find a Game banner -->
+    <div class="play-find-game-banner" onclick="switchTab('profile');setTimeout(function(){var fb=document.querySelector('[data-nested-tab=forum]');if(fb)fb.click();},120);">
+      <div class="play-find-game-icon">🗺️</div>
+      <div class="play-find-game-text">
+        <div class="play-find-game-title"><i class="fas fa-comments" style="margin-right:5px;"></i> Find a Game!</div>
+        <div class="play-find-game-sub">Head to the <strong style="color:var(--accent);">Together → Forums</strong> to arrange a match with friends or find other players looking to battle. Whether it's casual or competitive, your next opponent is waiting!</div>
+      </div>
+      <i class="fas fa-chevron-right" style="color:var(--text-muted);flex-shrink:0;font-size:0.9rem;"></i>
+    </div>
+
+  </div><!-- /nested-play-now -->
+
+  <!-- DECK BUILDER sub-tab (moved from Digital Cards) -->
   <div id="nested-digital-deckbuilder" class="nested-tab-content" style="display:none;">
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
       <i class="fas fa-align-justify" style="font-size: 3rem; color: var(--promo); margin-bottom: 16px;"></i>
@@ -2864,8 +3347,9 @@ body {
       <p style="color: var(--text-secondary);">Deck Building with Compatibility Rules for Online Gameplay and Trading</p>
       <p style="color: var(--text-secondary);">Coming Soon...</p>
     </div>
-  </div>
-</div>
+  </div><!-- /nested-digital-deckbuilder -->
+
+</div><!-- /tab-play-online -->
 
 <!-- PROFILE TAB -->
 <div class="tab-content" id="tab-profile">
@@ -3228,6 +3712,22 @@ body {
           <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem; color:var(--text-secondary);">
             <input type="checkbox" class="mp-filter" data-site="letgo" checked style="cursor:pointer;">
             <span>OfferUp (LetGo)</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem; color:var(--text-secondary);">
+            <input type="checkbox" class="mp-filter" data-site="whatnot" checked style="cursor:pointer;">
+            <span style="display:flex; align-items:center; gap:4px;"><i class="fas fa-broadcast-tower" style="color:#7c3aed;"></i> Whatnot</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem; color:var(--text-secondary);">
+            <input type="checkbox" class="mp-filter" data-site="mercari" checked style="cursor:pointer;">
+            <span style="display:flex; align-items:center; gap:4px;"><i class="fas fa-tag" style="color:#e8163c;"></i> Mercari</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem; color:var(--text-secondary);">
+            <input type="checkbox" class="mp-filter" data-site="tcgplayer" checked style="cursor:pointer;">
+            <span style="display:flex; align-items:center; gap:4px;"><i class="fas fa-layer-group" style="color:#1a9dda;"></i> TCGPlayer</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem; color:var(--text-secondary);">
+            <input type="checkbox" class="mp-filter" data-site="amazon" checked style="cursor:pointer;">
+            <span style="display:flex; align-items:center; gap:4px;"><i class="fab fa-amazon" style="color:#ff9900;"></i> Amazon</span>
           </label>
         </div>
       </div>
@@ -3926,6 +4426,18 @@ body {
           <span class="qty-display" id="qtyDisplay">0</span>
           <button class="qty-btn" id="qtyPlus">+</button>
         </div>
+        <div id="modalConditionRow" style="margin-bottom:12px;display:none;">
+          <label style="display:block;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:6px;">Condition</label>
+          <select id="modalCondition" style="width:100%;padding:9px 12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:0.85rem;font-family:'Nunito Sans',sans-serif;outline:none;transition:border-color 0.2s;box-sizing:border-box;">
+            <option value="">— Not set —</option>
+            <option value="mint">Mint</option>
+            <option value="near-mint">Near Mint</option>
+            <option value="lightly-played">Lightly Played</option>
+            <option value="moderately-played">Moderately Played</option>
+            <option value="heavily-played">Heavily Played</option>
+            <option value="damaged">Damaged</option>
+          </select>
+        </div>
         <div class="modal-tags" id="modalTags"></div>
         <div id="modalCompareInfo"></div>
         <div id="modalPriceSection"></div>
@@ -4542,6 +5054,8 @@ function switchTab(tabName) {
 /* ---- STATE ---- */
 var allCards = [];
 var collection = {};
+var collectionTimestamps = {}; // { cardNumber: ISO timestamp } — records when each card was first added
+var collectionConditions = {}; // { cardNumber: conditionString } — physical card condition per card
 var compareCollection = {};
 var prices = {};
 var pricesLoaded = false;
@@ -4569,6 +5083,8 @@ var rarityColorMap = {
 
 /* ---- PERSISTENCE ---- */
 var DB_NAME = 'AvatarQSTracker', DB_STORE = 'collection', DB_KEY = 'myCollection', COOKIE_KEY = 'aqst_col';
+var TS_DB_KEY = 'myCollectionTimestamps', TS_COOKIE_KEY = 'aqst_col_ts';
+var COND_DB_KEY = 'myCollectionConditions', COND_COOKIE_KEY = 'aqst_col_cond';
 
 function openDB() {
   return new Promise(function(resolve, reject) {
@@ -4608,6 +5124,64 @@ async function loadCollection() {
   } catch (_e) {}
   try {
     var match = document.cookie.split('; ').find(function(c) { return c.startsWith(COOKIE_KEY + '='); });
+    if (match) return JSON.parse(decodeURIComponent(match.split('=').slice(1).join('=')));
+  } catch (_e2) {}
+  return {};
+}
+
+async function saveTimestamps() {
+  var data = JSON.stringify(collectionTimestamps);
+  try {
+    var db = await openDB();
+    var tx = db.transaction(DB_STORE, 'readwrite');
+    tx.objectStore(DB_STORE).put(data, TS_DB_KEY);
+    await new Promise(function(res, rej) { tx.oncomplete = res; tx.onerror = rej; });
+    db.close();
+  } catch (_e) {
+    try { document.cookie = TS_COOKIE_KEY + '=' + encodeURIComponent(data) + ';path=/;max-age=31536000;SameSite=Lax'; } catch (_e2) {}
+  }
+}
+
+async function loadTimestamps() {
+  try {
+    var db = await openDB();
+    var tx = db.transaction(DB_STORE, 'readonly');
+    var req = tx.objectStore(DB_STORE).get(TS_DB_KEY);
+    var result = await new Promise(function(res, rej) { req.onsuccess = function() { res(req.result); }; req.onerror = rej; });
+    db.close();
+    if (result) return JSON.parse(result);
+  } catch (_e) {}
+  try {
+    var match = document.cookie.split('; ').find(function(c) { return c.startsWith(TS_COOKIE_KEY + '='); });
+    if (match) return JSON.parse(decodeURIComponent(match.split('=').slice(1).join('=')));
+  } catch (_e2) {}
+  return {};
+}
+
+async function saveConditions() {
+  var data = JSON.stringify(collectionConditions);
+  try {
+    var db = await openDB();
+    var tx = db.transaction(DB_STORE, 'readwrite');
+    tx.objectStore(DB_STORE).put(data, COND_DB_KEY);
+    await new Promise(function(res, rej) { tx.oncomplete = res; tx.onerror = rej; });
+    db.close();
+  } catch (_e) {
+    try { document.cookie = COND_COOKIE_KEY + '=' + encodeURIComponent(data) + ';path=/;max-age=31536000;SameSite=Lax'; } catch (_e2) {}
+  }
+}
+
+async function loadConditions() {
+  try {
+    var db = await openDB();
+    var tx = db.transaction(DB_STORE, 'readonly');
+    var req = tx.objectStore(DB_STORE).get(COND_DB_KEY);
+    var result = await new Promise(function(res, rej) { req.onsuccess = function() { res(req.result); }; req.onerror = rej; });
+    db.close();
+    if (result) return JSON.parse(result);
+  } catch (_e) {}
+  try {
+    var match = document.cookie.split('; ').find(function(c) { return c.startsWith(COND_COOKIE_KEY + '='); });
     if (match) return JSON.parse(decodeURIComponent(match.split('=').slice(1).join('=')));
   } catch (_e2) {}
   return {};
@@ -4904,7 +5478,10 @@ function updateSaveCodeDisplay() {
 
 /* ---- FETCH & INIT ---- */
 async function init() {
-  collection = await loadCollection();
+  var loaded = await Promise.all([loadCollection(), loadTimestamps(), loadConditions()]);
+  collection           = loaded[0];
+  collectionTimestamps = loaded[1];
+  collectionConditions = loaded[2];
 
   var results = await Promise.allSettled([
     loadPrices(),
@@ -4979,6 +5556,11 @@ function updateStats() {
     bhtml += '</div>';
   });
   breakdown.innerHTML = bhtml;
+
+  // Notify collection-stats.js dashboard to refresh if open
+  if (typeof window.refreshCollectionStatsDashboard === 'function') {
+    window.refreshCollectionStatsDashboard('physical');
+  }
 }
 
 /* ---- FILTER / SORT ---- */
@@ -5061,6 +5643,15 @@ else if (sortBy === 'intercept') cards.sort(function(a, b) {
     var pB = (prices[b.number] && prices[b.number].avg) || 0;
     return dir * (pA - pB);
   });
+  else if (sortBy === 'date_added') cards.sort(function(a, b) {
+    var tA = collectionTimestamps[a.number] ? new Date(collectionTimestamps[a.number]).getTime() : 0;
+    var tB = collectionTimestamps[b.number] ? new Date(collectionTimestamps[b.number]).getTime() : 0;
+    // Cards with no timestamp (never owned) fall to the end regardless of direction
+    if (!tA && !tB) return 0;
+    if (!tA) return 1;
+    if (!tB) return -1;
+    return dir * (tA - tB);
+  });
   else cards.sort(function(a, b) {
     var numA = parseInt(a.number, 10), numB = parseInt(b.number, 10);
     if (!isNaN(numA) && !isNaN(numB)) return dir * (numA - numB);
@@ -5093,6 +5684,15 @@ function renderCards() {
     var rarityColor = rarityColorMap[c.rarity] || 'var(--text-secondary)';
     var cardPrice = prices[c.number];
     var avgPrice = cardPrice && cardPrice.avg ? '$' + cardPrice.avg.toFixed(2) : null;
+    var cardCondition = isOwned ? (collectionConditions[c.number] || '') : '';
+    var conditionLabels = {
+      'mint': 'M', 'near-mint': 'NM', 'lightly-played': 'LP',
+      'moderately-played': 'MP', 'heavily-played': 'HP', 'damaged': 'DMG'
+    };
+    var conditionFull = {
+      'mint': 'Mint', 'near-mint': 'Near Mint', 'lightly-played': 'Lightly Played',
+      'moderately-played': 'Moderately Played', 'heavily-played': 'Heavily Played', 'damaged': 'Damaged'
+    };
 
     html += '<div class="card-item' + (isOwned ? ' owned' : '') + '" data-number="' + c.number + '" style="--rarity-color:' + rarityColor + '">';
     html += '<span class="list-card-number">#' + c.number + '</span>';
@@ -5109,6 +5709,7 @@ function renderCards() {
     html += '<span class="card-number-badge">#' + c.number + '</span>';
     if (isOwned) html += '<span class="card-owned-badge"><i class="fas fa-check"></i></span>';
     if (qty > 0) html += '<span class="card-qty-badge">x' + qty + '</span>';
+    if (cardCondition) html += '<span class="card-condition-badge cond-' + cardCondition + '" title="' + (conditionFull[cardCondition] || cardCondition) + '">' + (conditionLabels[cardCondition] || cardCondition) + '</span>';
     if (showCompare && compareQty > 0) html += '<span class="card-compare-badge"><i class="fas fa-user-group"></i> x' + compareQty + '</span>';
     if (avgPrice) html += '<span class="card-price-badge"><i class="fas fa-tag"></i>' + avgPrice + '</span>';
     html += '<button class="card-flip-btn" data-flip-target="' + c.number + '" title="Flip View"><i class="fas fa-rotate"></i></button>';
@@ -5119,6 +5720,7 @@ function renderCards() {
     if (showCompare && compareQty > 0) html += '<span class="list-compare-qty show"><i class="fas fa-user-group" style="font-size:0.6rem;margin-right:2px"></i>x' + compareQty + '</span>';
     html += '<span class="list-owned-icon' + (isOwned ? ' show' : '') + '"><i class="fas fa-check-circle"></i></span>';
     if (qty > 1) html += '<span class="list-qty show">x' + qty + '</span>';
+    if (cardCondition) html += '<span class="list-qty show" style="font-size:0.62rem;opacity:0.85;">' + (conditionLabels[cardCondition] || cardCondition) + '</span>';
     if (avgPrice) html += '<span class="list-price-tag show">' + avgPrice + '</span>';
     html += '<span class="list-card-arrow"><i class="fas fa-chevron-right"></i></span>';
     html += '</div>';
@@ -5412,6 +6014,12 @@ var flavorSectionEl = document.getElementById('modalFlavorSection');
   document.getElementById('qtyDisplay').textContent = qty;
   var qtyControls = document.querySelector('.modal-qty-controls');
   if (qtyControls) qtyControls.style.display = modalDigitalMode ? 'none' : '';
+  var conditionRow = document.getElementById('modalConditionRow');
+  if (conditionRow) {
+    conditionRow.style.display = modalDigitalMode ? 'none' : (isOwned ? '' : 'none');
+    var condSel = document.getElementById('modalCondition');
+    if (condSel) condSel.value = collectionConditions[card.number] || '';
+  }
   var obtainedSection = document.getElementById('modalObtainedSection');
   if (obtainedSection) obtainedSection.style.display = modalDigitalMode ? 'none' : '';
   updateModalButton(isOwned);
@@ -5437,16 +6045,40 @@ function updateModalButton(isOwned) {
     if (isOwned) { btn.textContent = 'Remove from Collection'; btn.className = 'modal-toggle-btn remove'; }
     else { btn.textContent = 'Add to Collection'; btn.className = 'modal-toggle-btn add'; }
   }
+  // Show condition row only when card is owned in physical mode
+  var conditionRow = document.getElementById('modalConditionRow');
+  if (conditionRow) conditionRow.style.display = (!modalDigitalMode && isOwned) ? '' : 'none';
   updateModalDividers();
 }
 
 /* ---- COLLECTION ACTIONS ---- */
-function addToCollection(n) { if (!collection[n]) collection[n] = 0; collection[n]++; onCollectionChanged(n); }
-function removeFromCollection(n) { delete collection[n]; onCollectionChanged(n); }
-function setQty(n, qty) { if (qty <= 0) delete collection[n]; else collection[n] = qty; onCollectionChanged(n); }
+function addToCollection(n) {
+  if (!collection[n]) {
+    collection[n] = 0;
+    if (!collectionTimestamps[n]) collectionTimestamps[n] = new Date().toISOString();
+  }
+  collection[n]++;
+  onCollectionChanged(n);
+}
+function removeFromCollection(n) {
+  delete collection[n];
+  delete collectionTimestamps[n];
+  onCollectionChanged(n);
+}
+function setQty(n, qty) {
+  if (qty <= 0) {
+    delete collection[n];
+    delete collectionTimestamps[n];
+  } else {
+    if (!collection[n] && !collectionTimestamps[n]) collectionTimestamps[n] = new Date().toISOString();
+    collection[n] = qty;
+  }
+  onCollectionChanged(n);
+}
 
 function onCollectionChanged(n) {
   saveCollection();
+  saveTimestamps();
 	if (window._aqst_cloudSync) window._aqst_cloudSync();
   updateStats();
   renderCards();
@@ -5457,6 +6089,8 @@ function onCollectionChanged(n) {
     var qty = collection[n] || 0;
     document.getElementById('qtyDisplay').textContent = qty;
     updateModalButton(qty > 0);
+    var condSel = document.getElementById('modalCondition');
+    if (condSel) condSel.value = collectionConditions[n] || '';
   }
 }
 
@@ -5517,7 +6151,9 @@ function closeCodeInputDialog() { document.getElementById('codeInputOverlay').cl
 
 function processCSVImport(text) {
   var lines = text.trim().split('\n');
+  var importNow = new Date().toISOString();
   collection = {};
+  collectionTimestamps = {};
   for (var i = 1; i < lines.length; i++) {
     var parts = [], current = '', inQuotes = false;
     for (var j = 0; j < lines[i].length; j++) {
@@ -5529,10 +6165,10 @@ function processCSVImport(text) {
     parts.push(current.trim());
     if (parts.length >= 5) {
       var num = parts[0]; var qty = parseInt(parts[4], 10) || 1;
-      if (qty > 0) collection[num] = qty;
+      if (qty > 0) { collection[num] = qty; collectionTimestamps[num] = importNow; }
     }
   }
-  saveCollection(); updateStats(); renderCards(); updateSaveCodeDisplay(); updateAllPackCounters();
+  saveTimestamps(); saveCollection(); updateStats(); renderCards(); updateSaveCodeDisplay(); updateAllPackCounters();
   showToast('Collection imported from CSV!');
 }
 
@@ -5601,9 +6237,19 @@ function setupEvents() {
     inp.focus();
   });
 
+  /* Exposed helper — call window.resetPhysicalCardSearch() from auth.js after a
+     successful login to ensure the email value never leaks into the search bar. */
+  window.resetPhysicalCardSearch = function() {
+    var inp = document.getElementById('searchInput');
+    if (inp) inp.value = '';
+    searchQuery = '';
+    document.getElementById('searchClearBtn').classList.remove('visible');
+    renderCards();
+  };
+
   document.getElementById('sortSelect').addEventListener('change', function() {
     sortBy = this.value;
-    if (['rarity', 'quantity', 'intercept', 'force', 'energy', 'price'].indexOf(sortBy) !== -1) sortDirection = 'desc';
+    if (['rarity', 'quantity', 'intercept', 'force', 'energy', 'price', 'date_added'].indexOf(sortBy) !== -1) sortDirection = 'desc';
     else sortDirection = 'asc';
     updateSortDirBtn();
     renderCards();
@@ -5748,11 +6394,34 @@ document.getElementById('modalObtainedSection').addEventListener('mouseout', fun
   document.getElementById('qtyPlus').addEventListener('click', function() {
     if (!currentModalCard) return;
     setQty(currentModalCard.number, (collection[currentModalCard.number] || 0) + 1);
+    var conditionRow = document.getElementById('modalConditionRow');
+    if (conditionRow && !modalDigitalMode) conditionRow.style.display = '';
   });
   document.getElementById('qtyMinus').addEventListener('click', function() {
     if (!currentModalCard) return;
     var cur = collection[currentModalCard.number] || 0;
-    if (cur > 0) setQty(currentModalCard.number, cur - 1);
+    if (cur > 0) {
+      setQty(currentModalCard.number, cur - 1);
+      var newQty = collection[currentModalCard.number] || 0;
+      var conditionRow = document.getElementById('modalConditionRow');
+      if (conditionRow && newQty === 0) {
+        conditionRow.style.display = 'none';
+        delete collectionConditions[currentModalCard.number];
+        saveConditions();
+      }
+    }
+  });
+
+  document.getElementById('modalCondition').addEventListener('change', function() {
+    if (!currentModalCard || modalDigitalMode) return;
+    var val = this.value;
+    if (val) {
+      collectionConditions[currentModalCard.number] = val;
+    } else {
+      delete collectionConditions[currentModalCard.number];
+    }
+    saveConditions();
+    renderCards();
   });
 
   document.getElementById('modalToggle').addEventListener('click', function() {
@@ -5775,8 +6444,21 @@ document.getElementById('modalObtainedSection').addEventListener('mouseout', fun
     }
     var isOwned = (collection[currentModalCard.number] || 0) > 0;
     if (isOwned) {
-      showConfirm('Remove "' + currentModalCard.name + '" from your collection?', function() { removeFromCollection(currentModalCard.number); showToast('Removed from collection'); });
-    } else { addToCollection(currentModalCard.number); showToast('Added to collection!'); }
+      showConfirm('Remove "' + currentModalCard.name + '" from your collection?', function() {
+        var n = currentModalCard.number;
+        removeFromCollection(n);
+        delete collectionConditions[n];
+        saveConditions();
+        var conditionRow = document.getElementById('modalConditionRow');
+        if (conditionRow) conditionRow.style.display = 'none';
+        showToast('Removed from collection');
+      });
+    } else {
+      addToCollection(currentModalCard.number);
+      var conditionRow = document.getElementById('modalConditionRow');
+      if (conditionRow && !modalDigitalMode) conditionRow.style.display = '';
+      showToast('Added to collection!');
+    }
   });
 
   document.getElementById('confirmOk').addEventListener('click', function() { if (confirmCallback) confirmCallback(); closeConfirm(); });
@@ -5807,7 +6489,7 @@ document.getElementById('modalObtainedSection').addEventListener('mouseout', fun
   document.getElementById('clearMethodOverlay').addEventListener('click', function(e) { if (e.target === this) closeClearDialog(); });
 
   document.getElementById('clearOwnOk').addEventListener('click', function() {
-    collection = {}; saveCollection(); updateStats(); buildFilters(); renderCards(); updateSaveCodeDisplay(); updateAllPackCounters();
+    collection = {}; collectionTimestamps = {}; collectionConditions = {}; saveTimestamps(); saveConditions(); saveCollection(); updateStats(); buildFilters(); renderCards(); updateSaveCodeDisplay(); updateAllPackCounters();
     document.getElementById('clearOwnConfirmOverlay').classList.remove('active');
     showToast('Collection cleared');
   });
@@ -5866,7 +6548,11 @@ document.getElementById('codeInputOk').addEventListener('click', function() {
   if (!code) { errorEl.textContent = 'Please enter a save code.'; return; }
   var decoded = decodeCollectionFromCode(code);
   if (!decoded) { errorEl.textContent = 'Invalid save code. Check that you pasted the full code correctly.'; return; }
-  collection = decoded; saveCollection(); updateStats(); renderCards(); updateSaveCodeDisplay(); updateAllPackCounters();
+  collection = decoded;
+  var importNow = new Date().toISOString();
+  collectionTimestamps = {};
+  Object.keys(decoded).forEach(function(n) { collectionTimestamps[n] = importNow; });
+  saveTimestamps(); saveCollection(); updateStats(); renderCards(); updateSaveCodeDisplay(); updateAllPackCounters();
   closeCodeInputDialog();
   showToast('Collection restored from save code!');
 });
@@ -6420,6 +7106,7 @@ init();
 <script src="scripts/media-player.js"></script>
 <script src="scripts/auth.js"></script>
 <script src="scripts/digital-collection.js"></script>
+<script src="scripts/collection-stats.js"></script>
 <script>
   if (typeof initDigitalCollectionTab === 'function') {
     initDigitalCollectionTab();
@@ -7527,6 +8214,38 @@ init();
       color: '#ff6b35',
       url: function () {
         return 'https://offerup.com/search?q=avatar+quickstrike&distance=50';
+      }
+    },
+    whatnot: {
+      name: 'Whatnot',
+      icon: 'fas fa-broadcast-tower',
+      color: '#7c3aed',
+      url: function () {
+        return 'https://www.whatnot.com/search?query=avatar+quick+strike&referringSource=typed';
+      }
+    },
+    mercari: {
+      name: 'Mercari',
+      icon: 'fas fa-tag',
+      color: '#e8163c',
+      url: function () {
+        return 'https://www.mercari.com/search/?keyword=avatar+quick+strike';
+      }
+    },
+    tcgplayer: {
+      name: 'TCGPlayer',
+      icon: 'fas fa-layer-group',
+      color: '#1a9dda',
+      url: function () {
+        return 'https://www.tcgplayer.com/search/all/product?q=avatar+quick+strike';
+      }
+    },
+    amazon: {
+      name: 'Amazon',
+      icon: 'fab fa-amazon',
+      color: '#ff9900',
+      url: function () {
+        return 'https://www.amazon.com/s?k=avatar+quick+strike+tcg';
       }
     }
   };
@@ -9839,5 +10558,317 @@ init();
 
 })();
 </script>
+<!-- LOSER REWARD MODAL -->
+<div class="loser-reward-overlay" id="loserRewardOverlay" style="display:none;">
+  <div class="loser-reward-modal">
+    <div class="loser-reward-header">
+      <div class="loser-reward-badge">🎖️ Participation Reward</div>
+      <div class="loser-reward-subtitle">Thanks for playing! You fought hard — here's a card to remember the battle.</div>
+    </div>
+    <button class="loser-reward-close" id="loserRewardClose" title="Close">✕</button>
+
+    <div class="loser-reward-card-wrap">
+      <!-- Loading state -->
+      <div class="loser-reward-loading" id="loserRewardLoading">
+        <i class="fas fa-circle-notch fa-spin"></i>
+        <span>Selecting your reward…</span>
+      </div>
+      <!-- Card content (populated by JS) -->
+      <div class="loser-reward-card-content" id="loserRewardCardContent" style="display:none;">
+        <div class="loser-reward-img-wrap">
+          <img class="loser-reward-img" id="loserRewardImg" src="" alt="" style="display:none;">
+          <div class="loser-reward-img-placeholder" id="loserRewardImgPlaceholder" style="display:none;">
+            <i class="fas fa-hat-wizard"></i><span>Image unavailable</span>
+          </div>
+        </div>
+        <div class="loser-reward-card-info">
+          <div class="loser-reward-card-name" id="loserRewardCardName"></div>
+          <div class="loser-reward-card-meta" id="loserRewardCardMeta"></div>
+          <div class="loser-reward-stats" id="loserRewardStats"></div>
+          <div class="loser-reward-rules" id="loserRewardRules"></div>
+          <div class="loser-reward-flavor" id="loserRewardFlavor"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="loser-reward-actions" id="loserRewardActions" style="display:none;">
+      <button class="loser-reward-btn loser-reward-btn-add" id="loserRewardAdd">
+        <i class="fas fa-plus-circle"></i> Add to Digital Collection
+      </button>
+      <button class="loser-reward-btn loser-reward-btn-trade" id="loserRewardTrade" disabled>
+        <i class="fas fa-exchange-alt"></i> Offer for Trade
+        <span class="loser-coming-soon">Coming soon</span>
+      </button>
+      <button class="loser-reward-btn loser-reward-btn-discard" id="loserRewardDiscard">
+        <i class="fas fa-trash-alt"></i> Discard
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- LOSER REWARD — DISCARD WARNING POPUP -->
+<div class="loser-discard-overlay" id="loserDiscardOverlay" style="display:none;">
+  <div class="loser-discard-box">
+    <div class="loser-discard-icon"><i class="fas fa-exclamation-triangle"></i></div>
+    <div class="loser-discard-title">Discard this card?</div>
+    <div class="loser-discard-msg">This card will <strong>not</strong> be added to your digital collection. Once discarded it cannot be recovered. Are you sure?</div>
+    <div class="loser-discard-actions">
+      <button class="confirm-btn confirm-cancel" id="loserDiscardCancel">Keep Card</button>
+      <button class="confirm-btn confirm-ok" id="loserDiscardConfirm" style="background:var(--danger);border-color:var(--danger);">Discard</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   LOSER REWARD MODAL
+   Triggered when the game site redirects here with:
+     #loser-reward=CARD_NUMBER
+   Shows a single random common digital card with options to
+   add to collection, trade (future), or discard.
+   ═══════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+
+  var _lrCardNumber = null;   // card number parsed from hash
+  var _lrCard       = null;   // resolved allCards entry
+
+  /* ── Hash parser ── */
+  function _parseLoserRewardHash() {
+    var hash = (window.location.hash || '');
+    var m    = hash.match(/[#&]loser-reward=([^&]+)/);
+    return m ? decodeURIComponent(m[1]) : null;
+  }
+
+  /* ── Entry point: called on load and on hashchange ── */
+  function checkForLoserReward() {
+    var num = _parseLoserRewardHash();
+    if (!num) return;
+    _lrCardNumber = num;
+    // Wipe hash without reloading so it can't be re-triggered by refresh
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+    _openLoserRewardModal();
+  }
+
+  /* ── Open the modal in loading state, then resolve the card ── */
+  function _openLoserRewardModal() {
+    var overlay = document.getElementById('loserRewardOverlay');
+    if (!overlay) return;
+    _showEl('loserRewardLoading');
+    _hideEl('loserRewardCardContent');
+    _hideEl('loserRewardActions');
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    _waitForCard();
+  }
+
+  /* ── Poll until allCards is populated (CSV may still be loading) ── */
+  function _waitForCard() {
+    var attempts = 0, max = 120; // up to 12 s
+    var iv = setInterval(function () {
+      attempts++;
+      var cards = window.allCards || [];
+      if (cards.length > 0 || attempts >= max) {
+        clearInterval(iv);
+        _resolveCard(cards);
+      }
+    }, 100);
+  }
+
+  /* ── Find the card, or fall back to a random common ── */
+  function _resolveCard(cards) {
+    _lrCard = null;
+    if (cards.length > 0 && _lrCardNumber) {
+      _lrCard = cards.find(function (c) {
+        return String(c.number) === String(_lrCardNumber);
+      });
+    }
+    // Fallback: pick a random common from 1–175
+    if (!_lrCard) {
+      var commons = cards.filter(function (c) {
+        var n = parseInt(c.number, 10);
+        return !isNaN(n) && n >= 1 && n <= 175 && c.rarity === 'common';
+      });
+      if (commons.length > 0) {
+        _lrCard = commons[Math.floor(Math.random() * commons.length)];
+      }
+    }
+    if (_lrCard) {
+      _renderRewardCard(_lrCard);
+    } else {
+      // Nothing to show — close silently
+      _closeLoserRewardModal();
+    }
+  }
+
+  /* ── Populate the modal with the card data ── */
+  function _renderRewardCard(card) {
+    // Image
+    var img  = document.getElementById('loserRewardImg');
+    var phld = document.getElementById('loserRewardImgPlaceholder');
+    if (card.imageLink) {
+      img.src = card.imageLink;
+      img.alt = card.name || '';
+      img.style.display = 'block';
+      phld.style.display = 'none';
+      img.onerror = function () { img.style.display = 'none'; phld.style.display = 'flex'; };
+    } else {
+      img.style.display = 'none';
+      phld.style.display = 'flex';
+    }
+
+    // Name
+    document.getElementById('loserRewardCardName').textContent = card.name || '—';
+
+    // Meta tags (type + rarity + number)
+    var rarityColors = {
+      common:     'var(--text-secondary)',
+      uncommon:   'var(--earth)',
+      rare:       'var(--water)',
+      zenemental: 'var(--zen)',
+      promo:      'var(--promo)'
+    };
+    var rc  = rarityColors[card.rarity] || 'var(--text-secondary)';
+    var meta = '';
+    if (card.type) {
+      meta += '<span class="modal-tag tag-' + _esc(card.type) + '">' + _esc(card.type) + '</span>';
+    }
+    if (card.rarity) {
+      meta += '<span class="modal-tag" style="color:' + rc + ';border-color:' + rc + ';background:transparent;">' + _esc(card.rarity) + '</span>';
+    }
+    if (card.number) {
+      meta += '<span class="modal-tag" style="color:var(--text-muted);border-color:var(--border);">#' + _esc(String(card.number)) + '</span>';
+    }
+    document.getElementById('loserRewardCardMeta').innerHTML = meta;
+
+    // Stats
+    var statsEl  = document.getElementById('loserRewardStats');
+    var statsHtml = '';
+    if (card.intercept && String(card.intercept).trim() !== '') {
+      statsHtml += '<div class="loser-reward-stat"><div class="loser-reward-stat-label">Intercept</div>' +
+        '<div class="loser-reward-stat-value" style="color:var(--water);">' + _esc(String(card.intercept)) + '</div></div>';
+    }
+    if (card.force && String(card.force).trim() !== '') {
+      statsHtml += '<div class="loser-reward-stat"><div class="loser-reward-stat-label">Force</div>' +
+        '<div class="loser-reward-stat-value" style="color:var(--fire);">' + _esc(String(card.force)) + '</div></div>';
+    }
+    var costParts = [];
+    if (parseInt(card.greenEnergy,10)  > 0) costParts.push('<span style="color:var(--earth);">'  + parseInt(card.greenEnergy,10)  + 'G</span>');
+    if (parseInt(card.yellowEnergy,10) > 0) costParts.push('<span style="color:var(--air);">'    + parseInt(card.yellowEnergy,10) + 'Y</span>');
+    if (parseInt(card.redEnergy,10)    > 0) costParts.push('<span style="color:var(--fire);">'   + parseInt(card.redEnergy,10)    + 'R</span>');
+    if (costParts.length > 0) {
+      statsHtml += '<div class="loser-reward-stat"><div class="loser-reward-stat-label">Cost</div>' +
+        '<div class="loser-reward-stat-value" style="font-size:0.85rem;">' + costParts.join(' ') + '</div></div>';
+    }
+    statsEl.innerHTML  = statsHtml;
+    statsEl.style.display = statsHtml ? '' : 'none';
+
+    // Rules text
+    var rulesEl = document.getElementById('loserRewardRules');
+    if (card.rulesText && card.rulesText.trim()) {
+      rulesEl.textContent   = card.rulesText;
+      rulesEl.style.display = '';
+    } else {
+      rulesEl.style.display = 'none';
+    }
+
+    // Flavor text
+    var flavorEl = document.getElementById('loserRewardFlavor');
+    if (card.flavorText && card.flavorText.trim()) {
+      flavorEl.textContent   = '\u201c' + card.flavorText + '\u201d';
+      flavorEl.style.display = '';
+    } else {
+      flavorEl.style.display = 'none';
+    }
+
+    // Reveal content
+    _hideEl('loserRewardLoading');
+    document.getElementById('loserRewardCardContent').style.display = 'flex';
+    document.getElementById('loserRewardActions').style.display = 'flex';
+  }
+
+  /* ── Close modal ── */
+  function _closeLoserRewardModal() {
+    var overlay = document.getElementById('loserRewardOverlay');
+    if (overlay) overlay.style.display = 'none';
+    document.body.style.overflow = '';
+    _lrCard = null;
+    _lrCardNumber = null;
+  }
+
+  /* ── Discard popup ── */
+  function _showDiscardWarning() {
+    var el = document.getElementById('loserDiscardOverlay');
+    if (el) el.style.display = 'flex';
+  }
+  function _hideDiscardWarning() {
+    var el = document.getElementById('loserDiscardOverlay');
+    if (el) el.style.display = 'none';
+  }
+
+  /* ── Helpers ── */
+  function _showEl(id) { var e = document.getElementById(id); if (e) e.style.display = ''; }
+  function _hideEl(id) { var e = document.getElementById(id); if (e) e.style.display = 'none'; }
+  function _esc(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  /* ── Wire buttons (runs after DOM is ready) ── */
+  function _wireButtons() {
+    // Close ×
+    var closeBtn = document.getElementById('loserRewardClose');
+    if (closeBtn) closeBtn.addEventListener('click', _closeLoserRewardModal);
+
+    // Add to Digital Collection
+    var addBtn = document.getElementById('loserRewardAdd');
+    if (addBtn) addBtn.addEventListener('click', function () {
+      if (!_lrCard) return;
+      if (typeof window.addSingleCardToDigital === 'function') {
+        window.addSingleCardToDigital(_lrCard.number);
+      } else {
+        // Fallback: show toast if the function isn't loaded yet
+        if (typeof window.showToast === 'function') window.showToast('Card added to your digital collection!');
+      }
+      _closeLoserRewardModal();
+    });
+
+    // Offer for Trade (no-op — coming soon)
+    // The button is disabled via HTML; handler is intentionally empty.
+
+    // Discard
+    var discardBtn = document.getElementById('loserRewardDiscard');
+    if (discardBtn) discardBtn.addEventListener('click', _showDiscardWarning);
+
+    // Discard warning — Keep
+    var keepBtn = document.getElementById('loserDiscardCancel');
+    if (keepBtn) keepBtn.addEventListener('click', _hideDiscardWarning);
+
+    // Discard warning — Confirm
+    var confirmBtn = document.getElementById('loserDiscardConfirm');
+    if (confirmBtn) confirmBtn.addEventListener('click', function () {
+      _hideDiscardWarning();
+      _closeLoserRewardModal();
+    });
+  }
+
+  /* ── Bootstrap ── */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () {
+      _wireButtons();
+      checkForLoserReward();
+    });
+  } else {
+    _wireButtons();
+    checkForLoserReward();
+  }
+
+  // Re-check if someone navigates back to the page with the hash still present
+  window.addEventListener('hashchange', checkForLoserReward);
+})();
+</script>
+<script src="scripts/match-results.js"></script>
 </body>
 </html>
