@@ -26,9 +26,11 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
+        working-directory: scripts
         run: npm install dotenv node-fetch @supabase/supabase-js
 
       - name: Run price scraper
+        working-directory: scripts
         env:
           EBAY_APP_ID:           ${{ secrets.EBAY_APP_ID }}
           SUPABASE_URL:          ${{ secrets.SUPABASE_URL }}
