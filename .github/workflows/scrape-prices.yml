@@ -1,0 +1,44 @@
+name: Scrape Avatar TCG Prices
+
+on:
+  workflow_dispatch:
+    inputs:
+      card:
+        description: 'Single card to test, e.g. AME001 (leave blank = all cards)'
+        required: false
+        default: ''
+      dry_run:
+        description: 'Dry run — fetch prices but do NOT save to Supabase'
+        type: boolean
+        default: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install dotenv node-fetch @supabase/supabase-js
+
+      - name: Run price scraper
+        env:
+          EBAY_APP_ID:           ${{ secrets.EBAY_APP_ID }}
+          SUPABASE_URL:          ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY:  ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          ARGS=""
+          if [ -n "${{ github.event.inputs.card }}" ]; then
+            ARGS="$ARGS --card=${{ github.event.inputs.card }}"
+          fi
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          node scrape-prices.js $ARGS
